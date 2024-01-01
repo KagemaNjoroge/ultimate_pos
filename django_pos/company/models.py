@@ -11,3 +11,13 @@ class Company(models.Model):
 
     def __str__(self) -> str:
         return self.company_name
+    
+    def to_dict(self) -> dict:
+        return {
+            "phone": self.phone_number,
+            "email": self.email,
+            "city": self.email,
+            "address": self.address,
+            "logo": self.logo.url,
+            "company_name": self.company_name
+        }
