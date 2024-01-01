@@ -111,7 +111,7 @@ def ReceiptPDFView(request, sale_id):
     Args:
         sale_id: ID of the sale to view the receipt
     """
-    # Get tthe sale
+    # Get the sale
     sale = Sale.objects.get(id=sale_id)
 
     # Get the sale details
