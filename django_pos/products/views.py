@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .models import Category, Product
-
+from company.models import Company
 
 @login_required(login_url="/accounts/login/")
 def CategoriesListView(request):
@@ -140,6 +140,13 @@ def ProductsListView(request):
         "active_icon": "products",
         "products": Product.objects.all()
     }
+    company = Company.objects.first()
+    if company:
+        context['currency_symbol'] = company.currency_symbol
+    else:
+        context['currency_symbol'] = '$'
+    
+
     return render(request, "products/products.html", context=context)
 
 
