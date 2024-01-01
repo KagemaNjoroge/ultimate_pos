@@ -10,6 +10,7 @@ from products.models import Product
 from weasyprint import HTML, CSS
 from .models import Sale, SaleDetail
 import json
+from company.models import Company
 
 
 def is_ajax(request):
@@ -114,13 +115,26 @@ def ReceiptPDFView(request, sale_id):
     # Get the sale
     sale = Sale.objects.get(id=sale_id)
 
+
+
+    # Get the company details
+    company = Company.objects.first()
+
+    if company:
+        company = company.to_dict()
+    else:
+        company = None
+
+
+
     # Get the sale details
     details = SaleDetail.objects.filter(sale=sale)
 
     template = get_template("sales/sales_receipt_pdf.html")
     context = {
         "sale": sale,
-        "details": details
+        "details": details,
+        "company": company
     }
     html_template = template.render(context)
 
