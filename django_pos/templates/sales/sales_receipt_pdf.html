@@ -53,10 +53,10 @@
 <div class="container-fluid">
     <div class="row border border-dark">
         <div class="col-6">
-            <p class="name-company"><b>{%block company_name%}TomorrowAI{%endblock company_name%}</b></p>
-            <p><b>{%block address%}1234 Maine Street{%endblock address%}</b></p>
-            <p><b>{%block city%}Nairobi, Kenya{%endblock city%}</b></p>
-            <p><b>Phone:</b> {%block phone%}(213) 484-6829{%endblock phone%}</p>
+            <p class="name-company"><b>{{sale.company_name}}</b></p>
+            <p><b>{{sale.address}}</b></p>
+            <p><b>{{sale.city}}</b></p>
+            <p><b>Phone:</b>{{sale.phone}}</p>
         </div>
         <div class="col-6 border-left border-dark">
             <p><b>Date:</b> {{sale.date_added}}</p>
