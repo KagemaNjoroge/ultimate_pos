@@ -15,6 +15,7 @@ import qrcode
 from io import BytesIO
 import base64
 
+#TODO separate `is_ajax` function to a separate file to avoid repetition -> dry principle
 
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
