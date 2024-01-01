@@ -44,11 +44,11 @@ A Point of Sale web app for businesses built with Python and Django for learning
     
   1. Clone or download the repository:
 
-  ` git clone https://github.com/betofleitass/django_point_of_sale`
+  ` git clone https://github.com/kagemanjoroge/ultimate_pos`
 
   2. Go to the project directory
 
-  ` cd django_point_of_sale`
+  ` cd ultimate_pos`
 
   3. Create a virtual environment :
 
@@ -94,7 +94,7 @@ A Point of Sale web app for businesses built with Python and Django for learning
 ## Run it locally
 After restarting your computer
 
-1. Go to the project directory: `cd django_point_of_sale`
+1. Go to the project directory: `cd ultimate_pos`
 
 2. Activate the virtual enviroment
 
