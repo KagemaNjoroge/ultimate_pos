@@ -1,10 +1,11 @@
 from datetime import date
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum, FloatField, F, IntegerField
+from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from products.models import Product, Category
-from sales.models import Sale, SaleDetail
+from sales.models import Sale
+
 import json
 
 
