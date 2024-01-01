@@ -24,6 +24,18 @@ class Sale(models.Model):
     def sum_items(self):
         details = SaleDetail.objects.filter(sale=self.id)
         return sum([d.quantity for d in details])
+    def to_json(self)->dict:
+        return {
+            "date_added": self.date_added,
+            "customer": self.customer.get_full_name(),
+            "sub_total": self.sub_total,
+            "grand_total": self.grand_total,
+            "tax_amount": self.tax_amount,
+            "tax_percentage": self.tax_percentage,
+            "amount_paid": self.amount_payed,
+            "amount_change": self.amount_change
+        }
+        
 
 
 class SaleDetail(models.Model):
