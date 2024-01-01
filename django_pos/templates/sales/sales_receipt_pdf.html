@@ -1,7 +1,9 @@
+
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <title>Sale Receipt PDF</title>
     <style>
@@ -117,6 +119,15 @@
         </tr>
         </tbody>
     </table>
+  <!-- Other content in your template -->
+
+<!-- Displaying the QR code image -->
+<img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code" class="text-center">
+
+<!-- Other content in your template -->
+
+
+    <!-- <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code"> -->
 </div>
 </body>
 </html>

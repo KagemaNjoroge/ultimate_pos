@@ -11,6 +11,10 @@ from weasyprint import HTML, CSS
 from .models import Sale, SaleDetail
 import json
 from company.models import Company
+import qrcode
+from PIL import Image
+from io import BytesIO
+import base64
 
 
 def is_ajax(request):
@@ -134,8 +138,22 @@ def ReceiptPDFView(request, sale_id):
     context = {
         "sale": sale,
         "details": details,
-        "company": company
+        "company": company,
+
     }
+    qrcode_details = sale.to_json()
+
+    qr = qrcode.make(qrcode_details, box_size=2.5)
+    qr_image = qr.get_image()
+    stream = BytesIO()
+    qr_image.save(stream, format='PNG')
+    qr_image_data = stream.getvalue()
+
+    qr_image_base64 = base64.b64encode(qr_image_data).decode('utf-8')
+
+
+    context['qr_code'] = qr_image_base64
+
     html_template = template.render(context)
 
     # CSS Boostrap
