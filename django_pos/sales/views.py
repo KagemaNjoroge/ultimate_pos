@@ -12,7 +12,6 @@ from .models import Sale, SaleDetail
 import json
 from company.models import Company
 import qrcode
-from PIL import Image
 from io import BytesIO
 import base64
 
