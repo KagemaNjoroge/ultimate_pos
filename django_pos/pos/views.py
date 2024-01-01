@@ -5,7 +5,7 @@ from django.db.models.functions import Coalesce
 from django.shortcuts import render
 from products.models import Product, Category
 from sales.models import Sale
-
+from company.models import Company
 import json
 
 
@@ -40,10 +40,7 @@ def index(request):
     for p in top_products:
         top_products_names.append(p.name)
         top_products_quantity.append(p.quantity_sum)
-
-    print(top_products_names)
-    print(top_products_quantity)
-
+    
     context = {
         "active_icon": "dashboard",
         "products": Product.objects.all().count(),
@@ -55,4 +52,12 @@ def index(request):
         "top_products_names_list": top_products_names,
         "top_products_quantity": json.dumps(top_products_quantity),
     }
+
+    company = Company.objects.first()
+    if company:
+        context['currency_symbol'] = company.currency_symbol
+    else:
+        context['currency_symbol'] = "$"
+
+
     return render(request, "pos/index.html", context)
