@@ -25,16 +25,34 @@ def profile(request:HttpRequest)->HttpResponse:
         email=request.POST.get('email')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
+        user = request.user   
+        # if email != '' and first_name != '' and last_name != '':
             
-        if email != '' and first_name != '' and last_name != '':
-            user = request.user
-            user.email = email
-            user.first_name = first_name
-            user.last_name = last_name
+        #     user.email = email
+        #     user.first_name = first_name
+        #     user.last_name = last_name
 
-            user.save()
-            messages.add_message(request=request, message='Profile updated successfully', level=messages.SUCCESS)
-            return redirect('/accounts/profile')
+        #     user.save()
+        #     messages.add_message(request=request, message='Profile updated successfully', level=messages.SUCCESS)
+        #     return redirect('/accounts/profile')
+        if email == '':
+            email = None
+        if first_name== '':
+            first_name = None
+        if last_name=='':
+            last_name=None
+        
+        user.email = email or user.email
+        user.first_name = first_name or user.first_name
+        user.last_name = last_name or user.last_name
+
+        user.save()
+        messages.add_message(request=request, message='Profile updated successfully', level=messages.SUCCESS)
+        return redirect('/accounts/profile')
+        
+
+        
+
 
         
 def login_view(request):
