@@ -43,7 +43,7 @@ def SalesAddView(request):
             data = json.load(request)
 
             sale_attributes = {
-                "customer": Customer.objects.get(id=int(data['customer'])),
+                
                 "sub_total": float(data["sub_total"]),
                 "grand_total": float(data["grand_total"]),
                 "tax_amount": float(data["tax_amount"]),
@@ -51,6 +51,8 @@ def SalesAddView(request):
                 "amount_payed": float(data["amount_payed"]),
                 "amount_change": float(data["amount_change"]),
             }
+            if data['customer']:
+                sale_attributes['customer'] = Customer.objects.get(id=int(data['customer']))
             try:
                 # Create the sale
                 new_sale = Sale.objects.create(**sale_attributes)
@@ -76,6 +78,7 @@ def SalesAddView(request):
                     request, 'Sale created succesfully!', extra_tags="success")
 
             except Exception as e:
+                print(e)
                 messages.success(
                     request, 'There was an error during the creation!', extra_tags="danger")
 
