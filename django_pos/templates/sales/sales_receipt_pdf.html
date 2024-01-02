@@ -1,13 +1,12 @@
-
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
+
 <head>
-    
+
     <meta charset="UTF-8">
     <title>Sale Receipt PDF</title>
     <style>
-
         * {
             color: black;
         }
@@ -48,86 +47,87 @@
             height: 75px;
             margin-bottom: 10px;
         }
-
     </style>
 </head>
+
 <body>
-<div class="container-fluid">
-    <div class="row border border-dark">
-        <div class="col-6">
-            <p class="name-company"><b>{{company.company_name}}</b></p>
-            <p><b>{{company.address}}</b></p>
-            <p><b>{{company.city}}</b></p>
-            <p><b>Phone:</b>{{company.phone}}</p>
+    <div class="container-fluid">
+        <div class="row border border-dark">
+            <div class="col-6">
+                <p class="name-company"><b>{{company.company_name}}</b></p>
+                <p><b>{{company.address}}</b></p>
+                <p><b>{{company.city}}</b></p>
+                <p><b>Phone:</b>{{company.phone}}</p>
+            </div>
+            <div class="col-6 border-left border-dark">
+                <p><b>Date:</b> {{sale.date_added}}</p>
+                <p><b>Sale ID:</b> {{sale.id}}</p>
+                <p><b>Customer:</b> {{sale.customer.get_full_name}}</p>
+            </div>
         </div>
-        <div class="col-6 border-left border-dark">
-            <p><b>Date:</b> {{sale.date_added}}</p>
-            <p><b>Sale ID:</b> {{sale.id}}</p>
-            <p><b>Customer:</b> {{sale.customer.get_full_name}}</p>
+
+        <br>
+
+        <p></p>
+        <table class="table" style="width: 100%;">
+            <thead>
+                <tr style="border: 1px solid black;">
+                    <th style="width: 5%;" class="text-center">#</th>
+                    <th style="width: 40%;" class="text-left pl-2">Product</th>
+                    <th style="width: 5%;" class="text-center">Quantity</th>
+                    <th style="width: 20%;" class="text-right pr-2">Price</th>
+                    <th style="width: 20%;" class="text-right pr-2">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in details %}
+                <tr>
+                    <td class="text-center">{{forloop.counter}}</td>
+                    <td class="text-left pl-2">{{d.product.name}}</td>
+                    <td class="text-center">{{d.quantity}}</td>
+                    <td class="text-right pr-2 ">{{d.price}} {{company.currency}}</td>
+                    <td class="text-right pr-2">{{d.total_detail}} {{company.currency}}</td>
+                </tr>
+                <!--TODO: Remove hardcoded currency symbol-->
+                {% endfor %}
+                <tr>
+                    <td colspan="4" class="text-right pr-2"><b>Subtotal</b></td>
+                    <td class="text-right pr-2">{{sale.sub_total|floatformat:2}} {{company.currency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right pr-2"><b>Tax Inclusive ({{sale.tax_percentage}}%)</b></td>
+                    <td class="text-right pr-2">{{sale.tax_amount|floatformat:2}} {{company.currency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right pr-2"><b>Grand Total</b></td>
+                    <td class="text-right pr-2">{{ sale.grand_total }} {{company.currency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right pr-2"><b>Amount payed</b></td>
+                    <td class="text-right pr-2">{{ sale.amount_payed }} {{company.currency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="text-right pr-2"><b>Change</b></td>
+                    <td class="text-right pr-2">{{ sale.amount_change }} {{company.currency}}</td>
+                </tr>
+
+            </tbody>
+        </table>
+        <p class="text-uppercase font-weight-bold text-center">
+            We appreciate your business. Thank you for your ongoing support.
+        </p>
+
+        <div class="row">
+
+            <div class="col-4 text-center"></div>
+            <div class="col-4 text-center">
+                <!-- Displaying the QR code image -->
+                <img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code">
+            </div>
+            <div class="col-4"></div>
         </div>
+
     </div>
-
-    <br>
-
-    <p></p>
-    <table class="table" style="width: 100%;">
-        <thead>
-        <tr style="border: 1px solid black;">
-            <th style="width: 5%;" class="text-center">#</th>
-            <th style="width: 40%;" class="text-left pl-2">Product</th>
-            <th style="width: 5%;" class="text-center">Quantity</th>
-            <th style="width: 20%;" class="text-right pr-2">Price</th>
-            <th style="width: 20%;" class="text-right pr-2">Total</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for d in details %}
-            <tr>
-                <td class="text-center">{{forloop.counter}}</td>
-                <td class="text-left pl-2">{{d.product.name}}</td>
-                <td class="text-center">{{d.quantity}}</td>
-                <td class="text-right pr-2 ">{{d.price}} $</td>
-                <td class="text-right pr-2">{{d.total_detail}} $</td>
-            </tr>
-        {% endfor %}
-        <tr>
-            <td colspan="4" class="text-right pr-2"><b>Subtotal</b></td>
-            <td class="text-right pr-2">{{sale.sub_total|floatformat:2}} $</td>
-        </tr>
-        <tr>
-            <td colspan="4" class="text-right pr-2"><b>Tax Inclusive ({{sale.tax_percentage}}%)</b></td>
-            <td class="text-right pr-2">{{sale.tax_amount|floatformat:2}} $</td>
-        </tr>
-        <tr>
-            <td colspan="4" class="text-right pr-2"><b>Grand Total</b></td>
-            <td class="text-right pr-2">{{ sale.grand_total }} $</td>
-        </tr>
-        <tr>
-            <td colspan="4" class="text-right pr-2"><b>Amount payed</b></td>
-            <td class="text-right pr-2">{{ sale.amount_payed }} $</td>
-        </tr>
-        <tr>
-            <td colspan="4" class="text-right pr-2"><b>Change</b></td>
-            <td class="text-right pr-2">{{ sale.amount_change }} $</td>
-        </tr>
-        <tr>
-            <td colspan="5">
-                <p class="text-uppercase font-weight-bold text-center">
-                    We appreciate your business. Thank you for your ongoing support.
-                </p>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-  <!-- Other content in your template -->
-
-<!-- Displaying the QR code image -->
-<img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code" class="text-center">
-
-<!-- Other content in your template -->
-
-
-    <!-- <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code"> -->
-</div>
 </body>
+
 </html>
