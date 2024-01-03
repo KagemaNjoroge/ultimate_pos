@@ -87,7 +87,7 @@
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label for="customer">Customer</label>
-                                    <select name="customer" class="form-control" id="searchbox_customers">
+                                    <select name="customer" class="form-control" id="searchbox_customers" required>
                                         <option value="" selected disabled hidden>Select the customer</option>
                                         {% for customer in customers %}
                                         <option value="{{customer.value}}">{{customer.label}}</option>
