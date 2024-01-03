@@ -8,7 +8,7 @@ class Customer(models.Model):
     address = models.TextField(max_length=256, blank=True, null=True)
     email = models.EmailField(max_length=256, blank=True, null=True)
     phone = models.CharField(max_length=30, blank=True, null=True)
-    kra_pin = models.CharField(max_length=12, default="A000000000Z")
+    kra_pin = models.CharField(max_length=12, default="A000000000Z", blank=True, null=True)
 
     class Meta:
         db_table = 'Customers'
