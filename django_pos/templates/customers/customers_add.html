@@ -26,6 +26,13 @@
         <div class="card-body">
             <form action="{% url 'customers:customers_add' %}"  method="post">
                 {% csrf_token %}
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="inputDescription">KRA PIN</label>
+                        <input type="text" class="form-control" name="kra_pin" placeholder="KRA PIN for tax returns filing">
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="inputDescription">First Name</label>
@@ -40,18 +47,18 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="inputDescription">Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="johndoe@gmail.com" required>
+                        <input type="email" name="email" class="form-control" placeholder="johndoe@gmail.com">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="inputDescription">Phone number</label>
-                        <input type="text" name="phone" class="form-control" placeholder="(412) 727-2736" required>
+                        <input type="text" name="phone" class="form-control" placeholder="(412) 727-2736">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <label for="inputDescription">Address</label>
-                        <textarea name="address" class="form-control" placeholder="5340 Brett Dr #A Fort Knox, Kentucky(KY), 40121 ..." rows="2" required></textarea>
+                        <textarea name="address" class="form-control" placeholder="5340 Brett Dr #A Fort Knox, Kentucky(KY), 40121 ..." rows="2"></textarea>
                     </div>
                 </div>
                 
