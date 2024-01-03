@@ -35,11 +35,11 @@
             border: 1px solid black !important;
             padding: 3px;
         }
-
+/* 
         table tbody tr td {
             border: 1px solid black;
             padding: 3px;
-        }
+        } */
 
         .img-logo {
             margin-top: 10px;
@@ -51,15 +51,15 @@
 </head>
 
 <body>
-    <div class="container-fluid">
-        <div class="row border border-dark">
+    <div class="container">
+        <div class="row">
             <div class="col-6">
                 <p class="name-company"><b>{{company.company_name}}</b></p>
                 <p><b>{{company.address}}</b></p>
                 <p><b>{{company.city}}</b></p>
                 <p><b>Phone:</b>{{company.phone}}</p>
             </div>
-            <div class="col-6 border-left border-dark">
+            <div class="col-6 justify-content-end">
                 <p><b>Date:</b> {{sale.date_added}}</p>
                 <p><b>Sale ID:</b> {{sale.id}}</p>
                 <p><b>Customer:</b> {{sale.customer.get_full_name}}</p>
@@ -113,19 +113,21 @@
 
             </tbody>
         </table>
-        <p class="text-uppercase font-weight-bold text-center">
-            We appreciate your business. Thank you for your ongoing support.
-        </p>
-
-        <div class="row">
+        <div class="row mb-5">
 
             <div class="col-4 text-center"></div>
             <div class="col-4 text-center">
                 <!-- Displaying the QR code image -->
+                <!-- <img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code"> -->
+            </div>
+            <!-- <div class="justify-content-end">I am using justify-content-end</div> -->
+            <div class="col-4 align-items-end">
                 <img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code">
             </div>
-            <div class="col-4"></div>
         </div>
+        <p class="font-weight-bold">
+            We appreciate your business. Thank you for your ongoing support.
+        </p>
 
     </div>
 </body>
