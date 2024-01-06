@@ -7,7 +7,7 @@ from products.models import Product
 class Sale(models.Model):
     date_added = models.DateTimeField(default=django.utils.timezone.now)
     customer = models.ForeignKey(
-        Customer, models.DO_NOTHING, db_column='customer', blank=True, null=True)
+        Customer, models.PROTECT, db_column='customer', blank=True, null=True)
     sub_total = models.FloatField(default=0)
     grand_total = models.FloatField(default=0)
     tax_amount = models.FloatField(default=0)
@@ -40,9 +40,9 @@ class Sale(models.Model):
 
 class SaleDetail(models.Model):
     sale = models.ForeignKey(
-        Sale, models.DO_NOTHING, db_column='sale')
+        Sale, models.PROTECT, db_column='sale')
     product = models.ForeignKey(
-        Product, models.DO_NOTHING, db_column='product')
+        Product, models.PROTECT, db_column='product')
     price = models.FloatField()
     quantity = models.IntegerField()
     total_detail = models.FloatField()
