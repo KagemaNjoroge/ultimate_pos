@@ -1,7 +1,15 @@
 // Sidebar
+
+.content-wrapper {
+    padding-left: $sidebar-collapsed-width;
+}
 .sidebar {
     width: $sidebar-collapsed-width;
+    top: 0;
+    left: 0;
     min-height: 100vh;
+    position: sticky;
+    z-index: 0;
 
     .nav-item {
         position: relative;
@@ -185,6 +193,7 @@
             color: fade-out($white, 0.5);
         }
     }
+    
 }
 
 @include media-breakpoint-up(md) {
@@ -206,6 +215,10 @@
                     box-shadow: none;
                 }
             }
+            .content-wrapper {
+                /* Adjust padding for larger screens */
+                padding-left: $sidebar-base-width;
+            }            
 
             .collapsing {
                 display: block;
