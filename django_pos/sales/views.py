@@ -167,3 +167,6 @@ def ReceiptPDFView(request, sale_id):
     pdf = HTML(string=html_template).write_pdf(stylesheets=[CSS(css_url)])
 
     return HttpResponse(pdf, content_type="application/pdf")
+
+
+
