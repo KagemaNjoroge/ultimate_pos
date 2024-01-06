@@ -1,10 +1,10 @@
 ## Ultimate Point of Sale (POS) 💸
 
-A Point of Sale web app for businesses built with Python and Django for learning purposes.
+A Point of Sale web app for businesses built with Python and Django for perfectionists.
 
-<a><img src="https://user-images.githubusercontent.com/95726794/212497770-a3e241e7-0c77-4573-9d22-8f0ae813e958.png" width="70%" heigth="70%"></a>
+<div style="text-align: center"><a><img src="screenshots\dashboard.png" width="70%" alt="Ultimate POS Dashboard"/></a></div>
 <br></br>
-<a><img src="https://user-images.githubusercontent.com/95726794/212497784-80a48617-759c-4415-aa1c-4591b9892c3d.png" width="70%" heigth="70%"></a>
+<div style="text-align: center"><a><img src="screenshots\sales.png" width="70%" alt="Ultimate POS Sales Page"/></a></div>
 
 ## Table of Contents:
 - [Features](#features)
@@ -15,8 +15,7 @@ A Point of Sale web app for businesses built with Python and Django for learning
 - [Contributing](#contributing)
 - [License](#license)
 
-## Screenshots
-[Click Here](screenshots/README.md)
+
 
 ## Features
 - Login Page with User authentication
@@ -28,6 +27,8 @@ A Point of Sale web app for businesses built with Python and Django for learning
 
 
 ## Tech Stack
+q
+
 
 - Frontend: HTML, CSS, JavaScript, Boostrap, SweetAlert, DataTables
 - Backend: Django, Python, Ajax, SQLite 
