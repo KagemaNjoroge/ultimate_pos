@@ -24,12 +24,9 @@ A Point of Sale web app for businesses built with Python and Django.
 - Categories and Products Management
 - Clients Management
 - Sales Management
-
+- eTIMS(electronic Tax Invoice Management System)
 
 ## Tech Stack
-q
-
-
 - Frontend: HTML, CSS, JavaScript, Boostrap, SweetAlert, DataTables
 - Backend: Django, Python, Ajax, SQLite 
 
@@ -117,7 +114,7 @@ After restarting your computer
 5. Create superuser `python manage.py createsuperuser` 
   
    with the following data, or with the data you prefer:
-   `username: YOUR_PREFERRED_USERNAME),
+   `username: YOUR_PREFERRED_USERNAME,
     password: PASSWORD,
     email: email@email.com`
 
@@ -140,10 +137,11 @@ Contributions are always welcome!
 
 - Push to your branch: `git push origin my-feature`.
 
+  ##  License
+
+This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
+
 ## Authors
 
 - [@kagemanjoroge](https://github.com/kagemanjoroge)
 
-##  License
-
-This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
