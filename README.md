@@ -1,6 +1,6 @@
 ## Ultimate Point of Sale (POS) 💸
 
-A Point of Sale web app for businesses built with Python and Django for perfectionists.
+A Point of Sale web app for businesses built with Python and Django.
 
 <div style="text-align: center"><a><img src="screenshots\dashboard.png" width="70%" alt="Ultimate POS Dashboard"/></a></div>
 <br></br>
@@ -108,7 +108,7 @@ After restarting your computer
     ```
     source venv/bin/activate
     ```
-3. Go to the django_pos folder: `cd django_pos`
+3. Go to the django_pos folder: `cd ultimate_pos`
 
 4. Make database migrations:  
   `python manage.py makemigrations` and 
@@ -117,9 +117,9 @@ After restarting your computer
 5. Create superuser `python manage.py createsuperuser` 
   
    with the following data, or with the data you prefer:
-   `username: admin,
-    password: admin,
-    email: admin@admin`
+   `username: YOUR_PREFERRED_USERNAME),
+    password: PASSWORD,
+    email: email@email.com`
 
 7. Run the server: `python manage.py runserver`
 
@@ -147,5 +147,3 @@ Contributions are always welcome!
 ##  License
 
 This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
-
-[Back to top ⬆️](#django-point-of-sale-pos-)
