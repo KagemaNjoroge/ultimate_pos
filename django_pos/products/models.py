@@ -20,6 +20,7 @@ class Category(models.Model):
         # Table's name
         db_table = "Category"
         verbose_name_plural = "Categories"
+        verbose_name = "Category"
 
     def __str__(self) -> str:
         return self.name
@@ -46,6 +47,8 @@ class Product(models.Model):
     class Meta:
         # Table's name
         db_table = "Product"
+        verbose_name_plural = 'Products'
+        verbose_name = 'Product'
 
     def __str__(self) -> str:
         return self.name

@@ -17,6 +17,8 @@ class Sale(models.Model):
 
     class Meta:
         db_table = 'Sales'
+        verbose_name_plural = 'Sales'
+        verbose_name = 'Sale'
 
     def __str__(self) -> str:
         return "Sale ID: " + str(self.id) + " | Grand Total: " + str(self.grand_total) + " | Datetime: " + str(self.date_added)
@@ -49,6 +51,8 @@ class SaleDetail(models.Model):
 
     class Meta:
         db_table = 'SaleDetails'
+        verbose_name_plural = 'Sale Details'
+        verbose_name = 'Sale Detail'
 
     def __str__(self) -> str:
         return "Detail ID: " + str(self.id) + " Sale ID: " + str(self.sale.id) + " Quantity: " + str(self.quantity)

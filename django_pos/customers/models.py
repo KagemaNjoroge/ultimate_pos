@@ -1,5 +1,4 @@
 from django.db import models
-from django.forms import model_to_dict
 
 
 class Customer(models.Model):
@@ -12,6 +11,8 @@ class Customer(models.Model):
 
     class Meta:
         db_table = 'Customers'
+        verbose_name_plural = 'Customers'
+        verbose_name = 'Customer'
 
     def __str__(self) -> str:
         return self.first_name + " " + self.last_name
