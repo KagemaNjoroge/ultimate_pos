@@ -1,5 +1,6 @@
 from django.db import models
 from products.models import Product
+
 # Create your models here.
 
 
@@ -9,13 +10,13 @@ class Inventory(models.Model):
     date_added = models.DateField(auto_now_add=True)
     date_modified = models.DateField(auto_now=True)
 
-
     def __str__(self):
         return f"{self.product} - {self.quantity}"
-    
+
     def update_stock(self, quantity):
         self.quantity += quantity
         self.save()
+
     def to_dict(self):
         return {
             "id": self.id,
