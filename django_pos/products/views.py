@@ -5,8 +5,9 @@ from django.shortcuts import render, redirect
 from .models import Category, Product
 from company.models import Company
 
+
 @login_required(login_url="/accounts/login/")
-def CategoriesListView(request):
+def categories_list_view(request):
     context = {
         "active_icon": "products_categories",
         "categories": Category.objects.all()
@@ -15,14 +16,14 @@ def CategoriesListView(request):
 
 
 @login_required(login_url="/accounts/login/")
-def CategoriesAddView(request):
+def categories_add_view(request):
     context = {
         "active_icon": "products_categories",
         "category_status": Category.status.field.choices
     }
 
     if request.method == 'POST':
-        # Save the POST arguements
+        # Save the POST arguments
         data = request.POST
 
         attributes = {
@@ -41,11 +42,11 @@ def CategoriesAddView(request):
             # Create the category
             new_category = Category.objects.create(**attributes)
 
-            # If it doesn't exists save it
+            # If it doesn't exist save it
             new_category.save()
 
             messages.success(request, 'Category: ' +
-                             attributes["name"] + ' created succesfully!', extra_tags="success")
+                             attributes["name"] + ' created successfully!', extra_tags="success")
             return redirect('products:categories_list')
         except Exception as e:
             messages.success(
@@ -57,9 +58,10 @@ def CategoriesAddView(request):
 
 
 @login_required(login_url="/accounts/login/")
-def CategoriesUpdateView(request, category_id):
+def categories_update_view(request, category_id):
     """
     Args:
+        request: HttpRequest
         category_id : The category's ID that will be updated
     """
 
@@ -81,7 +83,7 @@ def CategoriesUpdateView(request, category_id):
 
     if request.method == 'POST':
         try:
-            # Save the POST arguements
+            # Save the POST arguments
             data = request.POST
 
             attributes = {
@@ -115,9 +117,10 @@ def CategoriesUpdateView(request, category_id):
 
 
 @login_required(login_url="/accounts/login/")
-def CategoriesDeleteView(request, category_id):
+def categories_delete_view(request, category_id):
     """
     Args:
+        request:
         category_id : The category's ID that will be deleted
     """
     try:
@@ -135,7 +138,7 @@ def CategoriesDeleteView(request, category_id):
 
 
 @login_required(login_url="/accounts/login/")
-def ProductsListView(request):
+def products_list_view(request):
     context = {
         "active_icon": "products",
         "products": Product.objects.all()
@@ -145,13 +148,12 @@ def ProductsListView(request):
         context['currency_symbol'] = company.currency_symbol
     else:
         context['currency_symbol'] = '$'
-    
 
     return render(request, "products/products.html", context=context)
 
 
 @login_required(login_url="/accounts/login/")
-def ProductsAddView(request):
+def products_add_view(request):
     context = {
         "active_icon": "products_categories",
         "product_status": Product.status.field.choices,
@@ -159,7 +161,7 @@ def ProductsAddView(request):
     }
 
     if request.method == 'POST':
-        # Save the POST arguements
+        # Save the POST arguments
         data = request.POST
 
         attributes = {
@@ -180,11 +182,11 @@ def ProductsAddView(request):
             # Create the product
             new_product = Product.objects.create(**attributes)
 
-            # If it doesn't exists save it
+            # If it doesn't exist save it
             new_product.save()
 
             messages.success(request, 'Product: ' +
-                             attributes["name"] + ' created succesfully!', extra_tags="success")
+                             attributes["name"] + ' created successfully!', extra_tags="success")
             return redirect('products:products_list')
         except Exception as e:
             messages.success(
@@ -196,9 +198,10 @@ def ProductsAddView(request):
 
 
 @login_required(login_url="/accounts/login/")
-def ProductsUpdateView(request, product_id):
+def products_update_view(request, product_id):
     """
     Args:
+        request:
         product_id : The product's ID that will be updated
     """
 
@@ -221,7 +224,7 @@ def ProductsUpdateView(request, product_id):
 
     if request.method == 'POST':
         try:
-            # Save the POST arguements
+            # Save the POST arguments
             data = request.POST
 
             attributes = {
@@ -257,9 +260,10 @@ def ProductsUpdateView(request, product_id):
 
 
 @login_required(login_url="/accounts/login/")
-def ProductsDeleteView(request, product_id):
+def products_delete_view(request, product_id):
     """
     Args:
+        request:
         product_id : The product's ID that will be deleted
     """
     try:
@@ -281,7 +285,7 @@ def is_ajax(request):
 
 
 @login_required(login_url="/accounts/login/")
-def GetProductsAJAXView(request):
+def get_products_ajax_view(request):
     if request.method == 'POST':
         if is_ajax(request=request):
             data = []
