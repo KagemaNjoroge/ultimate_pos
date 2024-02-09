@@ -16,7 +16,7 @@
 <!-- Page content  -->
 {% block content %}
 
-    <!--Create new category-->
+    <!--Create a new category-->
     <div class="row ml-0 mb-3">
         <a href="{% url 'products:categories_add' %}">
             <button type="button" class="btn btn-success font-weight-bold">
@@ -33,7 +33,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover" id="dataTable">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -77,7 +77,7 @@
                                     
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">Delete category</h5>
@@ -86,7 +86,7 @@
                                             </button>
                                         </div>
                                         <div id="updateThisText" class="modal-body">
-                                            Are you sure you want to delete the category: {{c.name}}
+                                            Are you sure you want to delete the category:  {{c.name}}
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -128,7 +128,7 @@
 <script>
     // Call the dataTables jQuery plugin
     $(document).ready(function() {
-        tblCategories = $('#dataTable').DataTable({
+        let tblCategories = $('#dataTable').DataTable({
             dom: 'Bfrtip', // Buttons are draw at this element
             buttons: [
                 {
@@ -217,7 +217,7 @@
                 },
                 {
                     targets: [-1], // column index (start from 0)
-                    orderable: false, // set orderable false for selected columns
+                    orderable: false, // set order able false for selected columns
                 }
             ],
         });
@@ -225,15 +225,15 @@
 
     // Alert when trying to delete a category
     $('#dataTable tbody')
-    // Event when whe try to delete a category
-    // We update the text, and href of the modal delete button
+    // Event when whe try to delete a category,
+    // We update the text, and href of the modal deleted button
     .on('click', 'button[rel="delete"]', function () {
     // Row variable
-    var tr = tblCategories.cell($(this).closest('td, li')).index();
-    row_data = ( tblCategories.row(tr.row).data());
-    category_id = row_data[0];
-    category_name = row_data[2]
-    new_delete_url  = 'categories/delete/' + category_id;
+    let tr = tblCategories.cell($(this).closest('td, li')).index();
+    let row_data = ( tblCategories.row(tr.row).data());
+    let category_id = row_data[0];
+    let category_name = row_data[2]
+    let new_delete_url  = 'categories/delete/' + category_id;
     document.getElementById("updateThisText").innerHTML = "Are you sure you want to delete the category:  " + category_name + "?";
     document.getElementById("updateThisURL").href=new_delete_url;
     });
