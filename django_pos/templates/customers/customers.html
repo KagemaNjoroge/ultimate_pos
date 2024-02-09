@@ -85,7 +85,7 @@
                                     
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">Delete customer</h5>
@@ -225,7 +225,7 @@
                 },
                 {
                     targets: [-1], // column index (start from 0)
-                    orderable: false, // set orderable false for selected columns
+                    orderable: false, // set order able false for selected columns
                 }
             ],
         });
@@ -233,8 +233,8 @@
 
     // Alert when trying to delete a customer
     $('#dataTable tbody')
-    // Event when whe try to delete a customer
-    // We update the text, and href of the modal delete button
+    // Event when whe try to delete a customer, 
+    // We update the text, and href of the modal deleted button
     .on('click', 'button[rel="delete"]', function () {
     // Row variable
     let tr = tblCategories.cell($(this).closest('td, li')).index();
