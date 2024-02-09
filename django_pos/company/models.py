@@ -9,7 +9,7 @@ class Company(models.Model):
     address = models.CharField(max_length=100)
     logo = models.ImageField(blank=False, null=False)
     company_name = models.CharField(max_length=100, blank=False, null=False)
-    currency_symbol = models.CharField(max_length=5, default='Kshs')
+    currency_symbol = models.CharField(max_length=5, default='Kes')
 
     def __str__(self) -> str:
         return self.company_name
