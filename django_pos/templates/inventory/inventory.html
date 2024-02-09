@@ -1,11 +1,39 @@
 {% extends "pos/base.html" %} {% load static %}
 <!-- Page title  -->
-{% block title %}Inventory{% endblock title %} {% block heading %}Inventory{%
-endblock heading %}
+{% block title %}Inventory{% endblock title %} 
+{% block heading %}Inventory{%endblock heading %}
 
 <!-- Page content  -->
 {% block content %}
-<h6>Inventory management</h6>
+    <div class="row ml-0 mb-3">
+        <a href="{% url 'inventory:inventory_add' %}">
+            <button type="button" class="btn btn-success font-weight-bold">
+                    <i class="fas fa-plus mr-2"></i>
+                    Add Inventory
+            </button>
+        </a>
+    </div>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Inventory ID</th>
+        <th scope="col">Product</th>
+      <th scope="col">Quantity</th>
+        <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for invent in inventory %}
+        <tr>
+      <th scope="row">{{ invent.id }}</th>
+      <td>{{ invent.product.name }}</td>
+      <td>{{ invent.quantity }}</td>
+      <td>Action</td>
+        <td></td>
+    </tr>
 
+  {% endfor %}
+  </tbody>
+</table>
 
 {%endblock content%}
