@@ -208,7 +208,9 @@ def products_update_view(request, product_id):
     # Get the product
     try:
         # Get the product to update
+
         product = Product.objects.get(id=product_id)
+
     except Exception as e:
         messages.success(
             request, 'There was an error trying to get the product!', extra_tags="danger")
@@ -236,13 +238,14 @@ def products_update_view(request, product_id):
             }
 
             # Check if a product with the same attributes exists
-            if product.objects.filter(**attributes).exists():
+            if Product.objects.filter(**attributes).exists():
                 messages.error(request, 'Product already exists!',
                                extra_tags="warning")
                 return redirect('products:products_add')
 
             # Get the product to update
-            product = Product.objects.filter(
+
+            Product.objects.filter(
                 id=product_id).update(**attributes)
 
             product = Product.objects.get(id=product_id)
@@ -253,7 +256,7 @@ def products_update_view(request, product_id):
         except Exception as e:
             messages.success(
                 request, 'There was an error during the update!', extra_tags="danger")
-            print(e)
+
             return redirect('products:products_list')
 
     return render(request, "products/products_update.html", context=context)
