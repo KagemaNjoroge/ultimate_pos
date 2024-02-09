@@ -26,5 +26,10 @@ def add_inventory(request: HttpRequest) -> HttpResponse:
 
         product = Product.objects.get(id=product_id)
         inventory = Inventory(product=product, quantity=quantity)
-        inventory.save()
-        return JsonResponse({"status": "success"}, safe=True)
+        try:
+            inventory.save()
+            return JsonResponse({"status": "success"}, safe=True)
+        except Exception as ee:
+            print(str(ee))
+            return JsonResponse({"status": "fail", "error": str(ee)}, safe=True)
+
