@@ -6,7 +6,7 @@ from products.models import Product
 
 
 class Inventory(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.OneToOneField(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     date_added = models.DateField(auto_now_add=True)
     date_modified = models.DateField(auto_now=True)
