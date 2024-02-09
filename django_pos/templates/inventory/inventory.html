@@ -28,7 +28,19 @@
       <th scope="row">{{ invent.id }}</th>
       <td>{{ invent.product.name }}</td>
       <td>{{ invent.quantity }}</td>
-      <td>Action</td>
+      <td>                                <!--Update-->
+                                <a href="" class="text-decoration-none">
+                                    <button  type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Update Inventory">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                </a>
+                                <!--Delete modal-->
+                                <!-- Button trigger modal -->
+                                <a class="text-decoration-none">
+                                    <button type="button" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </a></td>
         <td></td>
     </tr>
 
