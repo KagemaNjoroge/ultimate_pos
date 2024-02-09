@@ -1,4 +1,5 @@
 {% extends "pos/base.html" %}
+{% load static %}
 
 <!-- Page title  -->
 {% block title %}Add product{% endblock title %}
@@ -11,6 +12,10 @@
 
 <!-- Page content  -->
 {% block content %}
+    
+    <style>
+
+    </style>
 <!--Go back-->
 <div class="row ml-0 mb-3">
     <a href="{% url 'inventory:inventory_index' %}">
@@ -18,7 +23,14 @@
             <i class="fas fa-long-arrow-alt-left mr-2"></i>
             Go back
         </button>
+        
     </a>
+    
+<div class="col">
+    <div class="col-7 mt-4" id="status_msg"></div>
+    
+<div class="col-5"></div>
+</div>
 </div>
     <div class="row">
         <div class="card col-md-8">
@@ -91,10 +103,26 @@
 
 
         );
+        let body = await response.json();
         
-        if(response.ok){
-            alert("Ïnventory added")
+        if(body['status']==='fail'){
+            let msg_div = document.getElementById('status_msg');
+            msg_div.innerHTML = `<div class="mt-5 col"><div id="message_js" class="alert alert-danger alert-dismissible fade-show" role="alert">
+        The product you selected already exists in the inventory.
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div></div>`
+            
         }
+        else if(body['status']==='success') {
+            let msg_div = document.getElementById('status_msg');
+   
+            msg_div.innerHTML = `<div class="mt-5 col"><div id="message_js" class="alert alert-success alert-dismissible fade-show" role="alert">
+        Product tracked in the inventory, <a href="{% url "inventory:inventory_index" %}" class="btn btn-link">Go to Inventory</a>
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div></div>`
+
+        }
+        
 
     })
     </script>
