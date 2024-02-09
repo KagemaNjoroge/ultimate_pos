@@ -15,7 +15,8 @@ import qrcode
 from io import BytesIO
 import base64
 
-#TODO separate `is_ajax` function to a separate file to avoid repetition -> dry principle
+
+# TODO separate `is_ajax` function to a separate file to avoid repetition -> dry principle
 
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
@@ -39,11 +40,11 @@ def SalesAddView(request):
 
     if request.method == 'POST':
         if is_ajax(request=request):
-            # Save the POST arguements
+            # Save the POST arguments
             data = json.load(request)
 
             sale_attributes = {
-                
+
                 "sub_total": float(data["sub_total"]),
                 "grand_total": float(data["grand_total"]),
                 "tax_amount": float(data["tax_amount"]),
@@ -72,8 +73,6 @@ def SalesAddView(request):
                         **detail_attributes)
                     sale_detail_new.save()
 
-                
-
                 messages.success(
                     request, 'Sale created succesfully!', extra_tags="success")
                 return redirect('sales:sales_list')
@@ -95,7 +94,7 @@ def SalesDetailsView(request, sale_id):
         sale_id: ID of the sale to view
     """
     try:
-        # Get tthe sale
+        # Get the sale
         sale = Sale.objects.get(id=sale_id)
 
         # Get the sale details
@@ -123,8 +122,6 @@ def ReceiptPDFView(request, sale_id):
     # Get the sale
     sale = Sale.objects.get(id=sale_id)
 
-
-
     # Get the company details
     company = Company.objects.first()
 
@@ -132,8 +129,6 @@ def ReceiptPDFView(request, sale_id):
         company = company.to_dict()
     else:
         company = None
-
-
 
     # Get the sale details
     details = SaleDetail.objects.filter(sale=sale)
@@ -155,7 +150,6 @@ def ReceiptPDFView(request, sale_id):
 
     qr_image_base64 = base64.b64encode(qr_image_data).decode('utf-8')
 
-
     context['qr_code'] = qr_image_base64
 
     html_template = template.render(context)
@@ -168,6 +162,3 @@ def ReceiptPDFView(request, sale_id):
     pdf = HTML(string=html_template).write_pdf(stylesheets=[CSS(css_url)])
 
     return HttpResponse(pdf, content_type="application/pdf")
-
-
-
