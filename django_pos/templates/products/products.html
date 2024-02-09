@@ -33,7 +33,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered table-hover" id="dataTable">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -81,22 +81,22 @@
                                     
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">Delete product</h5>
+                                           
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                        <div id="updateThisText" class="modal-body">
-                                            
-                                        </div>
+                                         <div class="modal-body">Are you sure you want to delete this product? This action is irreversible</div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                             <a href="#" class="text-decoration-none">
                                             <a id="updateThisURL" href="{% url 'products:products_delete' p.id %}" class="text-decoration-none">
                                                 <button  type="button"  class="btn btn-danger">Delete</button>
+                                            </a>
                                             </a>
                                         </div>
                                     </div>
@@ -132,8 +132,8 @@
 <!--Datatables-->
 <script>
     // Call the dataTables jQuery plugin
-    {{currency_symbol}}(document).ready(function() {
-        tblProducts = {{currency_symbol}}('#dataTable').DataTable({
+    $(document).ready(function() {
+        let tblProducts = $('#dataTable').DataTable({
             dom: 'Bfrtip', // Buttons are draw at this element
             buttons: [
                 {
@@ -222,23 +222,23 @@
                 },
                 {
                     targets: [-1], // column index (start from 0)
-                    orderable: false, // set orderable false for selected columns
+                    orderable: false, // set order able false for selected columns
                 }
             ],
         });
     });
 
 // Alert when trying to delete a product
-{{currency_symbol}}('#dataTable tbody')
-    // Event when whe try to delete a product
-    // We update the text, and href of the modal delete button
+$('#dataTable tbody')
+    // Event when whe try to delete a product,
+    // We update the text, and href of the modal deleted button
     .on('click', 'button[rel="delete"]', function () {
     // Row variable
-    var tr = tblProducts.cell({{currency_symbol}}(this).closest('td, li')).index();
-    row_data = ( tblProducts.row(tr.row).data());
-    product_id = row_data[0];
-    product_name = row_data[2]
-    new_delete_url  = 'delete/' + product_id;
+    let tr = tblProducts.cell($(this).closest('td, li')).index();
+    let row_data = ( tblProducts.row(tr.row).data());
+    let product_id = row_data[0];
+    let product_name = row_data[2]
+    let new_delete_url  = 'delete/' + product_id;
     document.getElementById("updateThisText").innerHTML = "Are you sure you want to delete the product:  " + product_name + "?";
     document.getElementById("updateThisURL").href=new_delete_url;
     });
