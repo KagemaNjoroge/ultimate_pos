@@ -105,7 +105,7 @@ After restarting your computer
     ```
     source venv/bin/activate
     ```
-3. Go to the django_pos folder: `cd ultimate_pos`
+3. Go to the django_pos folder: `cd django_pos`
 
 4. Make database migrations:  
   `python manage.py makemigrations` and 
