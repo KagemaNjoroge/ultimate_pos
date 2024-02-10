@@ -1,6 +1,12 @@
 {% extends "pos/base.html" %} {% load static %}
 <!-- Page title  -->
 {% block title %}Inventory{% endblock title %} 
+
+{% block stylesheets %}
+<!-- Datatables -->
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css ' %}" rel="stylesheet">
+<link href="{% static 'css/pagination_buttons.css ' %}" rel="stylesheet">
+{% endblock stylesheets %}
 {% block heading %}Inventory{%endblock heading %}
 
 <!-- Page content  -->
@@ -13,23 +19,23 @@
             </button>
         </a>
     </div>
-<table class="table table-hover">
+<table class="table table-hover" id="dataTable">
   <thead>
     <tr>
-      <th scope="col">Inventory ID</th>
-        <th scope="col">Product</th>
-      <th scope="col">Quantity</th>
-        <th scope="col">Actions</th>
+      <th >Inventory ID</th>
+        <th >Product</th>
+      <th>Quantity</th>
+        <th>Actions</th>
     </tr>
   </thead>
   <tbody>
 {% for invent in inventory %}
         <tr>
-      <th scope="row">{{ invent.id }}</th>
+      <th>{{ invent.id }}</th>
       <td>{{ invent.product.name }}</td>
       <td>{{ invent.quantity }}</td>
       <td>                                <!--Update-->
-                                <a href="" class="text-decoration-none">
+                                <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}" class="text-decoration-none">
                                     <button  type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Update Inventory">
                                         <i class="fas fa-pen"></i>
                                     </button>
@@ -41,11 +47,130 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </a></td>
-        <td></td>
+       
     </tr>
 
   {% endfor %}
   </tbody>
 </table>
-
 {%endblock content%}
+
+{% block javascripts %}
+<!-- Datatables -->
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+<!--Datatable buttons-->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.colVis.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
+<!--Moment JS-->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+<!--Datatables-->
+<script>
+    // Call the dataTables jQuery plugin
+    $(document).ready(function() {
+        let tblProducts = $('#dataTable').DataTable({
+            dom: 'Bfrtip', // Buttons are draw at this element
+            buttons: [
+                {
+                extend: 'print',
+                text: 'Print <i class="fas fa-file ml-2"></i>',
+                titleAttr: 'Print',
+                className: 'btn btn-info',
+                exportOptions: {
+                    columns: [ 0, 1, 2]
+                }            
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Download Excel <i class="fas fa-file-excel ml-2"></i>',
+                    titleAttr: 'Download Excel',
+                    className: 'btn btn-success ml-2',
+                    exportOptions: {
+                        columns: [ 0, 1, 2]
+                    } 
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'Download PDF <i class="fas fa-file-pdf ml-2"></i>',
+                    titleAttr: 'Download PDF',
+                    className: 'btn btn-danger ml-2',
+                    download: 'open',
+                    orientation: 'vertical',
+                    pageSize: 'A4',
+                    title: '*',
+                    exportOptions: {
+                        columns: [ 0, 1, 2]
+                    },
+                    customize: function (doc) {
+                        doc.styles = {
+                            header: {
+                                fontSize: 18,
+                                bold: true,
+                                alignment: 'center'
+                            },
+                            subheader: {
+                                fontSize: 13,
+                                bold: true
+                            },
+                            quote: {
+                                italics: true
+                            },
+                            small: {
+                                fontSize: 8
+                            },
+                            tableHeader: {
+                                bold: true,
+                                fontSize: 11,
+                                color: 'white',
+                                fillColor: '#2d4154',
+                                alignment: 'center'
+                            }
+                        };
+                        doc.content[1].table.widths = ['10%', '10%', '30%', '30%', '20%'];
+                        doc.content[1].margin = [0, 35, 0, 0];
+                        doc.content[1].layout = {};
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns: [
+                                    {
+                                        alignment: 'left',
+                                        text: ['Creation date: ', {text: moment().format('MM-DD-YYYY (HH:mm:ss)')}]
+                                    },
+                                    {
+                                        alignment: 'right',
+                                        text: ['page ', {text: page.toString()}, ' of ', {text: pages.toString()}]
+                                    }
+                                ],
+                                margin: 20
+                            }
+                        });
+
+                    }
+                }
+            ],
+            deferRender: true,
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: false,
+                    searchable: false,
+                },
+                {
+                    targets: [-1], // column index (start from 0)
+                    orderable: false, // set order able false for selected columns
+                }
+            ],
+        });
+    });
+
+
+
+</script>
+{% endblock javascripts %}
