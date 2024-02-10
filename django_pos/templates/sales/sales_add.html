@@ -136,6 +136,8 @@
         </div>
 
     </div>
+        </div>
+    </div>
 </form>
 {% endblock content %}
 
@@ -152,43 +154,41 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.15/dist/sweetalert2.all.min.js"></script>
 
 <script>
-    // Source: https://stackoverflow.com/a/32605063
+    
     function roundTo(n, digits) {
         if (digits === undefined) {
             digits = 0;
         }
 
-        var multiplicator = Math.pow(10, digits);
+        let multiplicator = Math.pow(10, digits);
         n = parseFloat((n * multiplicator).toFixed(11));
         return Math.round(n) / multiplicator;
     }
 
     //Variable for product number in table
-    var number = 1;
+    let number = 1;
 
     //Variable to store sale details and products
-    var sale = {
+    let sale = {
         items: {
-            customer : 0, 
-            sub_total : 0.00, 
-            grand_total : 0.00, 
-            tax_amount : 0.00, 
-            tax_percentage : 0.00, 
-            amount_payed : 0.00, 
-            amount_change : 0.00,
-            products: [
-
-            ]
+            customer: 0,
+            sub_total: 0.00,
+            grand_total: 0.00,
+            tax_amount: 0.00,
+            tax_percentage: 0.00,
+            amount_payed: 0.00,
+            amount_change: 0.00,
+            products: []
         },
-        calculate_sale: function (){
+        calculate_sale: function () {
             // Subtotal of all products added
-            var sub_total = 0.00
+            let sub_total = 0.00
 
-            var tax_percentage = $('input[name="tax_percentage"]').val();
+            let tax_percentage = $('input[name="tax_percentage"]').val();
 
             // Calculates the total for each product
-            $.each(this.items.products, function(pos, dict){
-                dict.pos = pos;  
+            $.each(this.items.products, function (pos, dict) {
+                dict.pos = pos;
                 dict.total_product = roundTo(dict.quantity * dict.price, 2);
                 // Add the product total to the sale subtotal
                 sub_total += roundTo(dict.total_product, 2);
@@ -198,7 +198,7 @@
             this.items.sub_total = roundTo(sub_total, 2);
             this.items.grand_total = roundTo(this.items.sub_total, 2);
             this.items.tax_amount = roundTo(this.items.sub_total * (tax_percentage / 100), 2);
-    
+
             $('input[name="sub_total"]').val(this.items.sub_total);
             $('input[name="tax_amount"]').val(this.items.tax_amount);
             $('input[name="grand_total"]').val(this.items.grand_total);
@@ -213,11 +213,11 @@
             // Calculate the sale 
             this.calculate_sale();
 
-            tblProducts = $("#table_products").DataTable({
+            let tblProducts = $("#table_products").DataTable({
                 destroy: true,
                 data: this.items.products,
                 columns: [
-                    {"data": "number"}, 
+                    {"data": "number"},
                     {"data": "name"},
                     {"data": "price"},
                     {"data": "quantity"},
@@ -228,16 +228,16 @@
                     {
                         // Quantity
                         class: 'text-center',
-                        targets: [3], 
-                        render: function (data, type, row){
-                            return '<input name="quantity" type="text" class="form-control form-control-xs text-center input-sm" autocomplete="off" value="'+row.quantity+'">';
-                        },                      
+                        targets: [3],
+                        render: function (data, type, row) {
+                            return '<input name="quantity" type="text" class="form-control form-control-xs text-center input-sm" autocomplete="off" value="' + row.quantity + '">';
+                        },
                     },
                     {
-                        //Product price an total
+                        //Product price a total
                         class: 'text-right',
-                        targets: [2,4],
-                        render: function (data, type, row){
+                        targets: [2, 4],
+                        render: function (data, type, row) {
                             return parseFloat(data).toFixed(2) + ' $';
                         },
                     },
@@ -246,16 +246,16 @@
                         class: 'text-center',
                         targets: [-1],
                         orderable: false,
-                        render: function (data, type, row){
+                        render: function (data, type, row) {
                             return '<a rel="delete" type="button" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete product"> <i class="fas fa-trash-alt fa-xs"></i> </a>';
                         },
                     },
 
                 ],
-                rowCallback(row, data, displayNun, displayIndex, dataIndex){
+                rowCallback(row, data, displayNun, displayIndex, dataIndex) {
                     $(row).find(("input[name='quantity']")).TouchSpin({
                         min: 1,
-                        max: 100, //Máximo de acuerdo al stock de cada producto
+                        max: 100,
                         step: 1,
                         decimals: 0,
                         boostat: 1,
@@ -264,11 +264,7 @@
                     });
                 },
             })
-            
-            // IDs de productos ya seleccionados para exlcuir en la busqueda
-            //console.log("this.traer_ids()");
-            //console.log(this.traer_ids());
-            
+
         },
     };
 
@@ -299,8 +295,8 @@
                 // When a product is deleted
                 
                 // Row variable of the table
-                var tr = tblProducts.cell($(this).closest('td, li')).index();
-                product_name = (tblProducts.row(tr.row).data().name)
+                let tr = tblProducts.cell($(this).closest('td, li')).index();
+                let product_name = (tblProducts.row(tr.row).data().name)
 
                 Swal.fire({
                     customClass: {
@@ -317,7 +313,6 @@
                     reverseButtons: true,
 
                 }).then((result) => {
-                    // Si se confirma
                     if (result.isConfirmed) {
                         
                         // Delete the product
@@ -325,20 +320,18 @@
                         //List the table again
                         sale.list_product();
                         Swal.fire('The product was eliminated!', '', 'success')
-                    };
+                    }
                 })
 
 
 
             }).on('change keyup', 'input[name="quantity"]', function(){
-                // When a product changes is quantity
-                var quantity = parseInt($(this).val());
+                // When product changes are quantity
+                let quantity = parseInt($(this).val());
                 //console.log(quantity);
                 // Row variable of the table
-                var tr = tblProducts.cell($(this).closest('td, li')).index();
+                let tr = tblProducts.cell($(this).closest('td, li')).index();
                 console.log(tr);
-                //var data = tblProductos.row(tr.row).node();
-                //console.log(data);
                 // Update the product quantity in the sale object
                 sale.items.products[tr.row].quantity = quantity;
                 console.log(sale.items.products);
@@ -367,26 +360,26 @@
                 reverseButtons: true,
 
             }).then((result) => {
-                // Si se confirma
+                
                 if (result.isConfirmed) {
-                    // Borramos todos los productos del objeto de venta
+                    
                     sale.items.products = [];
-                    // Calculamos de vuelta la factura
+                    
                     sale.list_product();
                     Swal.fire('All products were eliminated!', '', 'success')
-                };
+                }
             })
         });
 
-        //Select2 products searchbox
+        //Select2 products searchbar
         // Validate the csrf_token
-        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
         function csrfSafeMethod(method) {
             // these HTTP methods do not require CSRF protection
             return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
         }
-        // To avoid error 403 Fordbidden
+        // To avoid error 403 Forbidden
         $.ajaxSetup({
             beforeSend: function (xhr, settings) {
                 if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -405,11 +398,9 @@
                 url: "{% url 'products:get_products' %}",
                 type: 'POST',
                 data: function (params) {
-                var queryParameters = {
+                    return {
                     term: params.term,
-                    //excluir_prod_seleccionados: JSON.stringify(venta.traer_ids())
-                }
-                return queryParameters;
+                };
                 },
                 processResults: function (data) {
                     console.log(data)
@@ -419,8 +410,8 @@
                 },
             }
             }).on('select2:select', function (e) {
-                //When a product is selected from the searchbox
-                var data = e.params.data;
+                //When a product is selected from the searchbar
+                let data = e.params.data;
                 //Add number, subtotal and quantity of the product to the dictionary
                 data.number = number;
                 number++; //Increase the product number in the table
@@ -430,17 +421,17 @@
                 sale.add_product(data);
                 console.log("Sale items");      
                 console.log(sale.items);      
-                //Clean the searchbox after the product is selected
-                $(this).val('').trigger('change.select2');; 
+                //Clean the searchbar after the product is selected
+                $(this).val('').trigger('change.select2');
             });
     
             // Products datatable
             
-            tblProducts = $('#table_products').DataTable({
+            let tblProducts = $('#table_products').DataTable({
                 columnDefs: [
                     {
                         targets: [-1], // column index (start from 0)
-                        orderable: false, // set orderable false for selected columns
+                        orderable: false, // set order able false for selected columns
                     }
                 ],
             });
@@ -448,32 +439,30 @@
 
         });
 
-        // Product searchbox templateResult
+        // Product search box templateResult
         function template_product_searchbox(repo) {
             if (repo.loading) {
                 return repo.text;
             }
         
-            var option = $(
-                '<div class="wrapper container">'+
+    return $(
+                '<div class="wrapper container">' +
                 ' <div class="row">' +
-                    '<div class="col-lg-11 text-left shadow-sm">' +
-                      //'<br>' +
-                      '<p style="margin-bottom: 5px;">' +
-                      '<b>Name:</b> ' + repo.text + " | Category: " + "<span class='btn-info px-2'>" + repo.category + '</span> <br>' +
-                      '<b>Price:</b> <span class="btn-success px-2">'+repo.price+' $. </span>'+
-                      '</p>' +
-                    '</div>' +
-                  '</div>' +
+                '<div class="col-lg-11 text-left shadow-sm">' +
+                //'<br>' +
+                '<p style="margin-bottom: 5px;">' +
+                '<b>Name:</b> ' + repo.text + " | Category: " + "<span class='btn-info px-2'>" + repo.category + '</span> <br>' +
+                '<b>Price:</b> <span class="btn-success px-2">' + repo.price + ' $. </span>' +
+                '</p>' +
+                '</div>' +
+                '</div>' +
                 '</div>');
-        
-            return option;
         }
 
         // Send the sale via ajax
         
         $('.saleForm').on('submit', function (e) {  
-            // Only allow to send if we have at least one product
+            // Only allow sending if we have at least one product
             if (sale.items.products.length === 0 ) {
                 Swal.fire({
                     title: 'The sale must have at least 1 product',
@@ -481,9 +470,9 @@
                     icon: 'warning',
                 });
                 return false;
-            };
+            }
             
-            // Only allow to send if the payed amount is equal or greater than the total
+            // Only allow sending if the paid amount is equal or greater than the total
             if ($('[name="amount_payed"]').val() < $('[name="grand_total"]').val()) {
                 Swal.fire({
                     title: 'Payable Amount is lower that the Grand Total',
@@ -492,9 +481,9 @@
                 return false;
             }
 
-            // Agregamos los datos faltantes al objeto sales
+            
             sale.items.customer = $('select[name="customer"]').val();
-            console.log("Customer: " + sale.items.customer)
+            
             sale.items.sub_total = $('input[name="sub_total"]').val(); 
             sale.items.grand_total = $('input[name="grand_total"]').val();
             sale.items.tax_amount = $('input[name="tax_amount"]').val(); 
@@ -502,11 +491,10 @@
             sale.items.amount_payed = $('input[name="amount_payed"]').val(); 
             sale.items.amount_change = roundTo($('input[name="amount_payed"]').val() - $('input[name="grand_total"]').val(), 2); 
 
-            console.log("Sale:")
-            console.log(sale.items)
+
 
             // Validate the csrf_token
-            var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+            let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
             function csrfSafeMethod(method) {
             // these HTTP methods do not require CSRF protection
