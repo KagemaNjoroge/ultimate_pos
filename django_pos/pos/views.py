@@ -2,6 +2,7 @@ from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render
 from products.models import Product, Category
 from sales.models import Sale
@@ -16,7 +17,7 @@ def index(request):
     year = today.year
     monthly_earnings = []
 
-    # Caculate earnings per month
+    # Calculate earnings per month
     for month in range(1, 13):
         earning = Sale.objects.filter(date_added__year=year, date_added__month=month).aggregate(
             total_variable=Coalesce(Sum(F('grand_total')), 0.0, output_field=FloatField())).get('total_variable')
@@ -28,7 +29,7 @@ def index(request):
     annual_earnings = format(annual_earnings, '.2f')
 
     # AVG per month
-    avg_month = format(sum(monthly_earnings)/12, '.2f')
+    avg_month = format(sum(monthly_earnings) / 12, '.2f')
 
     # Top selling products
     top_products = Product.objects.annotate(quantity_sum=Sum(
@@ -40,7 +41,7 @@ def index(request):
     for p in top_products:
         top_products_names.append(p.name)
         top_products_quantity.append(p.quantity_sum)
-    
+
     context = {
         "active_icon": "dashboard",
         "products": Product.objects.all().count(),
@@ -59,5 +60,11 @@ def index(request):
     else:
         context['currency_symbol'] = "$"
 
-
     return render(request, "pos/index.html", context)
+
+
+@login_required(login_url="/accounts/login/")
+def pos(request: HttpRequest) -> HttpResponse:
+    products = Product.objects.all()
+    categories = Category.objects.all()
+    return render(request, "pos/pos.html", {"products": products, "categories": categories})
