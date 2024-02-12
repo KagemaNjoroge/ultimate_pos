@@ -1,0 +1,695 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>POS</title>
+    <!--Styles-->
+    <link href="{% static 'css/pos.css' %}" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+    <!-- Custom fonts for this template-->
+    <link
+      href="{% static 'vendor/fontawesome-free/css/all.min.css' %}"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  </head>
+      <body class="lockscreen pace-done pace-done" style="height: auto">
+      <div class="pace pace-inactive pace-inactive">
+        <div
+          class="pace-progress"
+          data-progress-text="100%"
+          data-progress="99"
+          style="transform: translate3d(100%, 0px, 0px)"
+        >
+          <div class="pace-progress-inner"></div>
+        </div>
+        <div class="pace-activity"></div>
+      </div>
+
+      <div class="wrapper thetop" style="height: auto">
+        <div class="col-md-12 no-print pos-header">
+          <input type="hidden" id="pos_redirect_url" />
+          <div class="row">
+            <div class="col-md-6">
+              <div class="m-6 mt-5 hidden-xs">
+                <p>
+                  <i
+                    class="fa fa-keyboard hover-q text-muted"
+                    title=""
+                  ></i>
+                </p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <a
+                class="btn btn-info btn-flat m-6 btn-xs m-5 pull-right"
+                data-original-title="Go Back"
+                href="{% url "pos:index" %}"
+              >
+                <strong><i class="fa fa-home" aria-hidden="true"></i></strong>
+              </a>
+
+              <button
+                type="button"
+                id="view_suspended_sales"
+                title=""
+                class="btn bg-yellow btn-flat m-6 btn-xs m-5 btn-modal pull-right"
+                data-href="{% url 'pos:index' %}"
+              >
+                <strong><i class="fa fa-pause-circle fa-lg"></i></strong>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="">
+          <section class="content no-print">
+            <input type="hidden" id="amount_rounding_method" value="" />
+            <form
+              method="POST"
+              action=""
+              accept-charset="UTF-8"
+              id="add_pos_sell_form"
+              novalidate="novalidate"
+            >
+
+              <div class="row mb-12">
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-7 no-padding pr-12">
+                      <div class="box box-solid mb-12">
+                        <div class="box-body pb-0">
+                          
+                          <div class="row">
+                            <div class="col-md-4">
+                              <div
+                                class="form-group"
+                                style="width: 100% !important"
+                              >
+                                <div class="input-group">
+                                  <span class="input-group-addon">
+                                    <i class="fa fa-user"></i>
+                                  </span>
+
+                                 
+                                  <span
+                                    class="select2 select2-container select2-container--default select2-container--below select2-container--focus"
+                                    dir="ltr"
+                                    style="width: 100%"
+                                    ><span class="selection"
+                                      ><span
+                                        class="select2-selection select2-selection--single"
+                                        role="combobox"
+
+                                        ><span
+                                          class="select2-selection__rendered"
+                                          id="select2-customer_id-container"
+                                          title="cashload.pk"
+                                          >cashload.pk</span
+                                        ><span
+                                          class="select2-selection__arrow"
+                                          role="presentation"
+                                          ><b
+                                            role="presentation"
+                                          ></b></span></span></span
+                                    ><span
+                                      class="dropdown-wrapper"
+                                      aria-hidden="true"
+                                    ></span
+                                  ></span>
+                                  <span class="input-group-btn">
+
+
+
+                                    <button
+                                      type="button"
+                                      class="btn btn-default bg-white btn-flat add_new_customer"
+                                      data-name=""
+                                    >
+                                      <i
+                                        class="fa fa-plus-circle text-primary fa-lg"
+                                      ></i>
+                                    </button>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-8">
+                              <div class="form-group">
+                                <div class="input-group">
+                                  <div class="input-group-btn">
+                                    <button
+                                      type="button"
+                                      class="btn btn-default bg-white btn-flat"
+
+                                      title="Configure product search"
+                                    >
+                                      <i class="fa fa-barcode"></i>
+                                    </button>
+                                  </div>
+                                  <input
+                                    class="form-control mousetrap ui-autocomplete-input"
+                                    id="search_product"
+                                    placeholder="Enter Product name / SKU / Scan bar code"
+                                    autofocus=""
+                                    name="search_product"
+                                    type="text"
+                                    autocomplete="off"
+                                  />
+                                  <span class="input-group-btn">
+                                    <!-- Show button for weighing scale modal -->
+
+                                    <button
+                                      type="button"
+                                      class="btn btn-default bg-white btn-flat pos_add_quick_product"
+                                    >
+                                      <i
+                                        class="fa fa-plus-circle text-primary fa-lg"
+                                      ></i>
+                                    </button>
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div
+                              class="col-sm-12 pos_product_div"
+                              style="min-height: 333px; max-height: 333px"
+                            >
+                              <!-- Keeps count of product rows -->
+                              <input
+                                type="hidden"
+                                id="product_row_count"
+                                value="16"
+                              />
+                              <table
+                                class="table table-condensed table-bordered table-striped table-responsive"
+                                id="pos_table"
+                              >
+                                <thead>
+                                  <tr>
+                                    <th class="tex-center col-md-4">
+                                      Product
+                                      <i
+                                        class="fa fa-info-circle text-info hover-q no-print"
+                                        aria-hidden="true"
+                                        data-trigger="hover"
+                                      ></i>
+                                    </th>
+                                    <th class="text-center col-md-3">
+                                      Quantity
+                                    </th>
+                                    <th class="text-center col-md-2">
+                                      Price inc. tax
+                                    </th>
+                                    <th class="text-center col-md-2">
+                                      Subtotal
+                                    </th>
+                                    <th class="text-center">
+                                      <i
+                                        class="fas fa-times"
+                                        aria-hidden="true"
+                                      ></i>
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody class="show-cart">
+                                                                  </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <table class="table table-condensed">
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <b>Items:</b>&nbsp;
+                                      <span class="total_quantity total-count"></span>
+                                    </td>
+                                    <td>
+                                      <b>Total:</b> &nbsp;
+                                      <span class="price_total total-cart"></span>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <b>
+                                        Discount
+                                        <i
+                                          class="fa fa-info-circle text-info hover-q no-print"
+                                          aria-hidden="true"
+                                        ></i>
+                                        (-):
+                                        <i
+                                          class="fas fa-edit cursor-pointer"
+                                          id="pos-edit-discount"
+                                        ></i>
+                                        <span id="total_discount">435.63</span>
+                                        
+                                      </b>
+                                    </td>
+                                    <td class="">
+                                      <span>
+                                        <b
+                                          >Order Tax(+):
+                                          <i
+                                            class="fa fa-info-circle text-info hover-q no-print"
+                                            aria-hidden="true"
+                                            title=""
+                                          ></i
+                                        ></b>
+                                        <i
+                                          class="fas fa-edit cursor-pointer"
+                                          title="Edit Order Tax"
+                                          aria-hidden="true"
+                                          data-toggle="modal"
+                                          data-target="#posEditOrderTaxModal"
+                                          id="pos-edit-tax"
+                                        ></i>
+                                        <span id="order_tax">0.00</span>
+
+                                      </span>
+                                    </td>
+                                    
+                                  </tr>
+                                  
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+
+                          
+                          <div
+
+                          >
+                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-5 no-padding">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <span
+                            class="select2 select2-container select2-container--default select2-container--below"
+                            dir="ltr"
+                            style="width: 100%"
+                            ><span class="selection"
+                              ><span
+                                class="select2-selection select2-selection--single"
+                                role="combobox"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                                tabindex="0"
+                                aria-labelledby="select2-product_category-container"
+                                
+                                ><select style="width: 100%; height: 100%;" class="selection form-select">
+                                  {% for category in categories %}
+                                      <option value="{{ category.id }}">{{ category.name }}</option>
+                              {% endfor %}
+                                  
+                                </select></span></span
+                            ><span
+                              class="dropdown-wrapper"
+                              aria-hidden="true"
+                            ></span
+                          ></span>
+                        </div>
+                      </div>
+                      <br />
+                      <div class="row">
+                        <input type="hidden" id="suggestion_page" value="4" />
+                        <div class="col-md-12">
+                          <div class="eq-height-row" id="product_list_body">
+                            {% for prod in products %}
+                            <div 
+                                    data-name="{{ prod.name }}" data-price="{{ prod.price }}"
+                              class="col-md-3 col-xs-4 product_list no-print add-to-cart"
+                            >
+                              <div
+                                class="product_box"
+                                data-original-title="{{ prod.name }}"
+                              >
+                                <div
+                                  class="image-container"
+                                  style="background-image: url(
+											{{ prod.image.url }}
+									);
+			background-repeat: no-repeat; background-position: center;
+			background-size: contain;"
+                                ></div>
+
+                                <div class="text_div">
+                                  <small class="text text-muted"
+                                    >{{ prod.name }}
+                                  </small>
+
+                                  <small class="text-muted">
+                                    <strong>{{ prod.price }}</strong>
+                                  </small>
+                                </div>
+                              </div>
+                            </div>
+                            {% endfor %}
+                          </div>
+                        </div>
+                        <div
+                          class="col-md-12 text-center"
+                          id="suggestion_page_loader"
+                          style="display: none"
+                        >
+                          <i class="fa fa-spinner fa-spin fa-2x"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="pos-form-actions">
+                  <div class="col-md-12">
+                    <button
+                      type="button"
+                      class="btn bg-red btn-default btn-flat no-print pos-express-finalize"
+                      data-pay_method="suspend"
+                      title="Suspend Sales (pause)"
+                    >
+                      <i class="fas fa-pause" aria-hidden="true"></i>
+                      Suspend
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn bg-maroon btn-default btn-flat no-print pos-express-finalize"
+                      data-pay_method="card"
+                      title="Express checkout using card"
+                    >
+                      <i class="fas fa-credit-card" aria-hidden="true"></i> Card
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn bg-navy btn-default btn-flat no-print"
+                      id="pos-finalize"
+                      title="Checkout using multiple payment methods"
+                    >
+                      <i class="fas fa-money-check-alt" aria-hidden="true"></i>
+                      Multiple Pay
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-success btn-flat no-print pos-express-finalize"
+                      data-pay_method="cash"
+                      title="Mark complete paid &amp; checkout"
+                    >
+                      <i class="fas fa-money-bill-alt" aria-hidden="true"></i>
+                      Cash
+                    </button>
+                    &nbsp;&nbsp;
+                    <b>Total Payable:</b>
+                    <input
+                      type="hidden"
+                      name="final_total"
+                      id="final_total_input"
+                      value="3,920.63"
+                    />
+                    <span id="total_payable" class="text-success lead text-bold total-cart"
+                      ></span
+                    >
+
+                    &nbsp;<button
+                      type="button"
+                      class="btn btn-danger btn-flat"
+                      id="pos-cancel"
+                    >
+                      <i class="fas fa-window-close"></i> Cancel
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-flat pull-right"
+                      id="recent-transactions"
+                    >
+                      <i class="fas fa-clock"></i> Recent Transactions
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+                
+            </form>
+          </section></div>
+
+      </div>
+
+      <div></div>
+
+      <div class="scrolltop no-print">
+        <div class="scroll icon"><i class="fas fa-angle-up"></i></div>
+      </div>
+    
+    <script>
+      let shoppingCart = (function () {
+  let cart = [];
+
+  // Constructor
+  function Item(name, price, count) {
+    this.name = name;
+    this.price = price;
+    this.count = count;
+  }
+
+  // Save cart
+  function saveCart() {
+    sessionStorage.setItem("shoppingCart", JSON.stringify(cart));
+  }
+
+  // Load cart
+  function loadCart() {
+    cart = JSON.parse(sessionStorage.getItem("shoppingCart"));
+  }
+  if (sessionStorage.getItem("shoppingCart") != null) {
+    loadCart();
+  }
+
+  let obj = {};
+
+  // Add to cart
+  obj.addItemToCart = function (name, price, count) {
+    for (let item in cart) {
+      if (cart[item].name === name) {
+        cart[item].count++;
+        saveCart();
+        return;
+      }
+    }
+    let item = new Item(name, price, count);
+    cart.push(item);
+    saveCart();
+  };
+  // Set count from item
+  obj.setCountForItem = function (name, count) {
+    for (let i in cart) {
+      if (cart[i].name === name) {
+        cart[i].count = count;
+        break;
+      }
+    }
+  };
+  // Remove item from cart
+  obj.removeItemFromCart = function (name) {
+    for (let item in cart) {
+      if (cart[item].name === name) {
+        cart[item].count--;
+        if (cart[item].count === 0) {
+          cart.splice(item, 1);
+        }
+        break;
+      }
+    }
+    saveCart();
+  };
+
+  // Remove all items from cart
+  obj.removeItemFromCartAll = function (name) {
+    for (let item in cart) {
+      if (cart[item].name === name) {
+        cart.splice(item, 1);
+        break;
+      }
+    }
+    saveCart();
+  };
+
+  // Clear cart
+  obj.clearCart = function () {
+    cart = [];
+    saveCart();
+  };
+
+  // Count cart
+  obj.totalCount = function () {
+    let totalCount = 0;
+    for (let item in cart) {
+      totalCount += cart[item].count;
+    }
+    return totalCount;
+  };
+
+  // Total cart
+  obj.totalCart = function () {
+    let totalCart = 0;
+    for (let item in cart) {
+      totalCart += cart[item].price * cart[item].count;
+    }
+    return Number(totalCart.toFixed(2));
+  };
+
+  // List cart
+  obj.listCart = function () {
+    let cartCopy = [];
+    for (let i in cart) {
+      let item = cart[i];
+      let itemCopy = {};
+      for (let p in item) {
+        itemCopy[p] = item[p];
+      }
+      itemCopy.total = Number(item.price * item.count).toFixed(2);
+      cartCopy.push(itemCopy);
+    }
+    return cartCopy;
+  };
+
+  return obj;
+})();
+
+$(".add-to-cart").click(function (event) {
+  event.preventDefault();
+  let name = $(this).data("name");
+  let price = Number($(this).data("price"));
+  shoppingCart.addItemToCart(name, price, 1);
+  displayCart();
+});
+
+// Clear items
+$(".clear-cart").click(function () {
+  shoppingCart.clearCart();
+  displayCart();
+});
+
+function displayCart() {
+  let cartArray = shoppingCart.listCart();
+  let output = "";
+  for (let i in cartArray) {
+    output +=
+      "<tr>" +
+      "<td>" +
+      cartArray[i].name +
+      "</td>" +
+      "<td>(" +
+      cartArray[i].price +
+      ")</td>" +
+      "<td><div class='input-group'><button class='minus-item input-group-addon btn btn-primary' data-name=" +
+      cartArray[i].name +
+      ">-</button>" +
+      "<input type='number' class='item-count form-control' data-name='" +
+      cartArray[i].name +
+      "' value='" +
+      cartArray[i].count +
+      "'>" +
+      "<button class='plus-item btn btn-primary input-group-addon' data-name=" +
+      cartArray[i].name +
+      ">+</button></div></td>" +
+      "<td><button class='delete-item btn btn-danger' data-name=" +
+      cartArray[i].name +
+      ">X</button></td>" +
+      " = " +
+      "<td>" +
+      cartArray[i].total +
+      "</td>" +
+      "</tr>";
+// output += "<tr class='product_row'><td><div data-toggle='tooltip' data-placement='bottom'> <span class='text-link text-info cursor-pointer' data-name='" + cartArray[i].name + "'>" + cartArray[i].name + "<i class='fa fa-info-circle'></i></span></div></td>" + `
+//     <td>
+//       <div class="input-group input-number">
+//         <span class="input-group-btn">
+//           <button type="button" class="btn btn-default btn-flat quantity-down minus-item">
+//             <i class="fa fa-minus text-danger"></i>
+//           </button>
+//         </span>
+//         <input type="text" data-min="1" class="form-control pos_quantity input_number mousetrap input_quantity item-count"/>
+//         <span class="input-group-btn">
+//           <button type="button" class="btn btn-default btn-flat quantity-up plus-item">
+//             <i class="fa fa-plus text-success"></i>
+//           </button>
+//         </span>
+//       </div>
+//     </td>` +
+
+//     "<td class=''><input type='text' disabled class='form-control pos_unit_price_inc_tax input_number' value=" + cartArray[i].price + "></td>" +
+//     `<td class="text-center v-center">
+//       <span class="display_currency pos_line_total_text" data-currency_symbol="true"> ` + cartArray[i].total + `</span>
+//     </td>
+//     <td class="text-center">
+//       <i class="fa fa-times text-danger pos_remove_row cursor-pointer" aria-hidden="true"></i>
+//     </td>
+//   </tr>`;
+
+  }
+  $(".show-cart").html(output);
+  $(".total-cart").html(shoppingCart.totalCart());
+  $(".total-count").html(shoppingCart.totalCount());
+}
+
+// Delete item button
+
+$(".show-cart").on("click", ".delete-item", function (event) {
+  let name = $(this).data("name");
+  shoppingCart.removeItemFromCartAll(name);
+  displayCart();
+});
+
+// -1
+$(".show-cart").on("click", ".minus-item", function (event) {
+  let name = $(this).data("name");
+  shoppingCart.removeItemFromCart(name);
+  displayCart();
+});
+// +1
+$(".show-cart").on("click", ".plus-item", function (event) {
+  let name = $(this).data("name");
+  shoppingCart.addItemToCart(name);
+  displayCart();
+});
+
+$(".show-cart").on("change", ".item-count", function (event) {
+  let name = $(this).data("name");
+  let count = Number($(this).val());
+  shoppingCart.setCountForItem(name, count);
+  displayCart();
+});
+
+displayCart();
+
+    </script>
+  </body>
+</html>

@@ -98,7 +98,7 @@
 <script>
     // Call the dataTables jQuery plugin
     $(document).ready(function() {
-        tblCategories = $('#dataTable').DataTable({
+        let tblCategories = $('#dataTable').DataTable({
             dom: 'Bfrtip', // Buttons are draw at this element
             buttons: [
                 {
@@ -182,7 +182,7 @@
             columnDefs: [
                 {
                     targets: [-1], // column index (start from 0)
-                    orderable: false, // set orderable false for selected columns
+                    orderable: false, // set order able false for selected columns
                 }
             ],
         });

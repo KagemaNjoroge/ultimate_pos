@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import model_to_dict
+from django.utils.safestring import mark_safe
 
 
 class Category(models.Model):
@@ -26,6 +27,8 @@ class Category(models.Model):
         return self.name
 
 
+
+
 class Product(models.Model):
     STATUS_CHOICES = (  # new
         ("ACTIVE", "Active"),
@@ -34,6 +37,7 @@ class Product(models.Model):
 
     name = models.CharField(max_length=256)
     description = models.TextField(max_length=256)
+    image = models.ImageField(upload_to="products", blank=True, null=True)
     status = models.CharField(
         choices=STATUS_CHOICES,
         max_length=100,
@@ -60,4 +64,6 @@ class Product(models.Model):
         item['category'] = self.category.name
         item['quantity'] = 1
         item['total_product'] = 0
+        item['image'] = self.image.url
         return item
+

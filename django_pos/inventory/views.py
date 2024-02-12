@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 import json
 from inventory.models import Inventory
 from products.models import Product
@@ -18,6 +18,10 @@ def index(request):
 def add_inventory(request: HttpRequest) -> HttpResponse:
     if request.method == 'GET':
         products = Product.objects.all()
+        inv = Inventory.objects.all()
+        for i in inv:
+            if i.product in products:
+                print(i.product.name)
         return render(request, 'inventory/inventory_add.html', {"products": products})
     elif request.method == 'POST':
         data = json.loads(request.body)
@@ -33,3 +37,15 @@ def add_inventory(request: HttpRequest) -> HttpResponse:
             print(str(ee))
             return JsonResponse({"status": "fail", "error": str(ee)}, safe=True)
 
+
+def update_inventory(request: HttpRequest, inventory_id: int) -> HttpResponse:
+    inventory = get_object_or_404(Inventory, id=inventory_id)
+    if request.method == 'GET':
+
+        return render(request, 'inventory/inventory_update.html', {"inventory": inventory})
+    elif request.method == 'POST':
+        data = json.loads(request.body)
+        quantity = int(data['quantity'])
+        inventory.quantity = quantity
+        inventory.save()
+        return JsonResponse({"status": "success"}, safe=True)
