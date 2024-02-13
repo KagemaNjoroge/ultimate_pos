@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django_pos.wsgi import *
 from django_pos import settings
@@ -16,14 +16,14 @@ from io import BytesIO
 import base64
 
 
-# TODO separate `is_ajax` function to a separate file to avoid repetition -> dry principle
+# TODO separate `is_ajax` function to a separate file to avoid repetition
 
-def is_ajax(request):
+def is_ajax(request: HttpRequest):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
 @login_required(login_url="/accounts/login/")
-def SalesListView(request):
+def sales_list_view(request: HttpRequest):
     context = {
         "active_icon": "sales",
         "sales": Sale.objects.all()
@@ -32,7 +32,7 @@ def SalesListView(request):
 
 
 @login_required(login_url="/accounts/login/")
-def SalesAddView(request):
+def sales_add_view(request: HttpRequest):
     context = {
         "active_icon": "sales",
         "customers": [c.to_select2() for c in Customer.objects.all()]
@@ -74,7 +74,7 @@ def SalesAddView(request):
                     sale_detail_new.save()
 
                 messages.success(
-                    request, 'Sale created succesfully!', extra_tags="success")
+                    request, 'Sale created successfully!', extra_tags="success")
                 return redirect('sales:sales_list')
 
             except Exception as e:
@@ -88,9 +88,10 @@ def SalesAddView(request):
 
 
 @login_required(login_url="/accounts/login/")
-def SalesDetailsView(request, sale_id):
+def sales_details_view(request: HttpRequest, sale_id):
     """
     Args:
+        request: HttpRequest
         sale_id: ID of the sale to view
     """
     try:
@@ -114,9 +115,10 @@ def SalesDetailsView(request, sale_id):
 
 
 @login_required(login_url="/accounts/login/")
-def ReceiptPDFView(request, sale_id):
+def receipt_pdf_view(request: HttpRequest, sale_id):
     """
     Args:
+        request: HttpRequest
         sale_id: ID of the sale to view the receipt
     """
     # Get the sale
