@@ -26,32 +26,38 @@
         <div class="card-body">
             <form action="{% url 'customers:customers_update' customer.id %}"  method="post">
                 {% csrf_token %}
+                                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="kra_pin">KRA PIN</label>
+                        <input type="text" class="form-control" name="kra_pin" value="{{customer.kra_pin}}" required id="kra_pin">
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="inputDescription">First Name</label>
-                        <input type="text" class="form-control" name="first_name" value="{{customer.first_name}}" required>
+                        <label for="first_name">First Name</label>
+                        <input type="text" class="form-control" name="first_name" value="{{customer.first_name}}" required id="first_name">
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="inputDescription">Last Name</label>
-                        <input type="text" class="form-control" name="last_name" value="{{customer.last_name}}" required>
+                        <label for="last_name">Last Name</label>
+                        <input type="text" class="form-control" name="last_name" value="{{customer.last_name}}" required id="last_name">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label for="inputDescription">Email</label>
-                        <input type="email" name="email" class="form-control" value="{{customer.email}}" required>
+                        <label for="email">Email</label>
+                        <input type="email" name="email" class="form-control" value="{{customer.email}}" required id="email">
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="inputDescription">Phone number</label>
-                        <input type="text" name="phone" class="form-control" value="{{customer.phone}}" required>
+                        <label for="phone">Phone number</label>
+                        <input type="text" name="phone" class="form-control" value="{{customer.phone}}" required id="phone">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <label for="inputDescription">Address</label>
-                        <textarea name="address" class="form-control" rows="2" required>{{customer.address}}</textarea>
+                        <label for="address">Address</label>
+                        <textarea name="address" class="form-control" rows="2" required id="address">{{customer.address}}</textarea>
                     </div>
                 </div>
                 

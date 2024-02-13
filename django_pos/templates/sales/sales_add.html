@@ -366,7 +366,7 @@
                     sale.items.products = [];
                     
                     sale.list_product();
-                    Swal.fire('All products were eliminated!', '', 'success')
+                    Swal.fire('All products removed!', '', 'success')
                 }
             })
         });
@@ -466,7 +466,7 @@
             if (sale.items.products.length === 0 ) {
                 Swal.fire({
                     title: 'The sale must have at least 1 product',
-                    text: 'Search a product and add it to the sale',
+                    text: 'Search a product and add itS to the sale',
                     icon: 'warning',
                 });
                 return false;

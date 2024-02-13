@@ -3,6 +3,7 @@
 <html lang="en">
   <head>
     <title>POS</title>
+       <link rel="icon" type="image/png" href="{% static 'favicon.png' %}"/>
     <!--Styles-->
     <link href="{% static 'css/pos.css' %}" rel="stylesheet" />
     <link
@@ -145,9 +146,11 @@
                                     <button
                                       type="button"
                                       class="btn btn-default bg-white btn-flat add_new_customer"
-                                      data-name=""
+                                      onclick="window.location=`{% url 'customers:customers_add' %}`"
+                                     
                                     >
                                       <i
+                                               href="{% url 'customers:customers_add' %}"
                                         class="fa fa-plus-circle text-primary fa-lg"
                                       ></i>
                                     </button>
@@ -605,33 +608,34 @@ function displayCart() {
   let cartArray = shoppingCart.listCart();
   let output = "";
   for (let i in cartArray) {
-    output +=
-      "<tr>" +
-      "<td>" +
-      cartArray[i].name +
-      "</td>" +
-      "<td>(" +
-      cartArray[i].price +
-      ")</td>" +
-      "<td><div class='input-group'><button class='minus-item input-group-addon btn btn-primary' data-name=" +
-      cartArray[i].name +
-      ">-</button>" +
-      "<input type='number' class='item-count form-control' data-name='" +
-      cartArray[i].name +
-      "' value='" +
-      cartArray[i].count +
-      "'>" +
-      "<button class='plus-item btn btn-primary input-group-addon' data-name=" +
-      cartArray[i].name +
-      ">+</button></div></td>" +
-      "<td><button class='delete-item btn btn-danger' data-name=" +
-      cartArray[i].name +
-      ">X</button></td>" +
-      " = " +
-      "<td>" +
-      cartArray[i].total +
-      "</td>" +
-      "</tr>";
+output +=
+  "<tr>" +
+  "<td>" +
+  cartArray[i].name +
+  "</td>" +
+  "<td>(" +
+  cartArray[i].price +
+  ")</td>" +
+  "<td><div class='input-group'><button class='minus-item input-group-addon btn btn-primary' data-name='" +
+  cartArray[i].name +
+  "'>-</button>" +
+  "<input type='number' class='item-count form-control' data-name='" +
+  cartArray[i].name +
+  "' value='" +
+  cartArray[i].count +
+  "'>" +
+  "<button class='plus-item btn btn-primary input-group-addon' data-name='" +
+  cartArray[i].name +
+  "'>+</button></div></td>" +
+  "<td><button class='delete-item btn btn-danger' data-name='" +
+  cartArray[i].name +
+  "'>X</button></td>" +
+  " = " +
+  "<td>" +
+  cartArray[i].total +
+  "</td>" +
+  "</tr>";
+
 // output += "<tr class='product_row'><td><div data-toggle='tooltip' data-placement='bottom'> <span class='text-link text-info cursor-pointer' data-name='" + cartArray[i].name + "'>" + cartArray[i].name + "<i class='fa fa-info-circle'></i></span></div></td>" + `
 //     <td>
 //       <div class="input-group input-number">
