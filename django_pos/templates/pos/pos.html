@@ -122,7 +122,11 @@
                                           class="select2-selection__rendered"
                                           id="select2-customer_id-container"
                                           title="cashload.pk"
-                                          >cashload.pk</span
+                                          ><select>
+                                      {% for customer in customers %}
+                                          <option value="{{ customer.id }}">{{ customer.get_full_name }}</option>
+                                      {% endfor %}
+                                  </select></span
                                         ><span
                                           class="select2-selection__arrow"
                                           role="presentation"
