@@ -28,3 +28,4 @@ class Company(models.Model):
     class Meta:
         verbose_name_plural = 'Companies'
         verbose_name = 'Company'
+        db_table = 'Company'
