@@ -4,6 +4,7 @@ from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render
+from customers.models import Customer
 from products.models import Product, Category
 from sales.models import Sale
 from company.models import Company
@@ -31,7 +32,7 @@ def index(request):
     # AVG per month
     avg_month = format(sum(monthly_earnings) / 12, '.2f')
 
-    # Top selling products
+    # Top-selling products
     top_products = Product.objects.annotate(quantity_sum=Sum(
         'saledetail__quantity')).order_by('-quantity_sum')[:3]
 
@@ -67,4 +68,5 @@ def index(request):
 def pos(request: HttpRequest) -> HttpResponse:
     products = Product.objects.all()
     categories = Category.objects.all()
-    return render(request, "pos/pos.html", {"products": products, "categories": categories})
+    customers = Customer.objects.all()
+    return render(request, "pos/pos.html", {"products": products, "categories": categories, "customers": customers})
