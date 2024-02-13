@@ -101,7 +101,7 @@ After restarting your computer
      venv\Scripts\Activate.ps1
     ```
 
-    Bash:
+    Windows Bash:
     ```
     source venv/Scripts/activate
     ```
