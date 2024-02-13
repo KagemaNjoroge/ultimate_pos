@@ -92,6 +92,7 @@ def customers_update_view(request: HttpRequest, customer_id):
                 "address": data['address'],
                 "email": data['email'],
                 "phone": data['phone'],
+                "kra_pin": data['kra_pin']
             }
 
             # Check if a customer with the same attributes exists
