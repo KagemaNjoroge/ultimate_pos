@@ -3,6 +3,7 @@
 <html lang="en">
   <head>
     <title>POS</title>
+       <link rel="icon" type="image/png" href="{% static 'favicon.png' %}"/>
     <!--Styles-->
     <link href="{% static 'css/pos.css' %}" rel="stylesheet" />
     <link
@@ -145,9 +146,11 @@
                                     <button
                                       type="button"
                                       class="btn btn-default bg-white btn-flat add_new_customer"
-                                      data-name=""
+                                      onclick="window.location=`{% url 'customers:customers_add' %}`"
+                                     
                                     >
                                       <i
+                                               href="{% url 'customers:customers_add' %}"
                                         class="fa fa-plus-circle text-primary fa-lg"
                                       ></i>
                                     </button>
