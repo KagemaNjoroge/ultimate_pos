@@ -4,6 +4,7 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from .models import Customer
 
+#Remove duplicate code
 
 @login_required(login_url="/accounts/login/")
 def customers_list_view(request: HttpRequest):
