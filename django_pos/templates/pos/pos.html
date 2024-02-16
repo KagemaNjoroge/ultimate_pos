@@ -19,17 +19,14 @@
     <!-- Custom scripts for all pages-->
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
     <!-- Custom fonts for this template-->
-    <link
-      href="{% static 'vendor/fontawesome-free/css/all.min.css' %}"
-      rel="stylesheet"
-      type="text/css"
-    />
+
     <link />
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   </head>
+  
       <body class="lockscreen pace-done pace-done" style="height: auto">
       <div class="pace pace-inactive pace-inactive">
         <div
@@ -348,6 +345,7 @@
                         <input type="hidden" id="suggestion_page" value="4" />
                         <div class="col-md-12">
                           <div class="eq-height-row" id="product_list_body">
+                          
                             {% for prod in products %}
                             <div 
                                     data-name="{{ prod.name }}" data-price="{{ prod.price }}"
@@ -428,6 +426,7 @@
                       type="button"
                       class="btn btn-success btn-flat no-print pos-express-finalize"
                       data-pay_method="cash"
+                      id="complete_payment"
                       title="Mark complete paid &amp; checkout"
                     >
                       <i class="fas fa-money-bill-alt" aria-hidden="true"></i>
@@ -447,12 +446,12 @@
 
                     &nbsp;<button
                       type="button"
-                      class="btn btn-danger btn-flat"
-                      id="pos-cancel"
+                      class="btn btn-danger btn-flat clear-cart"
+                      
                     >
-                      <i class="fas fa-window-close"></i> Cancel
+                      <i class="fas fa-window-close "></i> Cancel
                     </button>
-                    <button
+                    <button style="margin-right: 10px"
                       type="button"
                       class="btn btn-primary btn-flat pull-right"
                       id="recent-transactions"
@@ -471,9 +470,7 @@
 
       <div></div>
 
-      <div class="scrolltop no-print">
-        <div class="scroll icon"><i class="fas fa-angle-up"></i></div>
-      </div>
+
     
     <script>
       let shoppingCart = (function () {
@@ -498,7 +495,7 @@
   if (sessionStorage.getItem("shoppingCart") != null) {
     loadCart();
   }
-
+    
   let obj = {};
 
   // Add to cart
@@ -586,6 +583,9 @@
     }
     return cartCopy;
   };
+  function postProducts(){
+      console.log('cart')
+  }
 
   return obj;
 })();
@@ -613,54 +613,29 @@ output +=
   "<td>" +
   cartArray[i].name +
   "</td>" +
-  "<td>(" +
-  cartArray[i].price +
-  ")</td>" +
-  "<td><div class='input-group'><button class='minus-item input-group-addon btn btn-primary' data-name='" +
+      "<td><div class='input-group'><button style=' margin-right: 2px' class='minus-item input-group-addon btn btn-primary' data-name='" +
   cartArray[i].name +
   "'>-</button>" +
-  "<input type='number' class='item-count form-control' data-name='" +
+  "<input type='number' style='width: 50%; margin-right: 4px' class='item-count form-control' data-name='" +
   cartArray[i].name +
   "' value='" +
   cartArray[i].count +
   "'>" +
   "<button class='plus-item btn btn-primary input-group-addon' data-name='" +
   cartArray[i].name +
-  "'>+</button></div></td>" +
-  "<td><button class='delete-item btn btn-danger' data-name='" +
-  cartArray[i].name +
-  "'>X</button></td>" +
-  " = " +
+  "'>+</button></div></td>"+
+  "<td>" +
+  cartArray[i].price +
+  "</td>" +
+
   "<td>" +
   cartArray[i].total +
-  "</td>" +
+  "</td>" +     "<td><button class='delete-item btn btn-danger' data-name='" +
+  cartArray[i].name +
+  "'>X</button></td>"+
+    
   "</tr>";
-
-// output += "<tr class='product_row'><td><div data-toggle='tooltip' data-placement='bottom'> <span class='text-link text-info cursor-pointer' data-name='" + cartArray[i].name + "'>" + cartArray[i].name + "<i class='fa fa-info-circle'></i></span></div></td>" + `
-//     <td>
-//       <div class="input-group input-number">
-//         <span class="input-group-btn">
-//           <button type="button" class="btn btn-default btn-flat quantity-down minus-item">
-//             <i class="fa fa-minus text-danger"></i>
-//           </button>
-//         </span>
-//         <input type="text" data-min="1" class="form-control pos_quantity input_number mousetrap input_quantity item-count"/>
-//         <span class="input-group-btn">
-//           <button type="button" class="btn btn-default btn-flat quantity-up plus-item">
-//             <i class="fa fa-plus text-success"></i>
-//           </button>
-//         </span>
-//       </div>
-//     </td>` +
-
-//     "<td class=''><input type='text' disabled class='form-control pos_unit_price_inc_tax input_number' value=" + cartArray[i].price + "></td>" +
-//     `<td class="text-center v-center">
-//       <span class="display_currency pos_line_total_text" data-currency_symbol="true"> ` + cartArray[i].total + `</span>
-//     </td>
-//     <td class="text-center">
-//       <i class="fa fa-times text-danger pos_remove_row cursor-pointer" aria-hidden="true"></i>
-//     </td>
-//   </tr>`;
+      
 
   }
   $(".show-cart").html(output);
@@ -697,6 +672,29 @@ $(".show-cart").on("change", ".item-count", function (event) {
 });
 
 displayCart();
+function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+
+          return cookieValue;
+      }
+
+$('#complete_payment').on('click', function (event){
+    alert("Complete payment")
+    let items = JSON.parse(sessionStorage.getItem("shoppingCart"));
+    
+
+})
 
     </script>
   </body>
