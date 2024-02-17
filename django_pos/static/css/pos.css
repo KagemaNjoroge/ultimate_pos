@@ -1214,7 +1214,6 @@ button.close {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: 1px solid #999;
-  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
   outline: 0;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
@@ -1472,11 +1471,9 @@ body {
 }
 .content {
   min-height: 250px;
-  padding: 15px;
   margin-right: auto;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding: 15px;
 }
 h2,
 h3,
@@ -2146,7 +2143,7 @@ h5 {
 }
 /*! CSS Used from: Embedded */
 .content {
-  padding-bottom: 0px !important;
+  padding-bottom: 0 !important;
 }
 button::-moz-focus-inner {
   border: 0;
