@@ -118,7 +118,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Amount payed</label>
+                                    <label>Amount paid</label>
                                     <div class="input-group">
                                         <input name="amount_payed" class="form-control" required>
                                     </div>
@@ -403,7 +403,7 @@
                 };
                 },
                 processResults: function (data) {
-                    console.log(data)
+                    
                     return {
                         results: data
                     };
@@ -419,8 +419,6 @@
                 //data.quantity = 1;
                 //Add the product to the sale object
                 sale.add_product(data);
-                console.log("Sale items");      
-                console.log(sale.items);      
                 //Clean the searchbar after the product is selected
                 $(this).val('').trigger('change.select2');
             });
@@ -466,7 +464,7 @@
             if (sale.items.products.length === 0 ) {
                 Swal.fire({
                     title: 'The sale must have at least 1 product',
-                    text: 'Search a product and add itS to the sale',
+                    text: 'Search a product and add it to the sale',
                     icon: 'warning',
                 });
                 return false;
