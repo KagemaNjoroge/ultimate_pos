@@ -99,7 +99,7 @@ def categories_update_view(request, category_id):
                 return redirect('products:categories_add')
 
             # Get the category to update
-            category = Category.objects.filter(
+            Category.objects.filter(
                 id=category_id).update(**attributes)
 
             category = Category.objects.get(id=category_id)
@@ -182,7 +182,7 @@ def products_add_view(request):
             # Create the product
             new_product = Product.objects.create(**attributes)
 
-            # If it doesn't exist save it
+            # If it doesn't exist, save it
             new_product.save()
 
             messages.success(request, 'Product: ' +
