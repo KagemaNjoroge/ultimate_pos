@@ -2,7 +2,7 @@ from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render
 from customers.models import Customer
 from products.models import Product, Category
@@ -66,7 +66,11 @@ def index(request):
 
 @login_required(login_url="/accounts/login/")
 def pos(request: HttpRequest) -> HttpResponse:
-    products = Product.objects.all()
-    categories = Category.objects.all()
-    customers = Customer.objects.all()
-    return render(request, "pos/pos.html", {"products": products, "categories": categories, "customers": customers})
+    if request.method == 'GET':
+        products = Product.objects.all()
+        categories = Category.objects.all()
+        customers = Customer.objects.all()
+        return render(request, "pos/pos.html", {"products": products, "categories": categories, "customers": customers})
+    elif request.method == 'POST':
+        print(json.loads(request.body))
+        return JsonResponse({"status": "success"})
