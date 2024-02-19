@@ -27,8 +27,6 @@ class Category(models.Model):
         return self.name
 
 
-
-
 class Product(models.Model):
     STATUS_CHOICES = (  # new
         ("ACTIVE", "Active"),
@@ -66,4 +64,3 @@ class Product(models.Model):
         item['total_product'] = 0
         item['image'] = self.image.url
         return item
-
