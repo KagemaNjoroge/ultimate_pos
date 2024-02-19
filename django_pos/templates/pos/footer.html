@@ -5,8 +5,15 @@
     <div class="copyright text-center my-auto">
       <span
         >Copyright &copy;
-        <a href="https://tomorrow.co.ke">Tomorrow AI</a> 2024</span
+        <a href="https://tomorrow.co.ke">Tomorrow AI</a> <strong id="year"></strong>
+                  
+      </span
       >
     </div>
   </div>
+    <script>
+        let year_el = document.getElementById('year');
+        let date = new Date()
+        year_el.innerText = date.getFullYear().toString();
+    </script>
 </footer>
