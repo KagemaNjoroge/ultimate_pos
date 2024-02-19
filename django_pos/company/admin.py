@@ -1,4 +1,9 @@
 from django.contrib import admin
 from .models import Company
-# Register your models here.
-admin.site.register([Company,])
+
+
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('company_name', 'phone_number', 'currency_symbol')
+
+
+admin.site.register(Company, CompanyAdmin)
