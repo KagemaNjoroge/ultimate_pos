@@ -470,10 +470,10 @@
                 return false;
             }
             
-            // Only allow sending if the paid amount is equal or greater than the total
+            // Only allow sending if the paid amount is equal to or greater than the total
             if ($('[name="amount_payed"]').val() < $('[name="grand_total"]').val()) {
                 Swal.fire({
-                    title: 'Payable Amount is lower that the Grand Total',
+                    title: 'Payable Amount is lower than the Grand Total',
                     icon: 'warning',
                 });
                 return false;
