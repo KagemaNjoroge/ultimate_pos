@@ -21,12 +21,13 @@ class Sale(models.Model):
         verbose_name = 'Sale'
 
     def __str__(self) -> str:
-        return "Sale ID: " + str(self.id) + " | Grand Total: " + str(self.grand_total) + " | Datetime: " + str(self.date_added)
+        return str(self.id)
 
     def sum_items(self):
         details = SaleDetail.objects.filter(sale=self.id)
         return sum([d.quantity for d in details])
-    def to_json(self)->dict:
+
+    def to_json(self) -> dict:
         return {
             "date_added": self.date_added,
             "customer": self.customer.get_full_name(),
@@ -37,7 +38,6 @@ class Sale(models.Model):
             "amount_paid": self.amount_payed,
             "amount_change": self.amount_change
         }
-        
 
 
 class SaleDetail(models.Model):
