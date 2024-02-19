@@ -24,15 +24,6 @@ def profile(request: HttpRequest) -> HttpResponse:
         first_name = request.POST.get(key='first_name')
         last_name = request.POST.get(key='last_name')
         user = request.user
-        # if email != '' and first_name != '' and last_name != '':
-
-        #     user.email = email
-        #     user.first_name = first_name
-        #     user.last_name = last_name
-
-        #     user.save()
-        #     messages.add_message(request=request, message='Profile updated successfully', level=messages.SUCCESS)
-        #     return redirect('/accounts/profile')
         if email == '':
             email = None
         if first_name == '':
@@ -49,7 +40,7 @@ def profile(request: HttpRequest) -> HttpResponse:
         return redirect('/accounts/profile')
 
 
-def login_view(request):
+def login_view(request: HttpRequest) -> HttpResponse:
     form = LoginForm(request.POST or None)
 
     msg = None
@@ -71,7 +62,7 @@ def login_view(request):
     return render(request, "accounts/login.html", {"form": form, "msg": msg})
 
 
-def register_user(request):
+def register_user(request: HttpRequest) -> HttpResponse:
     msg = None
     success = False
 
@@ -82,11 +73,7 @@ def register_user(request):
             username = form.cleaned_data.get("username")
             raw_password = form.cleaned_data.get("password")
             authenticate(username=username, password=raw_password)
-
-            msg = 'User created - please <a href="/login">login</a>.'
-            success = True
-
-            # return redirect("/login/")
+            return redirect("/login/")
 
         else:
             msg = 'Form is not valid'
