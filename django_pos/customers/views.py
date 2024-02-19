@@ -1,13 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from .models import Customer
 
-#Remove duplicate code
+
+# TODO: Remove duplicate code
 
 @login_required(login_url="/accounts/login/")
-def customers_list_view(request: HttpRequest):
+def customers_list_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "customers",
         "customers": Customer.objects.all()
@@ -16,7 +17,7 @@ def customers_list_view(request: HttpRequest):
 
 
 @login_required(login_url="/accounts/login/")
-def customers_add_view(request):
+def customers_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "customers",
     }
@@ -60,7 +61,7 @@ def customers_add_view(request):
 
 
 @login_required(login_url="/accounts/login/")
-def customers_update_view(request: HttpRequest, customer_id):
+def customers_update_view(request: HttpRequest, customer_id: str) -> HttpResponse:
     """
     Args:
         request: HttpRequest Object
@@ -73,7 +74,7 @@ def customers_update_view(request: HttpRequest, customer_id):
         customer = Customer.objects.get(id=customer_id)
     except Exception as e:
         messages.success(
-            request, 'There was an error trying to get the customer!', extra_tags="danger")
+            request, 'There was an error trying to get that customer!', extra_tags="danger")
         print(e)
         return redirect('customers:customers_list')
 
@@ -121,7 +122,7 @@ def customers_update_view(request: HttpRequest, customer_id):
 
 
 @login_required(login_url="/accounts/login/")
-def customers_delete_view(request: HttpRequest, customer_id):
+def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpResponse:
     """
     Args:
         request: HttpRequest Object
@@ -136,6 +137,7 @@ def customers_delete_view(request: HttpRequest, customer_id):
         return redirect('customers:customers_list')
     except Exception as e:
         messages.success(
-            request, 'There was an error during the elimination!', extra_tags="danger")
-        print(e)
+            request, 'There was an error deleting that customer, may be the customer has an existing sale record',
+            extra_tags="danger")
+
         return redirect('customers:customers_list')
