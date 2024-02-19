@@ -1,13 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from .models import Category, Product
 from company.models import Company
 
 
 @login_required(login_url="/accounts/login/")
-def categories_list_view(request):
+def categories_list_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
         "categories": Category.objects.all()
@@ -16,7 +16,7 @@ def categories_list_view(request):
 
 
 @login_required(login_url="/accounts/login/")
-def categories_add_view(request):
+def categories_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
         "category_status": Category.status.field.choices
@@ -42,7 +42,7 @@ def categories_add_view(request):
             # Create the category
             new_category = Category.objects.create(**attributes)
 
-            # If it doesn't exist save it
+            # If it doesn't exist, save it
             new_category.save()
 
             messages.success(request, 'Category: ' +
@@ -58,7 +58,7 @@ def categories_add_view(request):
 
 
 @login_required(login_url="/accounts/login/")
-def categories_update_view(request, category_id):
+def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
     """
     Args:
         request: HttpRequest
@@ -117,10 +117,10 @@ def categories_update_view(request, category_id):
 
 
 @login_required(login_url="/accounts/login/")
-def categories_delete_view(request, category_id):
+def categories_delete_view(request: HttpRequest, category_id: str) -> HttpResponse:
     """
     Args:
-        request:
+        request: HttpRequest
         category_id : The category's ID that will be deleted
     """
     try:
@@ -132,13 +132,13 @@ def categories_delete_view(request, category_id):
         return redirect('products:categories_list')
     except Exception as e:
         messages.success(
-            request, 'There was an error during the elimination!', extra_tags="danger")
+            request, 'That category cannot be deleted as some products are associated with it', extra_tags="danger")
         print(e)
         return redirect('products:categories_list')
 
 
 @login_required(login_url="/accounts/login/")
-def products_list_view(request):
+def products_list_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products",
         "products": Product.objects.all()
@@ -153,7 +153,7 @@ def products_list_view(request):
 
 
 @login_required(login_url="/accounts/login/")
-def products_add_view(request):
+def products_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
         "product_status": Product.status.field.choices,
@@ -190,7 +190,7 @@ def products_add_view(request):
             return redirect('products:products_list')
         except Exception as e:
             messages.success(
-                request, 'There was an error during the creation!', extra_tags="danger")
+                request, 'An error occurred, try again!', extra_tags="danger")
             print(e)
             return redirect('products:products_add')
 
@@ -198,10 +198,10 @@ def products_add_view(request):
 
 
 @login_required(login_url="/accounts/login/")
-def products_update_view(request, product_id):
+def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
     """
     Args:
-        request:
+        request: HttRequest
         product_id : The product's ID that will be updated
     """
 
@@ -213,7 +213,7 @@ def products_update_view(request, product_id):
 
     except Exception as e:
         messages.success(
-            request, 'There was an error trying to get the product!', extra_tags="danger")
+            request, 'There was an error trying to get that product!', extra_tags="danger")
         print(e)
         return redirect('products:products_list')
 
@@ -239,7 +239,7 @@ def products_update_view(request, product_id):
 
             # Check if a product with the same attributes exists
             if Product.objects.filter(**attributes).exists():
-                messages.error(request, 'Product already exists!',
+                messages.error(request, 'That product already exists!',
                                extra_tags="warning")
                 return redirect('products:products_add')
 
@@ -263,10 +263,10 @@ def products_update_view(request, product_id):
 
 
 @login_required(login_url="/accounts/login/")
-def products_delete_view(request, product_id):
+def products_delete_view(request: HttpRequest, product_id: str) -> HttpResponse:
     """
     Args:
-        request:
+        request:HttpRequest
         product_id : The product's ID that will be deleted
     """
     try:
@@ -278,17 +278,18 @@ def products_delete_view(request, product_id):
         return redirect('products:products_list')
     except Exception as e:
         messages.success(
-            request, 'There was an error during the elimination!', extra_tags="danger")
+            request, 'An error occurred while deleting that product. It is already associated with a sale record.',
+            extra_tags="danger")
         print(e)
         return redirect('products:products_list')
 
 
-def is_ajax(request):
+def is_ajax(request: HttpRequest) -> bool:
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
 @login_required(login_url="/accounts/login/")
-def get_products_ajax_view(request):
+def get_products_ajax_view(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
         if is_ajax(request=request):
             data = []

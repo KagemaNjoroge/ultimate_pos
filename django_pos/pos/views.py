@@ -12,7 +12,7 @@ import json
 
 
 @login_required(login_url="/accounts/login/")
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     today = date.today()
 
     year = today.year

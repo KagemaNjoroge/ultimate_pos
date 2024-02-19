@@ -18,12 +18,12 @@ import base64
 
 # TODO separate `is_ajax` function to a separate file to avoid repetition
 
-def is_ajax(request: HttpRequest):
+def is_ajax(request: HttpRequest) -> bool:
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
 @login_required(login_url="/accounts/login/")
-def sales_list_view(request: HttpRequest):
+def sales_list_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "sales",
         "sales": Sale.objects.all()
@@ -32,7 +32,7 @@ def sales_list_view(request: HttpRequest):
 
 
 @login_required(login_url="/accounts/login/")
-def sales_add_view(request: HttpRequest):
+def sales_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "sales",
         "customers": [c.to_select2() for c in Customer.objects.all()]
@@ -88,7 +88,7 @@ def sales_add_view(request: HttpRequest):
 
 
 @login_required(login_url="/accounts/login/")
-def sales_details_view(request: HttpRequest, sale_id):
+def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     """
     Args:
         request: HttpRequest
@@ -115,7 +115,7 @@ def sales_details_view(request: HttpRequest, sale_id):
 
 
 @login_required(login_url="/accounts/login/")
-def receipt_pdf_view(request: HttpRequest, sale_id):
+def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     """
     Args:
         request: HttpRequest
