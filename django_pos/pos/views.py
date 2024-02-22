@@ -3,12 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from customers.models import Customer
+from sales.models import Sale, SaleDetail
 from products.models import Product, Category
 from sales.models import Sale
 from company.models import Company
 import json
+from customers.models import Customer
 
 
 @login_required(login_url="/accounts/login/")
@@ -72,5 +74,41 @@ def pos(request: HttpRequest) -> HttpResponse:
         customers = Customer.objects.all()
         return render(request, "pos/pos.html", {"products": products, "categories": categories, "customers": customers})
     elif request.method == 'POST':
-        print(json.loads(request.body))
-        return JsonResponse({"status": "success"})
+        try:
+            sale_data = json.loads(request.body)
+            # {'customer': '1', 'items': [{'name': 'Porsche Cayenne', 'price': 4000000, 'count': 1, 'id': 9},
+            # {'name': 'Lenovo Flex 5', 'price': 60000, 'count': 1, 'id': 10}, {'name': 'Air Max 9', 'price': 10.99,
+            # 'count': 1, 'id': 6}, {'name': 'Odoo ERP & CMS', 'price': 90000, 'count': 1, 'id': 5}], 'grand_total':
+            # 4150010.99}
+            items = sale_data['items']
+            customer_id = sale_data['customer']
+            grand_total = float(sale_data['grand_total'])
+            amount_paid = float(sale_data['amount_paid'])
+
+            change = amount_paid - grand_total
+            customer = get_object_or_404(Customer, id=customer_id)
+            # hard coded tax percentage TODO: make it dynamic as per a particular product
+            tax_percentage = 16
+            tax_amount = grand_total * tax_percentage / 100
+            sale = Sale.objects.create(customer=customer, grand_total=grand_total, amount_payed=amount_paid,
+                                       amount_change=change, tax_percentage=tax_percentage, tax_amount=tax_amount,
+                                       sub_total=grand_total - tax_amount)
+            sale.save()
+
+            for item in items:
+                product = get_object_or_404(Product, id=item['id'])
+                attr = {
+                    "product": product,
+                    "price": product.price,
+                    "quantity": item['count'],
+                    "total_detail": product.price * item['count'],
+                    "sale": sale
+                }
+                sale_detail = SaleDetail.objects.create(**attr)
+                sale_detail.save()
+
+            return JsonResponse({"status": "success", "sale_id": sale.id})
+        except Exception as e:
+            print(e)
+            return JsonResponse({"status": "error", "error_message": str(e)})
+    return HttpResponse("Invalid request", status=400)
