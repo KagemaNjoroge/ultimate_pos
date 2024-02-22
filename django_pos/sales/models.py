@@ -87,6 +87,7 @@ class PaymentMethod(models.Model):
         }
 
 
+# TODO: Separate the payments app from the sales app
 class Payments(models.Model):
     sale = models.ForeignKey(
         Sale, models.PROTECT, db_column='sale')
