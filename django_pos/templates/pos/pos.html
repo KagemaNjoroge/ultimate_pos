@@ -3,17 +3,17 @@
 <html lang="en">
   <head>
     <title>POS</title>
-       <link rel="icon" type="image/png" href="{% static 'favicon.png' %}"/>
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}"/>
 
     <!--Styles-->
     <link href="{% static 'css/pos.css' %}" rel="stylesheet" />
       <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma/bulma.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
     <meta charset="utf-8">
@@ -703,91 +703,110 @@ $('#complete_payment').on('click', async function (event) {
 
 
     Swal.fire({
-  title: 'Cart Summary',
+        title: 'Cart Summary',
         width: '55em',
         
         confirmButtonText:"Create Bill",
-  html: `
-<div class="container text-center"><div><table class="table table-borderless table-hover">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Product</th>
-      <th scope="col">Quantity</th>
-      <th scope="col">Total</th>
-    </tr>
-  </thead>
-  <tbody>`+html+`
-
-  </tbody>
-</table>` + `
-<br>
-<br>
-<br>
-<table class="table">
-  <thead>
-
-  </thead>
-  <tbody>
-    <tr>
-      
-      <td>Total</td>
-      <td>${shoppingCart.totalCart()}</td>
-     
-    </tr>
-    <tr>
-      
-      <td>Cash</td>
-      <td><input type="number" id="amount_paid_" onkeyup="let ch = document.getElementById('change');if(this.value - shoppingCart.totalCart() > 0){ch.innerText=roundTo(this.value-shoppingCart.totalCart(), 2)} paid=this.value" ></td>
-     
-    </tr>
-    <tr>
-      
-      <td>Change</td>
-      <td id="change">0.00</td>
-     
-    </tr>
-
-  </tbody>
-</table>
-</div>`,
+        html: `
+            <div class="container text-center"><div><table class="table table-borderless table-hover">
+            <thead>
+            <tr>
+            <th scope="col">#</th>
+            <th scope="col">Product</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+            </tr>
+            </thead>
+            <tbody>`+html+`
+            
+            </tbody>
+            </table>` + `
+            <br>
+            <br>
+            <br>
+            <table class="table">
+            <thead>
+            
+            </thead>
+            <tbody>
+            <tr>
+            
+            <td>Total</td>
+            <td>${shoppingCart.totalCart()}</td>
+            
+            </tr>
+            <tr>
+            
+            <td>Cash</td>
+            <td><input type="number" id="amount_paid_" onkeyup="let ch = document.getElementById('change');if(this.value - shoppingCart.totalCart() > 0){ch.innerText=roundTo(this.value-shoppingCart.totalCart(), 2)} paid=this.value" ></td>
+            
+            </tr>
+            <tr>
+            
+            <td>Change</td>
+            <td id="change">0.00</td>
+            
+            </tr>
+            
+            </tbody>
+            </table>
+            </div>`,
         showLoaderOnConfirm: true,
 
         allowOutsideClick: true,
         preConfirm: async ()=>{
-      let ch = document.getElementById('change').value;
-      console.log(`Change ${ch}`)
-            console.log(paid)
-      let amount_payed = document.getElementById('amount_paid_').value;
-      console.log(`Amount Paid: ${amount_payed}`)
-      let response = await fetch('{% url 'pos:pos' %}', {
-        method: 'POST',
-        headers: {
-                    "X-CSRFToken": getCookie('csrftoken'),
-                    'Content-Type': 'application/json',
-                },
-        body: JSON.stringify({
-    "customer": customer,
-    "items": items,
-            "grand_total": shoppingCart.totalCart()
-            
-        })
-    })
-    let body = await response.json()
-            console.log(body)
-    }
+                let ch = document.getElementById('change').value;
+                console.log(`Change ${ch}`)
+                console.log(paid)
+                let amount_payed = document.getElementById('amount_paid_').value;
+                console.log(`Amount Paid: ${amount_payed}`)
+                let response = await fetch('{% url 'pos:pos' %}', {
+                method: 'POST',
+                headers: {
+                        "X-CSRFToken": getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                body: JSON.stringify({
+                  "customer": customer,
+                  "items": items,
+                  "amount_paid": amount_payed,
+                  "grand_total": shoppingCart.totalCart()
+                
+                })
+                })
+                let body = await response.json();
+                // check if an error occurred on the server
+                if(body['status']==="success"){
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Bill Created',
+                        icon: 'success',
+                        confirmButtonText: 'Print receipt',
+                        allowOutsideClick: false,
+                        cancelButtonText: 'Close',
+                        
+                    }).then((result) => {
+                        // clear the cart
+                        shoppingCart.clearCart();
+                        if (result.isConfirmed) {
+                            window.location.href = "/sales/pdf/"+body['sale_id'];
+                        }
+                        //
+                        })
+                    
 
-}).then(result=>{
-    if(result.isConfirmed){
-        // clear cart
-        shoppingCart.clearCart();
-        Swal.fire({
-            icon:"success",
-            title:"Bill created"
-        })//
-        location.reload()
-    }
-    })
+                     }
+                else{
+                    Swal.fire({
+                        title: 'Error',
+                        text: `An error occurred: ${body["error_message"]}. Please try again.`,
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    })
+                }
+        }
+
+})
 
 })
 

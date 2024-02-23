@@ -18,5 +18,7 @@ urlpatterns = [
     path('sales/', include('sales.urls')),
     # Inventory
     path('inventory/', include('inventory.urls')),
+    # etims
+    path('etims/', include('etims.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

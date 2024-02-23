@@ -56,3 +56,5 @@ class SaleDetail(models.Model):
 
     def __str__(self) -> str:
         return "Detail ID: " + str(self.id) + " Sale ID: " + str(self.sale.id) + " Quantity: " + str(self.quantity)
+
+
