@@ -14,4 +14,6 @@ urlpatterns = [
     # Sale receipt PDF
     path("pdf/<str:sale_id>",
          views.receipt_pdf_view, name="sales_receipt_pdf"),
+    # kra logo - for the invoice
+    path("kra_logo", views.kra_logo, name="kra_logo"),
 ]

@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse, HttpRequest, FileResponse
 from django.shortcuts import render, redirect
 from django_pos.wsgi import *
 from django_pos import settings
@@ -14,6 +14,8 @@ from company.models import Company
 import qrcode
 from io import BytesIO
 import base64
+from PIL import Image
+from django.templatetags.static import static
 
 
 # TODO separate `is_ajax` function to a separate file to avoid repetition
@@ -121,6 +123,15 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         request: HttpRequest
         sale_id: ID of the sale to view the receipt
     """
+    logo_path = "C:\\Users\\kaman\\Desktop\\ultimate_pos\\django_pos\\static\\img\\kra_logo.png"
+
+    logo_img = Image.open(open(logo_path, 'rb'))
+    logo_img = logo_img.resize((50, 50))
+    logo_stream = BytesIO()
+    logo_img.save(logo_stream, format='PNG')
+    logo_value = logo_stream.getvalue()
+    logo_base64 = base64.b64encode(logo_value).decode('utf-8')
+
     # Get the sale
     sale = Sale.objects.get(id=sale_id)
 
@@ -140,7 +151,10 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         "sale": sale,
         "details": details,
         "company": company,
+        "logo": logo_base64
 
+
+        # 0701575348
     }
     qrcode_details = sale.to_json()
 
@@ -164,3 +178,9 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     pdf = HTML(string=html_template).write_pdf(stylesheets=[CSS(css_url)])
 
     return HttpResponse(pdf, content_type="application/pdf")
+
+
+def kra_logo(request: HttpRequest) -> HttpResponse:
+    logo = "static/img/kra_logo.png"
+
+    return FileResponse(open(logo, 'rb'), content_type="image/png")
