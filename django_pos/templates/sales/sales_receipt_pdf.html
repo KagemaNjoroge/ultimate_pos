@@ -1,11 +1,12 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
-    <title>Sale Receipt PDF</title>
+    <title>Sales Invoice {{sale.id}}</title>
     <style>
         * {
             color: black;
@@ -20,42 +21,26 @@
 
         .name-company {
             font-size: 25px;
-            /*
-                padding: 0;
-                margin: 0;
-            */
+
             font-weight: bold;
             text-transform: uppercase;
-            /*
-            text-align: center;
-            */
+
         }
 
         table thead tr th {
             border: 1px solid black !important;
             padding: 3px;
         }
-/* 
-        table tbody tr td {
-            border: 1px solid black;
-            padding: 3px;
-        } */
 
-        .img-logo {
-            margin-top: 10px;
-            width: 75px;
-            height: 75px;
-            margin-bottom: 10px;
-        }
     </style>
     
     
  
 </head>
-
 <body>
     <div class="container">
         <div class="row">
+            <img src="{% url 'sales:kra_logo' %}" class="">
             <div class="col-6">
                 <p class="name-company"><b>{{company.company_name}}</b></p>
                 <p><b>{{company.address}}</b></p>
@@ -118,16 +103,14 @@
             </tbody>
         </table>
         <div class="row mb-5">
-
-            <div class="col-4 text-center"></div>
-            <div class="col-4 text-center">
-                <!-- Displaying the QR code image -->
-                <!-- <img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code"> -->
-            </div>
-            <!-- <div class="justify-content-end">I am using justify-content-end</div> -->
+            
             <div class="col-4 align-items-end">
                 <img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code">
             </div>
+            <div class="col-4">
+                <img src="data:image/svg+xml;base64,{{ logo }}" alt="QR Code">
+            </div>
+            
         </div>
         <p class="font-weight-bold">
             We appreciate your business. Thank you for your ongoing support.
