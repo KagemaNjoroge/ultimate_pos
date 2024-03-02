@@ -7,12 +7,10 @@ from .models import Customer
 
 # TODO: Remove duplicate code
 
+
 @login_required(login_url="/accounts/login/")
 def customers_list_view(request: HttpRequest) -> HttpResponse:
-    context = {
-        "active_icon": "customers",
-        "customers": Customer.objects.all()
-    }
+    context = {"active_icon": "customers", "customers": Customer.objects.all()}
     return render(request, "customers/customers.html", context=context)
 
 
@@ -22,24 +20,23 @@ def customers_add_view(request: HttpRequest) -> HttpResponse:
         "active_icon": "customers",
     }
 
-    if request.method == 'POST':
+    if request.method == "POST":
         # Save the POST arguments
         data = request.POST
 
         attributes = {
-            "first_name": data['first_name'],
-            "last_name": data['last_name'],
-            "address": data['address'],
-            "email": data['email'],
-            "phone": data['phone'],
-            "kra_pin": data['kra_pin']
+            "first_name": data["first_name"],
+            "last_name": data["last_name"],
+            "address": data["address"],
+            "email": data["email"],
+            "phone": data["phone"],
+            "kra_pin": data["kra_pin"],
         }
 
         # Check if a customer with the same attributes exists
         if Customer.objects.filter(**attributes).exists():
-            messages.error(request, 'Customer already exists!',
-                           extra_tags="warning")
-            return redirect('customers:customers_add')
+            messages.error(request, "Customer already exists!", extra_tags="warning")
+            return redirect("customers:customers_add")
 
         try:
             # Create the customer
@@ -48,14 +45,19 @@ def customers_add_view(request: HttpRequest) -> HttpResponse:
             # If it doesn't exist, save it
             new_customer.save()
 
-            messages.success(request, f'Customer: {attributes["first_name"]} {attributes["last_name"]}  created '
-                                      f'successfully!', extra_tags="success")
-            return redirect('customers:customers_list')
+            messages.success(
+                request,
+                f'Customer: {attributes["first_name"]} {attributes["last_name"]}  created '
+                f"successfully!",
+                extra_tags="success",
+            )
+            return redirect("customers:customers_list")
         except Exception as e:
             messages.success(
-                request, 'There was an error during the creation!', extra_tags="danger")
-            print(e)
-            return redirect('customers:customers_add')
+                request, "There was an error during the creation!", extra_tags="danger"
+            )
+
+            return redirect("customers:customers_add")
 
     return render(request, "customers/customers_add.html", context=context, status=200)
 
@@ -74,49 +76,56 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
         customer = Customer.objects.get(id=customer_id)
     except Exception as e:
         messages.success(
-            request, 'There was an error trying to get that customer!', extra_tags="danger")
+            request,
+            "There was an error trying to get that customer!",
+            extra_tags="danger",
+        )
 
-        return redirect('customers:customers_list')
+        return redirect("customers:customers_list")
 
     context = {
         "active_icon": "customers",
         "customer": customer,
     }
 
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             # Save the POST arguments
             data = request.POST
 
             attributes = {
-                "first_name": data['first_name'],
-                "last_name": data['last_name'],
-                "address": data['address'],
-                "email": data['email'],
-                "phone": data['phone'],
-                "kra_pin": data['kra_pin']
+                "first_name": data["first_name"],
+                "last_name": data["last_name"],
+                "address": data["address"],
+                "email": data["email"],
+                "phone": data["phone"],
+                "kra_pin": data["kra_pin"],
             }
 
             # Check if a customer with the same attributes exists
             if Customer.objects.filter(**attributes).exists():
-                messages.error(request, 'Customer already exists!',
-                               extra_tags="warning")
-                return redirect('customers:customers_add')
+                messages.error(
+                    request, "Customer already exists!", extra_tags="warning"
+                )
+                return redirect("customers:customers_add")
 
             # Get the customer to update
-            Customer.objects.filter(
-                id=customer_id).update(**attributes)
+            Customer.objects.filter(id=customer_id).update(**attributes)
 
             customer = Customer.objects.get(id=customer_id)
 
-            messages.success(request, '¡Customer: ' + customer.get_full_name() +
-                             ' updated successfully!', extra_tags="success")
-            return redirect('customers:customers_list')
+            messages.success(
+                request,
+                "¡Customer: " + customer.get_full_name() + " updated successfully!",
+                extra_tags="success",
+            )
+            return redirect("customers:customers_list")
         except Exception as e:
             messages.success(
-                request, 'There was an error during the update!', extra_tags="danger")
+                request, "There was an error during the update!", extra_tags="danger"
+            )
 
-            return redirect('customers:customers_list')
+            return redirect("customers:customers_list")
 
     return render(request, "customers/customers_update.html", context=context)
 
@@ -132,12 +141,17 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
         # Get the customer to delete
         customer = Customer.objects.get(id=customer_id)
         customer.delete()
-        messages.success(request, '¡Customer: ' + customer.get_full_name() +
-                         ' deleted!', extra_tags="success")
-        return redirect('customers:customers_list')
+        messages.success(
+            request,
+            "¡Customer: " + customer.get_full_name() + " deleted!",
+            extra_tags="success",
+        )
+        return redirect("customers:customers_list")
     except Exception as e:
         messages.success(
-            request, 'There was an error deleting that customer, may be the customer has an existing sale record',
-            extra_tags="danger")
+            request,
+            "There was an error deleting that customer, may be the customer has an existing sale record",
+            extra_tags="danger",
+        )
 
-        return redirect('customers:customers_list')
+        return redirect("customers:customers_list")
