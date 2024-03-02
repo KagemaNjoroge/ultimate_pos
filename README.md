@@ -1,7 +1,6 @@
 ## Ultimate Point of Sale (POS)
 
-A Point of Sale web app for businesses built with Python and Django.
-It embraces teeth over ease of use and simplicity over complexity.
+A minimalistic Point of Sale (POS) system for small businesses. It is a web-based application that allows you to manage your sales and inventory on the go. It is built with Django and Python.
 
 <div style="text-align: center"><a><img src="screenshots\dashboard.png" width="70%" alt="Ultimate POS Dashboard"/></a></div>
 <br></br>
