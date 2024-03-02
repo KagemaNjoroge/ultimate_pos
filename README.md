@@ -28,15 +28,25 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
 
 ## Proposed Features
 
-- Inventory Management
+- BUsiness Level Inventory Management
 - Suppliers Management
 - Purchase Management
 - CRM (Customer Relationship Management)
 
 ## Tech Stack
 
-- Frontend: HTML, CSS, JavaScript, Boostrap, SweetAlert, DataTables
-- Backend: Django, Python, Ajax, SQLite
+- Frontend:
+  - HTML
+  - CSS
+  - JavaScript
+  - Boostrap
+  - SweetAlert
+  - DataTables
+- Backend:
+  - Django
+  - Python
+  - Ajax
+  - SQLite
 
 ## Installation
 
@@ -46,52 +56,49 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
 - [pip package manager](https://pip.pypa.io/en/stable/installation/)
 - [git](https://git-scm.com/downloads)
 
-  1. Clone or download the repository:
+<br>
 
-  ` git clone https://github.com/kagemanjoroge/ultimate_pos`
+1. Clone or download the repository:
 
-  2. Go to the project directory
+```bash
+git clone https://github.com/kagemanjoroge/ultimate_pos.git
+```
 
-  ` cd ultimate_pos`
+2. Go to the project directory
 
-  3. Create a virtual environment :
+```bash
+cd ultimate_pos
+```
 
-  PowerShell:
+3. Create a virtual environment :
 
-  ```
-   python -m venv venv
-   venv\Scripts\Activate.ps1
-  ```
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
-  Linux:
+4. Install dependencies:
 
-  ```
-  python3 -m venv venv
-  source venv/bin/activate
-  ```
+```bash
+pip install -r requirements.txt
+```
 
-  4. Install dependencies:  
-     ` pip install -r requirements.txt`
+5. Install GTK to create the PDF files:  
+   [Official documentation](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#installation)
 
-  5. Update pip and setuptools  
-     ` python -m pip install --upgrade pip setuptools`
+6. Windows:  
+   After installing GTK, you need to add it to your system's Path environment variable. Follow these steps:
 
-  6. Install GTK to create the PDF files:  
-     [Official documentation](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#installation)
+   - Assuming you installed GTK at:
+     `C:\Program Files\GTK3-Runtime Win64\bin`  
+     This will be your new variable that you need to add to Path
+   - Refer to this tutorial for detailed instructions on adding to the Path environment variable:
+     [Adding varible to path](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/)
 
-  7. Windows:
-     After installing GTK, you need to add it to your system's Path environment variable. Follow these steps:
+   - If you encounter an error such as "cannot load library," refer to this documentation for troubleshooting:
+     [Missing Library Error](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#missing-library)
 
-     - Assuming you installed GTK at:
-       `C:\Program Files\GTK3-Runtime Win64\bin`  
-       This will be your new variable that you need to add to Path
-     - Refer to this tutorial for detailed instructions on adding to the Path environment variable:
-       [Tutorial add to the Path enviroment variable](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/)
-
-     - If you encounter an error such as "cannot load library," refer to this documentation for troubleshooting:
-       [Missing Library Error](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#missing-library)
-
-  8. Restart your computer: After completing the steps above, it is essential to restart your computer for the changes to take effect properly. ‼
+7. Restart your computer: After completing the steps above, it is essential to restart your computer for the changes to take effect properly.
 
 ## Run it locally
 
@@ -101,40 +108,41 @@ After restarting your computer
 
 2. Activate the virtual enviroment
 
-   PowerShell:
-
-   ```
-    venv\Scripts\Activate.ps1
-   ```
-
-   Windows Bash:
-
-   ```
-   source venv/Scripts/activate
-   ```
-
-   Linux:
-
-   ```
+   ```bash
    source venv/bin/activate
    ```
 
-3. Go to the django_pos folder: `cd django_pos`
+3. Go to the django_pos folder:
 
-4. Make database migrations:  
-   `python manage.py makemigrations` and
-   `python manage.py migrate`
+   ```bash
+   cd ultimate_pos/django_pos
+   ```
 
-5. Create superuser `python manage.py createsuperuser`
+4. Make database migrations:
+
+```bash
+python manage.py makemigrations && python manage.py migrate
+```
+
+5. Create superuser to access the admin panel:
+
+   ```bash
+   python manage.py createsuperuser
+   ```
 
    with the following data, or with the data you prefer:
-   `username: YOUR_PREFERRED_USERNAME,
-password: PASSWORD,
-email: email@email.com`
 
-6. Run the server: `python manage.py runserver`
+   - `username: YOUR_PREFERRED_USERNAME`
+   - `password: YOUR_PASSWORD`
+   - `email: YOUR_EMAIL@EMAIL.COM`
 
-7. Open a browser and go to: `http://127.0.0.1:8000/`
+6. Run the server:
+
+   ```bash
+   python manage.py runserver
+   ```
+
+7. Open a browser and navigate : `http://127.0.0.1:8000/`
 
 8. Log In with your superuser credentials.
 
