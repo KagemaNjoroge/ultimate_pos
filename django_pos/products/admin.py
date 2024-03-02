@@ -4,11 +4,11 @@ from .models import Category, Product
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'status')
+    list_display = ("name", "description", "status")
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price', 'status')
+    list_display = ("name", "category", "price", "status", "track_inventory")
 
 
 admin.site.register(Category, CategoryAdmin)
