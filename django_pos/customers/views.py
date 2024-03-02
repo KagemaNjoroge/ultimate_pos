@@ -48,8 +48,8 @@ def customers_add_view(request: HttpRequest) -> HttpResponse:
             # If it doesn't exist, save it
             new_customer.save()
 
-            messages.success(request, 'Customer: ' + attributes["first_name"] + " " +
-                             attributes["last_name"] + ' created successfully!', extra_tags="success")
+            messages.success(request, f'Customer: {attributes["first_name"]} {attributes["last_name"]}  created '
+                                      f'successfully!', extra_tags="success")
             return redirect('customers:customers_list')
         except Exception as e:
             messages.success(
@@ -75,7 +75,7 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
     except Exception as e:
         messages.success(
             request, 'There was an error trying to get that customer!', extra_tags="danger")
-        print(e)
+
         return redirect('customers:customers_list')
 
     context = {
@@ -115,7 +115,7 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
         except Exception as e:
             messages.success(
                 request, 'There was an error during the update!', extra_tags="danger")
-            print(e)
+
             return redirect('customers:customers_list')
 
     return render(request, "customers/customers_update.html", context=context)
