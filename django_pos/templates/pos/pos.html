@@ -756,10 +756,9 @@ $('#complete_payment').on('click', async function (event) {
         allowOutsideClick: true,
         preConfirm: async ()=>{
                 let ch = document.getElementById('change').value;
-                console.log(`Change ${ch}`)
-                console.log(paid)
+
                 let amount_payed = document.getElementById('amount_paid_').value;
-                console.log(`Amount Paid: ${amount_payed}`)
+                
                 let response = await fetch('{% url 'pos:pos' %}', {
                 method: 'POST',
                 headers: {
