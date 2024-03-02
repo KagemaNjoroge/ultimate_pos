@@ -27,6 +27,13 @@ It embraces teeth over ease of use and simplicity over complexity.
 - Sales Management
 - eTIMS(electronic Tax Invoice Management System)
 
+## Proposed Features
+
+- Inventory Management
+- Suppliers Management
+- Purchase Management
+- CRM (Customer Relationship Management)
+
 ## Tech Stack
 
 - Frontend: HTML, CSS, JavaScript, Boostrap, SweetAlert, DataTables
