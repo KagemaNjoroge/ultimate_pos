@@ -10,7 +10,7 @@ from company.models import Company
 def categories_list_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
-        "categories": Category.objects.all()
+        "categories": Category.objects.all(),
     }
     return render(request, "products/categories.html", context=context)
 
@@ -19,24 +19,23 @@ def categories_list_view(request: HttpRequest) -> HttpResponse:
 def categories_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
-        "category_status": Category.status.field.choices
+        "category_status": Category.status.field.choices,
     }
 
-    if request.method == 'POST':
+    if request.method == "POST":
         # Save the POST arguments
         data = request.POST
 
         attributes = {
-            "name": data['name'],
-            "status": data['state'],
-            "description": data['description']
+            "name": data["name"],
+            "status": data["state"],
+            "description": data["description"],
         }
 
         # Check if a category with the same attributes exists
         if Category.objects.filter(**attributes).exists():
-            messages.error(request, 'Category already exists!',
-                           extra_tags="warning")
-            return redirect('products:categories_add')
+            messages.error(request, "Category already exists!", extra_tags="warning")
+            return redirect("products:categories_add")
 
         try:
             # Create the category
@@ -45,14 +44,18 @@ def categories_add_view(request: HttpRequest) -> HttpResponse:
             # If it doesn't exist, save it
             new_category.save()
 
-            messages.success(request, 'Category: ' +
-                             attributes["name"] + ' created successfully!', extra_tags="success")
-            return redirect('products:categories_list')
+            messages.success(
+                request,
+                "Category: " + attributes["name"] + " created successfully!",
+                extra_tags="success",
+            )
+            return redirect("products:categories_list")
         except Exception as e:
             messages.success(
-                request, 'There was an error during the creation!', extra_tags="danger")
+                request, "There was an error during the creation!", extra_tags="danger"
+            )
             print(e)
-            return redirect('products:categories_add')
+            return redirect("products:categories_add")
 
     return render(request, "products/categories_add.html", context=context)
 
@@ -71,47 +74,56 @@ def categories_update_view(request: HttpRequest, category_id: str) -> HttpRespon
         category = Category.objects.get(id=category_id)
     except Exception as e:
         messages.success(
-            request, 'There was an error trying to get the category!', extra_tags="danger")
+            request,
+            "There was an error trying to get the category!",
+            extra_tags="danger",
+        )
         print(e)
-        return redirect('products:categories_list')
+        return redirect("products:categories_list")
 
     context = {
         "active_icon": "products_categories",
         "category_status": Category.status.field.choices,
-        "category": category
+        "category": category,
     }
 
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             # Save the POST arguments
             data = request.POST
 
             attributes = {
-                "name": data['name'],
-                "status": data['state'],
-                "description": data['description']
+                "name": data["name"],
+                "status": data["state"],
+                "description": data["description"],
             }
 
             # Check if a category with the same attributes exists
             if Category.objects.filter(**attributes).exists():
-                messages.error(request, 'Category already exists!',
-                               extra_tags="warning")
-                return redirect('products:categories_add')
+                messages.error(
+                    request, "Category already exists!", extra_tags="warning"
+                )
+                return redirect("products:categories_add")
 
             # Get the category to update
-            Category.objects.filter(
-                id=category_id).update(**attributes)
+            Category.objects.filter(id=category_id).update(**attributes)
 
             category = Category.objects.get(id=category_id)
 
-            messages.success(request, '¡Category: ' + category.name +
-                             ' updated successfully!', extra_tags="success")
-            return redirect('products:categories_list')
+            messages.success(
+                request,
+                "¡Category: " + category.name + " updated successfully!",
+                extra_tags="success",
+            )
+            return redirect("products:categories_list")
         except Exception as e:
             messages.success(
-                request, 'There was an error during the elimination!', extra_tags="danger")
+                request,
+                "There was an error during the elimination!",
+                extra_tags="danger",
+            )
             print(e)
-            return redirect('products:categories_list')
+            return redirect("products:categories_list")
 
     return render(request, "products/categories_update.html", context=context)
 
@@ -127,27 +139,28 @@ def categories_delete_view(request: HttpRequest, category_id: str) -> HttpRespon
         # Get the category to delete
         category = Category.objects.get(id=category_id)
         category.delete()
-        messages.success(request, '¡Category: ' + category.name +
-                         ' deleted!', extra_tags="success")
-        return redirect('products:categories_list')
+        messages.success(
+            request, "¡Category: " + category.name + " deleted!", extra_tags="success"
+        )
+        return redirect("products:categories_list")
     except Exception as e:
         messages.success(
-            request, 'That category cannot be deleted as some products are associated with it', extra_tags="danger")
+            request,
+            "That category cannot be deleted as some products are associated with it",
+            extra_tags="danger",
+        )
         print(e)
-        return redirect('products:categories_list')
+        return redirect("products:categories_list")
 
 
 @login_required(login_url="/accounts/login/")
 def products_list_view(request: HttpRequest) -> HttpResponse:
-    context = {
-        "active_icon": "products",
-        "products": Product.objects.all()
-    }
+    context = {"active_icon": "products", "products": Product.objects.all()}
     company = Company.objects.first()
     if company:
-        context['currency_symbol'] = company.currency_symbol
+        context["currency_symbol"] = company.currency_symbol
     else:
-        context['currency_symbol'] = '$'
+        context["currency_symbol"] = "$"
 
     return render(request, "products/products.html", context=context)
 
@@ -157,26 +170,26 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
         "product_status": Product.status.field.choices,
-        "categories": Category.objects.all().filter(status="ACTIVE")
+        "categories": Category.objects.all().filter(status="ACTIVE"),
     }
 
-    if request.method == 'POST':
+    if request.method == "POST":
         # Save the POST arguments
         data = request.POST
 
         attributes = {
-            "name": data['name'],
-            "status": data['state'],
-            "description": data['description'],
-            "category": Category.objects.get(id=data['category']),
-            "price": data['price']
+            "name": data["name"],
+            "status": data["state"],
+            "description": data["description"],
+            "category": Category.objects.get(id=data["category"]),
+            "price": data["price"],
+            "track_inventory": data["track_inventory"],
         }
 
         # Check if a product with the same attributes exists
         if Product.objects.filter(**attributes).exists():
-            messages.error(request, 'Product already exists!',
-                           extra_tags="warning")
-            return redirect('products:products_add')
+            messages.error(request, "Product already exists!", extra_tags="warning")
+            return redirect("products:products_add")
 
         try:
             # Create the product
@@ -185,14 +198,18 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
             # If it doesn't exist, save it
             new_product.save()
 
-            messages.success(request, 'Product: ' +
-                             attributes["name"] + ' created successfully!', extra_tags="success")
-            return redirect('products:products_list')
+            messages.success(
+                request,
+                "Product: " + attributes["name"] + " created successfully!",
+                extra_tags="success",
+            )
+            return redirect("products:products_list")
         except Exception as e:
             messages.success(
-                request, 'An error occurred, try again!', extra_tags="danger")
-            print(e)
-            return redirect('products:products_add')
+                request, "An error occurred, try again!", extra_tags="danger"
+            )
+
+            return redirect("products:products_add")
 
     return render(request, "products/products_add.html", context=context)
 
@@ -213,51 +230,58 @@ def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
 
     except Exception as e:
         messages.success(
-            request, 'There was an error trying to get that product!', extra_tags="danger")
-        print(e)
-        return redirect('products:products_list')
+            request,
+            "There was an error trying to get that product!",
+            extra_tags="danger",
+        )
+
+        return redirect("products:products_list")
 
     context = {
         "active_icon": "products",
         "product_status": Product.status.field.choices,
         "product": product,
-        "categories": Category.objects.all()
+        "categories": Category.objects.all(),
     }
 
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             # Save the POST arguments
             data = request.POST
 
             attributes = {
-                "name": data['name'],
-                "status": data['state'],
-                "description": data['description'],
-                "category": Category.objects.get(id=data['category']),
-                "price": data['price']
+                "name": data["name"],
+                "status": data["state"],
+                "description": data["description"],
+                "category": Category.objects.get(id=data["category"]),
+                "price": data["price"],
             }
 
             # Check if a product with the same attributes exists
             if Product.objects.filter(**attributes).exists():
-                messages.error(request, 'That product already exists!',
-                               extra_tags="warning")
-                return redirect('products:products_add')
+                messages.error(
+                    request, "That product already exists!", extra_tags="warning"
+                )
+                return redirect("products:products_add")
 
             # Get the product to update
 
-            Product.objects.filter(
-                id=product_id).update(**attributes)
+            Product.objects.filter(id=product_id).update(**attributes)
 
             product = Product.objects.get(id=product_id)
 
-            messages.success(request, '¡Product: ' + product.name +
-                             ' updated successfully!', extra_tags="success")
-            return redirect('products:products_list')
+            messages.success(
+                request,
+                "¡Product: " + product.name + " updated successfully!",
+                extra_tags="success",
+            )
+            return redirect("products:products_list")
         except Exception as e:
             messages.success(
-                request, 'There was an error during the update!', extra_tags="danger")
+                request, "There was an error during the update!", extra_tags="danger"
+            )
 
-            return redirect('products:products_list')
+            return redirect("products:products_list")
 
     return render(request, "products/products_update.html", context=context)
 
@@ -273,29 +297,31 @@ def products_delete_view(request: HttpRequest, product_id: str) -> HttpResponse:
         # Get the product to delete
         product = Product.objects.get(id=product_id)
         product.delete()
-        messages.success(request, '¡Product: ' + product.name +
-                         ' deleted!', extra_tags="success")
-        return redirect('products:products_list')
+        messages.success(
+            request, "¡Product: " + product.name + " deleted!", extra_tags="success"
+        )
+        return redirect("products:products_list")
     except Exception as e:
         messages.success(
-            request, 'An error occurred while deleting that product. It is already associated with a sale record.',
-            extra_tags="danger")
-        print(e)
-        return redirect('products:products_list')
+            request,
+            "An error occurred while deleting that product. It is already associated with a sale record.",
+            extra_tags="danger",
+        )
+
+        return redirect("products:products_list")
 
 
 def is_ajax(request: HttpRequest) -> bool:
-    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+    return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
 @login_required(login_url="/accounts/login/")
 def get_products_ajax_view(request: HttpRequest) -> HttpResponse:
-    if request.method == 'POST':
+    if request.method == "POST":
         if is_ajax(request=request):
             data = []
 
-            products = Product.objects.filter(
-                name__icontains=request.POST['term'])
+            products = Product.objects.filter(name__icontains=request.POST["term"])
             for product in products[0:10]:
                 item = product.to_json()
                 data.append(item)
