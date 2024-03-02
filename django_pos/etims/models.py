@@ -2,38 +2,6 @@ from django.db import models
 
 
 # Create your views here.
-"""
-CREATE TABLE "Country" 
-(
-	"countryId"	INTEGER,
-	"countryCode"	TEXT NOT NULL UNIQUE,
-	"countryName"	TEXT NOT NULL,
-	"currencyCode"	TEXT NOT NULL,
-	PRIMARY KEY("countryId" AUTOINCREMENT)
-);
-
-
-CREATE TABLE "Notice"
-(
-	"noticeNumber"	INTEGER,
-	"title"	TEXT NOT NULL,
-	"content"	TEXT NOT NULL,
-	"noticeURL"	TEXT NOT NULL,
-	"registrationDate"	DATETIME,
-	"read"	INTEGER DEFAULT 0,
-	PRIMARY KEY("noticeNumber" AUTOINCREMENT)
-);
-
-  CREATE TABLE "TaxType"
-(
-	"taxTypeId"	INTEGER,
-	"taxTypeName"	TEXT NOT NULL,
-	"taxTypeRate"	NUMERIC NOT NULL DEFAULT 0,
-	PRIMARY KEY("taxTypeId" AUTOINCREMENT)
-);
-"""
-
-
 class Country(models.Model):
     countryId = models.AutoField(primary_key=True)
     countryCode = models.CharField(max_length=10, unique=True)
@@ -94,5 +62,68 @@ class TaxType(models.Model):
         return {
             'taxTypeId': self.taxTypeId,
             'taxTypeName': self.taxTypeName,
-            'taxTypeRate': self.taxTypeRate
+            'taxTypeRate': self.taxTypeRate,
+            'taxTypeIdentifier': self.taxTypeIdentifier
+        }
+
+
+class PackagingUnits(models.Model):
+    packagingUnitId = models.AutoField(primary_key=True)
+    packagingUnitName = models.CharField(max_length=100)
+    packagingUnitDescription = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'PackagingUnits'
+        verbose_name_plural = 'Packaging Units'
+        verbose_name = 'Packaging Unit'
+
+    def __str__(self) -> str:
+        return self.packagingUnitName
+
+    def to_json(self):
+        return {
+            'packagingUnitId': self.packagingUnitId,
+            'packagingUnitName': self.packagingUnitName,
+            'packagingUnitDescription': self.packagingUnitDescription
+        }
+
+
+class UnitOfQuantity(models.Model):
+    unitOfQuantityId = models.AutoField(primary_key=True)
+    unitOfQuantityName = models.CharField(max_length=100)
+    unitOfQuantityDescription = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'UnitsOfQuantity'
+        verbose_name_plural = 'Unit Of Quantity'
+        verbose_name = 'Unit Of Quantity'
+
+    def __str__(self) -> str:
+        return self.unitOfQuantityName
+
+    def to_json(self):
+        return {
+            'unitOfQuantityId': self.unitOfQuantityId,
+            'unitOfQuantityName': self.unitOfQuantityName,
+            'unitOfQuantityDescription': self.unitOfQuantityDescription,
+        }
+class ItemClassCodes(models.Model):
+    itemClassLevel = models.IntegerField()
+    itemClassCodeName = models.CharField(max_length=100, unique=True)
+    taxType = models.ForeignKey(TaxType, models.PROTECT, db_column='taxType')
+    useYN = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'ItemClassCodes'
+        verbose_name_plural = 'Item Class Codes'
+        verbose_name = 'Item Class Code'
+    def __str__(self) -> str:
+        return self.itemClassCodeName
+
+    def to_json(self):
+        return {
+            'itemClassLevel': self.itemClassLevel,
+            'itemClassCodeName': self.itemClassCodeName,
+            'taxType': self.taxType.to_json(),
+            'useYN': self.useYN
         }
