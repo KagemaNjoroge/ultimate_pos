@@ -1,712 +1,568 @@
 {% load static%}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>POS</title>
-    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}"/>
 
-    <!--Styles-->
-    <link href="{% static 'css/pos.css' %}" rel="stylesheet" />
-      <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma/bulma.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<head>
+  <title>POS</title>
+  <link rel="icon" type="image/png" href="{% static 'favicon.png' %}" />
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--Styles-->
+  <link href="{% static 'css/pos.css' %}" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma/bulma.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  </head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-      <body class="lockscreen pace-done pace-done" style="height: auto">
-      <div class="pace pace-inactive pace-inactive">
-        <div
-          class="pace-progress"
-          data-progress-text="100%"
-          data-progress="99"
-          style="transform: translate3d(100%, 0px, 0px)"
-        >
-          <div class="pace-progress-inner"></div>
+</head>
+
+<body class="lockscreen pace-done pace-done" style="height: auto">
+  <div class="pace pace-inactive pace-inactive">
+    <div class="pace-progress" data-progress-text="100%" data-progress="99"
+      style="transform: translate3d(100%, 0px, 0px)">
+      <div class="pace-progress-inner"></div>
+    </div>
+    <div class="pace-activity"></div>
+  </div>
+
+  <div class="wrapper thetop" style="height: auto">
+    <div class="col-md-12 no-print pos-header">
+      <input type="hidden" id="pos_redirect_url" />
+      <div class="row">
+        <div class="col-md-6">
+          <div class="m-6 mt-5 hidden-xs">
+            <p>
+              <i class="fa fa-keyboard hover-q text-muted" title=""></i>
+            </p>
+          </div>
         </div>
-        <div class="pace-activity"></div>
-      </div>
+        <div class="col-md-6">
+          <a class="btn btn-info btn-flat m-6 btn-xs m-5 pull-right" data-original-title="Go Back"
+            href="{% url "pos:index" %}">
+            <strong><i class="fa fa-home" aria-hidden="true"></i></strong>
+          </a>
 
-      <div class="wrapper thetop" style="height: auto">
-        <div class="col-md-12 no-print pos-header">
-          <input type="hidden" id="pos_redirect_url" />
-          <div class="row">
-            <div class="col-md-6">
-              <div class="m-6 mt-5 hidden-xs">
-                <p>
-                  <i
-                    class="fa fa-keyboard hover-q text-muted"
-                    title=""
-                  ></i>
-                </p>
+          <button type="button" id="view_suspended_sales" title=""
+            class="btn bg-yellow btn-flat m-6 btn-xs m-5 btn-modal pull-right" data-href="{% url 'pos:index' %}">
+            <strong><i class="fa fa-pause-circle fa-lg"></i></strong>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="">
+      <section class="content no-print">
+        <input type="hidden" id="amount_rounding_method" value="" />
+
+        <div class="row mb-12">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-7 no-padding pr-12">
+                <div class="box box-solid mb-12">
+                  <div class="box-body pb-0">
+
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group" style="width: 100% !important">
+                          <div class="input-group">
+                            <span class="input-group-addon">
+                              <i class="fa fa-user"></i>
+                            </span>
+
+
+                            <span
+                              class="select2 select2-container select2-container--default select2-container--below select2-container--focus"
+                              dir="ltr" style="width: 100%"><span class="selection"><span
+                                  class="select2-selection select2-selection--single" role="combobox"><span
+                                    class="select2-selection__rendered" id="select2-customer_id-container"
+                                    title="cashload.pk">
+                                    <select id="customer_selected">
+                                      {% for customer in customers %}
+                                      <option value="{{ customer.id }}">{{ customer.get_full_name }}</option>
+                                      {% endfor %}
+                                    </select></span><span class="select2-selection__arrow" role="presentation"><b
+                                      role="presentation"></b></span></span></span><span class="dropdown-wrapper"
+                                aria-hidden="true"></span></span>
+                            <span class="input-group-btn">
+
+
+
+                              <button type="button" class="btn btn-default bg-white btn-flat add_new_customer"
+                                onclick="window.location=`{% url 'customers:customers_add' %}`">
+                                <i href="{% url 'customers:customers_add' %}"
+                                  class="fa fa-plus-circle text-primary fa-lg"></i>
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-8">
+                        <div class="form-group">
+                          <div class="input-group">
+                            <div class="input-group-btn">
+                              <button type="button" class="btn btn-default bg-white btn-flat"
+                                title="Configure product search">
+                                <i class="fa fa-barcode"></i>
+                              </button>
+                            </div>
+                            <input class="form-control mousetrap ui-autocomplete-input" id="search_product"
+                              placeholder="Enter Product name / SKU / Scan bar code" autofocus="" name="search_product"
+                              type="text" autocomplete="off" />
+                            <span class="input-group-btn">
+
+
+                              <button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product">
+                                <i class="fa fa-plus-circle text-primary fa-lg"></i>
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-sm-12 pos_product_div" style="min-height: 333px; max-height: 333px">
+
+                        <input type="hidden" id="product_row_count" value="16" />
+                        <table class="table table-condensed table-bordered table-striped table-responsive"
+                          id="pos_table">
+                          <thead>
+                            <tr>
+                              <th class="tex-center col-md-4">
+                                Product
+                                <i class="fa fa-info-circle text-info hover-q no-print" aria-hidden="true"
+                                  data-trigger="hover"></i>
+                              </th>
+                              <th class="text-center col-md-3">
+                                Quantity
+                              </th>
+                              <th class="text-center col-md-2">
+                                Price inc. tax
+                              </th>
+                              <th class="text-center col-md-2">
+                                Subtotal
+                              </th>
+                              <th class="text-center">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="show-cart">
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <table class="table table-condensed">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <b>Items:</b>&nbsp;
+                                <span class="total_quantity total-count"></span>
+                              </td>
+                              <td>
+                                <b>Total:</b> &nbsp;
+                                <span class="price_total total-cart"></span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <b>
+                                  Discount
+                                  <i class="fa fa-info-circle text-info hover-q no-print" aria-hidden="true"></i>
+                                  (-):
+                                  <i class="fas fa-edit cursor-pointer" id="pos-edit-discount"></i>
+                                  <span id="total_discount">435.63</span>
+
+                                </b>
+                              </td>
+                              <td class="">
+                                <span>
+                                  <b>Order Tax(+):
+                                    <i class="fa fa-info-circle text-info hover-q no-print" aria-hidden="true"
+                                      title=""></i></b>
+                                  <i class="fas fa-edit cursor-pointer" title="Edit Order Tax" aria-hidden="true"
+                                    data-toggle="modal" data-target="#posEditOrderTaxModal" id="pos-edit-tax"></i>
+                                  <span id="order_tax">0.00</span>
+
+                                </span>
+                              </td>
+
+                            </tr>
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+
+                    <div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-5 no-padding">
+                <div class="row">
+                  <div class="col-md-6">
+                    <span class="select2 select2-container select2-container--default select2-container--below"
+                      dir="ltr" style="width: 100%"><span class="selection"><span
+                          class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true"
+                          aria-expanded="false" tabindex="0"
+                          aria-labelledby="select2-product_category-container"><select
+                            style="width: 100%; height: 100%;" class="selection form-select">
+                            {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+
+                          </select></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+                  </div>
+                </div>
+                <br />
+                <div class="row">
+                  <input type="hidden" id="suggestion_page" value="4" />
+                  <div class="col-md-12">
+                    <div class="eq-height-row" id="product_list_body">
+
+                      {% for prod in products %}
+                      <div data-name="{{ prod.name }}" data-price="{{ prod.price }}" data-id="{{ prod.id }}"
+                        class="col-md-3 col-xs-4 product_list no-print add-to-cart">
+                        <div class="product_box" data-original-title="{{ prod.name }}">
+                          <div class="image-container" style="background-image: url(
+                                                                      {{ prod.image.url }}
+                                                                      );
+                                                                      background-repeat: no-repeat; background-position: center;
+                                                                      background-size: contain;"></div>
+
+                          <div class="text_div">
+                            <small class="text text-muted">{{ prod.name }}
+                            </small>
+
+                            <small class="text-muted">
+                              <strong>{{ prod.price }}</strong>
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+
+                    </div>
+                  </div>
+                  <div class="col-md-12 text-center" id="suggestion_page_loader" style="display: none">
+                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="col-md-6">
-              <a
-                class="btn btn-info btn-flat m-6 btn-xs m-5 pull-right"
-                data-original-title="Go Back"
-                href="{% url "pos:index" %}"
-              >
-                <strong><i class="fa fa-home" aria-hidden="true"></i></strong>
-              </a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="pos-form-actions">
+            <div class="col-md-12">
+              <button type="button" class="btn bg-red btn-default btn-flat no-print pos-express-finalize"
+                data-pay_method="suspend" title="Suspend Sales (pause)">
+                <i class="fas fa-pause" aria-hidden="true"></i>
+                Suspend
+              </button>
 
-              <button
-                type="button"
-                id="view_suspended_sales"
-                title=""
-                class="btn bg-yellow btn-flat m-6 btn-xs m-5 btn-modal pull-right"
-                data-href="{% url 'pos:index' %}"
-              >
-                <strong><i class="fa fa-pause-circle fa-lg"></i></strong>
+              <button type="button" class="btn bg-maroon btn-default btn-flat no-print pos-express-finalize"
+                data-pay_method="card" title="Express checkout using card">
+                <i class="fas fa-credit-card" aria-hidden="true"></i> Card
+              </button>
+
+              <button type="button" class="btn bg-navy btn-default btn-flat no-print" id="pos-finalize"
+                title="Checkout using multiple payment methods">
+                <i class="fas fa-money-check-alt" aria-hidden="true"></i>
+                Multiple Pay
+              </button>
+
+              <button type="button" class="btn btn-success btn-flat no-print pos-express-finalize"
+                data-pay_method="cash" id="complete_payment" title="Mark complete paid &amp; checkout">
+                <i class="fas fa-money-bill-alt" aria-hidden="true"></i>
+                Cash
+              </button>
+              &nbsp;&nbsp;
+              <b>Total Payable:</b>
+              <input type="hidden" name="final_total" id="final_total_input" value="3,920.63" />
+              <span id="total_payable" class="text-success lead text-bold total-cart"></span>
+
+              &nbsp;<button type="button" class="btn btn-danger btn-flat clear-cart">
+                <i class="fas fa-window-close "></i> Cancel
+              </button>
+              <button style="margin-right: 10px" type="button" class="btn btn-primary btn-flat pull-right"
+                id="recent-transactions">
+                <i class="fas fa-clock"></i> Recent Transactions
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Content Wrapper. Contains page content -->
-        <div class="">
-          <section class="content no-print">
-            <input type="hidden" id="amount_rounding_method" value="" />
 
-              <div class="row mb-12">
-                  <div class="col-md-12">
-                      <div class="row">
-                          <div class="col-md-7 no-padding pr-12">
-                              <div class="box box-solid mb-12">
-                                  <div class="box-body pb-0">
+      </section>
 
-                                      <div class="row">
-                                          <div class="col-md-4">
-                                              <div
-                                                      class="form-group"
-                                                      style="width: 100% !important"
-                                              >
-                                                  <div class="input-group">
-                                  <span class="input-group-addon">
-                                    <i class="fa fa-user"></i>
-                                  </span>
+    </div>
 
+  </div>
 
-                                                      <span
-                                                              class="select2 select2-container select2-container--default select2-container--below select2-container--focus"
-                                                              dir="ltr"
-                                                              style="width: 100%"
-                                                      ><span class="selection"
-                                                      ><span
-                                                              class="select2-selection select2-selection--single"
-                                                              role="combobox"
+  <div>
 
-                                                      ><span
-                                                              class="select2-selection__rendered"
-                                                              id="select2-customer_id-container"
-                                                              title="cashload.pk"
-                                                      >
-                                                          <select id="customer_selected">
-                                      {% for customer in customers %}
-                                          <option value="{{ customer.id }}">{{ customer.get_full_name }}</option>
-                                      {% endfor %}
-                                  </select></span
-                                                      ><span
-                                                              class="select2-selection__arrow"
-                                                              role="presentation"
-                                                      ><b
-                                                              role="presentation"
-                                                      ></b></span></span></span
-                                                      ><span
-                                                              class="dropdown-wrapper"
-                                                              aria-hidden="true"
-                                                      ></span
-                                                      ></span>
-                                                      <span class="input-group-btn">
+  </div>
 
 
 
-                                    <button
-                                            type="button"
-                                            class="btn btn-default bg-white btn-flat add_new_customer"
-                                            onclick="window.location=`{% url 'customers:customers_add' %}`"
-
-                                    >
-                                      <i
-                                              href="{% url 'customers:customers_add' %}"
-                                              class="fa fa-plus-circle text-primary fa-lg"
-                                      ></i>
-                                    </button>
-                                  </span>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                          <div class="col-md-8">
-                                              <div class="form-group">
-                                                  <div class="input-group">
-                                                      <div class="input-group-btn">
-                                                          <button
-                                                                  type="button"
-                                                                  class="btn btn-default bg-white btn-flat"
-
-                                                                  title="Configure product search"
-                                                          >
-                                                              <i class="fa fa-barcode"></i>
-                                                          </button>
-                                                      </div>
-                                                      <input
-                                                              class="form-control mousetrap ui-autocomplete-input"
-                                                              id="search_product"
-                                                              placeholder="Enter Product name / SKU / Scan bar code"
-                                                              autofocus=""
-                                                              name="search_product"
-                                                              type="text"
-                                                              autocomplete="off"
-                                                      />
-                                                      <span class="input-group-btn">
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
 
-                                    <button
-                                            type="button"
-                                            class="btn btn-default bg-white btn-flat pos_add_quick_product"
-                                    >
-                                      <i
-                                              class="fa fa-plus-circle text-primary fa-lg"
-                                      ></i>
-                                    </button>
-                                  </span>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                      </div>
+  <script>
+    let shoppingCart = (function () {
+      let cart = [];
 
-                                      <div class="row">
-                                          <div
-                                                  class="col-sm-12 pos_product_div"
-                                                  style="min-height: 333px; max-height: 333px"
-                                          >
-
-                                              <input
-                                                      type="hidden"
-                                                      id="product_row_count"
-                                                      value="16"
-                                              />
-                                              <table
-                                                      class="table table-condensed table-bordered table-striped table-responsive"
-                                                      id="pos_table"
-                                              >
-                                                  <thead>
-                                                  <tr>
-                                                      <th class="tex-center col-md-4">
-                                                          Product
-                                                          <i
-                                                                  class="fa fa-info-circle text-info hover-q no-print"
-                                                                  aria-hidden="true"
-                                                                  data-trigger="hover"
-                                                          ></i>
-                                                      </th>
-                                                      <th class="text-center col-md-3">
-                                                          Quantity
-                                                      </th>
-                                                      <th class="text-center col-md-2">
-                                                          Price inc. tax
-                                                      </th>
-                                                      <th class="text-center col-md-2">
-                                                          Subtotal
-                                                      </th>
-                                                      <th class="text-center">
-                                                          <i
-                                                                  class="fas fa-times"
-                                                                  aria-hidden="true"
-                                                          ></i>
-                                                      </th>
-                                                  </tr>
-                                                  </thead>
-                                                  <tbody class="show-cart">
-                                                  </tbody>
-                                              </table>
-                                          </div>
-                                      </div>
-                                      <div class="row">
-                                          <div class="col-md-12">
-                                              <table class="table table-condensed">
-                                                  <tbody>
-                                                  <tr>
-                                                      <td>
-                                                          <b>Items:</b>&nbsp;
-                                                          <span class="total_quantity total-count"></span>
-                                                      </td>
-                                                      <td>
-                                                          <b>Total:</b> &nbsp;
-                                                          <span class="price_total total-cart"></span>
-                                                      </td>
-                                                  </tr>
-                                                  <tr>
-                                                      <td>
-                                                          <b>
-                                                              Discount
-                                                              <i
-                                                                      class="fa fa-info-circle text-info hover-q no-print"
-                                                                      aria-hidden="true"
-                                                              ></i>
-                                                              (-):
-                                                              <i
-                                                                      class="fas fa-edit cursor-pointer"
-                                                                      id="pos-edit-discount"
-                                                              ></i>
-                                                              <span id="total_discount">435.63</span>
-
-                                                          </b>
-                                                      </td>
-                                                      <td class="">
-                                      <span>
-                                        <b
-                                        >Order Tax(+):
-                                          <i
-                                                  class="fa fa-info-circle text-info hover-q no-print"
-                                                  aria-hidden="true"
-                                                  title=""
-                                          ></i
-                                          ></b>
-                                        <i
-                                                class="fas fa-edit cursor-pointer"
-                                                title="Edit Order Tax"
-                                                aria-hidden="true"
-                                                data-toggle="modal"
-                                                data-target="#posEditOrderTaxModal"
-                                                id="pos-edit-tax"
-                                        ></i>
-                                        <span id="order_tax">0.00</span>
-
-                                      </span>
-                                                      </td>
-
-                                                  </tr>
-
-                                                  </tbody>
-                                              </table>
-                                          </div>
-                                      </div>
-
-
-                                      <div
-
-                                      >
-
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-5 no-padding">
-                              <div class="row">
-                                  <div class="col-md-6">
-                          <span
-                                  class="select2 select2-container select2-container--default select2-container--below"
-                                  dir="ltr"
-                                  style="width: 100%"
-                          ><span class="selection"
-                          ><span
-                                  class="select2-selection select2-selection--single"
-                                  role="combobox"
-                                  aria-haspopup="true"
-                                  aria-expanded="false"
-                                  tabindex="0"
-                                  aria-labelledby="select2-product_category-container"
-
-                          ><select style="width: 100%; height: 100%;" class="selection form-select">
-                                  {% for category in categories %}
-                                      <option value="{{ category.id }}">{{ category.name }}</option>
-                                  {% endfor %}
-
-                                </select></span></span
-                          ><span
-                                  class="dropdown-wrapper"
-                                  aria-hidden="true"
-                          ></span
-                          ></span>
-                                  </div>
-                              </div>
-                              <br />
-                              <div class="row">
-                                  <input type="hidden" id="suggestion_page" value="4" />
-                                  <div class="col-md-12">
-                                      <div class="eq-height-row" id="product_list_body">
-
-                                          {% for prod in products %}
-                                              <div
-                                                      data-name="{{ prod.name }}" data-price="{{ prod.price }}"
-                                                      data-id="{{ prod.id }}"
-                                                      class="col-md-3 col-xs-4 product_list no-print add-to-cart"
-                                              >
-                                                  <div
-                                                          class="product_box"
-                                                          data-original-title="{{ prod.name }}"
-                                                  >
-                                                      <div
-                                                              class="image-container"
-                                                              style="background-image: url(
-                                                                      {{ prod.image.url }}
-                                                                      );
-                                                                      background-repeat: no-repeat; background-position: center;
-                                                                      background-size: contain;"
-                                                      ></div>
-
-                                                      <div class="text_div">
-                                                          <small class="text text-muted"
-                                                          >{{ prod.name }}
-                                                          </small>
-
-                                                          <small class="text-muted">
-                                                              <strong>{{ prod.price }}</strong>
-                                                          </small>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                          {% endfor %}
-
-                                      </div>
-                                  </div>
-                                  <div
-                                          class="col-md-12 text-center"
-                                          id="suggestion_page_loader"
-                                          style="display: none"
-                                  >
-                                      <i class="fa fa-spinner fa-spin fa-2x"></i>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="row">
-                  <div class="pos-form-actions">
-                      <div class="col-md-12">
-                          <button
-                                  type="button"
-                                  class="btn bg-red btn-default btn-flat no-print pos-express-finalize"
-                                  data-pay_method="suspend"
-                                  title="Suspend Sales (pause)"
-                          >
-                              <i class="fas fa-pause" aria-hidden="true"></i>
-                              Suspend
-                          </button>
-
-                          <button
-                                  type="button"
-                                  class="btn bg-maroon btn-default btn-flat no-print pos-express-finalize"
-                                  data-pay_method="card"
-                                  title="Express checkout using card"
-                          >
-                              <i class="fas fa-credit-card" aria-hidden="true"></i> Card
-                          </button>
-
-                          <button
-                                  type="button"
-                                  class="btn bg-navy btn-default btn-flat no-print"
-                                  id="pos-finalize"
-                                  title="Checkout using multiple payment methods"
-                          >
-                              <i class="fas fa-money-check-alt" aria-hidden="true"></i>
-                              Multiple Pay
-                          </button>
-
-                          <button
-                                  type="button"
-                                  class="btn btn-success btn-flat no-print pos-express-finalize"
-                                  data-pay_method="cash"
-                                  id="complete_payment"
-                                  title="Mark complete paid &amp; checkout"
-                          >
-                              <i class="fas fa-money-bill-alt" aria-hidden="true"></i>
-                              Cash
-                          </button>
-                          &nbsp;&nbsp;
-                          <b>Total Payable:</b>
-                          <input
-                                  type="hidden"
-                                  name="final_total"
-                                  id="final_total_input"
-                                  value="3,920.63"
-                          />
-                          <span id="total_payable" class="text-success lead text-bold total-cart"
-                          ></span
-                          >
-
-                          &nbsp;<button
-                              type="button"
-                              class="btn btn-danger btn-flat clear-cart"
-
-                      >
-                          <i class="fas fa-window-close "></i> Cancel
-                      </button>
-                          <button style="margin-right: 10px"
-                                  type="button"
-                                  class="btn btn-primary btn-flat pull-right"
-                                  id="recent-transactions"
-                          >
-                              <i class="fas fa-clock"></i> Recent Transactions
-                          </button>
-                      </div>
-                  </div>
-              </div>
-
-
-          </section></div>
-
-      </div>
-
-      <div></div>
-
-
-
-    <script>
-      let shoppingCart = (function () {
-  let cart = [];
-
-  // Constructor
-  function Item(name, price, count, id) {
-    this.name = name;
-    this.price = price;
-    this.count = count;
-    this.id = id;
-  }
-
-  // Save cart
-  function saveCart() {
-    sessionStorage.setItem("shoppingCart", JSON.stringify(cart));
-  }
-
-  // Load cart
-  function loadCart() {
-    cart = JSON.parse(sessionStorage.getItem("shoppingCart"));
-  }
-  if (sessionStorage.getItem("shoppingCart") != null) {
-    loadCart();
-  }
-
-  let obj = {};
-
-  // Add to cart
-  obj.addItemToCart = function (name, price, count, id) {
-    for (let item in cart) {
-      if (cart[item].name === name) {
-        cart[item].count++;
-        saveCart();
-        return;
+      // Constructor
+      function Item(name, price, count, id) {
+        this.name = name;
+        this.price = price;
+        this.count = count;
+        this.id = id;
       }
-    }
-    let item = new Item(name, price, count, id);
-    cart.push(item);
-    saveCart();
-  };
-  // Set count from item
-  obj.setCountForItem = function (name, count) {
-    for (let i in cart) {
-      if (cart[i].name === name) {
-        cart[i].count = count;
-        break;
+
+      // Save cart
+      function saveCart() {
+        sessionStorage.setItem("shoppingCart", JSON.stringify(cart));
       }
-    }
-  };
-  // Remove item from cart
-  obj.removeItemFromCart = function (name) {
-    for (let item in cart) {
-      if (cart[item].name === name) {
-        cart[item].count--;
-        if (cart[item].count === 0) {
-          cart.splice(item, 1);
-        }
-        break;
+
+      // Load cart
+      function loadCart() {
+        cart = JSON.parse(sessionStorage.getItem("shoppingCart"));
       }
-    }
-    saveCart();
-  };
-
-  // Remove all items from cart
-  obj.removeItemFromCartAll = function (name) {
-    for (let item in cart) {
-      if (cart[item].name === name) {
-        cart.splice(item, 1);
-        break;
+      if (sessionStorage.getItem("shoppingCart") != null) {
+        loadCart();
       }
-    }
-    saveCart();
-  };
 
-  // Clear cart
-  obj.clearCart = function () {
-    cart = [];
-    saveCart();
-  };
+      let obj = {};
 
-  // Count cart
-  obj.totalCount = function () {
-    let totalCount = 0;
-    for (let item in cart) {
-      totalCount += cart[item].count;
-    }
-    return totalCount;
-  };
-
-  // Total cart
-  obj.totalCart = function () {
-    let totalCart = 0;
-    for (let item in cart) {
-      totalCart += cart[item].price * cart[item].count;
-    }
-    return Number(totalCart.toFixed(2));
-  };
-
-  // List cart
-  obj.listCart = function () {
-    let cartCopy = [];
-    for (let i in cart) {
-      let item = cart[i];
-      let itemCopy = {};
-      for (let p in item) {
-        itemCopy[p] = item[p];
-      }
-      itemCopy.total = Number(item.price * item.count).toFixed(2);
-      cartCopy.push(itemCopy);
-    }
-    return cartCopy;
-  };
-
-
-  return obj;
-})();
-
-$(".add-to-cart").click(function (event) {
-  event.preventDefault();
-  let name = $(this).data("name");
-  let id = $(this).data('id');
-  let price = Number($(this).data("price"));
-  shoppingCart.addItemToCart(name, price, 1, id);
-  displayCart();
-});
-
-// Clear items
-$(".clear-cart").click(function () {
-  shoppingCart.clearCart();
-  displayCart();
-});
-
-function displayCart() {
-  let cartArray = shoppingCart.listCart();
-  let output = "";
-  for (let i in cartArray) {
-output +=
-  "<tr>" +
-  "<td>" +
-  cartArray[i].name +
-  "</td>" +
-      "<td><div class='input-group'><button style=' margin-right: 2px' class='minus-item input-group-addon btn btn-primary' data-name='" +
-  cartArray[i].name +
-  "'>-</button>" +
-  "<input type='number' style='width: 50%; margin-right: 4px' class='item-count form-control' data-name='" +
-  cartArray[i].name +
-  "' value='" +
-  cartArray[i].count +
-  "'>" +
-  "<button class='plus-item btn btn-primary input-group-addon' data-name='" +
-  cartArray[i].name +
-  "'>+</button></div></td>"+
-  "<td>" +
-  cartArray[i].price +
-  "</td>" +
-
-  "<td>" +
-  cartArray[i].total +
-  "</td>" +     "<td><button class='delete-item btn btn-danger' data-name='" +
-  cartArray[i].name +
-  "'>X</button></td>"+
-
-  "</tr>";
-
-
-  }
-  $(".show-cart").html(output);
-  $(".total-cart").html(shoppingCart.totalCart());
-  $(".total-count").html(shoppingCart.totalCount());
-}
-
-// Delete item button
-
-$(".show-cart").on("click", ".delete-item", function (event) {
-  let name = $(this).data("name");
-  shoppingCart.removeItemFromCartAll(name);
-  displayCart();
-});
-
-// -1
-$(".show-cart").on("click", ".minus-item", function (event) {
-  let name = $(this).data("name");
-  shoppingCart.removeItemFromCart(name);
-  displayCart();
-});
-// +1
-$(".show-cart").on("click", ".plus-item", function (event) {
-  let name = $(this).data("name");
-  shoppingCart.addItemToCart(name);
-  displayCart();
-});
-
-$(".show-cart").on("change", ".item-count", function (event) {
-  let name = $(this).data("name");
-  let count = Number($(this).val());
-  shoppingCart.setCountForItem(name, count);
-  displayCart();
-});
-
-displayCart();
-function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-              const cookies = document.cookie.split(';');
-              for (let i = 0; i < cookies.length; i++) {
-                  const cookie = cookies[i].trim();
-                  // Does this cookie string begin with the name we want?
-                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                      break;
-                  }
-              }
+      // Add to cart
+      obj.addItemToCart = function (name, price, count, id) {
+        for (let item in cart) {
+          if (cart[item].name === name) {
+            cart[item].count++;
+            saveCart();
+            return;
           }
-
-          return cookieValue;
-      }
-      
-          function roundTo(n, digits) {
-        if (digits === undefined) {
-            digits = 0;
         }
+        let item = new Item(name, price, count, id);
+        cart.push(item);
+        saveCart();
+      };
+      // Set count from item
+      obj.setCountForItem = function (name, count) {
+        for (let i in cart) {
+          if (cart[i].name === name) {
+            cart[i].count = count;
+            break;
+          }
+        }
+      };
+      // Remove item from cart
+      obj.removeItemFromCart = function (name) {
+        for (let item in cart) {
+          if (cart[item].name === name) {
+            cart[item].count--;
+            if (cart[item].count === 0) {
+              cart.splice(item, 1);
+            }
+            break;
+          }
+        }
+        saveCart();
+      };
 
-        let multiplicator = Math.pow(10, digits);
-        n = parseFloat((n * multiplicator).toFixed(11));
-        return Math.round(n) / multiplicator;
+      // Remove all items from cart
+      obj.removeItemFromCartAll = function (name) {
+        for (let item in cart) {
+          if (cart[item].name === name) {
+            cart.splice(item, 1);
+            break;
+          }
+        }
+        saveCart();
+      };
+
+      // Clear cart
+      obj.clearCart = function () {
+        cart = [];
+        saveCart();
+      };
+
+      // Count cart
+      obj.totalCount = function () {
+        let totalCount = 0;
+        for (let item in cart) {
+          totalCount += cart[item].count;
+        }
+        return totalCount;
+      };
+
+      // Total cart
+      obj.totalCart = function () {
+        let totalCart = 0;
+        for (let item in cart) {
+          totalCart += cart[item].price * cart[item].count;
+        }
+        return Number(totalCart.toFixed(2));
+      };
+
+      // List cart
+      obj.listCart = function () {
+        let cartCopy = [];
+        for (let i in cart) {
+          let item = cart[i];
+          let itemCopy = {};
+          for (let p in item) {
+            itemCopy[p] = item[p];
+          }
+          itemCopy.total = Number(item.price * item.count).toFixed(2);
+          cartCopy.push(itemCopy);
+        }
+        return cartCopy;
+      };
+
+
+      return obj;
+    })();
+
+    $(".add-to-cart").click(function (event) {
+      event.preventDefault();
+      let name = $(this).data("name");
+      let id = $(this).data('id');
+      let price = Number($(this).data("price"));
+      shoppingCart.addItemToCart(name, price, 1, id);
+      displayCart();
+    });
+
+    // Clear items
+    $(".clear-cart").click(function () {
+      shoppingCart.clearCart();
+      displayCart();
+    });
+
+    function displayCart() {
+      let cartArray = shoppingCart.listCart();
+      let output = "";
+      for (let i in cartArray) {
+        output +=
+          "<tr>" +
+          "<td>" +
+          cartArray[i].name +
+          "</td>" +
+          "<td><div class='input-group'><button style=' margin-right: 2px' class='minus-item input-group-addon btn btn-primary' data-name='" +
+          cartArray[i].name +
+          "'>-</button>" +
+          "<input type='number' style='width: 50%; margin-right: 4px' class='item-count form-control' data-name='" +
+          cartArray[i].name +
+          "' value='" +
+          cartArray[i].count +
+          "'>" +
+          "<button class='plus-item btn btn-primary input-group-addon' data-name='" +
+          cartArray[i].name +
+          "'>+</button></div></td>" +
+          "<td>" +
+          cartArray[i].price +
+          "</td>" +
+
+          "<td>" +
+          cartArray[i].total +
+          "</td>" + "<td><button class='delete-item btn btn-danger' data-name='" +
+          cartArray[i].name +
+          "'>X</button></td>" +
+
+          "</tr>";
+
+
+      }
+      $(".show-cart").html(output);
+      $(".total-cart").html(shoppingCart.totalCart());
+      $(".total-count").html(shoppingCart.totalCount());
     }
 
-$('#complete_payment').on('click', async function (event) {
-    let customer = document.getElementById('customer_selected').value;
-    console.log(customer)
-    let paid = 0;
-    let items = JSON.parse(sessionStorage.getItem("shoppingCart"));
+    // Delete item button
 
+    $(".show-cart").on("click", ".delete-item", function (event) {
+      let name = $(this).data("name");
+      shoppingCart.removeItemFromCartAll(name);
+      displayCart();
+    });
 
-    let html = ''
-    for(let i=0;i<items.length;i++){
-        html += `<tr><th scope="row">`+i+`</th><td>`+items[i]['name']+`</td><td>`+items[i]['count']+`</td><td>`+items[i]['price']+`</td></tr>`
+    // -1
+    $(".show-cart").on("click", ".minus-item", function (event) {
+      let name = $(this).data("name");
+      shoppingCart.removeItemFromCart(name);
+      displayCart();
+    });
+    // +1
+    $(".show-cart").on("click", ".plus-item", function (event) {
+      let name = $(this).data("name");
+      shoppingCart.addItemToCart(name);
+      displayCart();
+    });
+
+    $(".show-cart").on("change", ".item-count", function (event) {
+      let name = $(this).data("name");
+      let count = Number($(this).val());
+      shoppingCart.setCountForItem(name, count);
+      displayCart();
+    });
+
+    displayCart();
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+
+      return cookieValue;
     }
 
+    function roundTo(n, digits) {
+      if (digits === undefined) {
+        digits = 0;
+      }
 
-    Swal.fire({
+      let multiplicator = Math.pow(10, digits);
+      n = parseFloat((n * multiplicator).toFixed(11));
+      return Math.round(n) / multiplicator;
+    }
+
+    $('#complete_payment').on('click', async function (event) {
+      let customer = document.getElementById('customer_selected').value;
+      console.log(customer)
+      let paid = 0;
+      let items = JSON.parse(sessionStorage.getItem("shoppingCart"));
+
+
+      let html = ''
+      for (let i = 0; i < items.length; i++) {
+        html += `<tr><th scope="row">` + i + `</th><td>` + items[i]['name'] + `</td><td>` + items[i]['count'] + `</td><td>` + items[i]['price'] + `</td></tr>`
+      }
+
+
+      Swal.fire({
         title: 'Cart Summary',
         width: '55em',
-        
-        confirmButtonText:"Create Bill",
+
+        confirmButtonText: "Create Bill",
         html: `
             <div class="container text-center"><div><table class="table table-borderless table-hover">
             <thead>
@@ -717,7 +573,7 @@ $('#complete_payment').on('click', async function (event) {
             <th scope="col">Total</th>
             </tr>
             </thead>
-            <tbody>`+html+`
+            <tbody>`+ html + `
             
             </tbody>
             </table>` + `
@@ -754,63 +610,72 @@ $('#complete_payment').on('click', async function (event) {
         showLoaderOnConfirm: true,
 
         allowOutsideClick: true,
-        preConfirm: async ()=>{
-                let ch = document.getElementById('change').value;
+        preConfirm: async () => {
+          let ch = document.getElementById('change').value;
 
-                let amount_payed = document.getElementById('amount_paid_').value;
-                
-                let response = await fetch('{% url 'pos:pos' %}', {
-                method: 'POST',
-                headers: {
-                        "X-CSRFToken": getCookie('csrftoken'),
-                        'Content-Type': 'application/json',
-                    },
-                body: JSON.stringify({
-                  "customer": customer,
-                  "items": items,
-                  "amount_paid": amount_payed,
-                  "grand_total": shoppingCart.totalCart()
-                
-                })
-                })
-                let body = await response.json();
-                // check if an error occurred on the server
-                if(body['status']==="success"){
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'Bill Created',
-                        icon: 'success',
-                        confirmButtonText: 'Print receipt',
-                        allowOutsideClick: false,
-                        cancelButtonText: 'Close',
-                        
-                    }).then((result) => {
-                        // clear the cart
-                        shoppingCart.clearCart();
-                        if (result.isConfirmed) {
-                            window.location.href = "/sales/pdf/"+body['sale_id'];
-                        }
-                        //
-                        })
-                    
+          let amount_payed = document.getElementById('amount_paid_').value;
 
-                     }
-                else{
-                    Swal.fire({
-                        title: 'Error',
-                        text: `An error occurred: ${body["error_message"]}. Please try again.`,
-                        icon: 'error',
-                        confirmButtonText: 'Ok'
-                    })
-                }
+          let response = await fetch('{% url 'pos:pos' %}', {
+            method: 'POST',
+            headers: {
+              "X-CSRFToken": getCookie('csrftoken'),
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              "customer": customer,
+              "items": items,
+              "amount_paid": amount_payed,
+              "grand_total": shoppingCart.totalCart()
+
+            })
+          })
+          let body = await response.json();
+          // check if an error occurred on the server
+          if (body['status'] === "success") {
+            Swal.fire({
+              position: 'bottom-end',
+              width: '20em',
+              heightAuto: false,
+              title: 'Success',
+              text: 'Bill Created',
+              icon: 'success',
+              confirmButtonText: 'Print receipt',
+              allowOutsideClick: true,
+              cancelButtonText: 'Close',
+
+            }).then((result) => {
+              // clear the cart
+              shoppingCart.clearCart();
+
+
+
+
+              if (result.isConfirmed) {
+                window.location.href = "/sales/pdf/" + body['sale_id'];
+
+              }
+              //
+            })
+
+
+          }
+          else {
+            Swal.fire({
+              title: 'Error',
+              text: `An error occurred: ${body["error_message"]}. Please try again.`,
+              icon: 'error',
+              confirmButtonText: 'Ok'
+            })
+          }
         }
 
-})
+      })
 
-})
+    })
 
-    </script>
+  </script>
 
 
-  </body>
+</body>
+
 </html>
