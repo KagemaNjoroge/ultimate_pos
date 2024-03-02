@@ -177,13 +177,19 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
         # Save the POST arguments
         data = request.POST
 
+        track_inventory = data["track_inventory"]
+        if track_inventory == "on":
+            track_inventory = True
+        else:
+            track_inventory = False
+
         attributes = {
             "name": data["name"],
             "status": data["state"],
             "description": data["description"],
             "category": Category.objects.get(id=data["category"]),
             "price": data["price"],
-            "track_inventory": data["track_inventory"],
+            "track_inventory": track_inventory,
         }
 
         # Check if a product with the same attributes exists
