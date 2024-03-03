@@ -1,0 +1,91 @@
+{% extends "pos/base.html" %}
+
+
+{% block title %}Upload Excel{% endblock title %}
+
+
+{% block stylesheets %}{% endblock stylesheets %}
+
+
+{% block heading %}Upload Excel{% endblock heading %}
+
+
+{% block content %}
+
+<div class="row ml-0 mb-3">
+    <a href="{% url 'products:products_list' %}">
+        <button type="button" class="btn btn-info font-weight-bold">
+            <i class="fas fa-long-arrow-alt-left mr-2"></i>
+            Go back
+        </button>
+    </a>
+</div>
+<!--Structure of the excel file, also a download template button-->
+<div class="row">
+    <div class="card col-md-6">
+        <div class="card-body">
+            <h5 class="card-title"><strong>Structure of the Excel file</strong></h5>
+            <p class="card-text">
+            <ul>
+                <li>Column A: Name</li>
+                <li>Column B: Description</li>
+                <li>Column C: Price</li>
+                <li>Column D: Track In Inventory</li>
+
+                <ul>
+
+                    <li>1 - track</li>
+                    <li>0 - don't track</li>
+                </ul>
+
+                <li>Column E: Category</li>
+                <ul>
+                    <li>Use a category ID from the ones listed below</li>
+                </ul>
+                <li>Column F: Status</li>
+                <ul>
+                    <li>1 - active</li>
+                    <li>0 - inactive</li>
+                </ul>
+            </ul>
+            <!--Available categories-->
+            <p><strong>Available categories:</strong></p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{ category.id }}</td>
+                        <td>{{ category.name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </p>
+            <a href="{% url 'products:download_template' %}" class="btn btn-primary">Download template</a>
+        </div>
+    </div>
+
+    <div class="card col-md-4 ml-3">
+        <div class="card-body">
+            <form action="{% url 'products:upload_excel' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="file" class="form-label">Upload Excel</label>
+                    <input type="file" name="excel_file" class="form-control" id="file" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}{% endblock javascripts %}
