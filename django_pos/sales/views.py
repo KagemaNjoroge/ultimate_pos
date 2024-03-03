@@ -1,3 +1,4 @@
+from re import I
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpRequest, FileResponse
@@ -72,15 +73,12 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
                     sale_detail_new = SaleDetail.objects.create(**detail_attributes)
                     sale_detail_new.save()
                     # update inventory
-                    if product.track_inventory:
-                        # check if it exists in inventory
-                        inventory = Inventory.objects.filter(product=product)
-                        if inventory.exists():
-                            inventory = inventory.first()
-                            inventory.quantity -= int(detail_attributes["quantity"])
-                            inventory.save()
-                        else:
-                            pass
+                    if sale_detail_new.product.track_inventory:
+                        inv = Inventory.objects.filter(product=sale_detail_new.product)
+                        if inv.exists():
+                            inv = inv.first()
+                            inv.quantity -= sale_detail_new.quantity
+                            inv.save()
 
                 messages.success(
                     request, "Sale created successfully!", extra_tags="success"
