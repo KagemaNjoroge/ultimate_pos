@@ -52,18 +52,30 @@ def index(request: HttpRequest) -> HttpResponse:
 
     # AVG per month
     avg_month = format(sum(monthly_earnings) / 12, ".2f")
-
-    # Top-selling products
-    top_products = Product.objects.annotate(
-        quantity_sum=Sum("saledetail__quantity")
-    ).order_by("-quantity_sum")[:3]
-
+    prods = Product.objects.all()
+    counts = {}
+    f = SaleDetail.objects.all()
     top_products_names = []
     top_products_quantity = []
+    if f.count() >= 1:
+        for detail in f:
+            for p in detail.products.all():
+                if p.id in counts:
+                    counts[p.id] += 1
+                else:
+                    counts[p.id] = 1
+        # top 3 products
+        top_products = sorted(
+            prods, key=lambda x: counts[x.id] if x.id in counts else 0, reverse=True
+        )[:3]
+        print(top_products)
 
-    for p in top_products:
-        top_products_names.append(p.name)
-        top_products_quantity.append(p.quantity_sum)
+        for product in top_products:
+            top_products_names.append(product.name)
+            top_products_quantity.append(counts[product.id])
+    else:
+        top_products_names = []
+        top_products_quantity = []
 
     context = {
         "active_icon": "dashboard",
@@ -138,8 +150,7 @@ def pos(request: HttpRequest) -> HttpResponse:
                     "total_detail": product.price * item["count"],
                     "sale": sale,
                 }
-                sale_detail = SaleDetail.objects.create(**attr)
-                sale_detail.save()
+
                 # update inventory
                 if product.track_inventory:
                     # check if it exists in inventory
@@ -150,6 +161,11 @@ def pos(request: HttpRequest) -> HttpResponse:
                         inventory.save()
                     else:
                         pass
+            # create sale detail
+            prods = [Product.objects.get(id=item["id"]) for item in items]
+            detail = SaleDetail(sale=sale)
+            detail.save()
+            detail.products.set(prods)
 
             return JsonResponse({"status": "success", "sale_id": sale.id})
         except Exception as e:
