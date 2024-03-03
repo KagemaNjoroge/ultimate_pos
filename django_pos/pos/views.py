@@ -146,7 +146,7 @@ def pos(request: HttpRequest) -> HttpResponse:
                     inventory = Inventory.objects.filter(product=product)
                     if inventory.exists():
                         inventory = inventory.first()
-                        inventory.quantity -= attr["quantity"]
+                        inventory.quantity -= int(attr["quantity"])
                         inventory.save()
                     else:
                         pass

@@ -1,9 +1,11 @@
+from re import I
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from .models import Category, Product
 from company.models import Company
+from inventory.models import Inventory
 
 
 @login_required(login_url="/accounts/login/")
@@ -203,6 +205,19 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
 
             # If it doesn't exist, save it
             new_product.save()
+            # track inventory
+            if track_inventory:
+                # if inventory exists, update it
+                inventory = Inventory.objects.filter(product=new_product)
+                if inventory.exists():
+                    inventory = inventory.first()
+                    inventory.quantity += 1
+                    inventory.save()
+                else:
+                    inventory = Inventory.objects.create(
+                        product=new_product, quantity=1
+                    )
+                    inventory.save()
 
             messages.success(
                 request,
@@ -395,6 +410,16 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
                     category = Category.objects.first()
                 product.category = category
                 product.save()
+                # add to inventory
+                if product.track_inventory:
+                    inv = Inventory.objects.filter(product=product)
+                    if inv.exists():
+                        inv = inv.first()
+                        inv.quantity += 1
+                        inv.save()
+                    else:
+                        inv = Inventory.objects.create(product=product, quantity=1)
+                        inv.save()
 
             messages.success(
                 request, "Products uploaded successfully!", extra_tags="success"
@@ -406,7 +431,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
                 f"An error occurred while processing the file. The file did not meet the required format or it is corrupted.",
                 extra_tags="danger",
             )
-            print(e)
+
             return redirect("products:upload_excel")
 
 

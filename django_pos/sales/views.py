@@ -15,8 +15,7 @@ import qrcode
 from io import BytesIO
 import base64
 from PIL import Image
-from django.templatetags.static import static
-
+from inventory.models import Inventory
 
 # TODO separate `is_ajax` function to a separate file to avoid repetition
 
@@ -72,6 +71,16 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
                     }
                     sale_detail_new = SaleDetail.objects.create(**detail_attributes)
                     sale_detail_new.save()
+                    # update inventory
+                    if product.track_inventory:
+                        # check if it exists in inventory
+                        inventory = Inventory.objects.filter(product=product)
+                        if inventory.exists():
+                            inventory = inventory.first()
+                            inventory.quantity -= int(detail_attributes["quantity"])
+                            inventory.save()
+                        else:
+                            pass
 
                 messages.success(
                     request, "Sale created successfully!", extra_tags="success"
