@@ -3,6 +3,9 @@
 <html lang="en">
 
 <head>
+  <style>
+
+  </style>
   <title>POS</title>
   <link rel="icon" type="image/png" href="{% static 'favicon.png' %}" />
 
@@ -18,6 +21,11 @@
 </head>
 
 <body class="lockscreen pace-done pace-done" style="height: auto">
+  <style>
+    body {
+      margin-left: 10px;
+    }
+  </style>
   <div class="pace pace-inactive pace-inactive">
     <div class="pace-progress" data-progress-text="100%" data-progress="99"
       style="transform: translate3d(100%, 0px, 0px)">
@@ -121,6 +129,7 @@
                         </div>
                       </div>
                     </div>
+                    <div id="searched_products"></div>
 
                     <div class="row">
                       <div class="col-sm-12 pos_product_div" style="min-height: 333px; max-height: 333px">
@@ -213,7 +222,8 @@
                           class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true"
                           aria-expanded="false" tabindex="0"
                           aria-labelledby="select2-product_category-container"><select
-                            style="width: 100%; height: 100%;" class="selection form-select">
+                            style="width: 100%; height: 100%;" class="selection form-select" id="selected_category">
+                            <option value="Product">Product</option>
                             {% for category in categories %}
                             <option value="{{ category.id }}">{{ category.name }}</option>
                             {% endfor %}
@@ -229,13 +239,14 @@
 
                       {% for prod in products %}
                       <div data-name="{{ prod.name }}" data-price="{{ prod.price }}" data-id="{{ prod.id }}"
-                        class="col-md-3 col-xs-4 product_list no-print add-to-cart">
+                        data-category="{{prod.category.id}}"
+                        class="col-md-3 col-xs-4 product_list no-print add-to-cart product">
                         <div class="product_box" data-original-title="{{ prod.name }}">
                           <div class="image-container" style="background-image: url(
                                                                       {% if prod.image %}
                                                                       {{ prod.image.url }}
                                                                       {% else %}
-                                                                      {% static 'img/no-image.png' %}
+                                                                      {% static 'default.png' %}
                                                                       {% endif %}
                                                                       );
                                                                       background-repeat: no-repeat; background-position: center;
@@ -323,6 +334,37 @@
 
 
   <script>
+    let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+
+      return cookieValue;
+    }
+    function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    // To avoid error 403 Forbidden
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+      }
+    });
+
     let shoppingCart = (function () {
       let cart = [];
 
@@ -456,6 +498,13 @@
 
     function displayCart() {
       let cartArray = shoppingCart.listCart();
+      // if empty, disable #complete_payment
+      if (cartArray.length === 0) {
+        $('#complete_payment').prop('disabled', true);
+      }
+      else {
+        $('#complete_payment').prop('disabled', false);
+      }
       let output = "";
       for (let i in cartArray) {
         output +=
@@ -482,7 +531,7 @@
           cartArray[i].total +
           "</td>" + "<td><button class='delete-item btn btn-danger' data-name='" +
           cartArray[i].name +
-          "'>X</button></td>" +
+          "'><i class='fa fa-trash-alt'></i></button></td>" +
 
           "</tr>";
 
@@ -522,22 +571,7 @@
     });
 
     displayCart();
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          // Does this cookie string begin with the name we want?
-          if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
-        }
-      }
 
-      return cookieValue;
-    }
 
     function roundTo(n, digits) {
       if (digits === undefined) {
@@ -551,14 +585,14 @@
 
     $('#complete_payment').on('click', async function (event) {
       let customer = document.getElementById('customer_selected').value;
-      
+
       let paid = 0;
       let items = JSON.parse(sessionStorage.getItem("shoppingCart"));
 
 
       let html = ''
       for (let i = 0; i < items.length; i++) {
-        html += `<tr><th scope="row">` + i + `</th><td>` + items[i]['name'] + `</td><td>` + items[i]['count'] + `</td><td>` + items[i]['price'] + `</td></tr>`
+        html += `<tr><th>` + i + `</th><td>` + items[i]['name'] + `</td><td>` + items[i]['count'] + `</td><td>` + items[i]['price'] + `</td></tr>`
       }
 
 
@@ -568,7 +602,7 @@
 
         confirmButtonText: "Create Bill",
         html: `
-            <div class="container text-center"><div><table class="table table-borderless table-hover">
+            <div class="container"><div><table class="table table-dark table-hover">
             <thead>
             <tr>
             <th scope="col">#</th>
@@ -591,19 +625,19 @@
             <tbody>
             <tr>
             
-            <td>Total</td>
+            <td><strong>Total</strong></td>
             <td>${shoppingCart.totalCart()}</td>
             
             </tr>
             <tr>
             
-            <td>Cash</td>
-            <td><input type="number" id="amount_paid_" onkeyup="let ch = document.getElementById('change');if(this.value - shoppingCart.totalCart() > 0){ch.innerText=roundTo(this.value-shoppingCart.totalCart(), 2)} paid=this.value" ></td>
+            <td><strong>Cash</strong></td>
+            <td><input class="text-center" value="${shoppingCart.totalCart()}" type="number" id="amount_paid_" onkeyup="let ch = document.getElementById('change');if(this.value - shoppingCart.totalCart() > 0){ch.innerText=roundTo(this.value-shoppingCart.totalCart(), 2)} paid=this.value" ></td>
             
             </tr>
             <tr>
             
-            <td>Change</td>
+            <td><strong>Change</strong></td>
             <td id="change">0.00</td>
             
             </tr>
@@ -619,7 +653,7 @@
 
           let amount_payed = document.getElementById('amount_paid_').value;
 
-          let response = await fetch('{% url 'pos:pos' %}', {
+          let response = await fetch('{% url "pos:pos"%}', {
             method: 'POST',
             headers: {
               "X-CSRFToken": getCookie('csrftoken'),
@@ -651,10 +685,11 @@
               // clear the cart
               shoppingCart.clearCart();
 
-
+              location.reload();
 
 
               if (result.isConfirmed) {
+
                 window.location.href = "/sales/pdf/" + body['sale_id'];
 
               }
@@ -676,6 +711,60 @@
       })
 
     })
+
+    $(document).ready(function () {
+      $('#search_product').on('keyup', function () {
+        let query = $(this).val();
+        if (query.length > 0) {
+          $.ajax({
+            url: "{% url 'products:get_products' %}",
+            type: "POST",
+            headers: {
+              "X-CSRFToken": getCookie('csrftoken')
+            },
+            data: {
+              'term': query
+            },
+            success: function (data) {
+              var htm = '';
+              for (let i in data.slice(0, 4)) {
+                data[i]['image'] = data[i]['image'] ? data[i]['image'] : "{% static 'default.png' %}";
+
+                // render the data for each product
+                htm += `<div class="col-md-6 mt-2"><div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src="${data[i]['image']}" alt="Card image cap" height="100" width="100">
+                        <div class="card-body">
+                        <h5 class="card-title">${data[i]['name']}</h5>    
+                        <button class="btn btn-secondary" onclick="shoppingCart.addItemToCart('${data[i]['name']}', ${data[i]['price']}, 1, ${data[i]['id']}); displayCart(); $('#searched_products').html('');">Add</button>
+                        </div>
+                        </div></div>`;
+              }
+              $('#searched_products').html(`<div class='row'>${htm}</div>`)
+
+            }
+          })
+        }
+        else {
+          $('#searched_products').html('');
+        }
+      })
+    })
+
+    $(document).ready(function () {
+      $('#selected_category').on('change', function () {
+        let value = $(this).val();
+        if (value == "Product") {
+          $('.product').show()
+        }
+        else {
+          $('.product').hide()
+          $(".product[data-category='" + value + "']").show();
+        }
+
+      })
+    })
+    // suspend the current sale
+
 
   </script>
 
