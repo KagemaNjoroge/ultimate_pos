@@ -9,7 +9,8 @@
 <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css ' %}" rel="stylesheet">
 <!--Select2 CSS-->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
+<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
 <!--Bootstrap Touchspin-->
 <link rel="stylesheet" href="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.css' %}">
 {% endblock stylesheets %}
@@ -39,17 +40,23 @@
                     <div class="col-md-9 pl-0">
                         <div class="card card-secondary">
                             <div class="card-header">Sale products</div>
-                            
+
                             <div class="card-body">
                                 <!--Search product-->
                                 <div class="form-group">
-                                    <label>Search product:</label>
+                                    <label>Search product</label>
                                     <div class="input-group">
-                                        <select class="form-control select2" name="searchbox_products" id="searchbox_products"></select>
+                                        <div class="form-outline">
+                                            <input type="search" id="form1" class="form-control" />
+
+                                        </div>
+                                        <button type="button" class="btn btn-primary ml-2">
+                                            <i class="fas fa-search"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 <!--End Search product-->
-
+                                <div id="search_results"></div>
                                 <!--Delete all products from sale-->
                                 <button type="button" class="mb-4 btn btn-danger btn-sm deleteAll">
                                     Delete all products <i class="ml-1 fas fa-trash-alt fa-xs"></i>
@@ -67,8 +74,8 @@
                                                 <th>Quantity</th>
                                                 <th>Total</th>
                                                 <th class="text-center">Delete</th>
-                                                </tr>
-                                            </thead>
+                                            </tr>
+                                        </thead>
                                         <tbody>
                                         </tbody>
                                     </table>
@@ -93,49 +100,50 @@
                                         <option value="{{customer.value}}">{{customer.label}}</option>
                                         {% endfor %}
                                     </select>
-                                <div class="form-group mt-4">
-                                    <label>Subtotal</label>
-                                    <div class="input-group">
-                                        <input name="sub_total" class="form-control" required>
+                                    <div class="form-group mt-4">
+                                        <label>Subtotal</label>
+                                        <div class="input-group">
+                                            <input name="sub_total" class="form-control" required>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tax Inclusive (%)</label>
-                                    <div class="input-group">
-                                        <input name="tax_percentage" class="form-control" value=0 required>
+                                    <div class="form-group">
+                                        <label>Tax Inclusive (%)</label>
+                                        <div class="input-group">
+                                            <input name="tax_percentage" class="form-control" value=0 required
+                                                id="tax_percentage">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tax Amount</label>
-                                    <div class="input-group">
-                                        <input name="tax_amount" class="form-control" required>
+                                    <div class="form-group">
+                                        <label>Tax Amount</label>
+                                        <div class="input-group">
+                                            <input name="tax_amount" class="form-control" disabled>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Grand Total</label>
-                                    <div class="input-group">
-                                        <input name="grand_total" class="form-control" required>
+                                    <div class="form-group">
+                                        <label>Grand Total</label>
+                                        <div class="input-group">
+                                            <input name="grand_total" class="form-control" id="grand_total" disabled>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Amount paid</label>
-                                    <div class="input-group">
-                                        <input name="amount_payed" class="form-control" required>
+                                    <div class="form-group">
+                                        <label>Amount paid</label>
+                                        <div class="input-group">
+                                            <input name="amount_payed" class="form-control" required id="amount_paid">
+                                        </div>
                                     </div>
-                                </div>
 
-                                <button type="submit" class="btn btn-success font-weight-bold">Create sale</button>
+                                    <button type="submit" class="btn btn-success font-weight-bold">Create sale</button>
+                                </div>
+                                <!--End card-body-->
                             </div>
-                            <!--End card-body-->
+                            <!--End Right column-->
+                        </div>
+                        <!--End row-->
                     </div>
-                    <!--End Right column-->
+                    <!--End card-body-->
                 </div>
-                <!--End row-->
-            </div>
-            <!--End card-body-->
-        </div>
 
-    </div>
+            </div>
         </div>
     </div>
 </form>
@@ -154,380 +162,307 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.15/dist/sweetalert2.all.min.js"></script>
 
 <script>
-    
-    function roundTo(n, digits) {
-        if (digits === undefined) {
-            digits = 0;
+    $('#tax_percentage').on('change', function () {
+        updateTotal();
+    });
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    // To avoid error 403 Fordbidden
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+
+
+
+
+    let shoppingCart = (function () {
+        let cart = [];
+
+        // Constructor
+        function Item(name, price, count, id) {
+            this.name = name;
+            this.price = price;
+            this.count = count;
+            this.id = id;
         }
 
-        let multiplicator = Math.pow(10, digits);
-        n = parseFloat((n * multiplicator).toFixed(11));
-        return Math.round(n) / multiplicator;
+        // Save cart
+        function saveCart() {
+            sessionStorage.setItem("shoppingCart", JSON.stringify(cart));
+        }
+
+        // Load cart
+        function loadCart() {
+            cart = JSON.parse(sessionStorage.getItem("shoppingCart"));
+        }
+        if (sessionStorage.getItem("shoppingCart") != null) {
+            loadCart();
+        }
+
+        let obj = {};
+
+        // Add to cart
+        obj.addItemToCart = function (name, price, count, id) {
+            for (let item in cart) {
+                if (cart[item].name === name) {
+                    cart[item].count++;
+                    saveCart();
+                    return;
+                }
+            }
+            let item = new Item(name, price, count, id);
+            cart.push(item);
+            saveCart();
+        };
+        // Set count from item
+        obj.setCountForItem = function (name, count) {
+            for (let i in cart) {
+                if (cart[i].name === name) {
+                    cart[i].count = count;
+                    break;
+                }
+            }
+            saveCart();
+        };
+        // Remove item from cart
+        obj.removeItemFromCart = function (name) {
+            for (let item in cart) {
+                if (cart[item].name === name) {
+                    cart[item].count--;
+                    if (cart[item].count === 0) {
+                        cart.splice(item, 1);
+                    }
+                    break;
+                }
+            }
+            saveCart();
+        };
+
+        // Remove all items from cart
+        obj.removeItemFromCartAll = function (name) {
+            for (let item in cart) {
+                if (cart[item].name === name) {
+                    cart.splice(item, 1);
+                    break;
+                }
+            }
+            saveCart();
+        };
+
+        // Clear cart
+        obj.clearCart = function () {
+            cart = [];
+            saveCart();
+        };
+
+        // Count cart
+        obj.totalCount = function () {
+            let totalCount = 0;
+            for (let item in cart) {
+                totalCount += cart[item].count;
+            }
+            return totalCount;
+        };
+
+        // Total cart
+        obj.totalCart = function () {
+            let totalCart = 0;
+            for (let item in cart) {
+                totalCart += cart[item].price * cart[item].count;
+            }
+            return Number(totalCart.toFixed(2));
+        };
+
+        // List cart
+        obj.listCart = function () {
+            let products = [];
+            for (let i in JSON.parse(sessionStorage.getItem("shoppingCart"))) {
+                let item = cart[i];
+                let product = {
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    count: item.count,
+                    total: (item.price * item.count).toFixed(2)
+                };
+                products.push(product);
+            }
+            return products;
+        };
+
+
+        return obj;
+    })();
+
+    function updateTotal() {
+        var total = shoppingCart.totalCart();
+        $('#grand_total').val(total);
+        $('[name="sub_total"]').val(total);
+        $('[name="tax_amount"]').val(total * $('[name="tax_percentage"]').val() / 100);
+        $('#amount_paid').val(total);
     }
 
-    //Variable for product number in table
-    let number = 1;
+    var table = $('#table_products tbody');
 
-    //Variable to store sale details and products
-    let sale = {
-        items: {
-            customer: 0,
-            sub_total: 0.00,
-            grand_total: 0.00,
-            tax_amount: 0.00,
-            tax_percentage: 0.00,
-            amount_payed: 0.00,
-            amount_change: 0.00,
-            products: []
-        },
-        calculate_sale: function () {
-            // Subtotal of all products added
-            let sub_total = 0.00
 
-            let tax_percentage = $('input[name="tax_percentage"]').val();
 
-            // Calculates the total for each product
-            $.each(this.items.products, function (pos, dict) {
-                dict.pos = pos;
-                dict.total_product = roundTo(dict.quantity * dict.price, 2);
-                // Add the product total to the sale subtotal
-                sub_total += roundTo(dict.total_product, 2);
-            });
+    function displayCart() {
+        updateTotal();
+        var cartArray = shoppingCart.listCart();
+        var output = "";
+        for (var i in cartArray) {
+            output += "<tr>"
+                + "<td>" + cartArray[i].id + "</td>"
+                + "<td>" + cartArray[i].name + "</td>"
+                + "<td>" + cartArray[i].price + "</td>"
+                + "<td><input type='number' class='item-count' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "'></td>"
+                + "<td>" + cartArray[i].total + "</td>"
+                + "<td><button class='delete-item btn btn-danger btn-sm' data-name='" + cartArray[i].name + "'><i class='fa fa-trash-alt'></i></button></td>"
+                + "</tr>";
+        }
+        var body = $('#table_products tbody');
+        body.html(output);
+        $('.item-count').on('change', function () {
+            var name = $(this).attr("data-name");
+            var count = Number($(this).val());
+            if (count < 1) {
+                shoppingCart.removeItemFromCartAll(name);
+                displayCart();
+            }
 
-            //Update the sale subtotal, grand total, and tax amount
-            this.items.sub_total = roundTo(sub_total, 2);
-            this.items.grand_total = roundTo(this.items.sub_total, 2);
-            this.items.tax_amount = roundTo(this.items.sub_total * (tax_percentage / 100), 2);
+            shoppingCart.setCountForItem(name, count);
+            displayCart();
 
-            $('input[name="sub_total"]').val(this.items.sub_total);
-            $('input[name="tax_amount"]').val(this.items.tax_amount);
-            $('input[name="grand_total"]').val(this.items.grand_total);
-        },
-        // Adds a product to the sale object
-        add_product: function (item) {
-            this.items.products.push(item);
-            this.list_product();
-        },
-        // Shows the selected product in the table
-        list_product: function () {
-            // Calculate the sale 
-            this.calculate_sale();
+        });
+        $('.delete-item').on('click', function () {
+            var name = $(this).attr("data-name");
+            shoppingCart.removeItemFromCartAll(name);
 
-            let tblProducts = $("#table_products").DataTable({
-                destroy: true,
-                data: this.items.products,
-                columns: [
-                    {"data": "number"},
-                    {"data": "name"},
-                    {"data": "price"},
-                    {"data": "quantity"},
-                    {"data": "total_product"},
-                    {"data": "id"},
-                ],
-                columnDefs: [
-                    {
-                        // Quantity
-                        class: 'text-center',
-                        targets: [3],
-                        render: function (data, type, row) {
-                            return '<input name="quantity" type="text" class="form-control form-control-xs text-center input-sm" autocomplete="off" value="' + row.quantity + '">';
-                        },
-                    },
-                    {
-                        //Product price a total
-                        class: 'text-right',
-                        targets: [2, 4],
-                        render: function (data, type, row) {
-                            return parseFloat(data).toFixed(2) + ' $';
-                        },
-                    },
-                    {
-                        //Delete button
-                        class: 'text-center',
-                        targets: [-1],
-                        orderable: false,
-                        render: function (data, type, row) {
-                            return '<a rel="delete" type="button" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete product"> <i class="fas fa-trash-alt fa-xs"></i> </a>';
-                        },
-                    },
+            displayCart();
+        });
+    }
 
-                ],
-                rowCallback(row, data, displayNun, displayIndex, dataIndex) {
-                    $(row).find(("input[name='quantity']")).TouchSpin({
-                        min: 1,
-                        max: 100,
-                        step: 1,
-                        decimals: 0,
-                        boostat: 1,
-                        maxboostedstep: 3,
-                        postfix: ''
-                    });
+    displayCart();
+
+
+    $('#form1').on('keyup', function () {
+
+        var query = $(this).val();
+        if (query.length === 0) {
+            $('#search_results').html('');
+        }
+        if (query.length > 0) {
+            $.ajax({
+                url: "{% url 'products:get_products' %}",
+                type: "POST",
+                data: {
+                    'term': query
                 },
-            })
+                success: function (data) {
+                    // results card
+                    if (data.length < 1) {
+                        $('#search_results').html('<div class="alert alert-warning">No products found</div>');
+                    }
+                    else {
+                        for (var i = 0; i < data.slice(0, 3).length; i++) {
+                            $('#search_results').html(
+                                `<div class="card card-secondary mt-2 mb-2">
+                                <div class="card-body">
+                                    <h5 class="card-title">${data[i].name}</h5>
+                                    <p class="card-text">Price: ${data[i].price}</p>
+                                    <button type="button" class="btn btn-primary addProduct" data-id="${data[i].id}" data-name="${data[i].name}" data-price="${data[i].price}" onclick="shoppingCart.addItemToCart('${data[i].name}',${data[i].price}, ${1}, ${data[i].id});$('#search_results').html('');displayCart();">
+                                        Add product
+                                    </button>
+                                </div>
+                            </div>`
+                            );
+                        }
+                    }
+                }
+            });
+        }
+    });
 
-        },
-    };
+    $('.deleteAll').on('click', function () {
+        shoppingCart.clearCart();
+        displayCart();
+    });
+    $('.saleForm').on('submit', function (e) {
+        e.preventDefault();
+        var customer = $('[name="customer"]').val();
+        var sub_total = $('[name="sub_total"]').val();
+        var tax_percentage = $('[name="tax_percentage"]').val();
+        var tax_amount = $('[name="tax_amount"]').val();
+        var grand_total = $('[name="grand_total"]').val();
+        var amount_payed = $('[name="amount_payed"]').val();
+        var products = shoppingCart.listCart();
+        for (let x in products) {
+            products[x].id = parseInt(products[x].id);
+            products[x].price = parseFloat(products[x].price);
+            products[x].count = parseInt(products[x].count);
+            products[x].total = parseFloat(products[x].total);
+            // add a total_product field
+            products[x].total_product = products[x].count * products[x].price;
+        }
+        console.log(products);
+        var amount_change = amount_payed - grand_total;
+        if (amount_change < 0) {
+            Swal.fire({
+                title: 'Error',
+                text: 'The amount payed is less than the grand total',
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+            return;
+        }
+        $.ajax({
+            url: "{% url 'sales:sales_add' %}",
+            type: "POST",
+            data: JSON.stringify({
+                'customer': customer,
+                'sub_total': sub_total,
+                'tax_percentage': tax_percentage,
+                'tax_amount': tax_amount,
+                'grand_total': grand_total,
+                'amount_payed': amount_payed,
+                'amount_change': amount_change,
+                'products': products,
 
-    $(document).ready(function() {
-
-        //Tax percentage touchspin
-        $("input[name='tax_percentage']").TouchSpin({
-            min: 0,
-            max: 100,
-            step: 1,
-            decimals: 2,
-            boostat: 5,
-            maxboostedstep: 10,
-            postfix: '%'
-        }).on('change', function(){
-            sale.calculate_sale();
-        });
-
-
-        //Select2 customers
-        $('#searchbox_customers').select2({
-            placeholder: "Select a customer",
-            allowClear: true,
-        });
-
-        // Tables Events
-        $('#table_products tbody').on('click', 'a[rel="delete"]', function () {
-                // When a product is deleted
-                
-                // Row variable of the table
-                let tr = tblProducts.cell($(this).closest('td, li')).index();
-                let product_name = (tblProducts.row(tr.row).data().name)
-
+            }),
+            success: function (data) {
                 Swal.fire({
-                    customClass: {
-                        confirmButton: 'ml-3 btn btn-danger',
-                        cancelButton: 'btn btn-info'
-                    },
-                    buttonsStyling: false,
-                    title: "Are you sure you want to delete this product from the sale?",
-                    text: product_name,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Delete',
-                    cancelButtonText: 'Cancel',
-                    reverseButtons: true,
-
+                    title: 'Sale created',
+                    text: 'The sale has been created successfully',
+                    icon: 'success',
+                    confirmButtonText: 'Great',
+                    position: 'bottom-end'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        
-                        // Delete the product
-                        sale.items.products.splice(tr.row, 1);
-                        //List the table again
-                        sale.list_product();
-                        Swal.fire('The product was eliminated!', '', 'success')
+                        shoppingCart.clearCart();
+                        displayCart();
+
+                        location.reload();
                     }
-                })
-
-
-
-            }).on('change keyup', 'input[name="quantity"]', function(){
-                // When product changes are quantity
-                let quantity = parseInt($(this).val());
-                //console.log(quantity);
-                // Row variable of the table
-                let tr = tblProducts.cell($(this).closest('td, li')).index();
-                console.log(tr);
-                // Update the product quantity in the sale object
-                sale.items.products[tr.row].quantity = quantity;
-                console.log(sale.items.products);
-                // Calculate the sale with the new quantity
-                sale.calculate_sale();
-                // Find the row to update the product total
-                $('td:eq(4)', tblProducts.row(tr.row).node()).html(sale.items.products[tr.row].total_product + ' $');
-        });
-
-        // Delete all products
-        $('.deleteAll').on('click', function(){
-            // If there are no products doesn't do anything
-            if(sale.items.products.length === 0 ) return false;
-            // Alert the user
-            Swal.fire({
-                customClass: {
-                    confirmButton: 'ml-3 btn btn-danger',
-                    cancelButton: 'btn btn-info'
-                },
-                buttonsStyling: false,
-                title: "Are you sure you want to delete all products from the sale?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Delete all',
-                cancelButtonText: 'Cancel',
-                reverseButtons: true,
-
-            }).then((result) => {
-                
-                if (result.isConfirmed) {
-                    
-                    sale.items.products = [];
-                    
-                    sale.list_product();
-                    Swal.fire('All products removed!', '', 'success')
-                }
-            })
-        });
-
-        //Select2 products searchbar
-        // Validate the csrf_token
-        let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-        // To avoid error 403 Forbidden
-        $.ajaxSetup({
-            beforeSend: function (xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
-
-        $('#searchbox_products').select2({
-            delay: 250,
-            placeholder: 'Search a product',
-            minimumInputLength: 1,
-            allowClear: true,
-            templateResult: template_product_searchbox,
-            ajax:{ 
-                url: "{% url 'products:get_products' %}",
-                type: 'POST',
-                data: function (params) {
-                    return {
-                    term: params.term,
-                };
-                },
-                processResults: function (data) {
-                    
-                    return {
-                        results: data
-                    };
-                },
-            }
-            }).on('select2:select', function (e) {
-                //When a product is selected from the searchbar
-                let data = e.params.data;
-                //Add number, subtotal and quantity of the product to the dictionary
-                data.number = number;
-                number++; //Increase the product number in the table
-                //data.sub_total = 0;
-                //data.quantity = 1;
-                //Add the product to the sale object
-                sale.add_product(data);
-                //Clean the searchbar after the product is selected
-                $(this).val('').trigger('change.select2');
-            });
-    
-            // Products datatable
-            
-            let tblProducts = $('#table_products').DataTable({
-                columnDefs: [
-                    {
-                        targets: [-1], // column index (start from 0)
-                        orderable: false, // set order able false for selected columns
-                    }
-                ],
-            });
-            
-
-        });
-
-        // Product search box templateResult
-        function template_product_searchbox(repo) {
-            if (repo.loading) {
-                return repo.text;
-            }
-        
-    return $(
-                '<div class="wrapper container">' +
-                ' <div class="row">' +
-                '<div class="col-lg-11 text-left shadow-sm">' +
-                //'<br>' +
-                '<p style="margin-bottom: 5px;">' +
-                '<b>Name:</b> ' + repo.text + " | Category: " + "<span class='btn-info px-2'>" + repo.category + '</span> <br>' +
-                '<b>Price:</b> <span class="btn-success px-2">' + repo.price + ' $. </span>' +
-                '</p>' +
-                '</div>' +
-                '</div>' +
-                '</div>');
-        }
-
-        // Send the sale via ajax
-        
-        $('.saleForm').on('submit', function (e) {  
-            // Only allow sending if we have at least one product
-            if (sale.items.products.length === 0 ) {
-                Swal.fire({
-                    title: 'The sale must have at least 1 product',
-                    text: 'Search a product and add it to the sale',
-                    icon: 'warning',
                 });
-                return false;
-            }
-            
-            // Only allow sending if the paid amount is equal to or greater than the total
-            if ($('[name="amount_payed"]').val() < $('[name="grand_total"]').val()) {
+            },
+            error: function (data) {
                 Swal.fire({
-                    title: 'Payable Amount is lower than the Grand Total',
-                    icon: 'warning',
+                    title: 'Error',
+                    text: 'An error has occurred',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
                 });
-                return false;
             }
-
-            
-            sale.items.customer = $('select[name="customer"]').val();
-            
-            sale.items.sub_total = $('input[name="sub_total"]').val(); 
-            sale.items.grand_total = $('input[name="grand_total"]').val();
-            sale.items.tax_amount = $('input[name="tax_amount"]').val(); 
-            sale.items.tax_percentage = $('input[name="tax_percentage"]').val();
-            sale.items.amount_payed = $('input[name="amount_payed"]').val(); 
-            sale.items.amount_change = roundTo($('input[name="amount_payed"]').val() - $('input[name="grand_total"]').val(), 2); 
-
-
-
-            // Validate the csrf_token
-            let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-
-            function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            }
-            $.ajaxSetup({
-                beforeSend: function (xhr, settings) {
-                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                }
-            });
-            $.ajax({
-                url: "{% url 'sales:sales_add' %}",
-                type: "POST",
-                // We need to convert the JS object sale to string
-                data: JSON.stringify(sale.items), 
-                datatype: "json",
-                processData: false,
-                contentType: false,
-                success: function (data) {
-                    console.log("Ajax OK")
-                },
-                error: function (error) {
-                    console.log("Ajax error");
-                    console.log(error);
-                },
-            }).done(function (data){
-                console.log ("Ajax Done");
-            }).fail(function (data, jqXHR, textStatus, errorThrown){
-                console.log ("Ajax Fail");
-                alert(textStatus + ':' + errorThrown);
-            });
-            
         });
-        
+    });
 </script>
 {% endblock javascripts %}
