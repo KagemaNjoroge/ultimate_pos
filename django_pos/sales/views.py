@@ -20,16 +20,14 @@ from django.templatetags.static import static
 
 # TODO separate `is_ajax` function to a separate file to avoid repetition
 
+
 def is_ajax(request: HttpRequest) -> bool:
-    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+    return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
 @login_required(login_url="/accounts/login/")
 def sales_list_view(request: HttpRequest) -> HttpResponse:
-    context = {
-        "active_icon": "sales",
-        "sales": Sale.objects.all()
-    }
+    context = {"active_icon": "sales", "sales": Sale.objects.all()}
     return render(request, "sales/sales.html", context=context)
 
 
@@ -37,16 +35,15 @@ def sales_list_view(request: HttpRequest) -> HttpResponse:
 def sales_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "sales",
-        "customers": [c.to_select2() for c in Customer.objects.all()]
+        "customers": [c.to_select2() for c in Customer.objects.all()],
     }
 
-    if request.method == 'POST':
+    if request.method == "POST":
         if is_ajax(request=request):
             # Save the POST arguments
             data = json.load(request)
 
             sale_attributes = {
-
                 "sub_total": float(data["sub_total"]),
                 "grand_total": float(data["grand_total"]),
                 "tax_amount": float(data["tax_amount"]),
@@ -54,8 +51,10 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
                 "amount_payed": float(data["amount_payed"]),
                 "amount_change": float(data["amount_change"]),
             }
-            if data['customer']:
-                sale_attributes['customer'] = Customer.objects.get(id=int(data['customer']))
+            if data["customer"]:
+                sale_attributes["customer"] = Customer.objects.get(
+                    id=int(data["customer"])
+                )
             try:
                 # Create the sale
                 new_sale = Sale.objects.create(**sale_attributes)
@@ -69,22 +68,25 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
                         "product": Product.objects.get(id=int(product["id"])),
                         "price": product["price"],
                         "quantity": product["quantity"],
-                        "total_detail": product["total_product"]
+                        "total_detail": product["total_product"],
                     }
-                    sale_detail_new = SaleDetail.objects.create(
-                        **detail_attributes)
+                    sale_detail_new = SaleDetail.objects.create(**detail_attributes)
                     sale_detail_new.save()
 
                 messages.success(
-                    request, 'Sale created successfully!', extra_tags="success")
-                return redirect('sales:sales_list')
+                    request, "Sale created successfully!", extra_tags="success"
+                )
+                return redirect("sales:sales_list")
 
             except Exception as e:
                 print(e)
                 messages.success(
-                    request, 'There was an error during the creation!', extra_tags="danger")
+                    request,
+                    "There was an error during the creation!",
+                    extra_tags="danger",
+                )
 
-        return redirect('sales:sales_list')
+        return redirect("sales:sales_list")
 
     return render(request, "sales/sales_add.html", context=context)
 
@@ -111,9 +113,10 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         return render(request, "sales/sales_details.html", context=context)
     except Exception as e:
         messages.success(
-            request, 'There was an error getting the sale!', extra_tags="danger")
+            request, "There was an error getting the sale!", extra_tags="danger"
+        )
         print(e)
-        return redirect('sales:sales_list')
+        return redirect("sales:sales_list")
 
 
 @login_required(login_url="/accounts/login/")
@@ -123,14 +126,14 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         request: HttpRequest
         sale_id: ID of the sale to view the receipt
     """
-    logo_path = "C:\\Users\\kaman\\Desktop\\ultimate_pos\\django_pos\\static\\img\\kra_logo.png"
+    logo_path = "static/img/kra_logo.png"
 
-    logo_img = Image.open(open(logo_path, 'rb'))
+    logo_img = Image.open(open(logo_path, "rb"))
     logo_img = logo_img.resize((50, 50))
     logo_stream = BytesIO()
-    logo_img.save(logo_stream, format='PNG')
+    logo_img.save(logo_stream, format="PNG")
     logo_value = logo_stream.getvalue()
-    logo_base64 = base64.b64encode(logo_value).decode('utf-8')
+    logo_base64 = base64.b64encode(logo_value).decode("utf-8")
 
     # Get the sale
     sale = Sale.objects.get(id=sale_id)
@@ -151,9 +154,7 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         "sale": sale,
         "details": details,
         "company": company,
-        "logo": logo_base64
-
-
+        "logo": logo_base64,
         # 0701575348
     }
     qrcode_details = sale.to_json()
@@ -161,18 +162,19 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     qr = qrcode.make(qrcode_details, box_size=2.5)
     qr_image = qr.get_image()
     stream = BytesIO()
-    qr_image.save(stream, format='PNG')
+    qr_image.save(stream, format="PNG")
     qr_image_data = stream.getvalue()
 
-    qr_image_base64 = base64.b64encode(qr_image_data).decode('utf-8')
+    qr_image_base64 = base64.b64encode(qr_image_data).decode("utf-8")
 
-    context['qr_code'] = qr_image_base64
+    context["qr_code"] = qr_image_base64
 
     html_template = template.render(context)
 
     # CSS Boostrap
     css_url = os.path.join(
-        settings.BASE_DIR, 'static/css/receipt_pdf/bootstrap.min.css')
+        settings.BASE_DIR, "static/css/receipt_pdf/bootstrap.min.css"
+    )
 
     # Create the pdf
     pdf = HTML(string=html_template).write_pdf(stylesheets=[CSS(css_url)])
@@ -183,4 +185,4 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
 def kra_logo(request: HttpRequest) -> HttpResponse:
     logo = "static/img/kra_logo.png"
 
-    return FileResponse(open(logo, 'rb'), content_type="image/png")
+    return FileResponse(open(logo, "rb"), content_type="image/png")
