@@ -551,7 +551,7 @@
 
     $('#complete_payment').on('click', async function (event) {
       let customer = document.getElementById('customer_selected').value;
-      console.log(customer)
+      
       let paid = 0;
       let items = JSON.parse(sessionStorage.getItem("shoppingCart"));
 
