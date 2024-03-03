@@ -132,3 +132,6 @@ dmypy.json
 
 # Jet Brains
 .idea/
+
+# staticfiles folder
+staticfiles/
