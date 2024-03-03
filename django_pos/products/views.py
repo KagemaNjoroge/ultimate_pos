@@ -254,6 +254,11 @@ def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
         try:
             # Save the POST arguments
             data = request.POST
+            track_inventory = data["track_inventory"]
+            if track_inventory == "on":
+                track_inventory = True
+            else:
+                track_inventory = False
 
             attributes = {
                 "name": data["name"],
@@ -261,6 +266,7 @@ def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
                 "description": data["description"],
                 "category": Category.objects.get(id=data["category"]),
                 "price": data["price"],
+                "track_inventory": track_inventory,
             }
 
             # Check if a product with the same attributes exists
@@ -333,3 +339,81 @@ def get_products_ajax_view(request: HttpRequest) -> HttpResponse:
                 data.append(item)
 
             return JsonResponse(data, safe=False)
+
+
+@login_required(login_url="/accounts/login/")
+def upload_excel_view(request: HttpRequest) -> HttpResponse:
+    if request.method == "GET":
+
+        categories = Category.objects.all()
+        context = {"active_icon": "products", "categories": categories}
+        return render(request, "products/upload_csv_excel.html", context=context)
+    elif request.method == "POST":
+        try:
+            excel_file = request.FILES["excel_file"]
+            if not excel_file.name.endswith(".xlsx"):
+                messages.error(request, "File is not Excel type")
+                return redirect("products:upload_excel")
+            # if file is too large, return
+            if excel_file.multiple_chunks():
+                messages.error(
+                    request,
+                    "Uploaded file is too big (%.2f MB)."
+                    % (excel_file.size / (1000 * 1000),),
+                    extra_tags="warning",
+                )
+                return redirect("products:upload_excel")
+
+            import openpyxl
+
+            wb = openpyxl.load_workbook(excel_file)
+            worksheet = wb.active
+            for row in worksheet.iter_rows(
+                min_row=2, max_row=worksheet.max_row, min_col=1, max_col=6
+            ):
+                for x in row:
+                    print(x.value)
+
+                # Coca Cola A nice soft drink 250 1 1
+
+                product = Product()
+                product.name = row[0].value
+                product.description = row[1].value
+                product.price = row[2].value
+                if row[3].value == 1:
+                    product.track_inventory = True
+                else:
+                    product.track_inventory = False
+                if row[5].value == 1:
+                    product.status = "ACTIVE"
+                else:
+                    product.status = "INACTIVE"
+                categ = row[4].value
+                try:
+                    category = Category.objects.get(id=categ)
+                except Exception as e:
+                    category = Category.objects.first()
+                product.category = category
+                product.save()
+
+            messages.success(
+                request, "Products uploaded successfully!", extra_tags="success"
+            )
+            return redirect("products:products_list")
+        except Exception as e:
+            messages.error(
+                request,
+                f"An error occurred while processing the file. The file did not meet the required format or it is corrupted.",
+                extra_tags="danger",
+            )
+            print(e)
+            return redirect("products:upload_excel")
+
+
+@login_required(login_url="/accounts/login/")
+def download_template(request: HttpRequest):
+    file_path = "static/upload_products.xltx"
+    with open(file_path, "rb") as file:
+        response = HttpResponse(file, content_type="application/vnd.ms-excel")
+        response["Content-Disposition"] = 'attachment; filename="upload_products.xltx"'
+        return response
