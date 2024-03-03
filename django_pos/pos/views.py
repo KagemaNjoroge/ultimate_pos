@@ -5,6 +5,7 @@ from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from customers.models import Customer
+from pos.models import Notifications
 from sales.models import Sale, SaleDetail
 from products.models import Product, Category
 from sales.models import Sale
@@ -19,6 +20,9 @@ def index(request: HttpRequest) -> HttpResponse:
 
     year = today.year
     monthly_earnings = []
+
+    # ferch all unread notifications
+    notifications = Notifications.objects.filter(user=request.user, read=False)
 
     # Calculate earnings per month
     for month in range(1, 13):
@@ -70,6 +74,7 @@ def index(request: HttpRequest) -> HttpResponse:
         "top_products_names": json.dumps(top_products_names),
         "top_products_names_list": top_products_names,
         "top_products_quantity": json.dumps(top_products_quantity),
+        "notifications": notifications,
     }
 
     company = Company.objects.first()
