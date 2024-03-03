@@ -1,7 +1,6 @@
 from django.db import models
 from products.models import Product
 
-
 # Create your models here.
 
 
@@ -24,9 +23,9 @@ class Inventory(models.Model):
             "product": self.product.name,
             "quantity": self.quantity,
             "date_added": self.date_added,
-            "date_modified": self.date_modified
+            "date_modified": self.date_modified,
         }
 
     class Meta:
-        verbose_name_plural = 'Inventories'
-        verbose_name = 'Inventory'
+        verbose_name_plural = "Inventories"
+        verbose_name = "Inventory"
