@@ -12,6 +12,7 @@ from sales.models import Sale
 from company.models import Company
 import json
 from customers.models import Customer
+from inventory.models import Inventory
 
 
 @login_required(login_url="/accounts/login/")
@@ -139,6 +140,16 @@ def pos(request: HttpRequest) -> HttpResponse:
                 }
                 sale_detail = SaleDetail.objects.create(**attr)
                 sale_detail.save()
+                # update inventory
+                if product.track_inventory:
+                    # check if it exists in inventory
+                    inventory = Inventory.objects.filter(product=product)
+                    if inventory.exists():
+                        inventory = inventory.first()
+                        inventory.quantity -= attr["quantity"]
+                        inventory.save()
+                    else:
+                        pass
 
             return JsonResponse({"status": "success", "sale_id": sale.id})
         except Exception as e:
