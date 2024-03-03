@@ -24,23 +24,21 @@
 <div class="row">
     <div class="card col-md-8">
         <div class="card-body">
-            <form action="{% url 'products:products_update' product.id %}"  method="post">
+            <form action="{% url 'products:products_update' product.id %}" method="post">
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="inputDescription">Name</label>
-                        <input type="text" class="form-control" name="name" value="{{product.name}}" required>
+                        <input type="text" class="form-control" name="name" value="{{product.name}}" required />
                     </div>
                     <div class="form-group col-md-4">
                         <label for="state">State</label>
                         <select name="state" class="form-control" required>
-                            {% for status in product_status %}
-                                {% if status.0 == product.status   %}
-                                <option value="{{status.0}}" selected>{{status.1}}</option>
-                                {% else %}
-                                <option value="{{status.0}}">{{status.1}}</option>
-                                {% endif %}
-                            {% endfor %}
+                            {% for status in product_status %} {% if status.0 == product.status %}
+                            <option value="{{status.0}}" selected>{{status.1}}</option>
+                            {% else %}
+                            <option value="{{status.0}}">{{status.1}}</option>
+                            {% endif %} {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -48,18 +46,27 @@
                 <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="inputDescription">Description</label>
-                        <input type="text" name="description" class="form-control" value="{{product.description}}" required>
+                        <input type="text" name="description" class="form-control" value="{{product.description}}"
+                            required />
                     </div>
                     <div class="form-group col-md-4">
                         <label for="category">Category</label>
                         <select name="category" class="form-control" required>
-                            <option value="" selected disabled hidden>Select the category</option>
+                            <option value="" selected disabled hidden>
+                                Select the category
+                            </option>
                             {% for category in categories %}
-                                {% if product.category.id == category.id%}
-                                <option value="{{category.id}}" selected>{{category.name}}</option>
-                                {% else %}
-                                <option value="{{category.id}}">{{category.name}}</option>
-                                {% endif %}
+
+
+                            {% if product.category.id == category.id%}
+                            <option value="{{category.id}}" selected>
+                                {{category.name}}
+                            </option>
+                            {% else %}
+                            <option value="{{category.id}}">{{category.name}}</option>
+                            {% endif %}
+
+
                             {% endfor %}
                         </select>
                     </div>
@@ -68,13 +75,19 @@
                 <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="inputPrice">Price</label>
-                        <input type="number" name="price" step="any"  class="form-control" value="{{product.price}}"  required>
+                        <input type="number" name="price" step="any" class="form-control" value="{{product.price}}"
+                            required />
+                    </div>
+                    <div class="form-check form- ml-3 mt-4 pt-1">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                            name="track_inventory" {% if product.track_inventory %} checked {% endif %} />
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Track in Inventory</label>
                     </div>
                 </div>
-                
 
-                <button type="submit" class="btn btn-success font-weight-bold">Update product</button>
-               
+                <button type="submit" class="btn btn-success font-weight-bold">
+                    Update product
+                </button>
             </form>
         </div>
     </div>
