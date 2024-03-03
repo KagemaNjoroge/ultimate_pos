@@ -7,7 +7,8 @@ from products.models import Product
 class Sale(models.Model):
     date_added = models.DateTimeField(default=django.utils.timezone.now)
     customer = models.ForeignKey(
-        Customer, models.PROTECT, db_column='customer', blank=True, null=True)
+        Customer, models.PROTECT, db_column="customer", blank=True, null=True
+    )
     sub_total = models.FloatField(default=0)
     grand_total = models.FloatField(default=0)
     tax_amount = models.FloatField(default=0)
@@ -16,16 +17,17 @@ class Sale(models.Model):
     amount_change = models.FloatField(default=0)
 
     class Meta:
-        db_table = 'Sales'
-        verbose_name_plural = 'Sales'
-        verbose_name = 'Sale'
+        db_table = "Sales"
+        verbose_name_plural = "Sales"
+        verbose_name = "Sale"
 
     def __str__(self) -> str:
         return str(self.id)
 
     def sum_items(self):
         details = SaleDetail.objects.filter(sale=self.id)
-        return sum([d.quantity for d in details])
+        if details.exists():
+            return details.first().get_products_count()
 
     def to_json(self) -> dict:
         return {
@@ -36,25 +38,31 @@ class Sale(models.Model):
             "tax_amount": self.tax_amount,
             "tax_percentage": self.tax_percentage,
             "amount_paid": self.amount_payed,
-            "amount_change": self.amount_change
+            "amount_change": self.amount_change,
         }
 
 
 class SaleDetail(models.Model):
-    sale = models.ForeignKey(
-        Sale, models.PROTECT, db_column='sale')
-    product = models.ForeignKey(
-        Product, models.PROTECT, db_column='product')
-    price = models.FloatField()
-    quantity = models.IntegerField()
-    total_detail = models.FloatField()
-
-    class Meta:
-        db_table = 'SaleDetails'
-        verbose_name_plural = 'Sale Details'
-        verbose_name = 'Sale Detail'
+    sale = models.ForeignKey(Sale, models.PROTECT, db_column="sale")
+    products = models.ManyToManyField(Product, db_column="products")
 
     def __str__(self) -> str:
-        return "Detail ID: " + str(self.id) + " Sale ID: " + str(self.sale.id) + " Quantity: " + str(self.quantity)
+        return f"{self.id}"
 
+    def get_products_count(self):
+        return self.products.count()
 
+    def all_product_count(self):
+        # {"id": "count"}
+        data = {}
+        for product in self.products.all():
+            data[product.id] = self.products.filter(id=product.id).count()
+        return data
+
+    def get_specific_product_count(self, product_id: int) -> int:
+        return self.products.filter(id=product_id).count()
+
+    class Meta:
+        db_table = "SaleDetails"
+        verbose_name_plural = "SaleDetails"
+        verbose_name = "SaleDetail"
