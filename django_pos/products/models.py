@@ -62,7 +62,7 @@ class Product(models.Model):
         item["category"] = self.category.name
         item["quantity"] = 1
         item["total_product"] = 0
-        # if image exists then return the image url, else return empty string
+        # if image exists, then return the image url, else return empty string
         item["image"] = self.image.url if self.image else ""
         item["track_inventory"] = self.track_inventory
         return item
