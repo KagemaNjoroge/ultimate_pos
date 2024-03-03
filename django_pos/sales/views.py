@@ -1,4 +1,5 @@
 from re import I
+import stat
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpRequest, FileResponse
@@ -42,58 +43,45 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
         if is_ajax(request=request):
             # Save the POST arguments
             data = json.load(request)
+            # {'customer': '3', 'sub_total': '80000', 'tax_percentage': '0', 'tax_amount': '0', 'grand_total': '80000', 'amount_payed': '80000', 'amount_change': 0, 'products': [{'id': 2, 'name': 'Hp Elitebook G5', 'price': 80000, 'count': 1, 'total': 80000, 'total_product': 1}
+            customer_id = int(data["customer"])
+            customer = Customer.objects.get(id=customer_id)
+            sub_total = float(data["sub_total"])
+            tax_percentage = float(data["tax_percentage"])
+            tax_amount = float(data["tax_amount"])
+            grand_total = float(data["grand_total"])
+            amount_payed = float(data["amount_payed"])
+            amount_change = float(data["amount_change"])
 
-            sale_attributes = {
-                "sub_total": float(data["sub_total"]),
-                "grand_total": float(data["grand_total"]),
-                "tax_amount": float(data["tax_amount"]),
-                "tax_percentage": float(data["tax_percentage"]),
-                "amount_payed": float(data["amount_payed"]),
-                "amount_change": float(data["amount_change"]),
-            }
-            if data["customer"]:
-                sale_attributes["customer"] = Customer.objects.get(
-                    id=int(data["customer"])
-                )
-            try:
-                # Create the sale
-                new_sale = Sale.objects.create(**sale_attributes)
-                new_sale.save()
-                # Create the sale details
-                products = data["products"]
-
-                for product in products:
-                    detail_attributes = {
-                        "sale": Sale.objects.get(id=new_sale.id),
-                        "product": Product.objects.get(id=int(product["id"])),
-                        "price": product["price"],
-                        "quantity": product["quantity"],
-                        "total_detail": product["total_product"],
-                    }
-                    sale_detail_new = SaleDetail.objects.create(**detail_attributes)
-                    sale_detail_new.save()
-                    # update inventory
-                    if sale_detail_new.product.track_inventory:
-                        inv = Inventory.objects.filter(product=sale_detail_new.product)
-                        if inv.exists():
-                            inv = inv.first()
-                            inv.quantity -= sale_detail_new.quantity
-                            inv.save()
-
-                messages.success(
-                    request, "Sale created successfully!", extra_tags="success"
-                )
-                return redirect("sales:sales_list")
-
-            except Exception as e:
-                print(e)
-                messages.success(
-                    request,
-                    "There was an error during the creation!",
-                    extra_tags="danger",
-                )
-
-        return redirect("sales:sales_list")
+            prods = data["products"]
+            # Create the sale
+            sale = Sale(
+                customer=customer,
+                sub_total=sub_total,
+                tax_percentage=tax_percentage,
+                tax_amount=tax_amount,
+                grand_total=grand_total,
+                amount_payed=amount_payed,
+                amount_change=amount_change,
+            )
+            sale.save()
+            # Create the sale details
+            products = []
+            for prod in prods:
+                product = Product.objects.get(id=prod["id"])
+                products.append(product)
+                # Update the inventory
+                if product.track_inventory:
+                    inv = Inventory.objects.filter(product=product)
+                    if inv.exists():
+                        inv = inv.first()
+                        inv.quantity -= prod["count"]
+                        inv.save()
+            detail = SaleDetail(sale=sale)
+            detail.save()
+            detail.products.set(products)
+            messages.success(request, "Sale added successfully!", extra_tags="success")
+            return redirect("sales:sales_add")
 
     return render(request, "sales/sales_add.html", context=context)
 
@@ -155,15 +143,33 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
 
     # Get the sale details
     details = SaleDetail.objects.filter(sale=sale)
+    prods = details.first().products.all()
+    product_data = []
+    for prod in prods:
+        print(details.first().get_specific_product_count(prod.id))
+        product_data.append(
+            {
+                "id": prod.id,
+                "name": prod.name,
+                "price": prod.price,
+                "count": details.first().get_specific_product_count(prod.id),
+                "total": details.first().get_specific_product_count(prod.id)
+                * prod.price,
+            }
+        )
+    # product counts
+
+    print(product_data)
 
     template = get_template("sales/sales_receipt_pdf.html")
     context = {
         "sale": sale,
-        "details": details,
         "company": company,
         "logo": logo_base64,
+        "product_data": product_data,
         # 0701575348
     }
+
     qrcode_details = sale.to_json()
 
     qr = qrcode.make(qrcode_details, box_size=2.5)
