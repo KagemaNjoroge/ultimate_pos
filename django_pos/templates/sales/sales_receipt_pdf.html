@@ -31,12 +31,12 @@
             border: 1px solid black !important;
             padding: 3px;
         }
-
     </style>
-    
-    
- 
+
+
+
 </head>
+
 <body>
     <div class="container">
         <div class="row">
@@ -69,13 +69,13 @@
                 </tr>
             </thead>
             <tbody>
-                {% for d in details %}
+                {% for d in product_data %}
                 <tr>
                     <td class="text-center">{{forloop.counter}}</td>
-                    <td class="text-left pl-2">{{d.product.name}}</td>
-                    <td class="text-center">{{d.quantity}}</td>
+                    <td class="text-left pl-2">{{d.name}}</td>
+                    <td class="text-center">{{d.count}}</td>
                     <td class="text-right pr-2 ">{{d.price}} {{company.currency}}</td>
-                    <td class="text-right pr-2">{{d.total_detail}} {{company.currency}}</td>
+                    <td class="text-right pr-2">{{d.total}} {{company.currency}}</td>
                 </tr>
                 <!--TODO: Remove hardcoded currency symbol-->
                 {% endfor %}
@@ -103,14 +103,14 @@
             </tbody>
         </table>
         <div class="row mb-5">
-            
+
             <div class="col-4 align-items-end">
                 <img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code">
             </div>
             <div class="col-4">
                 <img src="data:image/svg+xml;base64,{{ logo }}" alt="QR Code">
             </div>
-            
+
         </div>
         <p class="font-weight-bold">
             We appreciate your business. Thank you for your ongoing support.
