@@ -232,7 +232,11 @@
                         class="col-md-3 col-xs-4 product_list no-print add-to-cart">
                         <div class="product_box" data-original-title="{{ prod.name }}">
                           <div class="image-container" style="background-image: url(
+                                                                      {% if prod.image %}
                                                                       {{ prod.image.url }}
+                                                                      {% else %}
+                                                                      {% static 'img/no-image.png' %}
+                                                                      {% endif %}
                                                                       );
                                                                       background-repeat: no-repeat; background-position: center;
                                                                       background-size: contain;"></div>
