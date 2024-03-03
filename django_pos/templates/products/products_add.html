@@ -13,63 +13,78 @@
 {% block content %}
 <!--Go back-->
 <div class="row ml-0 mb-3">
-    <a href="{% url 'products:products_list' %}">
-        <button type="button" class="btn btn-info font-weight-bold">
-            <i class="fas fa-long-arrow-alt-left mr-2"></i>
-            Go back
-        </button>
-    </a>
+  <a href="{% url 'products:products_list' %}">
+    <button type="button" class="btn btn-info font-weight-bold">
+      <i class="fas fa-long-arrow-alt-left mr-2"></i>
+      Go back
+    </button>
+  </a>
+
+  <a href="{% url 'products:upload_excel' %}" class="ml-4">
+    <button type="button" class="btn btn-info font-weight-bold">
+      <i class="fas fa-upload mr-2"></i>
+      Upoad CSV / Excel
+    </button>
+  </a>
 </div>
 
 <div class="row">
-    <div class="card col-md-8">
-        <div class="card-body">
-            <form action="{% url 'products:products_add' %}"  method="post">
-                {% csrf_token %}
-                <div class="form-row">
-                    <div class="form-group col-md-8">
-                        <label for="inputDescription">Name</label>
-                        <input type="text" class="form-control" name="name" placeholder="Chicken Breasts..." required>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="state">State</label>
-                        <select name="state" class="form-control" required>
-                            {% for status in product_status %}
-                            <option value="{{status.0}}">{{status.1}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-8">
-                        <label for="inputDescription">Description</label>
-                        <input type="text" name="description" class="form-control" placeholder="Freshness Guaranteed Chicken Breast, 2.25 - 3.2 lb..." required>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="category">Category</label>
-                        <select name="category" class="form-control" required>
-                            <option value="" selected disabled hidden>Select the category</option>
-                            {% for category in categories %}
-                            <option value="{{category.id}}">{{category.name}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-8">
-                        <label for="inputPrice">Price</label>
-                        <input type="number" name="price" step="any"  class="form-control" placeholder="10.99" required>
-                    </div>
-                </div>
-                
-
-                <button type="submit" class="btn btn-success font-weight-bold">Create product</button>
-               
-            </form>
+  <div class="card col-md-8">
+    <div class="card-body">
+      <form action="{% url 'products:products_add' %}" method="post">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <label for="inputDescription">Name</label>
+            <input type="text" class="form-control" name="name" placeholder="Chicken Breasts..." required />
+          </div>
+          <div class="form-group col-md-4">
+            <label for="state">State</label>
+            <select name="state" class="form-control" required>
+              {% for status in product_status %}
+              <option value="{{status.0}}">{{status.1}}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <label for="inputDescription">Description</label>
+            <input type="text" name="description" class="form-control"
+              placeholder="Freshness Guaranteed Chicken Breast, 2.25 - 3.2 lb..." required />
+          </div>
+          <div class="form-group col-md-4">
+            <label for="category">Category</label>
+            <select name="category" class="form-control" required>
+              <option value="" selected disabled hidden>
+                Select the category
+              </option>
+              {% for category in categories %}
+              <option value="{{category.id}}">{{category.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-8">
+            <label for="inputPrice">Price</label>
+            <input type="number" name="price" step="any" class="form-control" placeholder="10.99" required />
+          </div>
+          <div class="form-check form- ml-3 mt-4 pt-1">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+              name="track_inventory" />
+            <label class="form-check-label" for="flexSwitchCheckChecked">Track in Inventory</label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-success font-weight-bold">
+          Create product
+        </button>
+      </form>
     </div>
+  </div>
 </div>
 {% endblock content %}
 
