@@ -106,6 +106,13 @@ def pos(request: HttpRequest) -> HttpResponse:
             amount_paid = float(sale_data["amount_paid"])
 
             change = amount_paid - grand_total
+            if change < 0:
+                return JsonResponse(
+                    {
+                        "status": "error",
+                        "error_message": "Amount paid is less than total",
+                    }
+                )
             customer = get_object_or_404(Customer, id=customer_id)
             # hard coded tax percentage TODO: make it dynamic as per a particular product
             tax_percentage = 16
