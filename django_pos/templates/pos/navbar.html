@@ -6,6 +6,19 @@
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
         <i class="fa fa-bars"></i>
     </button>
+    <style>
+        #all_notifications {
+            overflow-y: auto;
+            /* Set to auto or scroll to enable vertical scrolling */
+            max-height: 300px;
+            /* Set maximum height for scrollability */
+        }
+
+        #notification_content {
+            overflow: auto;
+            /* Hide overflow for content */
+        }
+    </style>
 
     <!-- Top bar Navbar -->
     <ul class="navbar-nav ml-auto">
@@ -13,16 +26,58 @@
 
 
         <!-- Nav Item - User Information -->
- 
+        <li class="nav-item mt-3 mr-3 ">
+            <button type="button" class="btn btn-primary position-relative" id="notifications_btn">
+                <!--NOtifications-->
+                <i class="fas fa-bell fa-fw"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <div id="number_of_notifications"></div>
+
+                </span>
+            </button>
+            </button>
+        </li>
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Notifications</h5>
+                        <button type="button" class="btn " data-bs-dismiss="modal" aria-label="Close"
+                            id="close_modal_top"><i class="fa fa-times-circle" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="modal-body">
+                        <!--Notifications will appear here two columns - all notifications and content on the left-->
+                        <div class="row">
+                            <div class="col-md-5" id="all_notifications">
+                                <div class="alert alert-primary card" role="alert">
+                                    ...
+                                </div>
+                            </div>
+                            <div class="col-md-7 text-center" id="notification_content">
+                                <div class="card">
+                                    <i class="fa fa-bell mt-3"></i>
+                                    <p>Click on a notification to view its contents
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                            id="close_modal">Close</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
         <li class="nav-item dropdown no-arrow ps-5">
-            <a class="nav-link dropdown-toggle" href="/" id="userDropdown" role="button"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="img-profile rounded-circle"
-                    src="{% static 'img/undraw_profile.svg' %}" alt="profile_pic">
+            <a class="nav-link dropdown-toggle" href="/" id="userDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <img class="img-profile rounded-circle" src="{% static 'img/undraw_profile.svg' %}" alt="profile_pic">
             </a>
             <!-- Dropdown - User Information -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                aria-labelledby="userDropdown">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 {% comment %} <div class="dropdown-divider"></div> {% endcomment %}
                 <a class="dropdown-item" href="{%url 'authentication:profile'%}">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -33,11 +88,131 @@
                     Logout
                 </a>
             </div>
-            
-            
+
+
         </li>
-        
+
 
     </ul>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+
+            return cookieValue;
+        }
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        // To avoid error 403 Forbidden
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            }
+        });
+
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                url: '{% url "pos:notifications" %}',
+                success: function (response) {
+                    console.log(response);
+
+                    var count = 0;
+
+                    for (let i in response) {
+
+                        count++;
+                    }
+
+                    // display the number of notifications
+                    if (count == 0) {
+                        $("#notifications_btn").hide();
+                    }
+                    else {
+                        $("#number_of_notifications").text(count);
+                    }
+                }
+            });
+        });
+        function update_content(id) {
+            $.ajax({
+                type: 'GET',
+                url: `{% url "pos:notifications" %}${id}`,
+                data: {
+                    'id': id
+                },
+                success: function (response) {
+                    console.log(response);
+                    var html = `
+                    <div>
+                        <h3><strong>${response.title}</strong></h3>
+                        <p class="text-center" style="font-size:10px;">${response.date}</p>
+                        <p class="text-wrap justify-content-center">${response.message}</p>	
+                        <!--Mark as read-->
+                        <div class="form-check mt-5">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Mark as read
+                        </label>
+                        </div>
+                                                
+                    </div>
+                    `;
+                    $("#notification_content").html(html);
+                }
+            });
+        }
+        $("#notifications_btn").on('click', function () {
+            $.ajax({
+                type: 'GET',
+                url: '{% url "pos:notifications" %}',
+                success: function (response) {
+                    console.log(response);
+
+                    var html = '';
+
+                    for (let i in response) {
+                        html += `
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <h5 class="card-title">${response[i].title}</h5>
+                                <p class="card-text">${response[i].message.substring(0, 30)}...</p>
+                                <a class="btn btn-primary" id="${response[i].id}" onclick="update_content(${response[i].id});">Read</a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                ${response[i].date}
+                            </div>
+                        </div>
+                        `;
+                    }
+
+                    $("#all_notifications").html(html);
+                    $("#staticBackdrop").modal('show');
+                }
+            });
+        });
+        $("#close_modal").on('click', function () {
+            $("#staticBackdrop").modal('hide');
+        });
+        $("#close_modal_top").on('click', function () {
+            $("#staticBackdrop").modal('hide');
+        });
+    </script>
 
 </nav>
