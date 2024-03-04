@@ -1,7 +1,5 @@
-from email.mime import image
 from django.db import models
 from django.forms import model_to_dict
-from django.utils.safestring import mark_safe
 
 
 class Category(models.Model):
@@ -20,6 +18,13 @@ class Category(models.Model):
         db_table = "Category"
         verbose_name_plural = "Categories"
         verbose_name = "Category"
+        # permissions
+        permissions = [
+            ("can_view_category", "Can view category"),
+            ("can_add_category", "Can add category"),
+            ("can_edit_category", "Can edit category"),
+            ("can_delete_category", "Can delete category"),
+        ]
 
     def __str__(self) -> str:
         return self.name
@@ -51,6 +56,13 @@ class Product(models.Model):
         db_table = "Product"
         verbose_name_plural = "Products"
         verbose_name = "Product"
+        # permissions
+        permissions = [
+            ("can_view_product", "Can view product"),
+            ("can_add_product", "Can add product"),
+            ("can_edit_product", "Can edit product"),
+            ("can_delete_product", "Can delete product"),
+        ]
 
     def __str__(self) -> str:
         return self.name
