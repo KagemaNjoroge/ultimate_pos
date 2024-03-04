@@ -9,7 +9,8 @@
 <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css ' %}" rel="stylesheet">
 <!--Select2 CSS-->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
+<link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
 <!--Bootstrap Touchspin-->
 <link rel="stylesheet" href="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.css' %}">
 {% endblock stylesheets %}
@@ -21,25 +22,28 @@
 {% block content %}
 <!--Go back-->
 <div class="row ml-0 mb-3">
-<div>
-    <a href="{% url 'sales:sales_list' %}">
-        <button type="button" class="btn btn-info font-weight-bold">
-            <i class="fas fa-long-arrow-alt-left mr-2"></i>
-            Go back
-        </button>
-    </a>
+    <div>
+        <a href="{% url 'sales:sales_list' %}">
+            <button type="button" class="btn btn-info font-weight-bold">
+                <i class="fas fa-long-arrow-alt-left mr-2"></i>
+                Go back
+            </button>
+        </a>
 
-</div>
-<div class="ml-2">
-    <a href="{% url 'sales:sales_list' %}" class="me-3">
-        <button type="button" class="btn btn-info font-weight-bold">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill" viewBox="0 0 16 16">
-                <path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5"></path>
-              </svg>
-             Share
-        </button>
-    </a>
-</div>
+    </div>
+    <div class="ml-2">
+        <a href="{% url 'sales:sales_list' %}" class="me-3">
+            <button type="button" class="btn btn-info font-weight-bold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-share-fill" viewBox="0 0 16 16">
+                    <path
+                        d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5">
+                    </path>
+                </svg>
+                Share
+            </button>
+        </a>
+    </div>
 </div>
 
 
@@ -53,7 +57,7 @@
                     <div class="col-md-9 pl-0">
                         <div class="card card-secondary">
                             <div class="card-header">Sale products</div>
-                            
+
                             <div class="card-body">
                                 <!--Products table-->
                                 <div class="card-body table-responsive p-0">
@@ -65,16 +69,16 @@
                                                 <th>Price</th>
                                                 <th>Quantity</th>
                                                 <th>Total</th>
-                                                </tr>
-                                            </thead>
+                                            </tr>
+                                        </thead>
                                         <tbody>
-                                            {% for detail in details %}
+                                            {% for detail in details.items.all %}
                                             <tr>
                                                 <td>{{forloop.counter}}</td>
                                                 <td>{{detail.product.name}}</td>
-                                                <td>{{detail.price}}</td>
+                                                <td>{{detail.product.price}}</td>
                                                 <td class="text-center">{{detail.quantity}}</td>
-                                                <td>{{detail.total_detail}}</td>
+                                                <td>{{detail.total}}</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -94,51 +98,57 @@
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label for="customer">Customer</label>
-                                    <select name="customer" class="form-control" id="searchbox_customers" disabled readonly>
+                                    <select name="customer" class="form-control" id="searchbox_customers" disabled
+                                        readonly>
                                         <option value="{{sale.customer.id}}">{{sale.customer.get_full_name}}</option>
                                     </select>
-                                <div class="form-group mt-4">
-                                    <label>Subtotal</label>
-                                    <div class="input-group">
-                                        <input name="sub_total" class="form-control" value="{{sale.sub_total}}" readonly>
+                                    <div class="form-group mt-4">
+                                        <label>Subtotal</label>
+                                        <div class="input-group">
+                                            <input name="sub_total" class="form-control" value="{{sale.sub_total}}"
+                                                readonly>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tax Inclusive (%)</label>
-                                    <div class="input-group">
-                                        <input name="tax_percentage" class="form-control" value="{{sale.tax_percentage}}" readonly>
+                                    <div class="form-group">
+                                        <label>Tax Inclusive (%)</label>
+                                        <div class="input-group">
+                                            <input name="tax_percentage" class="form-control"
+                                                value="{{sale.tax_percentage}}" readonly>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tax Amount</label>
-                                    <div class="input-group">
-                                        <input name="tax_amount" class="form-control" value="{{sale.tax_amount}}" readonly>
+                                    <div class="form-group">
+                                        <label>Tax Amount</label>
+                                        <div class="input-group">
+                                            <input name="tax_amount" class="form-control" value="{{sale.tax_amount}}"
+                                                readonly>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Grand Total</label>
-                                    <div class="input-group">
-                                        <input name="grand_total" class="form-control" value="{{sale.grand_total}}" readonly>
+                                    <div class="form-group">
+                                        <label>Grand Total</label>
+                                        <div class="input-group">
+                                            <input name="grand_total" class="form-control" value="{{sale.grand_total}}"
+                                                readonly>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Amount payed</label>
-                                    <div class="input-group">
-                                        <input name="amount_payed" class="form-control" value="{{sale.amount_payed}}" readonly>
+                                    <div class="form-group">
+                                        <label>Amount payed</label>
+                                        <div class="input-group">
+                                            <input name="amount_payed" class="form-control"
+                                                value="{{sale.amount_payed}}" readonly>
+                                        </div>
                                     </div>
-                                </div>
 
+                                </div>
+                                <!--End card-body-->
                             </div>
-                            <!--End card-body-->
+                            <!--End Right column-->
+                        </div>
+                        <!--End row-->
                     </div>
-                    <!--End Right column-->
+                    <!--End card-body-->
                 </div>
-                <!--End row-->
-            </div>
-            <!--End card-body-->
-        </div>
 
-    </div>
+            </div>
         </div>
     </div>
 </form>
@@ -157,11 +167,11 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.15/dist/sweetalert2.all.min.js"></script>
 
 <script>
-    
-// Products datatable
 
-tblProducts = $('#table_products').DataTable({
-});
-                    
+    // Products datatable
+
+    tblProducts = $('#table_products').DataTable({
+    });
+
 </script>
 {% endblock javascripts %}
