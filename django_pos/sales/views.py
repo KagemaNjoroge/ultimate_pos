@@ -1,5 +1,3 @@
-from re import I
-import stat
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpRequest, FileResponse
@@ -10,7 +8,7 @@ from django.template.loader import get_template
 from customers.models import Customer
 from products.models import Product
 from weasyprint import HTML, CSS
-from .models import Sale, SaleDetail
+from .models import Sale, SaleDetail, SaleItem
 import json
 from company.models import Company
 import qrcode
@@ -28,7 +26,8 @@ def is_ajax(request: HttpRequest) -> bool:
 
 @login_required(login_url="/accounts/login/")
 def sales_list_view(request: HttpRequest) -> HttpResponse:
-    context = {"active_icon": "sales", "sales": Sale.objects.all()}
+    sale_details = SaleDetail.objects.all()
+    context = {"active_icon": "sales", "sales": sale_details}
     return render(request, "sales/sales.html", context=context)
 
 
@@ -77,9 +76,20 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
                         inv = inv.first()
                         inv.quantity -= prod["count"]
                         inv.save()
-            detail = SaleDetail(sale=sale)
-            detail.save()
-            detail.products.set(products)
+            # Create the sale items
+            sale_items = []
+            for prod in prods:
+                product = Product.objects.get(id=prod["id"])
+                sale_item = SaleItem(
+                    product=product,
+                    quantity=prod["count"],
+                )
+                sale_item.save()
+                sale_items.append(sale_item)
+            # sale details
+            sale_detail = SaleDetail(sale=sale)
+            sale_detail.save()
+            sale_detail.items.set(sale_items)
             messages.success(request, "Sale added successfully!", extra_tags="success")
             return redirect("sales:sales_add")
 
@@ -143,30 +153,14 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
 
     # Get the sale details
     details = SaleDetail.objects.filter(sale=sale)
-    prods = details.first().products.all()
-    product_data = []
-    for prod in prods:
-        print(details.first().get_specific_product_count(prod.id))
-        product_data.append(
-            {
-                "id": prod.id,
-                "name": prod.name,
-                "price": prod.price,
-                "count": details.first().get_specific_product_count(prod.id),
-                "total": details.first().get_specific_product_count(prod.id)
-                * prod.price,
-            }
-        )
-    # product counts
 
-    print(product_data)
+    # product counts
 
     template = get_template("sales/sales_receipt_pdf.html")
     context = {
         "sale": sale,
         "company": company,
         "logo": logo_base64,
-        "product_data": product_data,
         # 0701575348
     }
 
