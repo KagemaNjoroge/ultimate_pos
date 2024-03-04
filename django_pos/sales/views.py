@@ -108,7 +108,7 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         sale = Sale.objects.get(id=sale_id)
 
         # Get the sale details
-        details = SaleDetail.objects.filter(sale=sale)
+        details = SaleDetail.objects.filter(sale=sale).first()
 
         context = {
             "active_icon": "sales",
