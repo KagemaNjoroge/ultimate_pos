@@ -24,7 +24,6 @@ def index(request: HttpRequest) -> HttpResponse:
     monthly_earnings = []
 
     # ferch all unread notifications
-    notifications = Notifications.objects.filter(user=request.user, read=False)
 
     # Calculate earnings per month
     for month in range(1, 13):
@@ -93,7 +92,6 @@ def index(request: HttpRequest) -> HttpResponse:
         "top_products_names": json.dumps(top_products_names),
         "top_products_names_list": top_products_names,
         "top_products_quantity": json.dumps(top_products_quantity),
-        "notifications": notifications,
     }
 
     company = Company.objects.first()
@@ -163,8 +161,23 @@ def pos(request: HttpRequest) -> HttpResponse:
                     inventory = Inventory.objects.filter(product=product)
                     if inventory.exists():
                         inventory = inventory.first()
-                        inventory.quantity -= int(attr["quantity"])
-                        inventory.save()
+                        try:
+                            inventory.quantity -= int(attr["quantity"])
+                            inventory.save()
+                        # CHECK constraint failed: quantity must be greater than or equal to 0
+                        except Exception as e:
+                            # add notification
+                            Notifications.objects.create(
+                                title="Inventory Update Failed",
+                                message=f"Inventory update failed for {product.name}. Items left: {Inventory.objects.filter(product=product).first().quantity}.",
+                                user=request.user,
+                            )
+                            return JsonResponse(
+                                {
+                                    "status": "error",
+                                    "error_message": f"Stock is not enough for {product.name}. Items left: {Inventory.objects.filter(product=product).first().quantity}. Update the inventory and try again.",
+                                }
+                            )
                     else:
                         pass
                 # create sale items
@@ -179,5 +192,42 @@ def pos(request: HttpRequest) -> HttpResponse:
 
             return JsonResponse({"status": "success", "sale_id": sale.id})
         except Exception as e:
+
             return JsonResponse({"status": "error", "error_message": str(e)})
     return HttpResponse("Invalid request", status=400)
+
+
+def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
+    if id == None:
+        notifications = Notifications.objects.filter(
+            read=False, user=request.user
+        ).order_by("date")
+        # mark all notifications as read
+        # for notification in notifications:
+        #     notification.read = True
+        #     notification.save()
+        return JsonResponse(
+            [
+                {
+                    "id": notification.id,
+                    "title": notification.title,
+                    "message": notification.message,
+                    "date": notification.date.strftime("%Y-%m-%d %H:%M:%S"),
+                }
+                for notification in notifications
+            ],
+            safe=False,
+        )
+
+    else:
+        notification = get_object_or_404(Notifications, id=id)
+        # notification.read = True
+        # notification.save()
+        return JsonResponse(
+            {
+                "id": notification.id,
+                "title": notification.title,
+                "message": notification.message,
+                "date": notification.date.strftime("%Y-%m-%d %H:%M:%S"),
+            }
+        )
