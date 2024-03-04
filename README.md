@@ -28,7 +28,7 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
 
 ## Proposed Features
 
-- BUsiness Level Inventory Management
+- Business Level Inventory Management
 - Suppliers Management
 - Purchase Management
 - CRM (Customer Relationship Management)
