@@ -56,14 +56,14 @@
                         <td class="text-center">{{s.get_products_count}}</td>
                         <td class="text-center">
                             <!--View-->
-                            <a href="{% url 'sales:sales_details' s.id %}" class="text-decoration-none">
+                            <a href="{% url 'sales:sales_details' s.sale.id %}" class="text-decoration-none">
                                 <button type="button" class="btn btn-info btn-sm" data-bs-toggle="tooltip"
                                     title="Update sale">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </a>
                             <!--Print receipt-->
-                            <a href="{% url 'sales:sales_receipt_pdf' s.id %}" class="text-decoration-none">
+                            <a href="{% url 'sales:sales_receipt_pdf' s.sale.id %}" class="text-decoration-none">
                                 <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
                                     title="View Receipt">
                                     <i class="fas fa-receipt"></i>
