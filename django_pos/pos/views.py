@@ -1,4 +1,5 @@
 from datetime import date
+from operator import le
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
@@ -6,7 +7,7 @@ from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from customers.models import Customer
 from pos.models import Notifications
-from sales.models import Sale, SaleDetail
+from sales.models import Sale, SaleDetail, SaleItem
 from products.models import Product, Category
 from sales.models import Sale
 from company.models import Company
@@ -52,30 +53,35 @@ def index(request: HttpRequest) -> HttpResponse:
 
     # AVG per month
     avg_month = format(sum(monthly_earnings) / 12, ".2f")
-    prods = Product.objects.all()
-    counts = {}
+
     f = SaleDetail.objects.all()
+
+    # Get top products
+    products = Product.objects.all()
+    top = [{product.id: 0 for product in products}]
+
+    for sale_detail in f:
+        for item in sale_detail.items.all():
+            for x in top:
+                if item.product.id in x:
+                    x[item.product.id] += item.quantity
+                else:
+                    x[item.product.id] = item.quantity
+    x = []
+    for i in top:
+        for v, j in i.items():
+            if j > 0:
+                x.append({"id": v, "quantity": j})
+
+    x = sorted(x, key=lambda i: i["quantity"], reverse=True)
+    top_products = x[:3]
+
     top_products_names = []
     top_products_quantity = []
-    if f.count() >= 1:
-        for detail in f:
-            for p in detail.products.all():
-                if p.id in counts:
-                    counts[p.id] += 1
-                else:
-                    counts[p.id] = 1
-        # top 3 products
-        top_products = sorted(
-            prods, key=lambda x: counts[x.id] if x.id in counts else 0, reverse=True
-        )[:3]
-        print(top_products)
 
-        for product in top_products:
-            top_products_names.append(product.name)
-            top_products_quantity.append(counts[product.id])
-    else:
-        top_products_names = []
-        top_products_quantity = []
+    for product in top_products:
+        top_products_names.append(Product.objects.get(id=product["id"]).name)
+        top_products_quantity.append(product["quantity"])
 
     context = {
         "active_icon": "dashboard",
@@ -140,7 +146,7 @@ def pos(request: HttpRequest) -> HttpResponse:
                 sub_total=grand_total - tax_amount,
             )
             sale.save()
-
+            sale_items = []
             for item in items:
                 product = get_object_or_404(Product, id=item["id"])
                 attr = {
@@ -161,11 +167,15 @@ def pos(request: HttpRequest) -> HttpResponse:
                         inventory.save()
                     else:
                         pass
-            # create sale detail
-            prods = [Product.objects.get(id=item["id"]) for item in items]
-            detail = SaleDetail(sale=sale)
-            detail.save()
-            detail.products.set(prods)
+                # create sale items
+                sale_item = SaleItem.objects.create(
+                    product=product, quantity=attr["quantity"]
+                )
+                sale_item.save()
+                sale_items.append(sale_item)
+            sale_detail = SaleDetail.objects.create(sale=sale)
+            sale_detail.save()
+            sale_detail.items.set(sale_items)
 
             return JsonResponse({"status": "success", "sale_id": sale.id})
         except Exception as e:
