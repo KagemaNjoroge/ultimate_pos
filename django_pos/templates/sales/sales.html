@@ -16,65 +16,67 @@
 <!-- Page content  -->
 {% block content %}
 
-    <!--Create new sale-->
-    <div class="row ml-0 mb-3">
-        <a href="{% url 'sales:sales_add' %}">
-            <button type="button" class="btn btn-success font-weight-bold">
-                    <i class="fas fa-plus mr-2"></i>
-                    Create new sale
-            </button>
-        </a>
-    </div>
+<!--Create new sale-->
+<div class="row ml-0 mb-3">
+    <a href="{% url 'sales:sales_add' %}">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="fas fa-plus mr-2"></i>
+            Create new sale
+        </button>
+    </a>
+</div>
 
-    <!-- DataTable -->
-    <div class="card shadow mb-12">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Sales</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="dataTable">
-                    <thead>
-                        <tr>
-                            <th style="width:5%">#</th>
-                            <th style="width:15%">ID</th>
-                            <th style="width:25%">Date</th>
-                            <th style="width:20%">Customer</th>
-                            <th class="text-center" style="width:10%">Total</th>
-                            <th class="text-center" style="width:5%">Items</th>
-                            <th class="text-center" style="width:10%">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for s in sales %}
-                        <tr>
-                            <td>{{forloop.counter}}</td>
-                            <td>{{s.id}}</td>
-                            <td>{{s.date_added}}</td>
-                            <td>{{s.customer.get_full_name}}</td>
-                            <td class="text-right" >{{s.grand_total}}</td>
-                            <td class="text-center" >{{s.sum_items}}</td>
-                            <td class="text-center">
-                                <!--View-->
-                                <a href="{% url 'sales:sales_details' s.id %}" class="text-decoration-none">
-                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Update sale">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </a>
-                                <!--Print receipt-->
-                                <a href="{% url 'sales:sales_receipt_pdf' s.id %}" class="text-decoration-none">
-                                    <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="tooltip" title="View Receipt">
-                                        <i class="fas fa-receipt"></i>
-                                    </button>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+<!-- DataTable -->
+<div class="card shadow mb-12">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Sales</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable">
+                <thead>
+                    <tr>
+                        <th style="width:5%">#</th>
+                        <th style="width:15%">ID</th>
+                        <th style="width:25%">Date</th>
+                        <th style="width:20%">Customer</th>
+                        <th class="text-center" style="width:10%">Total</th>
+                        <th class="text-center" style="width:5%">Items</th>
+                        <th class="text-center" style="width:10%">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in sales %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{s.sale.id}}</td>
+                        <td>{{s.sale.date_added}}</td>
+                        <td>{{s.sale.customer.get_full_name}}</td>
+                        <td class="text-right">{{s.get_grand_total}}</td>
+                        <td class="text-center">{{s.get_products_count}}</td>
+                        <td class="text-center">
+                            <!--View-->
+                            <a href="{% url 'sales:sales_details' s.id %}" class="text-decoration-none">
+                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="tooltip"
+                                    title="Update sale">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </a>
+                            <!--Print receipt-->
+                            <a href="{% url 'sales:sales_receipt_pdf' s.id %}" class="text-decoration-none">
+                                <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
+                                    title="View Receipt">
+                                    <i class="fas fa-receipt"></i>
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
@@ -97,18 +99,18 @@
 <!--Datatables-->
 <script>
     // Call the dataTables jQuery plugin
-    $(document).ready(function() {
+    $(document).ready(function () {
         let tblCategories = $('#dataTable').DataTable({
             dom: 'Bfrtip', // Buttons are draw at this element
             buttons: [
                 {
-                extend: 'print',
-                text: 'Print <i class="fas fa-file ml-2"></i>',
-                titleAttr: 'Print',
-                className: 'btn btn-info',
-                exportOptions: {
-                    columns: [ 0, 1, 2, 3 ,4, 5]
-                }            
+                    extend: 'print',
+                    text: 'Print <i class="fas fa-file ml-2"></i>',
+                    titleAttr: 'Print',
+                    className: 'btn btn-info',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5]
+                    }
                 },
                 {
                     extend: 'excelHtml5',
@@ -116,8 +118,8 @@
                     titleAttr: 'Download Excel',
                     className: 'btn btn-success ml-2',
                     exportOptions: {
-                        columns: [ 0, 1, 2, 3 ,4, 5 ]
-                    } 
+                        columns: [0, 1, 2, 3, 4, 5]
+                    }
                 },
                 {
                     extend: 'pdfHtml5',
@@ -129,7 +131,7 @@
                     pageSize: 'A4',
                     title: '*',
                     exportOptions: {
-                        columns: [ 0, 1, 2, 3 ,4 ,5]
+                        columns: [0, 1, 2, 3, 4, 5]
                     },
                     customize: function (doc) {
                         doc.styles = {
@@ -164,11 +166,11 @@
                                 columns: [
                                     {
                                         alignment: 'left',
-                                        text: ['Creation date: ', {text: moment().format('MM-DD-YYYY (HH:mm:ss)')}]
+                                        text: ['Creation date: ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
                                     },
                                     {
                                         alignment: 'right',
-                                        text: ['page ', {text: page.toString()}, ' of ', {text: pages.toString()}]
+                                        text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
                                     }
                                 ],
                                 margin: 20
