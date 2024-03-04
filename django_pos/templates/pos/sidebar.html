@@ -25,7 +25,7 @@
 
     <li class="{% if "dashboard" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
         <a class="nav-link" href="{% url 'pos:pos' %}">
-          <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
             <span>POS</span></a>
     </li>
 
@@ -34,15 +34,18 @@
 
     <!-- Nav Item - Products Collapse Menu -->
     <li class="{% if "products" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-            aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+            aria-controls="collapseTwo">
             <i class="fas fa-fw fa-tag"></i>
             <span>Products</span>
         </a>
-        <div id="collapseTwo" class="{% if "products" in active_icon %} collapse show {% else %} collapse {% endif %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo" class="{% if "products" in active_icon %} collapse show {% else %} collapse {% endif %}"
+            aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="{% if "categories" in active_icon %} collapse-item active {% else %} collapse-item {% endif %}" href="{% url 'products:categories_list' %}">Categories</a>
-                <a class="{% if "products_products" in active_icon %} collapse-item active {% else %} collapse-item {% endif %}" href="{% url 'products:products_list' %}">Products</a>
+                <a class="{% if "categories" in active_icon %} collapse-item active {% else %} collapse-item {% endif %}"
+                    href="{% url 'products:categories_list' %}">Categories</a>
+                <a class="{% if "products_products" in active_icon %} collapse-item active {% else %} collapse-item {% endif %}"
+                    href="{% url 'products:products_list' %}">Products</a>
             </div>
         </div>
     </li>
@@ -72,6 +75,12 @@
         <a class="nav-link" href="{% url 'inventory:inventory_index' %}">
             <i class="fa-solid fa-warehouse"></i>
             <span>Inventory</span></a>
+    </li>
+
+    <li class="{% if "inventory" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
+        <a class="nav-link" href="{% url 'inventory:inventory_index' %}">
+            <i class="fa fa-cloud" aria-hidden="true"></i>
+            <span>ETIMS</span></a>
     </li>
 
     <!-- Divider -->
