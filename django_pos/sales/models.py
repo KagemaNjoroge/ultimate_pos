@@ -42,27 +42,42 @@ class Sale(models.Model):
         }
 
 
+class SaleItem(models.Model):
+    product = models.ForeignKey(Product, models.PROTECT, db_column="product")
+    quantity = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = "SaleItems"
+        verbose_name_plural = "SaleItems"
+        verbose_name = "SaleItem"
+
+    def __str__(self) -> str:
+        return f"{self.product.name} - {self.quantity}"
+
+    def total(self):
+        return self.product.price * self.quantity
+
+
 class SaleDetail(models.Model):
     sale = models.ForeignKey(Sale, models.PROTECT, db_column="sale")
-    products = models.ManyToManyField(Product, db_column="products")
+    items = models.ManyToManyField(SaleItem, db_column="items")
 
     def __str__(self) -> str:
         return f"{self.id}"
 
-    def get_products_count(self):
-        return self.products.count()
-
-    def all_product_count(self):
-        # {"id": "count"}
-        data = {}
-        for product in self.products.all():
-            data[product.id] = self.products.filter(id=product.id).count()
-        return data
+    def get_products_count(self) -> int:
+        return self.items.count()
 
     def get_specific_product_count(self, product_id: int) -> int:
-        return self.products.filter(id=product_id).count()
+        return self.items.filter(product__id=product_id).count()
+
+    def get_grand_total(self) -> float:
+        return self.sale.grand_total
 
     class Meta:
         db_table = "SaleDetails"
         verbose_name_plural = "SaleDetails"
         verbose_name = "SaleDetail"
+
+    def get_top_selling_products(self):
+        return self.items.order_by("quantity")[:5]
