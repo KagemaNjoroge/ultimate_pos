@@ -16,7 +16,7 @@
 {% endblock stylesheets %}
 
 <!-- Page Heading -->
-{% block heading %}Sale ID: {{sale.id}}, details{% endblock heading %}
+{% block heading %}Sale ID: {{sale.id}}{% endblock heading %}
 
 <!-- Page content  -->
 {% block content %}
@@ -131,7 +131,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Amount payed</label>
+                                        <label>Amount paid</label>
                                         <div class="input-group">
                                             <input name="amount_payed" class="form-control"
                                                 value="{{sale.amount_payed}}" readonly>
