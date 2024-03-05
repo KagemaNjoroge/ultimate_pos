@@ -6,8 +6,7 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <!-- Datatables -->
-<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
+
 {% endblock stylesheets %}
 
 <!-- Page Heading -->
@@ -16,76 +15,79 @@
 <!-- Page content  -->
 {% block content %}
 
-    <!--Create new customer-->
-    <div class="row ml-0 mb-3">
-        <a href="{% url 'customers:customers_add' %}">
-            <button type="button" class="btn btn-success font-weight-bold">
-                    <i class="fas fa-plus mr-2"></i>
-                    Create new customer
-            </button>
-        </a>
-    </div>
+<!--Create new customer-->
+<div class="row ml-0 mb-3">
+    <a href="{% url 'customers:customers_add' %}">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="fas fa-plus mr-2"></i>
+            Create new customer
+        </button>
+    </a>
+</div>
 
-    <!-- DataTable -->
-    <div class="card shadow mb-12">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Customers</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="dataTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th style="width:2%">#</th>
-                            <th style="width:20%">Name</th>
-                            <th style="width:10%;">KRA PIN</th>
-                            <th style="width:20%">Email</th>
-                            <th style="width:15%">Phone</th>
-                            
-                            <th class="text-center" style="width:20%">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for c in customers %}
-                        <tr>
-                            <td>{{c.id}}</td>
-                            <td>{{forloop.counter}}</td>
-                            <td>{{c.get_full_name}}</td>
-                            {%if c.kra_pin%}
-                            <td>{{c.kra_pin}}</td>
-                            {%else%}
-                            <td>-</td>
-                            {%endif%}
-                            {%if c.email%}
-                            <td>{{c.email}}</td>
-                            {%else%}
-                            <td>-</td>
-                            {%endif%}
-                            {%if c.phone%}
-                            <td>{{c.phone}}</td>
-                            {%else%}
-                            <td>-</td>
-                            {%endif%}
-                            
-                            <td class="text-center">
-                                <!--Update-->
-                                <a href="{% url 'customers:customers_update' c.id %}" class="text-decoration-none">
-                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Update customer">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </a>
-                                <!--Delete modal-->
-                                <!-- Button trigger modal -->
-                                <a class="text-decoration-none">
-                                    <button rel="delete" type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#exampleModal">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </a>
-                                    
-                                <!-- Modal -->
-                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
+<!-- DataTable -->
+<div class="card shadow mb-12">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Customers</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th style="width:2%">#</th>
+                        <th style="width:20%">Name</th>
+                        <th style="width:10%;">KRA PIN</th>
+                        <th style="width:20%">Email</th>
+                        <th style="width:15%">Phone</th>
+
+                        <th class="text-center" style="width:20%">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in customers %}
+                    <tr>
+                        <td>{{c.id}}</td>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{c.get_full_name}}</td>
+                        {%if c.kra_pin%}
+                        <td>{{c.kra_pin}}</td>
+                        {%else%}
+                        <td>-</td>
+                        {%endif%}
+                        {%if c.email%}
+                        <td>{{c.email}}</td>
+                        {%else%}
+                        <td>-</td>
+                        {%endif%}
+                        {%if c.phone%}
+                        <td>{{c.phone}}</td>
+                        {%else%}
+                        <td>-</td>
+                        {%endif%}
+
+                        <td class="text-center">
+                            <!--Update-->
+                            <a href="{% url 'customers:customers_update' c.id %}" class="text-decoration-none">
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
+                                    title="Update customer">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                            </a>
+                            <!--Delete modal-->
+                            <!-- Button trigger modal -->
+                            <a class="text-decoration-none">
+                                <button rel="delete" type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                    data-target="#exampleModal">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </a>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="exampleModalLabel">Delete customer</h5>
@@ -97,29 +99,29 @@
                                             Are you sure you want to delete the customer? This action is irreversible.
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                            <a id="updateThisURL" href="{% url 'customers:customers_delete' c.id %}" class="text-decoration-none">
-                                                <button type="button"  class="btn btn-danger">Delete</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Cancel</button>
+                                            <a id="updateThisURL" href="{% url 'customers:customers_delete' c.id %}"
+                                                class="text-decoration-none">
+                                                <button type="button" class="btn btn-danger">Delete</button>
                                             </a>
                                         </div>
                                     </div>
-                                    </div>
                                 </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<!-- Datatables -->
-<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
 <!--Datatable buttons-->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
@@ -135,18 +137,18 @@
 <!--Datatables-->
 <script>
     // Call the dataTables jQuery plugin
-    $(document).ready(function() {
+    $(document).ready(function () {
         let tblCategories = $('#dataTable').DataTable({
             dom: 'Bfrtip', // Buttons are draw at this element
             buttons: [
                 {
-                extend: 'print',
-                text: 'Print <i class="fas fa-file ml-2"></i>',
-                titleAttr: 'Print',
-                className: 'btn btn-info',
-                exportOptions: {
-                    columns: [ 0, 1, 2, 3 ,4 ]
-                }            
+                    extend: 'print',
+                    text: 'Print <i class="fas fa-file ml-2"></i>',
+                    titleAttr: 'Print',
+                    className: 'btn btn-info',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
                 },
                 {
                     extend: 'excelHtml5',
@@ -154,8 +156,8 @@
                     titleAttr: 'Download Excel',
                     className: 'btn btn-success ml-2',
                     exportOptions: {
-                        columns: [ 0, 1, 2, 3 ,4 ]
-                    } 
+                        columns: [0, 1, 2, 3, 4]
+                    }
                 },
                 {
                     extend: 'pdfHtml5',
@@ -167,7 +169,7 @@
                     pageSize: 'A4',
                     title: '*',
                     exportOptions: {
-                        columns: [ 0, 1, 2, 3 ,4 ]
+                        columns: [0, 1, 2, 3, 4]
                     },
                     customize: function (doc) {
                         doc.styles = {
@@ -202,11 +204,11 @@
                                 columns: [
                                     {
                                         alignment: 'left',
-                                        text: ['Creation date: ', {text: moment().format('MM-DD-YYYY (HH:mm:ss)')}]
+                                        text: ['Creation date: ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
                                     },
                                     {
                                         alignment: 'right',
-                                        text: ['page ', {text: page.toString()}, 'of ', {text: pages.toString()}]
+                                        text: ['page ', { text: page.toString() }, 'of ', { text: pages.toString() }]
                                     }
                                 ],
                                 margin: 20
@@ -233,15 +235,15 @@
 
     // Alert when trying to delete a customer
     $('#dataTable tbody')
-    // Event when whe try to delete a customer,
-    // We update the text, and href of the modal deleted button
-    .on('click', 'button[rel="delete"]', function () {
-    // Row variable
-    let tr = tblCategories.cell($(this).closest('td, li')).index();
-    let row_data = (tblCategories.row(tr.row).data());
-    let customer_id = row_data[0];
-   
-        document.getElementById("updateThisURL").href='delete/' + customer_id;
-    });
+        // Event when whe try to delete a customer,
+        // We update the text, and href of the modal deleted button
+        .on('click', 'button[rel="delete"]', function () {
+            // Row variable
+            let tr = tblCategories.cell($(this).closest('td, li')).index();
+            let row_data = (tblCategories.row(tr.row).data());
+            let customer_id = row_data[0];
+
+            document.getElementById("updateThisURL").href = 'delete/' + customer_id;
+        });
 </script>
 {% endblock javascripts %}
