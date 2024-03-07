@@ -9,7 +9,7 @@ class Company(models.Model):
     address = models.CharField(max_length=100)
     logo = models.ImageField(blank=False, null=False)
     company_name = models.CharField(max_length=100, blank=False, null=False)
-    currency_symbol = models.CharField(max_length=5, default='Kes')
+    currency_symbol = models.CharField(max_length=5, default="Kes")
     invoice_template_id = models.IntegerField(default=1)
     bill_template_id = models.IntegerField(default=1)
 
@@ -26,10 +26,10 @@ class Company(models.Model):
             "company_name": self.company_name,
             "currency": self.currency_symbol,
             "invoice_template_id": self.invoice_template_id,
-            "bill_template_id": self.bill_template_id
+            "bill_template_id": self.bill_template_id,
         }
 
     class Meta:
-        verbose_name_plural = 'Companies'
-        verbose_name = 'Company'
-        db_table = 'Company'
+        verbose_name_plural = "Companies"
+        verbose_name = "Company"
+        db_table = "Company"
