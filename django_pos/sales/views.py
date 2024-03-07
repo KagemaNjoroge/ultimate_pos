@@ -152,17 +152,35 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         company = None
 
     # Get the sale details
-    details = SaleDetail.objects.filter(sale=sale)
+    details = SaleDetail.objects.filter(sale=sale).first()
+    items = []
 
-    # product counts
+    for item in details.items.all():
+        product = item.product
+        items.append(
+            {
+                "name": product.name,
+                "quantity": item.quantity,
+                "price": product.price,
+                "total": item.total(),
+            }
+        )
 
     template = get_template("sales/sales_receipt_pdf.html")
     context = {
         "sale": sale,
         "company": company,
         "logo": logo_base64,
+        "items": items,
         # 0701575348
     }
+    # check if the sale has been printed
+    if not sale.receipt_is_printed:
+        context["printed"] = False
+        sale.receipt_is_printed = True
+        sale.save()
+    else:
+        context["printed"] = True
 
     qrcode_details = sale.to_json()
 
@@ -193,3 +211,9 @@ def kra_logo(request: HttpRequest) -> HttpResponse:
     logo = "static/img/kra_logo.png"
 
     return FileResponse(open(logo, "rb"), content_type="image/png")
+
+
+def watermark(request: HttpRequest) -> HttpResponse:
+    watermark = "static/img/watermark.png"
+
+    return FileResponse(open(watermark, "rb"), content_type="image/png")
