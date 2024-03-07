@@ -27,9 +27,44 @@
 
         }
 
-        table thead tr th {
-            border: 1px solid black !important;
-            padding: 3px;
+        body {
+            z-index: 50;
+        }
+
+        tr:nth-child(even) {
+            background-color: #F6F6F7;
+        }
+
+        td {
+            width: 150px;
+            z-index: 100;
+        }
+
+
+
+
+        .watermark {
+            position: absolute;
+            color: gray;
+            font-weight: bold;
+            font-size: 200px;
+            opacity: 0.25;
+            transform: rotate(-45deg);
+            width: 100%;
+            top: 8%;
+            text-align: center;
+            z-index: 0;
+
+
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+            color: gray;
         }
     </style>
 
@@ -38,7 +73,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" {%if printed %} id="watermark" {%endif%}>
         <div class="row">
             <img src="{% url 'sales:kra_logo' %}" class="">
             <div class="col-6">
@@ -51,14 +86,19 @@
                 <p><b>Date:</b> {{sale.date_added}}</p>
                 <p><b>Sale ID:</b> {{sale.id}}</p>
                 <p><b>Customer:</b> {{sale.customer.get_full_name}}</p>
+                {% if sale.customer.kra_pin %}
                 <p><b>KRA PIN:</b> {{ sale.customer.kra_pin }}</p>
+                {% endif %}
             </div>
         </div>
 
         <br>
 
-        <p></p>
-        <table class="table" style="width: 100%;">
+        <table class="table table-bordered table-dark" style="width: 90%;">
+
+            {%if printed%}
+            <div class="watermark">COPY</div>
+            {%endif%}
             <thead>
                 <tr style="border: 1px solid black;">
                     <th style="width: 5%;" class="text-center">#</th>
@@ -68,12 +108,13 @@
                     <th style="width: 20%;" class="text-right pr-2">Total</th>
                 </tr>
             </thead>
+
             <tbody>
-                {% for d in product_data %}
+                {% for d in items %}
                 <tr>
                     <td class="text-center">{{forloop.counter}}</td>
                     <td class="text-left pl-2">{{d.name}}</td>
-                    <td class="text-center">{{d.count}}</td>
+                    <td class="text-center">{{d.quantity}}</td>
                     <td class="text-right pr-2 ">{{d.price}} {{company.currency}}</td>
                     <td class="text-right pr-2">{{d.total}} {{company.currency}}</td>
                 </tr>
@@ -102,21 +143,21 @@
 
             </tbody>
         </table>
-        <div class="row mb-5">
 
-            <div class="col-4 align-items-end">
-                <img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code">
-            </div>
-            <div class="col-4">
-                <img src="data:image/svg+xml;base64,{{ logo }}" alt="QR Code">
-            </div>
 
+
+    </div>
+    <footer>
+        <div class="col-12">
+            <img src="data:image/svg+xml;base64,{{ logo }}" alt="KRA LOGO">
+        </div>
+        <div class="col-12 text-center">
+            <img src="data:image/svg+xml;base64,{{ qr_code }}" alt="QR Code" height="20px" width="20px">
         </div>
         <p class="font-weight-bold">
             We appreciate your business. Thank you for your ongoing support.
         </p>
-
-    </div>
+    </footer>
 </body>
 
 
