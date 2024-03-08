@@ -162,6 +162,4 @@ Contributions are always welcome!
 
 This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
 
-## Authors
-
-- [@kagemanjoroge](https://github.com/kagemanjoroge)
+Brought to you by the good folks at [Tomorrow Kenya](https://tomorrow.co.ke)
