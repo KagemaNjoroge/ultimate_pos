@@ -9,7 +9,7 @@ SECRET_KEY = "django-insecure-shfzstshi=+%g-@_=nc4_x=9xdpt1thdo=^k#($km%htb-se)(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -46,7 +46,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "django_pos.urls"
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = "/accounts/login/"
 # Route defined in authentication/urls.py
 LOGIN_REDIRECT_URL = "authentication:home"
 # Route defined in authentication/urls.py
@@ -112,15 +112,19 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_ROOT = os.path.join(CORE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(CORE_DIR, "staticfiles")
+STATIC_URL = "/static/"
 
 # Extra places for collect static to find static files.
-STATICFILES_DIRS = (
-    os.path.join(CORE_DIR, 'static'),
-)
+STATICFILES_DIRS = (os.path.join(CORE_DIR, "static"),)
 # Media Files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# configuration for the license server
+LICENSE_SERVER = "https://tomorrow.co.ke"
+MY_COMPANY_NAME = "Tomorrow Solutions"
+MY_COMPANY_ID = "1"

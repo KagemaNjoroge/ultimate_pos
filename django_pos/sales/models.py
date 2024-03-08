@@ -15,6 +15,8 @@ class Sale(models.Model):
     tax_percentage = models.FloatField(default=0)
     amount_payed = models.FloatField(default=0)
     amount_change = models.FloatField(default=0)
+    # if printed add a watermark to the receipt
+    receipt_is_printed = models.BooleanField(default=False)
 
     class Meta:
         db_table = "Sales"
@@ -39,6 +41,7 @@ class Sale(models.Model):
             "tax_percentage": self.tax_percentage,
             "amount_paid": self.amount_payed,
             "amount_change": self.amount_change,
+            "receipt_is_printed": self.receipt_is_printed,
         }
 
 
