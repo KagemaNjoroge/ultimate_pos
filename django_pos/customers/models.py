@@ -14,6 +14,10 @@ class Customer(models.Model):
     kra_pin = models.CharField(
         max_length=12, default="A000000000Z", blank=True, null=True
     )
+    is_active = models.BooleanField(default=True)
+    photo = models.FileField(
+        upload_to="customers", blank=True, null=True, default="/img/undraw_profile.svg"
+    )
 
     class Meta:
         db_table = "Customers"
