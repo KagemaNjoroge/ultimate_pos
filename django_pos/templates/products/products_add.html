@@ -28,63 +28,169 @@
   </a>
 </div>
 
-<div class="row">
-  <div class="card col-md-8">
-    <div class="card-body">
-      <form action="{% url 'products:products_add' %}" method="post">
-        {% csrf_token %}
-        <div class="form-row">
-          <div class="form-group col-md-8">
-            <label for="inputDescription">Name</label>
-            <input type="text" class="form-control" name="name" placeholder="Chicken Breasts..." required />
-          </div>
-          <div class="form-group col-md-4">
-            <label for="state">State</label>
-            <select name="state" class="form-control" required>
-              {% for status in product_status %}
-              <option value="{{status.0}}">{{status.1}}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
 
-        <div class="form-row">
-          <div class="form-group col-md-8">
-            <label for="inputDescription">Description</label>
-            <input type="text" name="description" class="form-control"
-              placeholder="Freshness Guaranteed Chicken Breast, 2.25 - 3.2 lb..." required />
-          </div>
-          <div class="form-group col-md-4">
-            <label for="category">Category</label>
-            <select name="category" class="form-control" required>
-              <option value="" selected disabled hidden>
-                Select the category
-              </option>
-              {% for category in categories %}
-              <option value="{{category.id}}">{{category.name}}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
+<!-- Tabs for product, taxes, expiry, images-->
+<ul class="nav nav-tabs ml-2" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="product-tab" data-toggle="tab" href="#product" role="tab" aria-controls="product"
+      aria-selected="true">Product</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="taxes-tab" data-toggle="tab" href="#taxes" role="tab" aria-controls="taxes"
+      aria-selected="false">Taxes</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="expiry-tab" data-toggle="tab" href="#expiry" role="tab" aria-controls="expiry"
+      aria-selected="false">Expiry</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="images-tab" data-toggle="tab" href="#images" role="tab" aria-controls="images"
+      aria-selected="false">Images</a>
+  </li>
+</ul>
 
-        <div class="form-row">
-          <div class="form-group col-md-8">
-            <label for="inputPrice">Price</label>
-            <input type="number" name="price" step="any" class="form-control" placeholder="10.99" required />
-          </div>
-          <div class="form-check form- ml-3 mt-4 pt-1">
-            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-              name="track_inventory" />
-            <label class="form-check-label" for="flexSwitchCheckChecked">Track in Inventory</label>
-          </div>
-        </div>
+<div class="mt-4 ml-2 tab-content">
+  <!-- Product tab -->
+  <div class="tab-pane fade show active" id="product" role="tabpanel" aria-labelledby="product-tab">
+    <div class="card col-md-10 ">
+      <div class="card-body">
+        <form action="{% url 'products:products_add' %}" method="post">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="product_type">Product Type</label>
+              <select name="product_type" class="form-control" required>
+                <option value="Raw Material">Raw Material</option>
+                <option value="Finished Goods" selected>Finished Goods</option>
+                <option value="Service">Service</option>
+              </select>
+            </div>
 
-        <button type="submit" class="btn btn-success font-weight-bold">
-          Create product
-        </button>
-      </form>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-8">
+
+
+              <label for="inputDescription">Name</label>
+              <input type="text" class="form-control" name="name" placeholder="Chicken Breasts..." required />
+            </div>
+            <div class="form-group col-md-4">
+              <label for="state">State</label>
+              <select name="state" class="form-control" required>
+                {% for status in product_status %}
+                <option value="{{status.0}}">{{status.1}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-8">
+              <label for="inputDescription">Description</label>
+              <input type="text" name="description" class="form-control"
+                placeholder="Freshness Guaranteed Chicken Breast, 2.25 - 3.2 lb..." required />
+            </div>
+            <div class="form-group col-md-4">
+              <label for="category">Category</label>
+              <select name="category" class="form-control" required>
+                <option value="" selected disabled hidden>
+                  Select the category
+                </option>
+                {% for category in categories %}
+                <option value="{{category.id}}">{{category.name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-8">
+              <label for="inputPrice">Price</label>
+              <input type="number" name="price" step="any" class="form-control" placeholder="10.99" required />
+            </div>
+            <div class="form-check form- ml-3 mt-4 pt-1">
+              <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                name="track_inventory" />
+              <label class="form-check-label" for="flexSwitchCheckChecked">Track in Inventory</label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success font-weight-bold">
+            Create product
+          </button>
+        </form>
+      </div>
     </div>
   </div>
+
+  <!-- Taxes tab -->
+  <div class="tab-pane fade" id="taxes" role="tabpanel" aria-labelledby="taxes-tab">
+    <div class="card col-md-8">
+      <div class="card-body">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group
+              <label for=" inputTax">Tax</label>
+              <input type="text" class="form-control" name="tax" placeholder="VAT, GST, PST..." required />
+
+              <label for="inputPercentage">Percentage</label>
+              <input type="number" name="percentage" step="any" class="form-control" placeholder="10.99" required />
+
+              <button type="submit" class="btn btn-success font-weight-bold">
+                Add tax
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expiry tab -->
+  <div class="tab-pane fade" id="expiry" role="tabpanel" aria-labelledby="expiry-tab">
+    <div class="card col-md-8">
+      <div class="card-body">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-8">
+              <label for="inputExpiry">Expiry</label>
+              <input type="date" class="form-control" name="expiry" required />
+
+              <button type="submit" class="btn btn-success font-weight-bold">
+                Add expiry
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Images tab -->
+  <div class="tab-pane fade" id="images" role="tabpanel" aria-labelledby="images-tab">
+    <div class="card col-md-8">
+      <div class="card-body">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-8">
+              <label for="inputImage">Image</label>
+              <input type="file" class="form-control" name="image" required />
+
+              <button type="submit" class="btn btn-success font-weight-bold">
+                Add image
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
 </div>
 {% endblock content %}
 
