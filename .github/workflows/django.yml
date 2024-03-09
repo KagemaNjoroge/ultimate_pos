@@ -27,7 +27,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        python manage.py test
+        python django_pos/manage.py test
     - name: Run Checks
       run: |
-        python manage.py check
+        python django_pos/manage.py check
