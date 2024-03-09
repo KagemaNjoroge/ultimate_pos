@@ -4,18 +4,19 @@
 
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-    <!-- Sidebar - Brand -->
+
+
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'pos:index' %}">
         <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+            <!-- <i class="fas fa-laugh-wink"></i> -->
+            <img src="{%static 'favicon.png'%}" width="20px" height="20px">
         </div>
         <div class="sidebar-brand-text mx-3">Ultimate POS</div>
     </a>
 
-    <!-- Divider -->
+
     <hr class="sidebar-divider  mb-0">
 
-    <!-- Nav Item - Dashboard -->
     <li class="{% if "dashboard" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
         <a class="nav-link" href="{% url 'pos:index' %}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
@@ -29,11 +30,11 @@
             <span>POS</span></a>
     </li>
 
-    <!-- Divider -->
+
     <hr class="sidebar-divider my-0">
 
-    <!-- Nav Item - Products Collapse Menu -->
-    <li class="{% if "products" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
+
+    <li class="{% if "products" in active_icon %} nav-item active {% else %} nav-item {% endif %} fxy">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
             aria-controls="collapseTwo">
             <i class="fas fa-fw fa-tag"></i>
@@ -50,20 +51,18 @@
         </div>
     </li>
 
-    <!-- Divider -->
+
     <hr class="sidebar-divider my-0">
 
-    <!-- Nav Item - Customers -->
     <li class="{% if "customers" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
         <a class="nav-link" href="{% url 'customers:customers_list' %}">
             <i class="fas fa-fw fa-users"></i>
             <span>Customers</span></a>
     </li>
 
-    <!-- Divider -->
+
     <hr class="sidebar-divider my-0">
 
-    <!-- Nav Item - Sales -->
     <li class="{% if "sales" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
         <a class="nav-link" href="{% url 'sales:sales_list' %}">
             <i class="fas fa-fw fa-cart-plus"></i>
@@ -76,6 +75,24 @@
             <i class="fa-solid fa-warehouse"></i>
             <span>Inventory</span></a>
     </li>
+    <li class="{% if "products" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+            aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-gear"></i>
+            <span>Settings</span>
+        </a>
+        <div id="collapseTwo" class="{% if "products" in active_icon %} collapse show {% else %} collapse {% endif %}"
+            aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+
+                <a class="{% if "categories" in active_icon %} collapse-item active {% else %} collapse-item {% endif %}"
+                    href="{% url 'products:categories_list' %}"><i class="fas fa-user mr-1"></i>Users</a>
+
+                <a class="{% if "products_products" in active_icon %} collapse-item active {% else %} collapse-item {% endif %}"
+                    href="{% url 'products:products_list' %}">Products</a>
+            </div>
+        </div>
+    </li>
 
     <li class="{% if "etims" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
         <a class="nav-link" href="{% url 'etims:etims' %}">
@@ -83,13 +100,33 @@
             <span>ETIMS</span></a>
     </li>
 
-    <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
-    <!-- Sidebar Toggler (Sidebar) -->
+
     <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script>
+        // accodiorn sidebar on hover expand
+        $(document).ready(function () {
+            let btn = $('#sidebarToggle');
+            $('#accordionSidebar').on('mouseover', function () {
+                let btn = $('#sidebarToggle');
+                if (toggled) {
+                    btn.click();
+                    toggled = false;
+                }
 
-
+            });
+            // on hover collapse
+            $('#accordionSidebar').on('mouseleave', function () {
+                let btn = $('#sidebarToggle');
+                if (!toggled) {
+                    btn.click();
+                    toggled = true;
+                }
+            });
+        });
+    </script>
 </ul>
