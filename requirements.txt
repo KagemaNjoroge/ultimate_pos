@@ -11,4 +11,4 @@ qrcode==7.4.2
 requests==2.31.0
 setuptools==69.0.3
 tinycss2==1.2.1
-
+weasyprint
