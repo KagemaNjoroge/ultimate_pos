@@ -12,10 +12,10 @@
 
 <!-- Page content  -->
 {% block content %}
-    
-    <style>
 
-    </style>
+<style>
+
+</style>
 <!--Go back-->
 <div class="row ml-0 mb-3">
     <a href="{% url 'inventory:inventory_index' %}">
@@ -23,71 +23,73 @@
             <i class="fas fa-long-arrow-alt-left mr-2"></i>
             Go back
         </button>
-        
+
     </a>
-    
-<div class="col">
-    <div class="col-7 mt-4" id="status_msg"></div>
-    
-<div class="col-5"></div>
+
+    <div class="col">
+        <div class="col-7 mt-4" id="status_msg"></div>
+
+        <div class="col-5"></div>
+    </div>
 </div>
-</div>
-    <div class="row">
-        <div class="card col-md-8">
-            <div class="card-body">
-                <form action="{% url 'inventory:inventory_add' %}"  method="post" id="inventory">
-                    {% csrf_token %}
-                    <div class="form-row">
-                        <div class="form-group col-md-4">
-                            
-                            <label>
+<div class="row mb-5">
+    <div class="card col-md-10">
+        <div class="card-body">
+            <form action="{% url 'inventory:inventory_add' %}" method="post" id="inventory">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+
+                        <label for="product">
                             Product
-                                <select name="product" class="form-control" required id="product">
-                                    {% for product in products %}
-                                        <option value="{{product.id}}">{{ product.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            
-                            </label>
-                        </div>
-                        <div class="form-group col-md-8">
-                            <label for="quantity">Quantity</label>
-                            <input type="number" class="form-control" name="quantity" placeholder="0" required id="quantity">
-                        </div>
-                        
+                        </label>
+                        <select name="product" class="form-control" required id="product">
+                            {% for product in products %}
+                            <option value="{{product.id}}">{{ product.name }}</option>
+                            {% endfor %}
+                        </select>
+
+
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" class="form-control" name="quantity" placeholder="0" required
+                            id="quantity">
                     </div>
 
+                </div>
 
 
-                    <button type="submit" class="btn btn-success font-weight-bold">Create Inventory</button>
 
-                </form>
-            </div>
+                <button type="submit" class="btn btn-success font-weight-bold">Create Inventory</button>
+
+            </form>
         </div>
     </div>
-    <script>
-          function getCookie(name) {
-          let cookieValue = null;
-          if (document.cookie && document.cookie !== '') {
-              const cookies = document.cookie.split(';');
-              for (let i = 0; i < cookies.length; i++) {
-                  const cookie = cookies[i].trim();
-                  // Does this cookie string begin with the name we want?
-                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                      break;
-                  }
-              }
-          }
+</div>
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
 
-          return cookieValue;
-      }
+        return cookieValue;
+    }
     let inventory_form = document.getElementById('inventory');
     inventory_form.addEventListener('submit', async ev => {
         ev.preventDefault();
         let quantity = document.getElementById('quantity');
         let product = document.getElementById('product')
-        let response = await fetch('{% url 'inventory:inventory_add' %}',
+        let response = await fetch('{% url "inventory:inventory_add" %}',
             {
                 method: 'POST',
                 headers: {
@@ -96,36 +98,36 @@
 
                 },
                 body: JSON.stringify({
-        "product": product.value,
-        "quantity": quantity.value
+                    "product": product.value,
+                    "quantity": quantity.value
                 })
             }
 
 
         );
         let body = await response.json();
-        
-        if(body['status']==='fail'){
+
+        if (body['status'] === 'fail') {
             let msg_div = document.getElementById('status_msg');
             msg_div.innerHTML = `<div class="mt-5 col"><div id="message_js" class="alert alert-danger alert-dismissible fade-show" role="alert">
         The product you selected already exists in the inventory.
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div></div>`
-            
+
         }
-        else if(body['status']==='success') {
+        else if (body['status'] === 'success') {
             let msg_div = document.getElementById('status_msg');
-   
+
             msg_div.innerHTML = `<div class="mt-5 col"><div id="message_js" class="alert alert-success alert-dismissible fade-show" role="alert">
         Product tracked in the inventory, <a href="{% url "inventory:inventory_index" %}" class="btn btn-link">Go to Inventory</a>
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div></div>`
 
         }
-        
+
 
     })
-    </script>
+</script>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
