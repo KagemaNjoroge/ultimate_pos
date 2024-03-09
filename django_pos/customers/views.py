@@ -1,3 +1,5 @@
+from operator import le
+import re
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
@@ -32,6 +34,11 @@ def customers_add_view(request: HttpRequest) -> HttpResponse:
             "phone": data["phone"],
             "kra_pin": data["kra_pin"],
         }
+        # try to get the photo
+        try:
+            attributes["photo"] = request.FILES["photo"]
+        except Exception as e:
+            pass
 
         # Check if a customer with the same attributes exists
         if Customer.objects.filter(**attributes).exists():
@@ -77,7 +84,7 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
     except Exception as e:
         messages.success(
             request,
-            "There was an error trying to get that customer!",
+            "There was an error updating that customer, may be the customer does not exist",
             extra_tags="danger",
         )
 
@@ -102,17 +109,19 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
                 "kra_pin": data["kra_pin"],
             }
 
-            # Check if a customer with the same attributes exists
-            if Customer.objects.filter(**attributes).exists():
-                messages.error(
-                    request, "Customer already exists!", extra_tags="warning"
-                )
-                return redirect("customers:customers_add")
-
-            # Get the customer to update
-            Customer.objects.filter(id=customer_id).update(**attributes)
-
             customer = Customer.objects.get(id=customer_id)
+            # Update the customer
+            customer.first_name = attributes["first_name"]
+            customer.last_name = attributes["last_name"]
+            customer.address = attributes["address"]
+            customer.email = attributes["email"]
+            customer.phone = attributes["phone"]
+            customer.kra_pin = attributes["kra_pin"]
+            if "photo" in request.FILES:
+
+                customer.photo = request.FILES["photo"]
+            # Save the customer
+            customer.save()
 
             messages.success(
                 request,
@@ -121,7 +130,8 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
             )
             return redirect("customers:customers_list")
         except Exception as e:
-            messages.success(
+
+            messages.error(
                 request, "There was an error during the update!", extra_tags="danger"
             )
 
@@ -148,6 +158,7 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
         )
         return redirect("customers:customers_list")
     except Exception as e:
+        print(e)
         messages.success(
             request,
             "There was an error deleting that customer, may be the customer has an existing sale record",
