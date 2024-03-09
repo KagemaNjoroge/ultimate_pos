@@ -1,6 +1,6 @@
 {% extends "pos/base.html" %} {% load static %}
 <!-- Page title  -->
-{% block title %}Inventory{% endblock title %} 
+{% block title %}Inventory{% endblock title %}
 
 {% block stylesheets %}
 <!-- Datatables -->
@@ -11,47 +11,49 @@
 
 <!-- Page content  -->
 {% block content %}
-    <div class="row ml-0 mb-3">
-        <a href="{% url 'inventory:inventory_add' %}">
-            <button type="button" class="btn btn-success font-weight-bold">
-                    <i class="fas fa-plus mr-2"></i>
-                    Add Inventory
-            </button>
-        </a>
-    </div>
-<table class="table table-hover" id="dataTable">
-  <thead>
-    <tr>
-      <th >Inventory ID</th>
-        <th >Product</th>
-      <th>Quantity</th>
-        <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-{% for invent in inventory %}
+<div class="row ml-0 mb-3">
+    <a href="{% url 'inventory:inventory_add' %}">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="fas fa-plus mr-2"></i>
+            Add Inventory
+        </button>
+    </a>
+</div>
+<table class="table table-hover table-bordered" id="dataTable">
+    <thead>
         <tr>
-      <th>{{ invent.id }}</th>
-      <td>{{ invent.product.name }}</td>
-      <td>{{ invent.quantity }}</td>
-      <td>                                <!--Update-->
-                                <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}" class="text-decoration-none">
-                                    <button  type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Update Inventory">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                </a>
-                                <!--Delete modal-->
-                                <!-- Button trigger modal -->
-                                <a class="text-decoration-none">
-                                    <button type="button" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </a></td>
-       
-    </tr>
+            <th>Inventory ID</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for invent in inventory %}
+        <tr>
+            <th style="width: 10%;">{{ invent.id }}</th>
+            <td style="width: 20%;">{{ invent.product.name }}</td>
+            <td style="width: 15%;">{{ invent.quantity }}</td>
+            <td class="text-center" style="width: 20%;"> <!--Update-->
+                <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}" class="text-decoration-none">
+                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
+                        title="Update Inventory">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                </a>
+                <!--Delete modal-->
+                <!-- Button trigger modal -->
+                <a class="text-decoration-none">
+                    <button type="button" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </a>
+            </td>
 
-  {% endfor %}
-  </tbody>
+        </tr>
+
+        {% endfor %}
+    </tbody>
 </table>
 {%endblock content%}
 
@@ -74,18 +76,18 @@
 <!--Datatables-->
 <script>
     // Call the dataTables jQuery plugin
-    $(document).ready(function() {
+    $(document).ready(function () {
         let tblProducts = $('#dataTable').DataTable({
             dom: 'Bfrtip', // Buttons are draw at this element
             buttons: [
                 {
-                extend: 'print',
-                text: 'Print <i class="fas fa-file ml-2"></i>',
-                titleAttr: 'Print',
-                className: 'btn btn-info',
-                exportOptions: {
-                    columns: [ 0, 1, 2]
-                }            
+                    extend: 'print',
+                    text: 'Print <i class="fas fa-file ml-2"></i>',
+                    titleAttr: 'Print',
+                    className: 'btn btn-info',
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    }
                 },
                 {
                     extend: 'excelHtml5',
@@ -93,8 +95,8 @@
                     titleAttr: 'Download Excel',
                     className: 'btn btn-success ml-2',
                     exportOptions: {
-                        columns: [ 0, 1, 2]
-                    } 
+                        columns: [0, 1, 2]
+                    }
                 },
                 {
                     extend: 'pdfHtml5',
@@ -106,7 +108,7 @@
                     pageSize: 'A4',
                     title: '*',
                     exportOptions: {
-                        columns: [ 0, 1, 2]
+                        columns: [0, 1, 2]
                     },
                     customize: function (doc) {
                         doc.styles = {
@@ -141,11 +143,11 @@
                                 columns: [
                                     {
                                         alignment: 'left',
-                                        text: ['Creation date: ', {text: moment().format('MM-DD-YYYY (HH:mm:ss)')}]
+                                        text: ['Creation date: ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
                                     },
                                     {
                                         alignment: 'right',
-                                        text: ['page ', {text: page.toString()}, ' of ', {text: pages.toString()}]
+                                        text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
                                     }
                                 ],
                                 margin: 20

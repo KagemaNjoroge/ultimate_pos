@@ -35,10 +35,30 @@
 
     <!-- Page Wrapper -->
     <div id="wrapper">
+        <!-- Sidebar  should not scroll -->
+        <div class="bar">
+            <style>
+                .bar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    bottom: 0;
 
-        <!-- Sidebar -->
-        {% include 'pos/sidebar.html' %}
-        <!-- End of Sidebar -->
+                    height: 100%;
+
+
+                    z-index: 1000;
+                    transition: all 0.5s;
+                }
+
+                #content-wrapper {
+                    transition: all 0.3s;
+
+                }
+            </style>
+            {% include 'pos/sidebar.html' %}
+        </div>
+
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -104,10 +124,38 @@
     <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
 
-    <!-- Page level custom scripts -->
-    <!-- Specific Page JS goes HERE  -->
+
     {% block javascripts %}{% endblock javascripts %}
     <script>
+
+        var toggled = false;
+
+        $(document).ready(function () {
+
+            let btn = $('#sidebarToggle');
+            btn.click();
+        });
+
+
+
+
+
+        $('#sidebarToggle').click(function () {
+            if (toggled) {
+                $('.bar').css('width', '250px');
+                $('.bar').css('overflow', 'auto');
+                $('#content-wrapper').css('margin-left', '250px');
+                toggled = false;
+            } else {
+                $('.bar').css('width', '100px');
+                $('.bar').css('overflow', 'hidden');
+                $('#content-wrapper').css('margin-left', '100px');
+                toggled = true;
+            }
+        });
+
+
+
 
     </script>
 

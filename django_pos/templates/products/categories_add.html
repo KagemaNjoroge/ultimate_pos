@@ -14,7 +14,7 @@
 <!--Go back-->
 <div class="row ml-0 mb-3">
     <a href="{% url 'products:categories_list' %}">
-        <button type="button" class="btn btn-info font-weight-bold">
+        <button type="button" class="btn btn-success font-weight-bold">
             <i class="fas fa-long-arrow-alt-left mr-2"></i>
             Go back
         </button>
@@ -25,7 +25,7 @@
 <div class="row">
     <div class="card col-md-8">
         <div class="card-body">
-            <form action="{% url 'products:categories_add' %}"  method="post">
+            <form action="{% url 'products:categories_add' %}" method="post">
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="form-group col-md-8">
@@ -45,12 +45,13 @@
                 <div class="form-row">
                     <div class="form-group col-md-12">
                         <label for="inputDescription">Description</label>
-                        <input type="text" name="description" class="form-control" placeholder="Drinks and beverages.." required>
+                        <input type="text" name="description" class="form-control" placeholder="Drinks and beverages.."
+                            required>
                     </div>
                 </div>
-               
+
                 <button type="submit" class="btn btn-success font-weight-bold">Create category</button>
-               
+
             </form>
         </div>
     </div>
