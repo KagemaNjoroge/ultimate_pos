@@ -7,7 +7,7 @@ from products.models import Product
 class Sale(models.Model):
     date_added = models.DateTimeField(default=django.utils.timezone.now)
     customer = models.ForeignKey(
-        Customer, models.PROTECT, db_column="customer", blank=True, null=True
+        Customer, models.CASCADE, db_column="customer", blank=True, null=True
     )
     sub_total = models.FloatField(default=0)
     grand_total = models.FloatField(default=0)
@@ -46,7 +46,7 @@ class Sale(models.Model):
 
 
 class SaleItem(models.Model):
-    product = models.ForeignKey(Product, models.PROTECT, db_column="product")
+    product = models.ForeignKey(Product, models.CASCADE, db_column="product")
     quantity = models.IntegerField(default=1)
 
     class Meta:
@@ -62,7 +62,7 @@ class SaleItem(models.Model):
 
 
 class SaleDetail(models.Model):
-    sale = models.ForeignKey(Sale, models.PROTECT, db_column="sale")
+    sale = models.ForeignKey(Sale, models.CASCADE, db_column="sale")
     items = models.ManyToManyField(SaleItem, db_column="items")
 
     def __str__(self) -> str:
