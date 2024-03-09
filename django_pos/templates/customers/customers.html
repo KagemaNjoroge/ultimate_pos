@@ -32,7 +32,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover" id="dataTable">
+            <table class="table table-bordered table-hover" id="dataTable" style="width: 83vw;">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -42,7 +42,7 @@
                         <th style="width:20%">Email</th>
                         <th style="width:15%">Phone</th>
 
-                        <th class="text-center" style="width:20%">Actions</th>
+                        <th class="text-center" style="width:15%">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -101,10 +101,9 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Cancel</button>
-                                            <a id="updateThisURL" href="{% url 'customers:customers_delete' c.id %}"
-                                                class="text-decoration-none">
-                                                <button type="button" class="btn btn-danger">Delete</button>
-                                            </a>
+                                            <button type="button" class="btn btn-danger del"
+                                                data-id="{{c.id}}">Delete</button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -232,18 +231,27 @@
             ],
         });
     });
-
-    // Alert when trying to delete a customer
-    $('#dataTable tbody')
-        // Event when whe try to delete a customer,
-        // We update the text, and href of the modal deleted button
-        .on('click', 'button[rel="delete"]', function () {
-            // Row variable
-            let tr = tblCategories.cell($(this).closest('td, li')).index();
-            let row_data = (tblCategories.row(tr.row).data());
-            let customer_id = row_data[0];
-
-            document.getElementById("updateThisURL").href = 'delete/' + customer_id;
+    // configure ajax headers
+    $.ajaxSetup({
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    });
+    // on delete button click
+    $(document).on('click', '.del', function () {
+        let id = $(this).data('id');
+        let url = "{% url 'customers:customers_delete' 1000000000 %}".replace('1000000000', id);
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function (data) {
+                location.reload();
+            }
         });
+    });
+
 </script>
 {% endblock javascripts %}
