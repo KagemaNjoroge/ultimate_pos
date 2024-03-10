@@ -1,15 +1,12 @@
 # Create your views here.
 import json
-from re import A
-from tkinter.tix import Form
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .forms import LoginForm, SignUpForm
+from .forms import SignUpForm
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
-from django.http.request import QueryDict
 
 
 def request_is_ajax(request: HttpRequest) -> bool:
@@ -53,41 +50,27 @@ def profile(request: HttpRequest) -> HttpResponse:
 
 
 def login_view(request: HttpRequest) -> HttpResponse:
+    if request.user.is_authenticated:
+        return redirect("/")
+    else:
 
-    form = LoginForm(request.POST or None)
+        if request.method == "GET":
+            return render(request, "accounts/signin.html")
+        elif request.method == "POST":
 
-    msg = None
-
-    if request.method == "POST" and not request_is_ajax(request):
-
-        if form.is_valid():
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
-
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect("/")
-            else:
-                msg = "Invalid email or password!"
-        else:
-            msg = "An error occurred!."
-    elif request_is_ajax(request) and request.method == "POST":
-        if request.user.is_authenticated:
-            return JsonResponse({"message": "success"})
-        else:
             data = json.loads(request.body)
             username = data.get("username")
             password = data.get("password")
 
             user = authenticate(username=username, password=password)
+
             if user is not None:
                 login(request, user)
                 return JsonResponse({"message": "success"})
             else:
                 return JsonResponse({"message": "Invalid email or password!"})
-
-    return render(request, "accounts/signin.html", {"form": form, "msg": msg})
+        else:
+            return JsonResponse({"message": "Invalid request method"}, status=405)
 
 
 def register_user(request: HttpRequest) -> HttpResponse:
