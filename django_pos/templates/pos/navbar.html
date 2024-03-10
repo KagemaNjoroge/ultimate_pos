@@ -132,7 +132,7 @@
                 type: 'GET',
                 url: '{% url "pos:notifications" %}',
                 success: function (response) {
-                    console.log(response);
+
 
                     var count = 0;
 
@@ -159,7 +159,7 @@
                     'id': id
                 },
                 success: function (response) {
-                    console.log(response);
+
                     var html = `
                     <div>
                         <h3><strong>${response.title}</strong></h3>
@@ -184,7 +184,7 @@
                 type: 'GET',
                 url: '{% url "pos:notifications" %}',
                 success: function (response) {
-                    console.log(response);
+
 
                     var html = '';
 
