@@ -260,12 +260,6 @@
         </div>`);
       var password = $('#floatingPassword').val();
       var username = $('#floatingInput').val();
-
-      console.log(JSON.stringify({
-        'username': username,
-        'password': password
-      }));
-
       var form = $(this);
       var url = form.attr('action');
       $.ajax({
