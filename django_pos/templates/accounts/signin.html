@@ -9,6 +9,7 @@
 
   <title>Ultimate POS - Login</title>
   <link rel="stylesheet" href="{%static 'assets/bootstrap/css/bootstrap.css'%}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 
 
@@ -191,13 +192,15 @@
 
 
   <main class="form-signin w-100 m-auto">
-    <form action="{%url 'authentication:login' %}" method="post">
+    <form action="{%url 'authentication:login' %}" method="post" id="login_form">
       {% csrf_token %}
       <img class="mb-4" src="{%static 'img/fedora.png'%}" alt="" width="100" height="100">
       <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
       {% if msg %}
       <div class="mb-3 text-danger text-center"> {{ msg | safe }} </div>
       {% endif %}
+      <div id="error" class="text-center"></div>
+      <div id="loading" class="text-center"></div>
       <div class="form-floating">
         <input class="form-control" id="floatingInput" placeholder="your username" name="username" required>
         <label for="floatingInput">Username</label>
@@ -217,11 +220,85 @@
       <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
       <p class="mt-5 mb-3 text-body-secondary">&copy; 2024 <a href="https://tomorrow.co,ke">TomorrowAI</a></p>
     </form>
+    <div class="error_toast">
+      <div class="toast-container position-fixed bottom-0 end-0 p-3 text-bg-danger">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <i class="fa fa-exclamation-triangle"></i>
+            <strong class="me-auto">Ultimate POS</strong>
+            <small>1 sec ago</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div class="toast-body" id="toast_body">
+            Hello, world! This is a toast message.
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
   <script src="{% static 'vendor/bootstrap/js/bootstrap.js' %}"></script>
   <script src="{% static 'js/color-modes.js' %}"></script>
 
 </body>
+<script>
+  // setup ajax add csrf token
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      if (!this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+      }
+    }
+  });
+  $(document).ready(function () {
+    $('#login_form').submit(function (e) {
+      e.preventDefault();
+      // remove error message
+      $('#error').html('');
+      $('#loading').html(`<div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+        </div>`);
+      var password = $('#floatingPassword').val();
+      var username = $('#floatingInput').val();
+
+      console.log(JSON.stringify({
+        'username': username,
+        'password': password
+      }));
+
+      var form = $(this);
+      var url = form.attr('action');
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify({
+          'username': $('#floatingInput').val(),
+          'password': $('#floatingPassword').val()
+        }),
+        success: function (data) {
+          if (data['message'] == 'success') {
+            window.location.href = '/'
+
+          } else {
+            // remove loading
+            $('#loading').html('');
+            // add error message
+            var msg = data['message'];
+            // change toast body
+            $('#toast_body').html(msg);
+
+            // make toast visible, increase time to 5 seconds
+            var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
+              autohide: true,
+              delay: 5000
+            });
+            toast.show();
+
+          }
+        }
+      });
+    });
+  });
+</script>
 
 </html>
