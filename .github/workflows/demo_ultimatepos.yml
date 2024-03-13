@@ -70,6 +70,12 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A0DFD3A510CC4346B32603364840E1F8 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_487120BE19CB45E49C18BDC43927D75E }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_7BAE26888562453DAA2C1C9E3CD690D5 }}
+      - name: Disable static collection and set migration command on App Service
+        uses: Azure/appservice-settings@v1
+        with:  
+          app-name: 'UltimatePOS'
+          app-settings-json: '[{ "name": "DISABLE_COLLECTSTATIC", "value": "true" }, { "name": "POST_BUILD_COMMAND",  "value": "python manage.py makemigrations && python manage.py migrate" }, { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true" }, { "name": "DJANGO_ENV", "value": "production"}]'
+
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
