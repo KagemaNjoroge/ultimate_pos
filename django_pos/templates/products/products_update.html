@@ -8,7 +8,7 @@
 
 <!-- Page Heading -->
 {% block heading %}Update product{% endblock heading %}
-
+{%load static%}
 <!-- Page content  -->
 {% block content %}
 <!--Go back-->
@@ -20,11 +20,18 @@
         </button>
     </a>
 </div>
+<div class="row text-center">
+    <div class="col-md-4"></div>
 
-<div class="row">
-    <div class="card col-md-8">
+    <div class="update_msg col-md-4"></div>
+    <div class="col-md-4"></div>
+
+</div>
+
+<div class="row mb-3 ml-3">
+    <div class="card col-md-10">
         <div class="card-body">
-            <form action="{% url 'products:products_update' product.id %}" method="post">
+            <form id="product_update">
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="form-group col-md-8">
@@ -85,14 +92,76 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-success font-weight-bold">
+                <button type="submit" class="btn btn-success font-weight-bold" id="update_btn">
                     Update product
                 </button>
             </form>
         </div>
     </div>
 </div>
+<script>
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
+            }
+        }
+    });
+    // capture the form
+    $(document).ready(function () {
+        $("#product_update").submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+
+            var url = "{% url 'products:products_update' product.id %}";
+            // add spinner to the button
+            $('#update_btn').html(
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
+            );
+            $.ajax({
+                type: 'POST',
+                url: url,
+                headers: {
+                    "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
+                },
+                data: JSON.stringify({
+                    "name": form.find('input[name="name"]').val(),
+                    "state": form.find('select[name="state"]').val(),
+                    "description": form.find('input[name="description"]').val(),
+                    "category": form.find('select[name="category"]').val(),
+                    "price": form.find('input[name="price"]').val(),
+                    "track_inventory": form.find('input[name="track_inventory"]').is(':checked')
+                }),
+                success: function (response) {
+
+                    if (response['message'] == "Product updated successfully") {
+                        $('.update_msg').html(
+                            '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success!</strong> Product updated successfully<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
+                        );
+                    }
+                    else {
+                        $('.update_msg').html(
+                            '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> Product not updated<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
+                        );
+                    }
+
+                },
+                error: function (response) {
+
+
+                    $('.update_msg').html(
+                        '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> Product not updated<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
+                    );
+
+                }
+            }).done(function () {
+                // remove spinner from the button
+                $('#update_btn').html('Update product');
+            });
+        });
+    });
+</script>
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 {% endblock content %}
 
-<!-- Specific Page JS goes HERE  -->
 {% block javascripts %}{% endblock javascripts %}
