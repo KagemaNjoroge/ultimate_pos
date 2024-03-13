@@ -3,17 +3,18 @@
 <footer class="sticky-footer bg-white">
   <div class="container my-auto">
     <div class="copyright text-center my-auto">
-      <span
-        >Copyright &copy;
-        <a href="https://tomorrow.co.ke">Tomorrow AI</a> <strong id="year"></strong>
-                  
-      </span
-      >
+      <span>
+        <p>Brought to you by the good folks at <a href="https://tomorrow.co.ke">TomorrowAI</a>
+        <div id="year">
+        </div>All rights reserved.
+        </p>
+
+      </span>
     </div>
   </div>
-    <script>
-        let year_el = document.getElementById('year');
-        let date = new Date()
-        year_el.innerText = date.getFullYear().toString();
-    </script>
+  <script>
+    let year_el = document.getElementById('year');
+    let date = new Date()
+    year_el.innerHTML = "&copy; " + date.getFullYear().toString();
+  </script>
 </footer>
