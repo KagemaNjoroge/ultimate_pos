@@ -1,15 +1,11 @@
 {% extends "pos/base.html" %}
 
-<!-- Page title  -->
 {% block title %}Update product{% endblock title %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
-<!-- Page Heading -->
 {% block heading %}Update product{% endblock heading %}
-{%load static%}
-<!-- Page content  -->
+
 {% block content %}
 <!--Go back-->
 <div class="row ml-0 mb-3">
@@ -161,7 +157,7 @@
         });
     });
 </script>
-<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
 {% endblock content %}
 
 {% block javascripts %}{% endblock javascripts %}
