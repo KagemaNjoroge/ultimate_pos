@@ -1,11 +1,14 @@
+import json
+from math import e
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Category, Product
 from company.models import Company
 from inventory.models import Inventory
 import openpyxl
+import time
 
 
 @login_required(login_url="/accounts/login/")
@@ -23,111 +26,76 @@ def categories_add_view(request: HttpRequest) -> HttpResponse:
         "active_icon": "products_categories",
         "category_status": Category.status.field.choices,
     }
+    if request.method == "GET":
+        return render(request, "products/categories_add.html", context=context)
 
     if request.method == "POST":
         # Save the POST arguments
-        data = request.POST
+        data = json.loads(request.body)
+        time.sleep(3)
 
         attributes = {
             "name": data["name"],
-            "status": data["state"],
+            "status": data["status"],
             "description": data["description"],
         }
 
         # Check if a category with the same attributes exists
         if Category.objects.filter(**attributes).exists():
-            messages.error(request, "Category already exists!", extra_tags="warning")
-            return redirect("products:categories_add")
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "A category with those details already exists!",
+                }
+            )
 
         try:
-            # Create the category
             new_category = Category.objects.create(**attributes)
-
-            # If it doesn't exist, save it
             new_category.save()
+            return JsonResponse({"status": "success", "message": "Category created!"})
 
-            messages.success(
-                request,
-                "Category: " + attributes["name"] + " created successfully!",
-                extra_tags="success",
-            )
-            return redirect("products:categories_list")
         except Exception as e:
-            messages.success(
-                request, "There was an error during the creation!", extra_tags="danger"
-            )
-            print(e)
-            return redirect("products:categories_add")
-
-    return render(request, "products/categories_add.html", context=context)
+            return JsonResponse({"status": "error", "message": str(e)})
+    else:
+        # method not allowed
+        return HttpResponse(status=405)
 
 
 @login_required(login_url="/accounts/login/")
 def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
-    """
-    Args:
-        request: HttpRequest
-        category_id : The category's ID that will be updated
-    """
 
-    # Get the category
-    try:
-        # Get the category to update
-        category = Category.objects.get(id=category_id)
-    except Exception as e:
-        messages.success(
-            request,
-            "There was an error trying to get the category!",
-            extra_tags="danger",
-        )
-        print(e)
-        return redirect("products:categories_list")
+    if request.method == "GET":
+        category = get_object_or_404(Category, id=category_id)
+        context = {
+            "active_icon": "products_categories",
+            "category_status": Category.status.field.choices,
+            "category": category,
+        }
 
-    context = {
-        "active_icon": "products_categories",
-        "category_status": Category.status.field.choices,
-        "category": category,
-    }
+        return render(request, "products/categories_update.html", context=context)
 
     if request.method == "POST":
+
         try:
-            # Save the POST arguments
-            data = request.POST
+
+            data = json.loads(request.body)
 
             attributes = {
                 "name": data["name"],
-                "status": data["state"],
+                "status": data["status"],
                 "description": data["description"],
             }
-
-            # Check if a category with the same attributes exists
-            if Category.objects.filter(**attributes).exists():
-                messages.error(
-                    request, "Category already exists!", extra_tags="warning"
-                )
-                return redirect("products:categories_add")
-
-            # Get the category to update
             Category.objects.filter(id=category_id).update(**attributes)
 
-            category = Category.objects.get(id=category_id)
-
-            messages.success(
-                request,
-                "¡Category: " + category.name + " updated successfully!",
-                extra_tags="success",
+            return JsonResponse(
+                {"status": "success", "message": "Category updated successfully!"}
             )
-            return redirect("products:categories_list")
+
         except Exception as e:
-            messages.success(
-                request,
-                "There was an error during the elimination!",
-                extra_tags="danger",
-            )
-            print(e)
-            return redirect("products:categories_list")
-
-    return render(request, "products/categories_update.html", context=context)
+            return JsonResponse({"status": "error", "message": str(e)})
+    else:
+        # method not allowed
+        return HttpResponse(status=405)
 
 
 @login_required(login_url="/accounts/login/")
@@ -237,80 +205,42 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
 
 @login_required(login_url="/accounts/login/")
 def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
-    """
-    Args:
-        request: HttRequest
-        product_id : The product's ID that will be updated
-    """
+    if request.method == "GET":
 
-    # Get the product
-    try:
-        # Get the product to update
+        product = get_object_or_404(Product, id=product_id)
 
+        context = {
+            "active_icon": "products",
+            "product_status": Product.status.field.choices,
+            "product": product,
+            "categories": Category.objects.all(),
+        }
+        return render(request, "products/products_update.html", context=context)
+
+    elif request.method == "POST":
+        data = request.body
+        data = json.loads(data)
         product = Product.objects.get(id=product_id)
+        product.name = data["name"]
+        product.description = data["description"]
+        product.price = data["price"]
+        product.status = data["state"]
+        product.category = Category.objects.get(id=data["category"])
+        product.track_inventory = data["track_inventory"]
+        product.save()
 
-    except Exception as e:
-        messages.success(
-            request,
-            "There was an error trying to get that product!",
-            extra_tags="danger",
-        )
-
-        return redirect("products:products_list")
-
-    context = {
-        "active_icon": "products",
-        "product_status": Product.status.field.choices,
-        "product": product,
-        "categories": Category.objects.all(),
-    }
-
-    if request.method == "POST":
-        try:
-            # Save the POST arguments
-            data = request.POST
-            track_inventory = data["track_inventory"]
-            if track_inventory == "on":
-                track_inventory = True
+        if product.track_inventory:
+            inventory = Inventory.objects.filter(product=product)
+            if inventory.exists():
+                inventory = inventory.first()
+                inventory.quantity = 1
+                inventory.save()
             else:
-                track_inventory = False
-
-            attributes = {
-                "name": data["name"],
-                "status": data["state"],
-                "description": data["description"],
-                "category": Category.objects.get(id=data["category"]),
-                "price": data["price"],
-                "track_inventory": track_inventory,
-            }
-
-            # Check if a product with the same attributes exists
-            if Product.objects.filter(**attributes).exists():
-                messages.error(
-                    request, "That product already exists!", extra_tags="warning"
-                )
-                return redirect("products:products_add")
-
-            # Get the product to update
-
-            Product.objects.filter(id=product_id).update(**attributes)
-
-            product = Product.objects.get(id=product_id)
-
-            messages.success(
-                request,
-                "¡Product: " + product.name + " updated successfully!",
-                extra_tags="success",
-            )
-            return redirect("products:products_list")
-        except Exception as e:
-            messages.success(
-                request, "There was an error during the update!", extra_tags="danger"
-            )
-
-            return redirect("products:products_list")
-
-    return render(request, "products/products_update.html", context=context)
+                inventory = Inventory.objects.create(product=product, quantity=1)
+                inventory.save()
+        return JsonResponse({"message": "Product updated successfully"}, status=200)
+    else:  # not allowed
+        return JsonResponse({"message": "Method not allowed"}, status=405)
 
 
 @login_required(login_url="/accounts/login/")
