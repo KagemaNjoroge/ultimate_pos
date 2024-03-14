@@ -1,9 +1,11 @@
 from operator import le
 import re
+import stat
+from turtle import st
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, HttpResponse
-from django.shortcuts import render, redirect
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Customer
 
 
@@ -76,24 +78,16 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
         request: HttpRequest Object
         customer_id : The customer's ID that will be updated
     """
+    if request.method == "GET":
+        customer = get_object_or_404(Customer, id=customer_id)
 
-    # Get the customer
-    try:
-        # Get the customer to update
-        customer = Customer.objects.get(id=customer_id)
-    except Exception as e:
-        messages.success(
-            request,
-            "There was an error updating that customer, may be the customer does not exist",
-            extra_tags="danger",
+        context = {
+            "active_icon": "customers",
+            "customer": customer,
+        }
+        return render(
+            request, "customers/customers_update.html", context=context, status=200
         )
-
-        return redirect("customers:customers_list")
-
-    context = {
-        "active_icon": "customers",
-        "customer": customer,
-    }
 
     if request.method == "POST":
         try:
@@ -109,7 +103,7 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
                 "kra_pin": data["kra_pin"],
             }
 
-            customer = Customer.objects.get(id=customer_id)
+            customer = get_object_or_404(Customer, id=customer_id)
             # Update the customer
             customer.first_name = attributes["first_name"]
             customer.last_name = attributes["last_name"]
@@ -122,22 +116,14 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
                 customer.photo = request.FILES["photo"]
             # Save the customer
             customer.save()
-
-            messages.success(
-                request,
-                "¡Customer: " + customer.get_full_name() + " updated successfully!",
-                extra_tags="success",
+            return JsonResponse(
+                {"status": "success", "message": "Customer updated successfully!"},
+                status=200,
             )
-            return redirect("customers:customers_list")
+
         except Exception as e:
 
-            messages.error(
-                request, "There was an error during the update!", extra_tags="danger"
-            )
-
-            return redirect("customers:customers_list")
-
-    return render(request, "customers/customers_update.html", context=context)
+            return JsonResponse({"status": "error", "message": str(e)})
 
 
 @login_required(login_url="/accounts/login/")
