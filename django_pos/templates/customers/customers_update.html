@@ -12,7 +12,7 @@
 <!-- Page content  -->
 {% block content %}
 <!--Go back-->
-<div class="row ml-0 mb-3">
+<div class="row ml-2 mb-3">
     <a href="{% url 'customers:customers_list' %}">
         <button type="button" class="btn btn-success font-weight-bold">
             <i class="fas fa-long-arrow-alt-left mr-2"></i>
@@ -20,12 +20,19 @@
         </button>
     </a>
 </div>
+<div class="row text-center">
+    <div class="col-md-4"></div>
 
-<div class="row mb-4">
+    <div class="update_msg col-md-4"></div>
+    <div class="col-md-4"></div>
+
+</div>
+
+<div class="row mb-4 ml-2">
     <div class="card col-md-10">
         <div class="card-body">
             <!--Form as multipart-->
-            <form action="{% url 'customers:customers_update' customer.id %}" method="post"
+            <form action="{% url 'customers:customers_update' customer.id %}" method="post" id="form"
                 enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-row">
@@ -86,7 +93,7 @@
                 </div>
 
 
-                <button type="submit" class="btn btn-success font-weight-bold">Update customer</button>
+                <button type="submit" class="btn btn-success font-weight-bold" id="update_btn">Update customer</button>
 
             </form>
         </div>
@@ -103,7 +110,50 @@
 
 
         });
+
+        // send customer data via ajax
+        $('#form').submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            var formData = new FormData(this);
+            // add bootstrap spinner
+            $('#update_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...').prop('disabled', true);
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (response) {
+                    // show success message
+                    if (response.status === 'success') {
+                        $('.update_msg').html('<div class="alert alert-success alert-dismissible fade show" role="alert">' + response.message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                    }
+                    // show error message
+                    else if (response.status === 'error') {
+                        $('.update_msg').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">' + response.message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                    }
+                    else {
+                        // unknown error
+                        $('.update_msg').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">Unknown error occurred<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                    }
+
+                },
+                error: function (error) {
+                    // show error message
+                    console.log(error);
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            }).done(function () {
+                // remove bootstrap spinner
+                $('#update_btn').html('Update customer').prop('disabled', false);
+            })
+        });
+
     });
+
 </script>
 {% endblock content %}
 
