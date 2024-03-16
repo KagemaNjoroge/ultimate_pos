@@ -1,3 +1,4 @@
+import time
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 import json
@@ -18,6 +19,7 @@ def add_inventory(request: HttpRequest) -> HttpResponse:
         products = Product.objects.exclude(inventory__isnull=False)
         return render(request, "inventory/inventory_add.html", {"products": products})
     elif request.method == "POST":
+        time.sleep(5)
         data = json.loads(request.body)
         product_id = int(data["product"])
         quantity = int(data["quantity"])
