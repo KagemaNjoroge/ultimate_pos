@@ -1,23 +1,19 @@
 {% extends "pos/base.html" %}
 {% load static %}
 
-<!-- Page title  -->
-{% block title %}Add product{% endblock title %}
+{% block title %}Add Inventory{% endblock title %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
-<!-- Page Heading -->
 {% block heading %}Add Inventory{% endblock heading %}
 
-<!-- Page content  -->
 {% block content %}
 
 <style>
 
 </style>
 <!--Go back-->
-<div class="row ml-0 mb-3">
+<div class="row ml-3 mb-3">
     <a href="{% url 'inventory:inventory_index' %}">
         <button type="button" class="btn btn-success font-weight-bold">
             <i class="fas fa-long-arrow-alt-left mr-2"></i>
@@ -32,7 +28,7 @@
         <div class="col-5"></div>
     </div>
 </div>
-<div class="row mb-5">
+<div class="row mb-5 ml-3">
     <div class="card col-md-10">
         <div class="card-body">
             <form action="{% url 'inventory:inventory_add' %}" method="post" id="inventory">
@@ -61,7 +57,7 @@
 
 
 
-                <button type="submit" class="btn btn-success font-weight-bold">Create Inventory</button>
+                <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">Create Inventory</button>
 
             </form>
         </div>
@@ -84,49 +80,62 @@
 
         return cookieValue;
     }
-    let inventory_form = document.getElementById('inventory');
-    inventory_form.addEventListener('submit', async ev => {
-        ev.preventDefault();
-        let quantity = document.getElementById('quantity');
-        let product = document.getElementById('product')
-        let response = await fetch('{% url "inventory:inventory_add" %}',
-            {
-                method: 'POST',
+    $(document).ready(function () {
+        $('#inventory').submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            var data = form.serialize();
+            // add loading animation to the button
+            $('#submit_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...').attr('disabled', true);
+            $.ajax({
+                type: 'POST',
                 headers: {
-                    "X-CSRFToken": getCookie('csrftoken'),
-                    'Content-Type': 'application/json',
-
+                    'X-CSRFToken': getCookie('csrftoken')
                 },
-                body: JSON.stringify({
-                    "product": product.value,
-                    "quantity": quantity.value
-                })
-            }
+                url: url,
+                data: JSON.stringify({
+                    product: $('#product').val(),
+                    quantity: $('#quantity').val(),
 
 
-        );
-        let body = await response.json();
+                }),
+                success: function (response) {
+                    $('#status_msg').html(
+                        '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                        '<strong>Success!</strong> Inventory added successfully' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span>' +
+                        '</button>' +
+                        '</div>'
+                    );
+                    form[0].reset();
+                },
+                error: function (error) {
+                    $('#status_msg').html(
+                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                        '<strong>Error!</strong> Something went wrong' +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span>' +
+                        '</button>' +
+                        '</div>'
+                    );
+                }
+            }).done(function () {
+                $('#submit_btn').html('Create Inventory').attr('disabled', false);
+                // after 3 seconds, the alert will disappear
+                setTimeout(function () {
+                    $('#status_msg').html('');
+                }, 3000);
+            })
+        });
+    });
 
-        if (body['status'] === 'fail') {
-            let msg_div = document.getElementById('status_msg');
-            msg_div.innerHTML = `<div class="mt-5 col"><div id="message_js" class="alert alert-danger alert-dismissible fade-show" role="alert">
-        The product you selected already exists in the inventory.
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div></div>`
-
-        }
-        else if (body['status'] === 'success') {
-            let msg_div = document.getElementById('status_msg');
-
-            msg_div.innerHTML = `<div class="mt-5 col"><div id="message_js" class="alert alert-success alert-dismissible fade-show" role="alert">
-        Product tracked in the inventory, <a href="{% url "inventory:inventory_index" %}" class="btn btn-link">Go to Inventory</a>
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div></div>`
-
-        }
 
 
-    })
+
+
+
 </script>
 {% endblock content %}
 
