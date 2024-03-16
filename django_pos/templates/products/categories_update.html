@@ -17,6 +17,14 @@
     </a>
 </div>
 
+<div class="row text-center">
+    <div class="col-md-4"></div>
+
+    <div class="update_msg col-md-4"></div>
+    <div class="col-md-4"></div>
+
+</div>
+
 <div class="row mb-5 ml-3">
     <div class="card col-md-8">
         <div class="card-body">
@@ -90,20 +98,44 @@
                 data: JSON.stringify(data),
                 success: function (data) {
                     if (data.status == 'success') {
-                        console.log(data.message)
-                        console.log('Category updated successfully');
+                        // add success msg
+                        $('.update_msg').html(
+                            '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                            '<strong>Success!</strong> ' + data.message +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span>' +
+                            '</button>' +
+                            '</div>'
+                        )
+
 
                     } else if (data.status = "error") {
-                        console.log('An error occurred.');
-                        console.log(data.message)
+                        // add error msg
+                        $('.update_msg').html(
+                            '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                            '<strong>Error!</strong> ' + data.message +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span>' +
+                            '</button>' +
+                            '</div>'
+                        )
 
                     }
                     else {
-                        console.log("An unknown error has occurred!")
+                        // unknown error
+                        $('.update_msg').html(
+                            '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                            '<strong>Error!</strong> Unknown error occurred' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span>' +
+                            '</button>' +
+                            '</div>'
+                        )
                     }
                 },
                 error: function (data) {
-                    console.log('An error occurred.');
+                    // show error message
+                    console.log(data);
                 }
                 // remove loader
             }).done(function () {
