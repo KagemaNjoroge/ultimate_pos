@@ -278,7 +278,7 @@
           <div class="pos-form-actions">
             <div class="col-md-12">
               <button type="button" class="btn bg-red btn-default btn-flat no-print pos-express-finalize"
-                data-pay_method="suspend" title="Suspend Sales (pause)">
+                id="suspend_sale" data-pay_method="suspend" title="Suspend Sales (pause)">
                 <i class="fas fa-pause" aria-hidden="true"></i>
                 Suspend
               </button>
@@ -477,10 +477,72 @@
         }
         return cartCopy;
       };
+      obj.suspendSale = function () {
+        // save the cart in session storage with a unique time stamp
+        let date = new Date();
+        let time_stamp = date.getTime();
+        sessionStorage.setItem("suspended_sale_" + time_stamp, JSON.stringify(cart));
+        // clear the cart
+        obj.clearCart();
+        displayCart();
+
+      }
 
 
       return obj;
     })();
+    function resumeSale(key) {
+      let cart = JSON.parse(sessionStorage.getItem(key));
+      // first clear the cart
+      shoppingCart.clearCart();
+      for (let i = 0; i < cart.length; i++) {
+        shoppingCart.addItemToCart(cart[i]['name'], cart[i]['price'], cart[i]['count'], cart[i]['id']);
+      }
+      displayCart();
+      sessionStorage.removeItem(key);
+      // close the modal
+      Swal.close();
+    }
+    $(document).ready(function () {
+
+      $('#suspend_sale').on('click', function () {
+        shoppingCart.suspendSale();
+      })
+      $('#view_suspended_sales').on('click', function () {
+        // show modal with all suspended sales
+        let html = '';
+        for (let i = 0; i < sessionStorage.length; i++) {
+          let key = sessionStorage.key(i);
+          if (key.includes('suspended_sale')) {
+            let cart = JSON.parse(sessionStorage.getItem(key));
+            let total = 0;
+            for (let i = 0; i < cart.length; i++) {
+              total += cart[i]['price'] * cart[i]['count'];
+            }
+            html += `<tr><td>${key}</td><td>${total}</td><td><button class="btn btn-primary" onclick="resumeSale('${key}')">Resume</button></td></tr>`
+          }
+        }
+        Swal.fire({
+          title: 'Suspended Sales',
+          width: '55em',
+          html: `<table class="table table-dark table-hover">
+          <thead>
+          <tr>
+          <th scope="col">Sale ID</th>
+          <th scope="col">Total</th>
+          <th scope="col">Action</th>
+          </tr>
+          </thead>
+          <tbody>` + html + `</tbody>
+          </table>`,
+          showLoaderOnConfirm: true,
+          allowOutsideClick: true,
+          confirmButtonText: 'Close'
+        })
+
+      })
+    })
+
 
     $(".add-to-cart").click(function (event) {
       event.preventDefault();
@@ -751,6 +813,7 @@
       })
     })
 
+
     $(document).ready(function () {
       $('#selected_category').on('change', function () {
         let value = $(this).val();
@@ -765,6 +828,7 @@
       })
     })
     // suspend the current sale
+
 
 
   </script>
