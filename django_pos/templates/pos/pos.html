@@ -55,6 +55,13 @@
             class="btn bg-yellow btn-flat m-6 btn-xs m-5 btn-modal pull-right" data-href="{% url 'pos:index' %}">
             <strong><i class="fa fa-pause-circle fa-lg"></i></strong>
           </button>
+          <!--Switch to toggle beep sound on receipt  -->
+          <div class="m-6 mt-5 hidden-xs">
+            <p>
+              <button class="btn btn-success" id="sound_btn"><i class="fa fa-volume-up hover-q text-muted"
+                  title=""></i></button>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -334,6 +341,31 @@
 
 
   <script>
+
+    function togglePlaySound() {
+      // session storage is used to store the state of the sound - under AppSettings Session
+      let settings = sessionStorage.getItem('AppSettings');
+      // read sound state from session storage
+      let sound = settings ? JSON.parse(settings).play_sound : true;
+      // toggle sound state
+      sound = !sound;
+      // save sound state to session storage
+      sessionStorage.setItem('AppSettings', JSON.stringify({ play_sound: sound }));
+      // return sound state
+      return sound;
+    }
+
+
+    $(document).ready(function () {
+      $('#sound_btn').on('click', function () {
+        let sound = togglePlaySound();
+        if (sound) {
+          $(this).html('<i class="fa fa-volume-up hover-q text-muted" title=""></i>');
+        } else {
+          $(this).html('<i class="fa fa-volume-mute hover-q text-muted" title=""></i>');
+        }
+      });
+    })
     let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
     function getCookie(name) {
       let cookieValue = null;
@@ -733,6 +765,15 @@
           let body = await response.json();
           // check if an error occurred on the server
           if (body['status'] === "success") {
+            // play sound if not muted
+            let settings = sessionStorage.getItem('AppSettings');
+            let sound = settings ? JSON.parse(settings).play_sound : true;
+            if (sound) {
+              let audio = new Audio("{% static 'audio/beep.wav' %}");
+              // beep twice
+              audio.play();
+              audio.play();
+            }
             Swal.fire({
               position: 'bottom-end',
               width: '20em',
