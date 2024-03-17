@@ -33,30 +33,7 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
 - Purchase Management
 - CRM (Customer Relationship Management)
 
-## Tech Stack
-
-- Frontend:
-  - HTML
-  - CSS
-  - JavaScript
-  - Boostrap
-  - SweetAlert
-  - DataTables
-- Backend:
-  - Django
-  - Python
-  - Ajax
-  - SQLite
-
 ## Installation
-
-#### Prerequisites
-
-- [Python 3.x](https://www.python.org/downloads/)
-- [pip package manager](https://pip.pypa.io/en/stable/installation/)
-- [git](https://git-scm.com/downloads)
-
-<br>
 
 1. Clone or download the repository:
 
