@@ -31,4 +31,4 @@ urllib3==2.2.1
 weasyprint==60.2
 webencodings==0.5.1
 zopfli==0.2.3
-psycopg2
+psycopg2-binary
