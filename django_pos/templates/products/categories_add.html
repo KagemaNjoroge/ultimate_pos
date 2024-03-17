@@ -1,13 +1,6 @@
-{% extends "pos/base.html" %}
-
-
-
-{% block title %}Add category{% endblock title %}
-{% block stylesheets %}{% endblock stylesheets %}
-{% block heading %}Add category{% endblock heading %}
-
-
-{% block content %}
+{% extends "pos/base.html" %} {% block title %}Add category{% endblock title %}
+{% block stylesheets %}{% endblock stylesheets %} {% block heading %}Add
+category{% endblock heading %} {% block content %}
 
 <div class="row ml-0 mb-3 ml-2">
     <a href="{% url 'products:categories_list' %}">
@@ -23,9 +16,7 @@
 
     <div class="update_msg col-md-4"></div>
     <div class="col-md-4"></div>
-
 </div>
-
 
 <div class="row mb-5 ml-2">
     <div class="card col-md-10">
@@ -35,7 +26,8 @@
                 <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="inputDescription">Name</label>
-                        <input type="text" class="form-control" name="name" placeholder="Drinks..." required id="name">
+                        <input type="text" class="form-control" name="name" placeholder="Drinks..." required
+                            id="name" />
                     </div>
                     <div class="form-group col-md-4">
                         <label for="state">State</label>
@@ -51,80 +43,67 @@
                     <div class="form-group col-md-12">
                         <label for="inputDescription">Description</label>
                         <input type="text" name="description" class="form-control" placeholder="Drinks and beverages.."
-                            required id="description">
+                            required id="description" />
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-success font-weight-bold" id="create_btn">Create category</button>
-
+                <button type="submit" class="btn btn-success font-weight-bold" id="create_btn">
+                    Create category
+                </button>
             </form>
         </div>
     </div>
 </div>
 <script>
     $(document).ready(function () {
-
-        $('#category_form').submit(function (e) {
-            var form = $(this)
-            e.preventDefault()
-            let description = $('#description').val()
-            let status = $('#status').val()
-            let name = $('#name').val()
-            let action = form.attr('action')
+        $("#category_form").submit(function (e) {
+            var form = $(this);
+            e.preventDefault();
+            let description = $("#description").val();
+            let status = $("#status").val();
+            let name = $("#name").val();
+            let action = form.attr("action");
 
             let data = {
                 description: description,
                 status: status,
-                name: name
-
+                name: name,
             };
-            $('#create_btn').html(
-                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
-            )
+            $("#create_btn").html(
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...'
+            );
             $.ajax({
                 type: "POST",
                 url: action,
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
+                    "X-CSRFToken": "{{ csrf_token }}",
                 },
                 data: JSON.stringify(data),
                 success: function (data) {
-                    if (data.status == 'success') {
-
-
-
-                        $('.update_msg').html(
+                    if (data.status == "success") {
+                        $(".update_msg").html(
                             `<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success!</strong> ${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
                         );
-
-
-                    } else if (data.status = "error") {
-
-                        $('.update_msg').html(
+                    } else if ((data.status = "error")) {
+                        $(".update_msg").html(
                             `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> ${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
                         );
-
-                    }
-                    else {
-                        $('.update_msg').html(
+                    } else {
+                        $(".update_msg").html(
                             `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong>An unknown error occured, please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
                         );
                     }
-                    form.reset()
-
                 },
                 error: function (data) {
-                    console.log('An error occurred.');
-                }
-
+                    // console.log(data)
+                    $(".update_msg").html(
+                        `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong>An unknown error occured, please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+                    );
+                },
             }).done(function () {
-                $('#create_btn').html('Create category')
-            })
-
-        })
-    })
+                $("#create_btn").html("Create category");
+            });
+        });
+    });
 </script>
-{% endblock content %}
-
-
-{% block javascripts %}{% endblock javascripts %}
+{% endblock content %} {% block javascripts %}{% endblock javascripts %}
