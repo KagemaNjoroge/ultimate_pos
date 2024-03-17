@@ -2,9 +2,7 @@
 
 A minimalistic Point of Sale (POS) system for small businesses. It is a web-based application that allows you to manage your sales and inventory on the go. It is built with Django and Python.
 
-<div style="text-align: center"><a><img src="screenshots\dashboard.png" width="70%" alt="Ultimate POS Dashboard"/></a></div>
-<br></br>
-<div style="text-align: center"><a><img src="screenshots\sales.png" width="70%" alt="Ultimate POS Sales Page"/></a></div>
+(Ultimate POS Logo)[https://posapp.linksengineering.net/assets/images/logo-seegreen.png]
 
 ## Table of Contents:
 
