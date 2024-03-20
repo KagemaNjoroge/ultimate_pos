@@ -40,7 +40,7 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
 
     if request.method == "POST":
         if is_ajax(request=request):
-            # Save the POST arguments
+
             data = json.load(request)
             # {'customer': '3', 'sub_total': '80000', 'tax_percentage': '0', 'tax_amount': '0', 'grand_total': '80000', 'amount_payed': '80000', 'amount_change': 0, 'products': [{'id': 2, 'name': 'Hp Elitebook G5', 'price': 80000, 'count': 1, 'total': 80000, 'total_product': 1}
             customer_id = int(data["customer"])
