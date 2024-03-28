@@ -33,7 +33,7 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
 
 ## Proposed Features
 
-- [] Business Level Inventory Management
+- [ ] Business Level Inventory Management
 - [x] Suppliers Management
 - [x] Purchase Management
 - [x] CRM (Customer Relationship Management)
@@ -109,7 +109,7 @@ python manage.py makemigrations && python manage.py migrate
 5. Create superuser to access the admin panel:
 
    > [!IMPORTANT]
-   > You will need a super user account in order to access the admin page
+   > You will need a super user account in order to access the admin page. You can create one by running the following command:
 
    ```bash
    python manage.py createsuperuser
