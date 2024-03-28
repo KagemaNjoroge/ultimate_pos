@@ -22,6 +22,14 @@ class Sale(models.Model):
         db_table = "Sales"
         verbose_name_plural = "Sales"
         verbose_name = "Sale"
+        # permissions
+        permissions = [
+            ("print_sale_receipt", "Can print receipt"),
+            ("view_sale_record", "Can view sale"),
+            ("add_sale_record", "Can add sale"),
+            ("edit_sale_record", "Can edit sale"),
+            ("delete_sale_record", "Can delete sale"),
+        ]
 
     def __str__(self) -> str:
         return str(self.id)
