@@ -21,20 +21,8 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
   <img src="https://posapp.linksengineering.net/assets/images/logo-seegreen.png">
 </p>
 
-> [!NOTE]
-> Useful information that users should know, even when skimming content.
-
-> [!TIP]
-> Helpful advice for doing things better or more easily.
-
 > [!IMPORTANT]
 > Key information users need to know to achieve their goal.
-
-> [!WARNING]
-> Urgent info that needs immediate user attention to avoid problems.
-
-> [!CAUTION]
-> Advises about risks or negative outcomes of certain actions.
 
 ## Features
 
@@ -122,18 +110,18 @@ python manage.py makemigrations && python manage.py migrate
 
 5. Create superuser to access the admin panel:
 
-   > [!IMPORTANT]
-   > You will need a super user account in order to access the admin page. You can create one by running the following command:
+> [!IMPORTANT]
+> You will need a super user account in order to access the admin page. You can create one by running the following command:
 
-   ```bash
-   python manage.py createsuperuser
-   ```
+```bash
+python manage.py createsuperuser
+```
 
-   with the following data, or with the data you prefer:
+with the following data, or with the data you prefer:
 
-   - `username: YOUR_PREFERRED_USERNAME`
-   - `password: YOUR_PASSWORD`
-   - `email: YOUR_EMAIL@EMAIL.COM`
+- `username: YOUR_PREFERRED_USERNAME`
+- `password: YOUR_PASSWORD`
+- `email: YOUR_EMAIL@EMAIL.COM`
 
 6. Run the server:
 
