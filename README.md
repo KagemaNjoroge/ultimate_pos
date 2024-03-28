@@ -1,20 +1,26 @@
 ## Ultimate Point of Sale (POS)
 
+<div>
+   <a href="#features">Features</a>
+   <span> | </span>
+   <a href="#proposed-features">Proposed Features</a>
+   <span> | </span>
+   <a href="#installation">Installation</a>
+   <span> | </span>
+   <a href="#run-it-locally">Run it locally</a>
+   <span> | </span>
+   <a href="#contributing">Contributing</a>
+   <span> | </span>
+   <a href="#license">License</a>
+
+</div>
+
 A minimalistic Point of Sale (POS) system for small businesses. It is a web-based application that allows you to manage your sales and inventory on the go. It is built with Django and Python.
 
 <p align="center">
   <img src="https://posapp.linksengineering.net/assets/images/logo-seegreen.png">
 </p>
-
-## Table of Contents:
-
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [Tech Stack](#tech-stack)
-- [Installation](#installation)
-- [Run it locally](#run-it-locally)
-- [Contributing](#contributing)
-- [License](#license)
+<!--  contents row and cols similar to bootstrap-->
 
 ## Features
 
