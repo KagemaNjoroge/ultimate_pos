@@ -15,7 +15,7 @@
 
 </div>
 
-A minimalistic Point of Sale (POS) system for small businesses. It is a web-based application that allows you to manage your sales and inventory on the go. It is built with Django and Python.
+A minimalistic Point of Sale (POS) system for small businesses. It is a web-based application that allows you to manage your sales and inventory on the go. Powered by [Django](https://djangoproject.com)
 
 <p align="center">
   <img src="https://posapp.linksengineering.net/assets/images/logo-seegreen.png">
@@ -24,7 +24,6 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
 
 ## Features
 
-- Login Page with User authentication
 - Dashboard Page with statistics and graphs
 - DataTables with print, copy, to CSV, and to PDF buttons
 - Categories and Products Management
@@ -34,10 +33,10 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
 
 ## Proposed Features
 
-- Business Level Inventory Management
-- Suppliers Management
-- Purchase Management
-- CRM (Customer Relationship Management)
+- [] Business Level Inventory Management
+- [x] Suppliers Management
+- [x] Purchase Management
+- [x] CRM (Customer Relationship Management)
 
 ## Installation
 
@@ -50,7 +49,7 @@ git clone https://github.com/kagemanjoroge/ultimate_pos.git
 2. Go to the project directory
 
 ```bash
-cd ultimate_pos
+cd ultimate_pos/django_pos
 ```
 
 3. Create a virtual environment :
@@ -108,6 +107,9 @@ python manage.py makemigrations && python manage.py migrate
 ```
 
 5. Create superuser to access the admin panel:
+
+   > [!IMPORTANT]
+   > You will need a super user account in order to access the admin page
 
    ```bash
    python manage.py createsuperuser
