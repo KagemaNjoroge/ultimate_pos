@@ -20,7 +20,21 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
 <p align="center">
   <img src="https://posapp.linksengineering.net/assets/images/logo-seegreen.png">
 </p>
-<!--  contents row and cols similar to bootstrap-->
+
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.
 
 ## Features
 
