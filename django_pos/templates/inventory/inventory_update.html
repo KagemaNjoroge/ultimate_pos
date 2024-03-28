@@ -11,7 +11,7 @@
 
 
 <!--Go back-->
-<div class="row ml-0 mb-3">
+<div class="row ml-4 mb-3">
     <a href="{% url 'inventory:inventory_index' %}">
         <button type="button" class="btn btn-success font-weight-bold">
             <i class="fas fa-long-arrow-alt-left mr-2"></i>
@@ -71,7 +71,7 @@
         let btn = document.getElementById('update');
         let quantity = document.getElementById('inputr');
         btn.addEventListener("click", async ev => {
-            let response = await fetch('{% url 'inventory: update_inventory' inventory_id=inventory.id  %}',
+            let response = await fetch("{% url 'inventory:update_inventory' inventory_id=inventory.id  %}",
                 {
                     method: "POST",
                     headers: {
