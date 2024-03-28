@@ -23,8 +23,6 @@ def index(request: HttpRequest) -> HttpResponse:
     year = today.year
     monthly_earnings = []
 
-    # ferch all unread notifications
-
     # Calculate earnings per month
     for month in range(1, 13):
         earning = (
@@ -202,6 +200,7 @@ def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
         notifications = Notifications.objects.filter(
             read=False, user=request.user
         ).order_by("date")
+        # TODO
         # mark all notifications as read
         # for notification in notifications:
         #     notification.read = True
@@ -221,6 +220,7 @@ def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
 
     else:
         notification = get_object_or_404(Notifications, id=id)
+        # TODO
         # notification.read = True
         # notification.save()
         return JsonResponse(
