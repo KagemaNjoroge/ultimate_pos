@@ -4,6 +4,8 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+
+from authentication.utils import get_all_permissions
 from .forms import SignUpForm
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
@@ -77,6 +79,9 @@ def register_user(request: HttpRequest) -> HttpResponse:
     msg = None
     success = False
 
+    # all permissions available in the system.
+    perms = get_all_permissions()
+
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -88,11 +93,9 @@ def register_user(request: HttpRequest) -> HttpResponse:
 
         else:
             msg = "Form is not valid"
-    else:
-        form = SignUpForm()
-
-    return render(
-        request,
-        "accounts/register.html",
-        {"form": form, "msg": msg, "success": success},
-    )
+    elif request.method == "GET":
+        return render(
+            request,
+            "accounts/register.html",
+            {"perms": perms, "msg": msg, "success": success},
+        )
