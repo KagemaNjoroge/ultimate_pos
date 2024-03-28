@@ -40,9 +40,7 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
 
     if request.method == "POST":
         if is_ajax(request=request):
-
             data = json.load(request)
-            # {'customer': '3', 'sub_total': '80000', 'tax_percentage': '0', 'tax_amount': '0', 'grand_total': '80000', 'amount_payed': '80000', 'amount_change': 0, 'products': [{'id': 2, 'name': 'Hp Elitebook G5', 'price': 80000, 'count': 1, 'total': 80000, 'total_product': 1}
             customer_id = int(data["customer"])
             customer = Customer.objects.get(id=customer_id)
             sub_total = float(data["sub_total"])
@@ -120,7 +118,6 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         messages.success(
             request, "There was an error getting the sale!", extra_tags="danger"
         )
-        print(e)
         return redirect("sales:sales_list")
 
 
@@ -172,7 +169,6 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         "company": company,
         "logo": logo_base64,
         "items": items,
-        # 0701575348
     }
     # check if the sale has been printed
     if not sale.receipt_is_printed:
@@ -209,11 +205,9 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
 
 def kra_logo(request: HttpRequest) -> HttpResponse:
     logo = "static/img/kra_logo.png"
-
     return FileResponse(open(logo, "rb"), content_type="image/png")
 
 
 def watermark(request: HttpRequest) -> HttpResponse:
     watermark = "static/img/watermark.png"
-
     return FileResponse(open(watermark, "rb"), content_type="image/png")
