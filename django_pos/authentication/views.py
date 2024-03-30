@@ -1,5 +1,6 @@
 # Create your views here.
 import json
+import time
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -25,11 +26,11 @@ def logout_view(request: HttpRequest) -> HttpResponse:
 def profile(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         return render(request, "accounts/profile.html")
-    else:
+    elif request.method == "POST":
 
-        email = request.POST.get(key="email")
-        first_name = request.POST.get(key="first_name")
-        last_name = request.POST.get(key="last_name")
+        email = request.POST.get(key="email").lower()
+        first_name = request.POST.get(key="first_name").title()
+        last_name = request.POST.get(key="last_name").title()
         user = request.user
         if email == "":
             email = None
@@ -43,12 +44,14 @@ def profile(request: HttpRequest) -> HttpResponse:
         user.last_name = last_name or user.last_name
 
         user.save()
-        messages.add_message(
-            request=request,
-            message="Profile updated successfully",
-            level=messages.SUCCESS,
+        time.sleep(2)
+        return JsonResponse(
+            {"message": "Profile updated successfully", "status": "Ok"}, status=200
         )
-        return redirect("/accounts/profile")
+
+    else:
+        # method not allowed
+        return JsonResponse({"message": "Invalid request method"}, status=405)
 
 
 def login_view(request: HttpRequest) -> HttpResponse:
