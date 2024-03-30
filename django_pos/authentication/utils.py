@@ -19,6 +19,9 @@ def get_all_permissions():
         if not p.startswith("contenttypes.")
         and not p.startswith("admin.")
         and not p.startswith("sessions.")
+        and not p.startswith("etims")
+        and not p.startswith("auth")
+        and not p.startswith("company")
     ]
 
     return sorted_list_of_permissions
