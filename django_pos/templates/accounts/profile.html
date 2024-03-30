@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- Option 1: Include in HTML -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
     <title>{{request.user.username}}</title>
 </head>
 
@@ -25,32 +25,9 @@
 
 
             <div class="col-md-5 border-right">
-                {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        <div class="alert alert-success d-flex align-items-center" role="alert" id="message_{{ forloop.counter }}">
-                            <div class="row">
-                                <div class="col-md-10">
-                                    {{ message }}
-                                </div>
-                                <div class="col-md-2">
-                                    <button onclick="hideMessage({{ forloop.counter }})" class="btn btn-success"><i class="bi bi-x"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            
-            <script>
-                function hideMessage(messageId) {
-                    let messageDiv = document.getElementById('message_' + messageId);
-                    if (messageDiv) {
-                        messageDiv.remove()
-                    }
-                }
-            </script>
-            
+                <div class="messages"></div>
+
+
                 <div class="p-3 py-5">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="text-right">Profile Settings</h4>
@@ -73,19 +50,60 @@
 
                         </div>
 
-                        <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Save
+                        <div class="mt-5 text-center"><button class="btn btn-success profile-button" type="submit"
+                                id="save">Save
                                 Profile</button></div>
                     </form>
                 </div>
             </div>
             <div class="col-md-4">
-                <a href="/" class="btn btn-primary"><i class="bi bi-house"></i></a>
+                <a href="/" class="btn btn-success"><i class="bi bi-house"></i></a>
             </div>
 
         </div>
     </div>
     </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#update_profile').submit(function (e) {
+                e.preventDefault();
+                // save btn loading
+                $('#save').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...').attr('disabled', true);
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: {
+                        first_name: $('#first_name').val(),
+                        last_name: $('#last_name').val(),
+                        email: $('#email').val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success: function (data) {
+                        //  {"message": "Profile updated successfully", "status": "Ok"}, status=200
+                        if (data.status === 'Ok') {
+                            $('.messages').append('<div class="alert alert-success d-flex align-items-center" role="alert" id="message_1"><div class="row"><div class="col-md-10">' + data.message + '</div><div class="col-md-2"><button onclick="hideMessage(1)" class="btn btn-success"><i class="bi bi-x"></i></button></div></div></div>');
+                        } else {
+                            $('.messages').append('<div class="alert alert-danger d-flex align-items-center" role="alert" id="message_1"><div class="row"><div class="col-md-10">' + data.message + '</div><div class="col-md-2"><button onclick="hideMessage(1)" class="btn btn-danger"><i class="bi bi-x"></i></button></div></div></div>');
+                        }
+                        // remove message after 5 seconds
+                        setTimeout(function () {
+                            $('#message_1').remove();
+                        }, 5000);
+                    },
+                    error: function () {
+                        console.log('error');
+                    }
+                }).done(function () {
+                    // save btn reset
+                    $('#save').html('Save Profile').attr('disabled', false);
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
