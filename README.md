@@ -15,14 +15,11 @@
 
 </div>
 
-A minimalistic Point of Sale (POS) system for small businesses. It is a web-based application that allows you to manage your sales and inventory on the go. Powered by [Django](https://djangoproject.com)
+A minimalistic Point of Sale (POS) system for small businesses. It is a web-based application that allows you to manage your sales and inventory on the go. Powered by [Django.](https://djangoproject.com)
 
 <p align="center">
   <img src="https://posapp.linksengineering.net/assets/images/logo-seegreen.png">
 </p>
-
-> [!IMPORTANT]
-> Key information users need to know to achieve their goal.
 
 ## Features
 
