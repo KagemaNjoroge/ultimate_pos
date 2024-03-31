@@ -9,26 +9,90 @@
     <style>
         #all_notifications {
             overflow-y: auto;
-            /* Set to auto or scroll to enable vertical scrolling */
             max-height: 300px;
-            /* Set maximum height for scrollability */
         }
 
         #notification_content {
             overflow: auto;
-            /* Hide overflow for content */
+
         }
     </style>
+    <style>
+        .modal-dialog-right {
+            margin: 0 auto;
+            margin-right: 0;
+        }
+
+
+        .modal-content-assistant {
+            width: 400px;
+            position: fixed;
+            top: 80px;
+            right: 20px;
+        }
+    </style>
+
+    {% block heading %}{% endblock heading%}
+
+    <div class="modal fade" id="aiAssistantModal" tabindex="-1" role="dialog" data-bs-backdrop="static"
+        data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-right">
+            <div class="modal-content-assistant modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">UltimatePOS Copilot <span><img src="{%static 'img/ai.svg'%}"
+                                alt="Ask AI"></span></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="quiz">
+                        <div id="chats"></div>
+                        <!--Message input with a send button with a send message icon-->
+                        <!-- <div class="input-group mb-3">
+                            <input type="text" class="form-control" style="font-size: 10px;"
+                                placeholder="Try something like 'What is the best selling product?'"
+                                aria-label="Recipient's username" aria-describedby="button-addon2">
+                            <button class="btn btn-outline-success" type="button" id="send_msg">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </div> -->
+                        <div class="container">
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control text-sm" style="font-size: 15px;"
+                                            placeholder="Try something like What is the best selling product"
+                                            aria-label="Chat input">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success" type="button">
+                                                <i class="fas fa-paper-plane"></i> </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Top bar Navbar -->
     <ul class="navbar-nav ml-auto">
 
-        <!--Title block on the left side next to the sidebar-->
-
-
-        <!-- Nav Item - User Information -->
+        <li class="nav-item mr-3">
+            <a class="nav-link" data-toggle="tooltip" data-placement="bottom" role="button" title="Ask AI">
+                <img src="{%static 'img/ai.svg'%}" alt="Ask AI" id="ask_ai">
+            </a>
+        </li>
         <li class="nav-item mt-3 mr-3 ">
-            <button type="button" class="btn btn-primary position-relative" id="notifications_btn">
+            <button type="button" class="btn btn-primary position-relative" id="notifications_btn" data-toggle="tooltip"
+                data-placement="bottom" title="Ask AI">
                 <!--NOtifications-->
                 <i class="fas fa-bell fa-fw"></i>
                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -48,7 +112,6 @@
                             id="close_modal_top"><i class="fa fa-times-circle" aria-hidden="true"></i></button>
                     </div>
                     <div class="modal-body">
-                        <!--Notifications will appear here two columns - all notifications and content on the left-->
                         <div class="row">
                             <div class="col-md-5" id="all_notifications">
                                 <div class="alert alert-primary card" role="alert">
@@ -128,6 +191,45 @@
         });
 
         $(document).ready(function () {
+            $("#send_msg").click(function () {
+                var msg = $("input").val();
+                // add message on the left
+                var current_time = new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
+
+                var html = `
+                <div class="d-flex justify-content-start mb-4">
+                    <div class="msg_cotainer_send">
+                        ${msg}
+                        <span class="msg_time_send">${current_time}</span>
+                    </div>
+                    <div class="img_cont_msg">
+                        <img src="{% static 'img/undraw_profile.svg' %}" class="rounded-circle user_img_msg">
+                    </div>
+                `;
+                $("#chats").append(html);
+                // clear input
+                $("input").val('');
+                // scroll to bottom
+                var objDiv = document.getElementById("chats");
+                objDiv.scrollTop = objDiv.scrollHeight;
+                // add responding...
+                var html = `
+                <div class="d-flex justify-content-end mb-4">
+                    <div class="img_cont_msg">
+                        <img src="{% static 'img/ai.svg' %}" class="rounded-circle user_img_msg">
+                    </div>
+                    <div class="msg_cotainer">
+                        Responding...
+                        <span class="msg_time">${current_time}</span>
+                    </div>
+                
+                `;
+                $("#chats").append(html);
+
+
+
+
+            })
             $.ajax({
                 type: 'GET',
                 url: '{% url "pos:notifications" %}',
@@ -214,6 +316,13 @@
         $("#close_modal_top").on('click', function () {
             $("#staticBackdrop").modal('hide');
         });
+
+        $(document).ready(function () {
+            $('#ask_ai').click(function () {
+                // show ai assistant modal
+                $("#aiAssistantModal").modal('show');
+            })
+        })
     </script>
 
 </nav>
