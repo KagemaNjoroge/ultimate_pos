@@ -75,7 +75,7 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">{% block heading %}{% endblock %}</h1>
+                        <h1 class="h3 mb-0 text-gray-800">{% block heading %}{% endblock heading%}</h1>
                     </div>
 
                     <!--Messages will appear here-->
@@ -106,12 +106,12 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Logout Modal-->
+
     {% include 'pos/logout_modal.html' %}
-    <!-- End ofLogout Modal-->
 
 
-    <!-- Bootstrap core JavaScript-->
+
+    {% block javascripts %}{% endblock javascripts %}
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
@@ -123,9 +123,6 @@
     <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
-
-
-    {% block javascripts %}{% endblock javascripts %}
     <script>
 
         var toggled = false;
