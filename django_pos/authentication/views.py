@@ -18,7 +18,9 @@ def request_is_ajax(request: HttpRequest) -> bool:
 
 def logout_view(request: HttpRequest) -> HttpResponse:
     logout(request)
-    return redirect("/")
+    return JsonResponse(
+        {"message": "Logged out successfully", "status": "Ok"}, status=200
+    )
 
 
 @login_required(login_url="/accounts/login/")
