@@ -1,19 +1,12 @@
 {% extends "pos/base.html" %}
 {% load static %}
-<!-- Page title  -->
 {% block title %}Customers{% endblock title %}
-
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<!-- Datatables -->
-
 {% endblock stylesheets %}
-
-<!-- Page Heading -->
 {% block heading %}Customers{% endblock heading %}
-
-<!-- Page content  -->
 {% block content %}
+
+<link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
 
 <!--Create new customer-->
 <div class="row ml-0 mb-3">
