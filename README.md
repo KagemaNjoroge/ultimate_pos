@@ -17,7 +17,7 @@
 
 </div>
 
-A modern POS/ERP/CRM system for business of the AI era. Powered by [Django.](https://djangoproject.com)
+A modern POS/ERP/CRM system for businesses of the AI era. Powered by [Django.](https://djangoproject.com)
 
 <p align="center">
   <img src="https://posapp.linksengineering.net/assets/images/logo-seegreen.png">
