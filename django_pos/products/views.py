@@ -294,7 +294,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
         context = {"active_icon": "products", "categories": categories}
         return render(request, "products/upload_csv_excel.html", context=context)
     elif request.method == "POST":
-        time.sleep(3)
+
         try:
             excel_file = request.FILES["excel_file"]
             if not excel_file.name.endswith(".xlsx"):
@@ -315,8 +315,6 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
             for row in worksheet.iter_rows(
                 min_row=2, max_row=worksheet.max_row, min_col=1, max_col=6
             ):
-                for x in row:
-                    print(x.value)
 
                 # Coca Cola A nice soft drink 250 1 1
 
