@@ -1,4 +1,6 @@
-## Ultimate Point of Sale (POS)
+<div align="center">
+<h1> Ultimate Point of Sale (POS)</h1>
+</div>
 
 <div>
    <a href="#features">Features</a>
