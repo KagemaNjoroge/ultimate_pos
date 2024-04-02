@@ -150,5 +150,6 @@ Contributions are always welcome!
 This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
 
 <div align="center">
-Brought to you by the good folks at [TomorrowAI](https://tomorrow.co.ke)
+Brought to you by the good folks at 
+<a href="https://tomorrow.co.ke">TomorrowAI</a>
 </div>
