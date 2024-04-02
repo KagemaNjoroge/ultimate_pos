@@ -294,6 +294,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
         context = {"active_icon": "products", "categories": categories}
         return render(request, "products/upload_csv_excel.html", context=context)
     elif request.method == "POST":
+        time.sleep(3)
         try:
             excel_file = request.FILES["excel_file"]
             if not excel_file.name.endswith(".xlsx"):
@@ -338,7 +339,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
                     category = Category.objects.first()
                 product.category = category
                 product.save()
-                # add to inventory
+                # add to  if specified
                 if product.track_inventory:
                     inv = Inventory.objects.filter(product=product)
                     if inv.exists():
@@ -349,18 +350,21 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
                         inv = Inventory.objects.create(product=product, quantity=1)
                         inv.save()
 
-            messages.success(
-                request, "Products uploaded successfully!", extra_tags="success"
-            )
-            return redirect("products:products_list")
+                return JsonResponse(
+                    {
+                        "status": "success",
+                        "message": "Processing complete. All products have been added to the database.",
+                    },
+                    safe=True,
+                )
         except Exception as e:
-            messages.error(
-                request,
-                f"An error occurred while processing the file. The file did not meet the required format or it is corrupted.",
-                extra_tags="danger",
-            )
 
-            return redirect("products:upload_excel")
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "An error occurred while processing the file. The file did not meet the required format or it is corrupted.",
+                }
+            )
 
 
 @login_required(login_url="/accounts/login/")
