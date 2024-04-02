@@ -1,17 +1,9 @@
 {% extends "pos/base.html" %}
 {% load static %}
-<!-- Page title  -->
 {% block title %}Dashboard{% endblock title %}
-
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-
 {% endblock stylesheets %}
-
-<!-- Page Heading -->
 {% block heading %}Dashboard{% endblock heading %}
-
-<!-- Page content  -->
 {% block content %}
 <!-- Content Row -->
 <div class="row">
@@ -127,19 +119,16 @@
             </div>
             <!-- Card Body -->
             <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
+                <div class="chart-pie pt-4 pb-4">
                     <canvas id="myPieChart"></canvas>
                 </div>
-                <div class="mt-4 text-center small">
-                    <div class="mr-2">
-                        <i class="fas fa-circle text-primary mr-2"></i>{{top_products_names_list.0}}
+                <div class="mt-4 small flex-row">
+
+                    {% for name in top_products_names_list%}
+                    <div class="mr-2 mt-2 col">
+                        <i class="fas fa-add text-success mr-2"></i>{{name}}
                     </div>
-                    <div class="mr-2 mt-2">
-                        <i class="fas fa-circle text-success mr-2"></i>{{top_products_names_list.1}}
-                    </div>
-                    <div class="mr-2 mt-2">
-                        <i class="fas fa-circle text-info mr-2"></i>{{top_products_names_list.2}}
-                    </div>
+                    {%endfor%}
                 </div>
             </div>
         </div>

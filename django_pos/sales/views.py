@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpRequest, FileResponse
+from django.http import HttpResponse, HttpRequest, FileResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django_pos.wsgi import *
 from django_pos import settings
 from django.template.loader import get_template
 from customers.models import Customer
+from pos.models import Notifications
 from products.models import Product
 from weasyprint import HTML, CSS
 from .models import Sale, SaleDetail, SaleItem
@@ -40,6 +41,7 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
 
     if request.method == "POST":
         if is_ajax(request=request):
+
             data = json.load(request)
             customer_id = int(data["customer"])
             customer = Customer.objects.get(id=customer_id)
@@ -72,8 +74,24 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
                     inv = Inventory.objects.filter(product=product)
                     if inv.exists():
                         inv = inv.first()
-                        inv.quantity -= prod["count"]
-                        inv.save()
+                        # # for each product check if inventory  quantity > 0
+                        if inv.quantity > 0:
+                            inv.quantity -= prod["count"]
+                            inv.save()
+                        else:
+                            # not enough stock, add notification
+                            Notifications.objects.create(
+                                title="Inventory Update Failed",
+                                message=f"Inventory update failed for {inv.product.name}. Items left: {inv.quantity}.",
+                                user=request.user,
+                            )
+
+                            return JsonResponse(
+                                {
+                                    "status": "error",
+                                    "message": f"Not enough inventory quantity for {inv.product.name}. Please adjust the inventory before proceeding.",
+                                }
+                            )
             # Create the sale items
             sale_items = []
             for prod in prods:
@@ -88,10 +106,19 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
             sale_detail = SaleDetail(sale=sale)
             sale_detail.save()
             sale_detail.items.set(sale_items)
-            messages.success(request, "Sale added successfully!", extra_tags="success")
-            return redirect("sales:sales_add")
 
-    return render(request, "sales/sales_add.html", context=context)
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "message": "Sale created successfully!",
+                    "sale_id": sale.id,
+                }
+            )
+    elif request.method == "GET":
+        return render(request, "sales/sales_add.html", context=context)
+    else:
+        # method not allowed
+        return JsonResponse({"message": "Method not allowed"}, status=405)
 
 
 @login_required(login_url="/accounts/login/")

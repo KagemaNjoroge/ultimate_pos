@@ -1,18 +1,10 @@
 {% extends "pos/base.html" %}
-
-
 {% block title %}Upload Excel{% endblock title %}
-
-
 {% block stylesheets %}{% endblock stylesheets %}
-
-
 {% block heading %}Upload Excel{% endblock heading %}
-
-
 {% block content %}
 
-<div class="row ml-0 mb-3">
+<div class="row ml-3 mb-3">
     <a href="{% url 'products:products_list' %}">
         <button type="button" class="btn btn-success font-weight-bold">
             <i class="fas fa-long-arrow-alt-left mr-2"></i>
@@ -20,10 +12,47 @@
         </button>
     </a>
 </div>
-<!--Structure of the excel file, also a download template button-->
-<div class="row">
+<!--Upload result message-->
+<div class="row text-center ml-5 ml-5">
+    <div class="update_msg "></div>
+</div>
+
+
+<div class="row ml-3 mb-5">
     <div class="card col-md-6">
         <div class="card-body">
+            <p><strong>Available product categories:</strong></p>
+            {%if categories %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{ category.id }}</td>
+                        <td>{{ category.name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {%else%}
+            <div>
+                <div class="alert alert-danger fade show" role="alert"><strong>Error </strong>No product categories
+                    found!
+                    <a href="{% url 'products:categories_add' %}">
+                        <button type="button" class="btn btn-success font-weight-bold">
+                            <i class="fas fa-plus mr-2"></i>
+                            Create new category
+                        </button>
+                    </a>
+                </div>`
+            </div>
+            {%endif%}
+
             <h5 class="card-title"><strong>Structure of the Excel file</strong></h5>
             <p class="card-text">
             <ul>
@@ -48,43 +77,72 @@
                     <li>0 - inactive</li>
                 </ul>
             </ul>
-            <!--Available categories-->
-            <p><strong>Available categories:</strong></p>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for category in categories %}
-                    <tr>
-                        <td>{{ category.id }}</td>
-                        <td>{{ category.name }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            </p>
-            <a href="{% url 'products:download_template' %}" class="btn btn-primary">Download template</a>
+
+
+            <a href="{% url 'products:download_template' %}" class="btn btn-success">Download template</a>
         </div>
     </div>
 
     <div class="card col-md-4 ml-3">
         <div class="card-body">
-            <form action="{% url 'products:upload_excel' %}" method="post" enctype="multipart/form-data">
+            <form action="{% url 'products:upload_excel' %}" method="post" enctype="multipart/form-data"
+                id="upload_form">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="file" class="form-label">Upload Excel</label>
                     <input type="file" name="excel_file" class="form-control" id="file" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Upload</button>
+                <button type="submit" class="btn btn-success" id="upload_btn">Upload</button>
             </form>
         </div>
     </div>
 
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#upload_form").on('submit', function (e) {
+            var form = $(this);
+            e.preventDefault();
+            var action = "{% url 'products:upload_excel' %}";
+            let data = form.data()
+            $('#upload_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...')
+
+            $.ajax({
+                url: action,
+                method: 'POST',
+                data: data,
+                headers: {
+                    "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
+                },
+                success: function (data) {
+
+                    if (data.status === "success") {
+                        $('.update_msg').html(
+                            `<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success </strong>${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+                        );
+                    }
+                    else if (data.status === "error") {
+                        $('.update_msg').html(
+                            `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error </strong>${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+                        )
+                    }
+                    else {
+                        $('.update_msg').html(
+                            `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error </strong>An unknown error occurred. Please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+                        )
+
+                    }
+                }
+            }).done(function () {
+                $('#upload_btn').html('Upload')
+            })
+
+
+        })
+    })
+
+</script>
 
 {% endblock content %}
 

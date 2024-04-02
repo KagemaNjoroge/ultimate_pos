@@ -37,10 +37,21 @@
     </div>
     <div class="ml-2">
 
-        <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
-            <i class="fa fa-print"></i>
-            Print
-        </button>
+        <a href="{%url 'sales:sales_receipt_pdf' sale.id %}">
+            <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
+                <i class="fa fa-print"></i>
+                Print
+            </button>
+        </a>
+
+    </div>
+    <div class="ml-2">
+        <a href="{% url 'sales:sales_list' %}">
+            <button type="button" class="btn btn-primary font-weight-bold">
+                <i class="fas fa-edit mr-2"></i>
+                Edit
+            </button>
+        </a>
 
     </div>
     <!-- Modal -->
