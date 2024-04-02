@@ -15,7 +15,7 @@
 
 </div>
 
-A minimalistic Point of Sale (POS) system for small businesses. It is a web-based application that allows you to manage your sales and inventory on the go. Powered by [Django.](https://djangoproject.com)
+A modern POS/ERP/CRM system for business of the AI era. Powered by [Django.](https://djangoproject.com)
 
 <p align="center">
   <img src="https://posapp.linksengineering.net/assets/images/logo-seegreen.png">
@@ -33,6 +33,10 @@ A minimalistic Point of Sale (POS) system for small businesses. It is a web-base
 ## Proposed Features
 
 - [ ] Business Level Inventory Management
+- [ ] Lipa-na-MPESA Gateway integration
+- [ ] KRA Tax Returns Auto-filing
+- [ ] Plugin system
+- [ ] AI Assistant
 - [x] Suppliers Management
 - [x] Purchase Management
 - [x] CRM (Customer Relationship Management)
@@ -54,8 +58,7 @@ cd ultimate_pos/django_pos
 3. Create a virtual environment :
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv venv && source venv/bin/activate
 ```
 
 4. Install dependencies:
@@ -74,7 +77,7 @@ pip install -r requirements.txt
      `C:\Program Files\GTK3-Runtime Win64\bin`  
      This will be your new variable that you need to add to Path
    - Refer to this tutorial for detailed instructions on adding to the Path environment variable:
-     [Adding varible to path](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/)
+     [Adding variable to path](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/)
 
    - If you encounter an error such as "cannot load library," refer to this documentation for troubleshooting:
      [Missing Library Error](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#missing-library)
@@ -85,27 +88,31 @@ pip install -r requirements.txt
 
 After restarting your computer
 
-1. Go to the project directory: `cd ultimate_pos`
+1.  Go to the project directory: `cd ultimate_pos`
 
-2. Activate the virtual enviroment
+2.  Activate the virtual enviroment
 
-   ```bash
-   source venv/bin/activate
-   ```
+    ```bash
+    source venv/bin/activate
+    ```
 
-3. Go to the django_pos folder:
+3.  Go to the django_pos folder:
 
-   ```bash
-   cd ultimate_pos/django_pos
-   ```
+    ```bash
+    cd ultimate_pos/django_pos
+    ```
 
-4. Make database migrations:
+4.  Make database migrations:
 
-```bash
-python manage.py makemigrations && python manage.py migrate
-```
+        ```bash
 
-5. Create superuser to access the admin panel:
+    python manage.py makemigrations && python manage.py migrate
+
+    ```
+
+    ```
+
+5.  Create superuser to access the admin panel:
 
 > [!IMPORTANT]
 > You will need a super user account in order to access the admin page. You can create one by running the following command:
@@ -146,4 +153,6 @@ Contributions are always welcome!
 
 This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
 
-Brought to you by the good folks at [Tomorrow Kenya](https://tomorrow.co.ke)
+<div align="center">
+Brought to you by the good folks at <a href="(https://tomorrow.co.ke">TomorrowAI</a>
+</div>
