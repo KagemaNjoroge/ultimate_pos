@@ -104,13 +104,9 @@ After restarting your computer
 
 4.  Make database migrations:
 
-        ```bash
-
-    python manage.py makemigrations && python manage.py migrate
-
-    ```
-
-    ```
+```bash
+ python manage.py makemigrations && python manage.py migrate
+```
 
 5.  Create superuser to access the admin panel:
 
@@ -154,5 +150,5 @@ Contributions are always welcome!
 This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
 
 <div align="center">
-Brought to you by the good folks at <a href="(https://tomorrow.co.ke">TomorrowAI</a>
+Brought to you by the good folks at [TomorrowAI](https://tomorrow.co.ke)
 </div>
