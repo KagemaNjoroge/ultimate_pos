@@ -12,7 +12,7 @@ fonttools==4.47.0
 html5lib==1.1
 idna==3.6
 openpyxl==3.1.2
-Pillow==10.2.0
+Pillow==10.3.0
 pycodestyle==2.11.1
 pycparser==2.21
 pydyf==0.8.0
