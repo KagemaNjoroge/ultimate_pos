@@ -150,7 +150,6 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
         )
         return redirect("customers:customers_list")
     except Exception as e:
-        print(e)
         messages.success(
             request,
             "There was an error deleting that customer, may be the customer has an existing sale record",
