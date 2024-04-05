@@ -44,8 +44,14 @@ def customers_add_view(request: HttpRequest) -> HttpResponse:
 
         # Check if a customer with the same attributes exists
         if Customer.objects.filter(**attributes).exists():
-            messages.error(request, "Customer already exists!", extra_tags="warning")
-            return redirect("customers:customers_add")
+            # return JsonResponse
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": "Customer with the same attributes already exists",
+                },
+                status=400,
+            )
 
         try:
             # Create the customer
@@ -53,22 +59,22 @@ def customers_add_view(request: HttpRequest) -> HttpResponse:
 
             # If it doesn't exist, save it
             new_customer.save()
-
-            messages.success(
-                request,
-                f'Customer: {attributes["first_name"]} {attributes["last_name"]}  created '
-                f"successfully!",
-                extra_tags="success",
+            return JsonResponse(
+                {"status": "success", "message": "Customer added successfully!"},
+                status=200,
             )
-            return redirect("customers:customers_list")
+
         except Exception as e:
-            messages.success(
-                request, "There was an error during the creation!", extra_tags="danger"
-            )
+            return JsonResponse({"status": "error", "message": str(e)}, status=400)
+    elif request.method == "GET":
 
-            return redirect("customers:customers_add")
-
-    return render(request, "customers/customers_add.html", context=context, status=200)
+        return render(
+            request, "customers/customers_add.html", context=context, status=200
+        )
+    else:
+        return JsonResponse(
+            {"status": "error", "message": "Method not allowed!"}, status=405
+        )
 
 
 @login_required(login_url="/accounts/login/")
