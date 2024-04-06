@@ -17,6 +17,12 @@
         </button>
     </a>
 </div>
+<!--Outcome after delete operation-->
+<div>
+    <div class="text-center" id="result">
+
+    </div>
+</div>
 
 <!-- DataTable -->
 <div class="card shadow mb-12">
@@ -40,10 +46,13 @@
                 </thead>
                 <tbody>
                     {% for c in customers %}
-                    <tr>
+                    <tr id="{{c.id}}">
                         <td>{{c.id}}</td>
                         <td>{{forloop.counter}}</td>
-                        <td>{{c.get_full_name}}</td>
+                        <td>
+                            <a href="{%url 'customers:customer_profile' c.id%}" data-bs-toggle="tooltip"
+                                title="View customer details">{{c.get_full_name}}</a>
+                        </td>
                         {%if c.kra_pin%}
                         <td>{{c.kra_pin}}</td>
                         {%else%}
@@ -72,40 +81,45 @@
                             <!-- Button trigger modal -->
                             <a class="text-decoration-none">
                                 <button rel="delete" type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                    data-target="#exampleModal">
+                                    data-target="#exampleModal" data-bs-toggle="tooltip" title="Delete customer"
+                                    onclick="setModalid({{c.id}})">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </a>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Delete customer</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div id="updateThisText" class="modal-body">
-                                            Are you sure you want to delete the customer? This action is irreversible.
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Cancel</button>
-                                            <button type="button" class="btn btn-danger del"
-                                                data-id="{{c.id}}">Delete</button>
 
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+
+
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete customer
+                    <i class="fas fa-exclamation-triangle text-danger ml-2"></i>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="updateThisText" class="modal-body">
+                Are you sure you want to delete the customer? This action is irreversible.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger del" data-id="">Delete</button>
+
+            </div>
         </div>
     </div>
 </div>
@@ -128,6 +142,9 @@
 
 <!--Datatables-->
 <script>
+    function setModalid(id) {
+        $('.del').attr('data-id', id);
+    }
     // Call the dataTables jQuery plugin
     $(document).ready(function () {
         let tblCategories = $('#dataTable').DataTable({
@@ -234,15 +251,62 @@
     $(document).on('click', '.del', function () {
         let id = $(this).data('id');
         let url = "{% url 'customers:customers_delete' 1000000000 %}".replace('1000000000', id);
+        // add spinner to the button
+        $(this).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleting...');
         $.ajax({
             url: url,
             type: 'DELETE',
             data: {
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             },
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
             success: function (data) {
-                location.reload();
+                // if status is success
+                if (data.status === 'success') {
+                    // remove the row from the table
+                    $('#' + id).remove();
+
+                    ;
+
+                    // show success message with a close btn
+                    $("#result").html('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                        '<strong>Success!</strong> ' + data.message +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span>' +
+                        '</button>' +
+                        '</div>')
+
+                }
+                else {
+                    // show error message with a close btn
+                    $("#result").html('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                        '<strong>Error!</strong> ' + data.message +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span>' +
+                        '</button>' +
+                        '</div>')
+                }
+            },
+            error: function () {
+
+
+                // error alert with a close btn, unknown error
+                $("#result").html('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                    '<strong>Error!</strong> An unknown error occurred. Please try again later.' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span>' +
+                    '</button>' +
+                    '</div>')
             }
+
+
+        }).done(function (data) {
+            $('.close').click();
+            // remove spinner from the button
+
+            $(this).html('Delete');
         });
     });
 

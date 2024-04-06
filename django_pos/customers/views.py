@@ -1,11 +1,8 @@
-from operator import le
-import re
-import stat
-from turtle import st
-from django.contrib import messages
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, render
+from sales.models import Sale
 from .models import Customer
 
 
@@ -139,21 +136,51 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
         request: HttpRequest Object
         customer_id : The customer's ID that will be deleted
     """
-    try:
-        # Get the customer to delete
-        customer = Customer.objects.get(id=customer_id)
-        customer.delete()
-        messages.success(
-            request,
-            "¡Customer: " + customer.get_full_name() + " deleted!",
-            extra_tags="success",
-        )
-        return redirect("customers:customers_list")
-    except Exception as e:
-        messages.success(
-            request,
-            "There was an error deleting that customer, may be the customer has an existing sale record",
-            extra_tags="danger",
+    if request.method == "DELETE":
+        try:
+            # Get the customer to delete
+            customer = get_object_or_404(Customer, id=customer_id)
+            customer.delete()
+            return JsonResponse(
+                {"status": "success", "message": "Customer deleted successfully!"},
+            )
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+    else:
+        # not allowed
+        return JsonResponse(
+            {"status": "error", "message": "Method not allowed!"}, status=405
         )
 
-        return redirect("customers:customers_list")
+
+@login_required(login_url="/accounts/login/")
+def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
+    customer = get_object_or_404(Customer, id=id)
+    # 10 recent purchase history
+    sales = Sale.objects.filter(customer=customer).order_by("-date_added")[:10]
+
+    purchases_this_month = Sale.objects.filter(
+        customer=customer, date_added__month=datetime.datetime.now().month
+    )
+    amount_spent_this_month = sum([sale.grand_total for sale in purchases_this_month])
+    amount_spent_this_year = sum(
+        [
+            sale.grand_total
+            for sale in Sale.objects.filter(
+                customer=customer, date_added__year=datetime.datetime.now().year
+            )
+        ]
+    )
+    # TODO: Add customers most purchased product
+
+    context = {
+        "active_icon": "customers",
+        "customer": customer,
+        "sales": sales,
+        "purchases_this_month": purchases_this_month.count(),
+        "amount_spent_this_month": amount_spent_this_month,
+        "amount_spent_this_year": amount_spent_this_year,
+    }
+    return render(
+        request, "customers/customer_profile.html", context=context, status=200
+    )
