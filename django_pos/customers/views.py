@@ -1,7 +1,11 @@
+import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
+
+import sales
+from sales.models import Sale, SaleDetail
 from .models import Customer
 
 
@@ -153,3 +157,36 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
         )
 
         return redirect("customers:customers_list")
+
+
+@login_required(login_url="/accounts/login/")
+def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
+    customer = get_object_or_404(Customer, id=id)
+    # 10 recent purchase history
+    sales = Sale.objects.filter(customer=customer).order_by("-date_added")[:10]
+
+    purchases_this_month = Sale.objects.filter(
+        customer=customer, date_added__month=datetime.datetime.now().month
+    )
+    amount_spent_this_month = sum([sale.grand_total for sale in purchases_this_month])
+    amount_spent_this_year = sum(
+        [
+            sale.grand_total
+            for sale in Sale.objects.filter(
+                customer=customer, date_added__year=datetime.datetime.now().year
+            )
+        ]
+    )
+    # TODO: Add customers most purchased product
+
+    context = {
+        "active_icon": "customers",
+        "customer": customer,
+        "sales": sales,
+        "purchases_this_month": purchases_this_month.count(),
+        "amount_spent_this_month": amount_spent_this_month,
+        "amount_spent_this_year": amount_spent_this_year,
+    }
+    return render(
+        request, "customers/customer_profile.html", context=context, status=200
+    )
