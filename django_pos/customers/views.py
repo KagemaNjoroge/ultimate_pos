@@ -1,11 +1,8 @@
 import datetime
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render, redirect
-
-import sales
-from sales.models import Sale, SaleDetail
+from django.shortcuts import get_object_or_404, render
+from sales.models import Sale
 from .models import Customer
 
 
@@ -139,24 +136,21 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
         request: HttpRequest Object
         customer_id : The customer's ID that will be deleted
     """
-    try:
-        # Get the customer to delete
-        customer = Customer.objects.get(id=customer_id)
-        customer.delete()
-        messages.success(
-            request,
-            "¡Customer: " + customer.get_full_name() + " deleted!",
-            extra_tags="success",
+    if request.method == "DELETE":
+        try:
+            # Get the customer to delete
+            customer = get_object_or_404(Customer, id=customer_id)
+            customer.delete()
+            return JsonResponse(
+                {"status": "success", "message": "Customer deleted successfully!"},
+            )
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)})
+    else:
+        # not allowed
+        return JsonResponse(
+            {"status": "error", "message": "Method not allowed!"}, status=405
         )
-        return redirect("customers:customers_list")
-    except Exception as e:
-        messages.success(
-            request,
-            "There was an error deleting that customer, may be the customer has an existing sale record",
-            extra_tags="danger",
-        )
-
-        return redirect("customers:customers_list")
 
 
 @login_required(login_url="/accounts/login/")
