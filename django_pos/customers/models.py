@@ -45,3 +45,15 @@ class Customer(models.Model):
         """
         item = {"label": self.get_full_name(), "value": self.id}
         return item
+
+    # override delete to also delete the photo from the filesystem
+    def delete(self, *args, **kwargs):
+        try:
+            # delete the photo from the filesystem
+            self.photo.delete()
+        except Exception as e:
+            # log the error
+            pass
+        finally:
+            # call the parent delete method
+            super().delete(*args, **kwargs)
