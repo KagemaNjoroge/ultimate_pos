@@ -371,14 +371,3 @@ def download_template(request: HttpRequest):
         response = HttpResponse(file, content_type="application/vnd.ms-excel")
         response["Content-Disposition"] = 'attachment; filename="upload_products.xltx"'
         return response
-
-
-# product stats
-@login_required(login_url="/accounts/login/")
-def product_stats(request: HttpRequest, product_id: str) -> HttpResponse:
-    product = Product.objects.get(id=product_id)
-    context = {
-        "product": product,
-        "active_icon": "products",
-    }
-    return render(request, "products/product_stats.html", context=context)
