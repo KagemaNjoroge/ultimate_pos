@@ -144,44 +144,44 @@
                             <div class="card-body">
                                 {% csrf_token %}
                                 <div class="form-group">
-                                    <label for="customer">Customer</label>
+                                    <label for="searchbox_customers">Customer</label>
                                     <select name="customer" class="form-control" id="searchbox_customers" disabled
                                         readonly>
                                         <option value="{{sale.customer.id}}">{{sale.customer.get_full_name}}</option>
                                     </select>
                                     <div class="form-group mt-4">
-                                        <label>Subtotal</label>
+                                        <label for="subtotal">Subtotal</label>
                                         <div class="input-group">
                                             <input name="sub_total" class="form-control" value="{{sale.sub_total}}"
-                                                readonly>
+                                                readonly id="subtotal">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Tax Inclusive (%)</label>
+                                        <label for="tax_inclusive">Tax Inclusive (%)</label>
                                         <div class="input-group">
                                             <input name="tax_percentage" class="form-control"
-                                                value="{{sale.tax_percentage}}" readonly>
+                                                value="{{sale.tax_percentage}}" readonly id="tax_inclusive">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Tax Amount</label>
+                                        <label for="tax">Tax Amount</label>
                                         <div class="input-group">
                                             <input name="tax_amount" class="form-control" value="{{sale.tax_amount}}"
-                                                readonly>
+                                                readonly id="tax">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Grand Total</label>
+                                        <label for="grand_total">Grand Total</label>
                                         <div class="input-group">
                                             <input name="grand_total" class="form-control" value="{{sale.grand_total}}"
-                                                readonly>
+                                                readonly id="grand_total">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Amount paid</label>
+                                        <label for="amount_paid">Amount paid</label>
                                         <div class="input-group">
                                             <input name="amount_payed" class="form-control"
-                                                value="{{sale.amount_payed}}" readonly>
+                                                value="{{sale.amount_payed}}" readonly id="amount_paid">
                                         </div>
                                     </div>
 
