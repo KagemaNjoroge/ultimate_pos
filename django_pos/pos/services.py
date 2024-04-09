@@ -1,6 +1,5 @@
-from django.conf import settings
-from .models import License
 import requests
+from django.conf import settings
 
 
 def refresh_license(company_id) -> dict:
