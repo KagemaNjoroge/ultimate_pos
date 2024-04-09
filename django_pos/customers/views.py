@@ -36,7 +36,7 @@ def customers_add_view(request: HttpRequest) -> HttpResponse:
         # try to get the photo
         try:
             attributes["photo"] = request.FILES["photo"]
-        except Exception as e:
+        except KeyError:
             pass
 
         # Check if a customer with the same attributes exists
@@ -156,7 +156,7 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
 @login_required(login_url="/accounts/login/")
 def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
     customer = get_object_or_404(Customer, id=id)
-    # 10 recent purchase history
+    # 10 recent purchase histories
     sales = Sale.objects.filter(customer=customer).order_by("-date_added")[:10]
 
     purchases_this_month = Sale.objects.filter(
