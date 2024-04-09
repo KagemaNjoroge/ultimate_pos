@@ -107,6 +107,8 @@ class UnitOfQuantity(models.Model):
             'unitOfQuantityName': self.unitOfQuantityName,
             'unitOfQuantityDescription': self.unitOfQuantityDescription,
         }
+
+
 class ItemClassCodes(models.Model):
     itemClassLevel = models.IntegerField()
     itemClassCodeName = models.CharField(max_length=100, unique=True)
@@ -117,6 +119,7 @@ class ItemClassCodes(models.Model):
         db_table = 'ItemClassCodes'
         verbose_name_plural = 'Item Class Codes'
         verbose_name = 'Item Class Code'
+
     def __str__(self) -> str:
         return self.itemClassCodeName
 
