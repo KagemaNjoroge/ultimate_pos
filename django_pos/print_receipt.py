@@ -5,11 +5,11 @@ from weasyprint import HTML, CSS
 
 
 def print_receipt():
-    template = get_template("sales/receipt_pdf.html")
+    template = get_template("sales/sales_receipt_pdf.html")
     context = {"name": "Jorge"}
     html_template = template.render(context)
 
-    # CSS Boostrap
+    # styles
     css_url = os.path.join(
         settings.BASE_DIR, 'static/css/receipt_pdf/bootstrap.min.css')
 
