@@ -32,11 +32,11 @@
                 <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="inputDescription">Name</label>
-                        <input type="text" class="form-control" name="name" value="{{product.name}}" required />
+                        <input type="text" class="form-control" name="name" value="{{product.name}}" required id="inputDescription"/>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="state">State</label>
-                        <select name="state" class="form-control" required>
+                        <select name="state" class="form-control" required id="state">
                             {% for status in product_status %} {% if status.0 == product.status %}
                             <option value="{{status.0}}" selected>{{status.1}}</option>
                             {% else %}
@@ -50,11 +50,11 @@
                     <div class="form-group col-md-8">
                         <label for="inputDescription">Description</label>
                         <input type="text" name="description" class="form-control" value="{{product.description}}"
-                            required />
+                            required id="inputDescription"/>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="category">Category</label>
-                        <select name="category" class="form-control" required>
+                        <select name="category" class="form-control" required id="category">
                             <option value="" selected disabled hidden>
                                 Select the category
                             </option>
@@ -79,7 +79,7 @@
                     <div class="form-group col-md-8">
                         <label for="inputPrice">Price</label>
                         <input type="number" name="price" step="any" class="form-control" value="{{product.price}}"
-                            required />
+                            required id="inputPrice"/>
                     </div>
                     <div class="form-check form- ml-3 mt-4 pt-1">
                         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
@@ -107,9 +107,9 @@
     $(document).ready(function () {
         $("#product_update").submit(function (e) {
             e.preventDefault();
-            var form = $(this);
+            const form = $(this);
 
-            var url = "{% url 'products:products_update' product.id %}";
+            const url = "{% url 'products:products_update' product.id %}";
             // add spinner to the button
             $('#update_btn').html(
                 '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
@@ -130,7 +130,7 @@
                 }),
                 success: function (response) {
 
-                    if (response['message'] == "Product updated successfully") {
+                    if (response['message'] === "Product updated successfully") {
                         $('.update_msg').html(
                             '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success!</strong> Product updated successfully<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
                         );
@@ -142,9 +142,7 @@
                     }
 
                 },
-                error: function (response) {
-
-
+                error: function () {
                     $('.update_msg').html(
                         '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> Product not updated<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
                     );
