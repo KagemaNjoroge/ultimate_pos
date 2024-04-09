@@ -34,4 +34,6 @@ urlpatterns = [
     path("upload_excel", views.upload_excel_view, name="upload_excel"),
     # download excel
     path("download_template", views.download_template, name="download_template"),
+    # product details
+    path("details/<str:product_id>", views.product_detail_view, name="product_details"),
 ]
