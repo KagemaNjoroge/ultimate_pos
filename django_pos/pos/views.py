@@ -1,19 +1,19 @@
+import json
 from datetime import date
-from operator import le
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
-from customers.models import Customer
-from pos.models import Notifications
-from sales.models import Sale, SaleDetail, SaleItem
-from products.models import Product, Category
-from sales.models import Sale
+
 from company.models import Company
-import json
 from customers.models import Customer
 from inventory.models import Inventory
+from pos.models import Notifications
+from products.models import Product, Category
+from sales.models import Sale
+from sales.models import SaleDetail, SaleItem
 
 
 @login_required(login_url="/accounts/login/")
@@ -70,7 +70,7 @@ def index(request: HttpRequest) -> HttpResponse:
             if j > 0:
                 x.append({"id": v, "quantity": j})
 
-    x = sorted(x, key=lambda i: i["quantity"], reverse=True)
+    x = sorted(x, key=lambda t: t["quantity"], reverse=True)
     top_products = x[:3]
 
     top_products_names = []
@@ -163,6 +163,7 @@ def pos(request: HttpRequest) -> HttpResponse:
                             inventory.quantity -= int(attr["quantity"])
                             inventory.save()
                         # CHECK constraint failed: quantity must be greater than or equal to 0
+                        # Check constraint errors
                         except Exception as e:
                             # add notification
                             Notifications.objects.create(
@@ -196,15 +197,10 @@ def pos(request: HttpRequest) -> HttpResponse:
 
 
 def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
-    if id == None:
+    if id is None:
         notifications = Notifications.objects.filter(
             read=False, user=request.user
         ).order_by("date")
-        # TODO
-        # mark all notifications as read
-        # for notification in notifications:
-        #     notification.read = True
-        #     notification.save()
         return JsonResponse(
             [
                 {
@@ -220,9 +216,8 @@ def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
 
     else:
         notification = get_object_or_404(Notifications, id=id)
-        # TODO
-        # notification.read = True
-        # notification.save()
+        notification.read = True
+        notification.save()
         return JsonResponse(
             {
                 "id": notification.id,
