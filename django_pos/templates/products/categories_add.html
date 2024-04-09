@@ -25,12 +25,12 @@ category{% endblock heading %} {% block content %}
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="form-group col-md-8">
-                        <label for="inputDescription">Name</label>
+                        <label for="name">Name</label>
                         <input type="text" class="form-control" name="name" placeholder="Drinks..." required
                             id="name" />
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="state">State</label>
+                        <label for="status">State</label>
                         <select name="state" class="form-control" required id="status">
                             {% for status in category_status %}
                             <option value="{{status.0}}">{{status.1}}</option>
@@ -41,7 +41,7 @@ category{% endblock heading %} {% block content %}
 
                 <div class="form-row">
                     <div class="form-group col-md-12">
-                        <label for="inputDescription">Description</label>
+                        <label for="description">Description</label>
                         <input type="text" name="description" class="form-control" placeholder="Drinks and beverages.."
                             required id="description" />
                     </div>
@@ -57,7 +57,7 @@ category{% endblock heading %} {% block content %}
 <script>
     $(document).ready(function () {
         $("#category_form").submit(function (e) {
-            var form = $(this);
+            const form = $(this);
             e.preventDefault();
             let description = $("#description").val();
             let status = $("#status").val();
@@ -80,24 +80,24 @@ category{% endblock heading %} {% block content %}
                 },
                 data: JSON.stringify(data),
                 success: function (data) {
-                    if (data.status == "success") {
+                    if (data.status === "success") {
                         $(".update_msg").html(
                             `<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success!</strong> ${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
                         );
-                    } else if ((data.status = "error")) {
+                    } else if ((data.status === "error")) {
                         $(".update_msg").html(
                             `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> ${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
                         );
                     } else {
                         $(".update_msg").html(
-                            `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong>An unknown error occured, please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+                            `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong>An unknown error occurred, please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
                         );
                     }
                 },
-                error: function (data) {
-                    // console.log(data)
+                error: function () {
+                    
                     $(".update_msg").html(
-                        `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong>An unknown error occured, please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+                        `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong>An unknown error occurred, please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
                     );
                 },
             }).done(function () {
