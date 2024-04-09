@@ -63,8 +63,8 @@
 
                 <ul>
 
-                    <li>1 - track</li>
-                    <li>0 - don't track</li>
+                    <li>1—track</li>
+                    <li>0—don't track</li>
                 </ul>
 
                 <li>Column E: Category</li>
@@ -73,8 +73,8 @@
                 </ul>
                 <li>Column F: Status</li>
                 <ul>
-                    <li>1 - active</li>
-                    <li>0 - inactive</li>
+                    <li>1—active</li>
+                    <li>0—inactive</li>
                 </ul>
             </ul>
 
@@ -102,9 +102,9 @@
 <script>
     $(document).ready(function () {
         $("#upload_form").on('submit', function (e) {
-            var form = $(this);
+            const form = $(this);
             e.preventDefault();
-            var action = "{% url 'products:upload_excel' %}";
+            const action = "{% url 'products:upload_excel' %}";
             let data = form.data()
             $('#upload_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...')
 
