@@ -180,6 +180,33 @@
             }
         });
 
+        function saveNotificationsToSessionStorage(id, title, message, date) {
+            var notification = {
+                'id': id,
+                'title': title,
+                'message': message,
+                'date': date
+            };
+            var notifications = JSON.parse(sessionStorage.getItem('notifications'));
+            if (notifications == null) {
+                notifications = [];
+            }
+            // check if that notification already exists
+            var exists = false;
+            for (let i in notifications) {
+                if (notifications[i].id == id) {
+                    exists = true;
+                    break;
+                }
+
+            }
+            if (!exists) {
+                notifications.push(notification);
+            }
+
+            sessionStorage.setItem('notifications', JSON.stringify(notifications));
+        }
+
         $(document).ready(function () {
             $("#send_msg").click(function () {
                 var msg = $("#input").val();
