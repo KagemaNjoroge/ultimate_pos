@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,23 +7,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
     <title>{% block title %}{% endblock title%}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-
-    <!-- Custom fonts for this template-->
     <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
-
-    <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
     <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
-
-    <!--Favicon-->
     <link rel="icon" type="image/png" href="{% static 'favicon.png' %}" />
 
     {% block stylesheets %}{% endblock stylesheets %}
@@ -33,9 +23,8 @@
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
     <div id="wrapper">
-        <!-- Sidebar  should not scroll -->
+
         <div class="bar">
             <style>
                 .bar {
@@ -58,19 +47,10 @@
             </style>
             {% include 'pos/sidebar.html' %}
         </div>
-
-
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
             <div id="content">
-
-                <!-- Top bar -->
                 {% include 'pos/navbar.html' %}
-                <!-- End of Top bar -->
 
-                <!-- Begin Page Content -->
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
@@ -88,22 +68,12 @@
 
 
                 </div>
-                <!-- /.container-fluid -->
-
             </div>
-            <!-- End of Main Content -->
-
-            <!-- Footer -->
             {% include 'pos/footer.html' %}
-            <!-- End of Footer -->
-
         </div>
-        <!-- End of Content Wrapper -->
+
 
     </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
@@ -116,12 +86,7 @@
     {% block javascripts %}{% endblock javascripts %}
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
     <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-
-    <!-- Custom scripts for all pages-->
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
@@ -135,11 +100,6 @@
             let btn = $('#sidebarToggle');
             btn.click();
         });
-
-
-
-
-
         $('#sidebarToggle').click(function () {
             if (toggled) {
                 $('.bar').css('width', '250px');
@@ -152,6 +112,30 @@
                 $('#content-wrapper').css('margin-left', '100px');
                 toggled = true;
             }
+            if (toggled && $(window).width() < 768) {
+                $('.bar').css('width', '100%');
+                $('.bar').css('overflow', 'auto');
+                $('#content-wrapper').css('margin-left', '0px');
+            }
+        });
+        // colapse sider in small screens and 
+        $(window).resize(function () {
+            let margin = $('#content-wrapper').css('margin-left');
+            if (parseInt(margin) > 100) {
+                $('.bar').css('width', '100px');
+                $('.bar').css('overflow', 'hidden');
+                $('#content-wrapper').css('margin-left', '100px');
+                toggled = true;
+            }
+            else {
+                $('.bar').css('width', '250px');
+                $('.bar').css('overflow', 'auto');
+                $('#content-wrapper').css('margin-left', '250px');
+                toggled = false;
+            }
+
+
+
         });
 
 
