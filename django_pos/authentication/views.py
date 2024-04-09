@@ -1,15 +1,15 @@
 # Create your views here.
 import json
 import time
-from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render, redirect
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_http_methods
 
 from authentication.utils import get_all_permissions
 from .forms import SignUpForm
-from django.views.decorators.http import require_http_methods
-from django.contrib import messages
 
 
 def request_is_ajax(request: HttpRequest) -> bool:
@@ -52,7 +52,7 @@ def profile(request: HttpRequest) -> HttpResponse:
         )
 
     else:
-        # method not allowed
+        # method isn't allowed
         return JsonResponse({"message": "Invalid request method"}, status=405)
 
 
@@ -95,12 +95,14 @@ def register_user(request: HttpRequest) -> HttpResponse:
             raw_password = form.cleaned_data.get("password")
             authenticate(username=username, password=raw_password)
             return redirect("/login/")
+        #TODO: Return error message as json response
 
-        else:
-            msg = "Form is not valid"
     elif request.method == "GET":
         return render(
             request,
             "accounts/register.html",
             {"perms": perms, "msg": msg, "success": success},
         )
+    else:
+        # not allowed
+        return JsonResponse({"message": "Invalid request method"}, status=405)
