@@ -1,7 +1,8 @@
-import time
-from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
 import json
+
+from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.shortcuts import render, get_object_or_404
+
 from inventory.models import Inventory
 from products.models import Product
 
