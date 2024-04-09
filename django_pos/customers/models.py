@@ -38,7 +38,7 @@ class Customer(models.Model):
 
     def to_select2(self) -> dict:
         """
-        Converts the customer object to a dictionary format compatible with Select2 library.
+        Converts the customer object to a dictionary format compatible with a Select2 library.
 
         Returns:
             dict: A dictionary containing the label and value of the customer object.
@@ -46,12 +46,12 @@ class Customer(models.Model):
         item = {"label": self.get_full_name(), "value": self.id}
         return item
 
-    # override delete to also delete the photo from the filesystem
+    # override delete method to also delete the photo from the filesystem
     def delete(self, *args, **kwargs):
         try:
             # delete the photo from the filesystem
             self.photo.delete()
-        except Exception as e:
+        except FileNotFoundError as e:
             # log the error
             pass
         finally:
