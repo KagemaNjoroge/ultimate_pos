@@ -74,12 +74,12 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
                     inv = Inventory.objects.filter(product=product)
                     if inv.exists():
                         inv = inv.first()
-                        # # for each product check if inventory  quantity > 0
+                        # # for each product check of inventory quantity > 0
                         if inv.quantity > 0:
                             inv.quantity -= prod["count"]
                             inv.save()
                         else:
-                            # not enough stock, add notification
+                            # not enough stocks, add notification
                             Notifications.objects.create(
                                 title="Inventory Update Failed",
                                 message=f"Inventory update failed for {inv.product.name}. Items left: {inv.quantity}.",
@@ -117,7 +117,7 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
     elif request.method == "GET":
         return render(request, "sales/sales_add.html", context=context)
     else:
-        # method not allowed
+        # method isn't allowed
         return JsonResponse({"message": "Method not allowed"}, status=405)
 
 
@@ -149,7 +149,7 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
 
 
 @login_required(login_url="/accounts/login/")
-def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
+def receipt_pdf_view(request: HttpRequest, sale_id: str, template) -> HttpResponse:
     """
     Args:
         request: HttpRequest
@@ -230,11 +230,11 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     return HttpResponse(pdf, content_type="application/pdf")
 
 
-def kra_logo(request: HttpRequest) -> HttpResponse:
+def kra_logo(request: HttpRequest) -> FileResponse:
     logo = "static/img/kra_logo.png"
     return FileResponse(open(logo, "rb"), content_type="image/png")
 
 
-def watermark(request: HttpRequest) -> HttpResponse:
-    watermark = "static/img/watermark.png"
-    return FileResponse(open(watermark, "rb"), content_type="image/png")
+def watermark(request: HttpRequest) -> FileResponse:
+    mark = "static/img/mark.png"
+    return FileResponse(open(mark, "rb"), content_type="image/png")
