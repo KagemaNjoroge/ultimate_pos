@@ -51,10 +51,19 @@
                     <tr>
                         <td>{{p.id}}</td>
                         <td>{{forloop.counter}}</td>
-                        <td>{{p.name}}</td>
+                        <td>
+                            <!--Link with a popover saying click to view product details-->
+                            <a href="{% url 'products:product_details' p.id %}" data-bs-toggle="popover"
+                                data-bs-trigger="hover" data-bs-placement="top"
+                                data-bs-content="Click to view product details" data-bs-animation="true"
+                                data-bs-delay="0" data-bs-offset="0, 10" class="text-decoration-none">
+                                {{p.name}}
+                            </a>
+                        </td>
                         <td>{{p.description}}</td>
                         <td>{{p.category}}</td>
-                        <td class="text-right">{{p.price}}</td>
+                        <td class=" text-right">{{p.price}}
+                        </td>
                         {% if p.status == "ACTIVE" %}
                         <td class="text-center">
                             <span class="badge badge-success" style="font-size:0.8em;">{{p.status}}</span>
