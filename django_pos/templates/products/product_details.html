@@ -1,0 +1,20 @@
+{% extends "pos/base.html" %}
+{%load static%}
+{% block title %}Product details{% endblock title %}
+{% block stylesheets %}{% endblock stylesheets %}
+{% block heading %}Product details{% endblock heading %}
+{% block content %}
+<!--Customer info-->
+
+<div class="row ml-3 mb-3">
+    <a href="{% url 'products:products_list' %}">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="fas fa-long-arrow-alt-left mr-2"></i>
+            Back
+        </button>
+    </a>
+</div>
+
+
+{%endblock content%}
+{% block scripts %}{% endblock scripts%}
