@@ -1,10 +1,37 @@
 {% extends "pos/base.html" %}
 {%load static%}
-{% block title %}Product details{% endblock title %}
+{% block title %}{{product.name}}{% endblock title %}
 {% block stylesheets %}{% endblock stylesheets %}
-{% block heading %}Product details{% endblock heading %}
+{% block heading %}{{product.name}}{% endblock heading %}
 {% block content %}
-<!--Customer info-->
+<!--Product info-->
+
+
+<!--Delete product modal-->
+<div class="modal fade" id="delete_product_modal" tabindex="-1" role="dialog"
+    aria-labelledby="delete_product_modal_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="delete_product_modal_label">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    Delete Product
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                This action cannot be undone.
+                Are you sure you want to delete this product?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="delete_product_confirm_btn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row ml-3 mb-3">
     <a href="{% url 'products:products_list' %}">
@@ -14,6 +41,77 @@
         </button>
     </a>
 </div>
+
+<!--Delete msg-->
+<div class="row text-center">
+    <div class="col-md-4"></div>
+
+    <div class="update_msg col-md-4"></div>
+    <div class="col-md-4"></div>
+
+</div>
+<div class="row mb-5">
+    <div class="col-md-6">
+        <img src="{{product.image.url}}" class="img-fluid" alt="{{product.name}}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        ">
+    </div>
+    <div class="col-md-6">
+        <h3>{{product.name}}</h3>
+        <p>{{product.description}}</p>
+        <p>Price: {{product.price}}</p>
+        <p>Category: {{product.category}}</p>
+
+        <a href="{% url 'products:products_update' product.id %}">
+            <button type="button" class="btn btn-primary">
+                <i class="fas fa-edit mr-2"></i>
+                Edit
+            </button>
+        </a>
+
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_product_modal">
+            <i class="fas fa-trash-alt mr-2"></i>
+            Delete
+        </button>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("delete_product_confirm_btn").click(function () {
+            // loading spinner
+            $(this).html(
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleting...'
+            );
+            // ajax request
+            $.ajax({
+                headers: {
+                    "X-CSRFToken": "{{csrf_token}}"
+                },
+                type: "DELETE",
+                url: "{% url 'products:products_delete' product.id %}",
+                success: function (data) { },
+                error: function (data) {
+
+                },
+            }).done(function (data) {
+                // remove loading spinner
+                $(this).html('Delete');
+
+
+
+
+            });
+
+
+
+        })
+    });
+
+
+
+</script>
+
 
 
 {%endblock content%}
