@@ -249,9 +249,9 @@ def products_delete_view(request: HttpRequest, product_id: str) -> HttpResponse:
         request:HttpRequest
         product_id : The product's ID that will be deleted
     """
+    product = get_object_or_404(Product, id=product_id)
     try:
-        # Get the product to delete
-        product = Product.objects.get(id=product_id)
+        # TODO: Migrate response to JsonResponse
         product.delete()
         messages.success(
             request, "¡Product: " + product.name + " deleted!", extra_tags="success"
