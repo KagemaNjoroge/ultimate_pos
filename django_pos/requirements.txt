@@ -22,7 +22,7 @@ qrcode==7.4.2
 requests==2.31.0
 setuptools==69.0.3
 six==1.16.0
-sqlparse==0.4.4
+sqlparse==0.5.0
 tinycss2==1.2.1
 tomli==2.0.1
 typing_extensions==4.9.0
