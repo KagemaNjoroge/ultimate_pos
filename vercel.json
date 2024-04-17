@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "django_pos/wsgi.py",
+      "src": "django_pos/django_pos/wsgi.py",
       "use": "@vercel/python"
     },
     {
@@ -20,7 +20,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "django_pos/wsgi.py"
+      "dest": "django_pos/django_pos/wsgi.py"
     }
   ]
 }
