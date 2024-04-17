@@ -5,20 +5,22 @@ from django.urls import include, path
 from django_pos import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     # Authentication: Login and Logout
-    path('', include('authentication.urls')),
+    path("", include("authentication.urls")),
     # Index
-    path('', include('pos.urls')),
+    path("", include("pos.urls")),
     # Products
-    path('products/', include('products.urls')),
+    path("products/", include("products.urls")),
     # Customers
-    path('customers/', include('customers.urls')),
+    path("customers/", include("customers.urls")),
     # Sales
-    path('sales/', include('sales.urls')),
+    path("sales/", include("sales.urls")),
     # Inventory
-    path('inventory/', include('inventory.urls')),
+    path("inventory/", include("inventory.urls")),
     # etims
-    path('etims/', include('etims.urls')),
+    path("etims/", include("etims.urls")),
+    # reports
+    path("reports/", include("reports.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
