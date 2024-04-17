@@ -149,7 +149,7 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
 
 
 @login_required(login_url="/accounts/login/")
-def receipt_pdf_view(request: HttpRequest, sale_id: str, template) -> HttpResponse:
+def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     """
     Args:
         request: HttpRequest
