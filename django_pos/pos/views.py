@@ -1,13 +1,14 @@
+import datetime
 import json
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 
-from company.models import Company
+from company.models import Company, Subscription
 from customers.models import Customer
 from inventory.models import Inventory
 from pos.models import Notifications
@@ -16,7 +17,41 @@ from sales.models import Sale
 from sales.models import SaleDetail, SaleItem
 
 
+def register_company(request: HttpRequest) -> HttpResponse:
+    return render(
+        request, "pos/register_company.html", context={"active_icon": "settings"}
+    )
+
+
+def subscription_page(request: HttpRequest) -> HttpResponse:
+    return render(request, "pos/subscription.html", context={"active_icon": "settings"})
+
+
+def check_subscription(view_func):
+    """
+    Special decorator for making sure that the company has a subscription
+    It is called before the view function
+    """
+
+    def _wrapped_view(request, *args, **kwargs):
+        company = Company.objects.first()
+        if not company:
+            return redirect(
+                "pos:register_company"
+            )  # Redirect to a page where a company can be registered
+
+        subscription = Subscription.objects.filter(
+            company=company, is_active=True
+        ).first()
+        if not subscription or subscription.end_date.date() < datetime.today().date():
+            return redirect("pos:subscription_page")
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped_view
+
+
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def index(request: HttpRequest) -> HttpResponse:
     today = date.today()
 
@@ -226,7 +261,3 @@ def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
                 "date": notification.date.strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
-
-
-
-
