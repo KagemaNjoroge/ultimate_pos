@@ -1,5 +1,5 @@
 {% extends "pos/base.html" %}
-
+{%load static%}
 {% block title %}Update product{% endblock title %}
 
 {% block stylesheets %}{% endblock stylesheets %}
@@ -30,9 +30,27 @@
             <form id="product_update">
                 {% csrf_token %}
                 <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {%if product.image%}
+                        <img src=" {{product.image.url}}" id="product_image" alt="{{product.name}}">
+                        {%else%}
+                        <!--No image-->
+                        <img src="{%static 'default.png'%}" alt="{{product.name}}" id="product_image">
+                        {%endif%}
+                    </div>
+                    <!--Button to select new-->
+                    <div class="form-group col-md-6">
+                        <label for="image">Select new image</label>
+                        <input type="file" name="image" class="form-control-file" id="image" accept="image/*" />
+                    </div>
+
+
+                </div>
+                <div class="form-row">
                     <div class="form-group col-md-8">
                         <label for="inputDescription">Name</label>
-                        <input type="text" class="form-control" name="name" value="{{product.name}}" required id="inputDescription"/>
+                        <input type="text" class="form-control" name="name" value="{{product.name}}" required
+                            id="inputDescription" />
                     </div>
                     <div class="form-group col-md-4">
                         <label for="state">State</label>
@@ -40,8 +58,10 @@
                             {% for status in product_status %} {% if status.0 == product.status %}
                             <option value="{{status.0}}" selected>{{status.1}}</option>
                             {% else %}
+
                             <option value="{{status.0}}">{{status.1}}</option>
-                            {% endif %} {% endfor %}
+                            {% endif %}
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -50,7 +70,7 @@
                     <div class="form-group col-md-8">
                         <label for="inputDescription">Description</label>
                         <input type="text" name="description" class="form-control" value="{{product.description}}"
-                            required id="inputDescription"/>
+                            required id="inputDescription" />
                     </div>
                     <div class="form-group col-md-4">
                         <label for="category">Category</label>
@@ -79,7 +99,7 @@
                     <div class="form-group col-md-8">
                         <label for="inputPrice">Price</label>
                         <input type="number" name="price" step="any" class="form-control" value="{{product.price}}"
-                            required id="inputPrice"/>
+                            required id="inputPrice" />
                     </div>
                     <div class="form-check form- ml-3 mt-4 pt-1">
                         <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
@@ -105,6 +125,14 @@
     });
     // capture the form
     $(document).ready(function () {
+        $('#image').change(function () {
+            const file = this.files[0];
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#product_image').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(file);
+        });
         $("#product_update").submit(function (e) {
             e.preventDefault();
             const form = $(this);
@@ -115,6 +143,7 @@
                 '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
             );
             $.ajax({
+
                 type: 'POST',
                 url: url,
                 headers: {
@@ -126,8 +155,10 @@
                     "description": form.find('input[name="description"]').val(),
                     "category": form.find('select[name="category"]').val(),
                     "price": form.find('input[name="price"]').val(),
-                    "track_inventory": form.find('input[name="track_inventory"]').is(':checked')
-                }),
+                    "track_inventory": form.find('input[name="track_inventory"]').is(':checked'),
+                    "image": form.find('input[name="image"]').val(),
+                },
+                ),
                 success: function (response) {
 
                     if (response['message'] === "Product updated successfully") {
