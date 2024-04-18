@@ -27,6 +27,8 @@ class Company(models.Model):
             "currency": self.currency_symbol,
             "invoice_template_id": self.invoice_template_id,
             "bill_template_id": self.bill_template_id,
+            # if photo
+            "logo": self.logo.url or None,
         }
 
     class Meta:
