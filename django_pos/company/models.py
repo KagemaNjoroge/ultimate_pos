@@ -1,5 +1,7 @@
 from django.db import models
 
+import company
+
 
 # Create your models here.
 class Company(models.Model):
@@ -35,3 +37,32 @@ class Company(models.Model):
         verbose_name_plural = "Companies"
         verbose_name = "Company"
         db_table = "Company"
+
+
+class Subscription(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+    notes = models.TextField(blank=True, null=True)
+
+    def deactivate_subscription(self):
+        self.is_active = False
+        self.save()
+
+    def str(self):
+        return self.company.company_name
+
+    class Meta:
+        verbose_name_plural = "Subscriptions"
+        verbose_name = "Subscription"
+        db_table = "Subscription"
+
+    def to_dict(self):
+        return {
+            "company": self.company.to_dict(),
+            "start_date": self.start_date,
+            "end_date": self.end_date,
+            "is_active": self.is_active,
+            "notes": self.notes,
+        }
