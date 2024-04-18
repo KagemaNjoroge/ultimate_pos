@@ -43,6 +43,12 @@ A modern POS/ERP/CRM system for businesses of the AI era. Powered by [Django.](h
 - [x] Purchase Management
 - [x] CRM (Customer Relationship Management)
 
+## TODOS
+
+- [ ] Add feature to renew subscription
+- [ ] Add Lipa na Mpesa Support
+- [ ] Update the documentation to document management commands
+
 ## Installation
 
 1. Clone or download the repository:
