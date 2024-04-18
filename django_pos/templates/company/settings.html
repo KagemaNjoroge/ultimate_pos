@@ -1,0 +1,43 @@
+{%extends 'pos/base.html'%}
+{%load static%}
+
+{%block title%}
+Settings
+{%endblock title%}
+{% block heading %}<i class="fas fa-fw fa-gear"></i> Settings{% endblock heading%}
+<div id="status">
+
+</div>
+{%block content%}
+<p>Company Settings</p>
+
+
+
+<script>
+    function get_company_data() {
+        $.ajax(
+            {
+                method: "GET",
+                url: '/company/1',
+
+                success: function (data, status) {
+                    console.log(data)
+                    console.log(status)
+                },
+
+            }
+
+        ).done(function () {
+            $("#status").html('')
+
+        })
+    }
+    $(document).ready(function () {
+        $("#status").html(
+            'Hello'
+        )
+        get_company_data()
+
+    })
+</script>
+{%endblock content%}
