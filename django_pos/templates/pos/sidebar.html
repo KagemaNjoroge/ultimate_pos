@@ -76,8 +76,8 @@
             <span>Inventory</span></a>
     </li>
     <li class="{% if "settings" in active_icon %} nav-item active {% else %} nav-item {% endif %}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
-            aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="{%url 'company:settings'%}" data-toggle="collapse"
+            data-target="#collapseOne" aria-expanded="true" aria-controls="collapseTwo">
             <i class="fas fa-fw fa-gear"></i>
             <span>Settings</span>
         </a>
@@ -86,10 +86,10 @@
             <div class="bg-white py-2 collapse-inner rounded">
 
                 <a class="{% if "categories" in active_icon %} collapse-item active {% else %} collapse-item {% endif %}"
-                    href="{% url 'products:categories_list' %}"><i class="fas fa-user mr-1"></i>Users</a>
+                    href="{% url 'company:settings' %}"><i class="fas fa-user mr-1"></i>Users</a>
 
                 <a class="{% if "products_products" in active_icon %} collapse-item active {% else %} collapse-item {% endif %}"
-                    href="{% url 'products:products_list' %}"><i class="fas fa-user mr-1"></i>Products</a>
+                    href="{% url 'company:settings' %}"><i class="fas fa-user mr-1"></i>Products</a>
             </div>
         </div>
     </li>
@@ -130,7 +130,7 @@
                 let btn = $('#sidebarToggle');
                 if (toggled) {
                     btn.click();
-                    toggled = false;
+                    // toggled = false;
                 }
 
             });
@@ -139,7 +139,7 @@
                 let btn = $('#sidebarToggle');
                 if (!toggled) {
                     btn.click();
-                    toggled = true;
+                    // toggled = true;
                 }
             });
 
