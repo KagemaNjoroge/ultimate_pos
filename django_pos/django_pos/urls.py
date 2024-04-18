@@ -22,5 +22,7 @@ urlpatterns = [
     path("etims/", include("etims.urls")),
     # reports
     path("reports/", include("reports.urls")),
+    # company
+    path("company/", include("company.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
