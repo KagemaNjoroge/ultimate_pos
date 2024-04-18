@@ -226,3 +226,7 @@ def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
                 "date": notification.date.strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
+
+
+
+
