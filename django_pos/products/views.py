@@ -146,7 +146,10 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
         # Save the POST arguments
         data = request.POST
 
-        track_inventory = data["track_inventory"]
+        try:
+            track_inventory = data["track_inventory"]
+        except:
+            track_inventory = "off"
         if track_inventory == "on":
             track_inventory = True
         else:
@@ -217,8 +220,14 @@ def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
         return render(request, "products/products_update.html", context=context)
 
     elif request.method == "POST":
+
         data = request.body
         data = json.loads(data)
+        try:
+            print("FIles")
+            print(data["image"])
+        except:
+            pass
         product = Product.objects.get(id=product_id)
         product.name = data["name"]
         product.description = data["description"]
