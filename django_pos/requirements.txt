@@ -33,3 +33,4 @@ webencodings==0.5.1
 zopfli==0.2.3
 psycopg2-binary
 python-dotenv 
+whitenoise
