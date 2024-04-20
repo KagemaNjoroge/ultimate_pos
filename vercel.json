@@ -3,7 +3,8 @@
   "builds": [
     {
       "src": "django_pos/django_pos/wsgi.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": { "maxLambdaSize": "15mb" }
     },
     {
       "src": "build_files.sh",
