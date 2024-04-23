@@ -1,7 +1,5 @@
 from django.db import models
 
-import company
-
 
 # Create your models here.
 class Company(models.Model):
@@ -14,15 +12,17 @@ class Company(models.Model):
     currency_symbol = models.CharField(max_length=5, default="Kes")
     invoice_template_id = models.IntegerField(default=1)
     bill_template_id = models.IntegerField(default=1)
+    kra_pin = models.CharField(max_length=11, blank=True, null=True)
 
     def __str__(self) -> str:
         return self.company_name
 
     def to_dict(self) -> dict:
         return {
+            "id": self.id,
             "phone": self.phone_number,
             "email": self.email,
-            "city": self.email,
+            "city": self.city,
             "address": self.address,
             "logo": self.logo.url,
             "company_name": self.company_name,
@@ -31,6 +31,7 @@ class Company(models.Model):
             "bill_template_id": self.bill_template_id,
             # if photo
             "logo": self.logo.url or None,
+            "kra_pin": self.kra_pin,
         }
 
     class Meta:
@@ -51,7 +52,7 @@ class Subscription(models.Model):
         self.save()
 
     def str(self):
-        return self.company.company_name
+        return self.id
 
     class Meta:
         verbose_name_plural = "Subscriptions"
