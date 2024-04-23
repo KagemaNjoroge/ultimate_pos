@@ -2,18 +2,17 @@ import json
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from .models import Company
-import time
 from django.views import View
 
 
 class CompanyView(View):
     def get(self, request: HttpRequest, id: int = None):
-        time.sleep(5)
+
         if id:
             company = get_object_or_404(Company, pk=id)
             return JsonResponse(company.to_dict(), safe=False)
         else:
-            company = get_object_or_404(Company, pk=id)
+            company = Company.objects.first()
             return JsonResponse(company.to_dict(), safe=False)
 
     def delete(self, request: HttpRequest, id: int):
@@ -68,8 +67,10 @@ class CompanyView(View):
 
 
 def index(request: HttpRequest) -> HttpResponse:
+    company = Company.objects.first()
+
     return render(
         request,
         template_name="company/settings.html",
-        context={"active_icon": "settings"},
+        context={"active_icon": "settings", "company": company.to_dict()},
     )
