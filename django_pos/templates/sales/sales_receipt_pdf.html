@@ -81,6 +81,9 @@
                 <p><b>{{company.address}}</b></p>
                 <p><b>{{company.city}}</b></p>
                 <p><b>Phone:</b>{{company.phone}}</p>
+                {% if company.kra_pin %}
+                <p><b>KRA PIN:</b> {{ company.kra_pin }}</p>
+                {% endif %}
             </div>
             <div class="col-6 justify-content-end">
                 <p><b>Date:</b> {{sale.date_added}}</p>
@@ -157,6 +160,9 @@
         <p class="font-weight-bold">
             We appreciate your business. Thank you for your ongoing support.
         </p>
+        {%if printed%}
+        <p class="font-italic text-right">This is a copy of the original receipt</p>
+        {%endif%}
     </footer>
 </body>
 
