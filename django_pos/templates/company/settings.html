@@ -9,35 +9,64 @@ Settings
 
 </div>
 {%block content%}
-<p>Company Settings</p>
+
+<form id="companyForm" method="post" enctype="multipart/form-data">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            {% if company.logo %}
+            <img src="{{company.logo}}" alt="Company Logo"
+                style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;" class="img-fluid">
+            {% else %}
+            <img src="{% static 'default.png' %}" alt="Company Logo" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1)"
+                class="img-fluid">
+            {% endif %}
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadImageModal">Upload
+                Image</button>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="companyName">KRA PIN</label>
+            <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}" disabled>
+        </div>
+    </div>
+    {%csrf_token%}
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="companyName">Company Name</label>
+            <input type="text" class="form-control" id="companyName" value="{{company.company_name}}" disabled>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="companyName">KRA PIN</label>
+            <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}" disabled>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="companyEmail">Company Email</label>
+        <input type="email" class="form-control" id="companyEmail" name="companyEmail" value="{{company.email}}">
+    </div>
+    <div class="form-group">
+        <label for="companyPhone">Company Phone</label>
+        <input type="text" class="form-control" id="companyPhone" name="companyPhone" value="{{company.phone}}">
+    </div>
+    <div class="form-group">
+        <label for="companyAddress">Company Address</label>
+        <input type="text" class="form-control" id="companyAddress" name="companyAddress" value="{{company.address}}">
+    </div>
+    <div class="form-group">
+        <label for="companyCity">Company City</label>
+        <input type="text" class="form-control" id="companyCity" name="companyCity" value="{{company.city}}">
+    </div>
+
+
+
+    <button type="button" class="btn btn-primary" id="updateCompany">Update</button>
+
+</form>
 
 
 
 <script>
-    function get_company_data() {
-        $.ajax(
-            {
-                method: "GET",
-                url: '/company/1',
 
-                success: function (data, status) {
-                    console.log(data)
-                    console.log(status)
-                },
 
-            }
 
-        ).done(function () {
-            $("#status").html('')
-
-        })
-    }
-    $(document).ready(function () {
-        $("#status").html(
-            'Hello'
-        )
-        get_company_data()
-
-    })
 </script>
 {%endblock content%}
