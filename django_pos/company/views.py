@@ -1,4 +1,5 @@
 import json
+from re import T
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 from .models import Company
@@ -13,6 +14,8 @@ class CompanyView(View):
             return JsonResponse(company.to_dict(), safe=False)
         else:
             company = Company.objects.first()
+            if company == None:
+                return JsonResponse({}, safe=True)
             return JsonResponse(company.to_dict(), safe=False)
 
     def delete(self, request: HttpRequest, id: int):
@@ -69,8 +72,13 @@ class CompanyView(View):
 def index(request: HttpRequest) -> HttpResponse:
     company = Company.objects.first()
 
+    if company == None:
+        company = {}
+    else:
+        company = company.to_dict()
+
     return render(
         request,
         template_name="company/settings.html",
-        context={"active_icon": "settings", "company": company.to_dict()},
+        context={"active_icon": "settings", "company": company},
     )
