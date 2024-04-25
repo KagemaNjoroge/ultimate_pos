@@ -17,16 +17,6 @@ from sales.models import Sale
 from sales.models import SaleDetail, SaleItem
 
 
-def register_company(request: HttpRequest) -> HttpResponse:
-    return render(
-        request, "pos/register_company.html", context={"active_icon": "settings"}
-    )
-
-
-def subscription_page(request: HttpRequest) -> HttpResponse:
-    return render(request, "pos/subscription.html", context={"active_icon": "settings"})
-
-
 def check_subscription(view_func):
     """
     Special decorator for making sure that the company has a subscription
@@ -37,7 +27,7 @@ def check_subscription(view_func):
         company = Company.objects.first()
         if not company:
             return redirect(
-                "pos:register_company"
+                "company:settings"
             )  # Redirect to a page where a company can be registered
 
         subscription = Subscription.objects.filter(
@@ -51,7 +41,17 @@ def check_subscription(view_func):
 
 
 @login_required(login_url="/accounts/login/")
-@check_subscription
+def register_company(request: HttpRequest) -> HttpResponse:
+    return render(
+        request, "pos/register_company.html", context={"active_icon": "settings"}
+    )
+
+
+def subscription_page(request: HttpRequest) -> HttpResponse:
+    return render(request, "pos/subscription.html", context={"active_icon": "settings"})
+
+
+@login_required(login_url="/accounts/login/")
 def index(request: HttpRequest) -> HttpResponse:
     today = date.today()
 
@@ -136,6 +136,7 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "pos/index.html", context)
 
 
+@check_subscription
 @login_required(login_url="/accounts/login/")
 def pos(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
@@ -203,13 +204,16 @@ def pos(request: HttpRequest) -> HttpResponse:
                             # add notification
                             Notifications.objects.create(
                                 title="Inventory Update Failed",
-                                message=f"Inventory update failed for {product.name}. Items left: {Inventory.objects.filter(product=product).first().quantity}.",
+                                message=f"Inventory update failed for {product.name}. \
+                                    Items left: {Inventory.objects.filter(product=product).first().quantity}.",
                                 user=request.user,
                             )
                             return JsonResponse(
                                 {
                                     "status": "error",
-                                    "error_message": f"Stock is not enough for {product.name}. Items left: {Inventory.objects.filter(product=product).first().quantity}. Update the inventory and try again.",
+                                    "error_message": f"Stock is not enough for {product.name}. \
+                                    Items left: {Inventory.objects.filter(product=product).first().quantity}. \
+                                        Update the inventory and try again.",
                                 }
                             )
                     else:
