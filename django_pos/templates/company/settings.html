@@ -9,62 +9,285 @@ Settings
 
 </div>
 {%block content%}
+<div id="status">
+</div>
+<!--Add company modal-->
 
-<form id="companyForm" method="post" enctype="multipart/form-data">
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            {% if company.logo %}
-            <img src="{{company.logo}}" alt="Company Logo"
-                style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;" class="img-fluid">
-            {% else %}
-            <img src="{% static 'default.png' %}" alt="Company Logo" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1)"
-                class="img-fluid">
-            {% endif %}
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadImageModal">Upload
-                Image</button>
+<div class="modal fade" id="addCompanyModal" tabindex="-1" role="dialog" aria-labelledby="addCompanyModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCompanyModalLabel">Add Company details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="companyDetailsForm" method="post" enctype=multipart/form-data>
+                    {%csrf_token%}
+                    <!--Fields logo, company name, email, phone, address, city, kra pin-->
+                    <div class="form-row">
+                        <!--Company logo-->
+                        <div class="form-group col-md-6">
+                            <img src="{% static 'default.png' %}" alt="Company Logo"
+                                style="width: 100px; height: 100px; object-fit: contain; border-radius: 10px;"
+                                class="img-fluid" id="defaultLogo">
+
+
+
+                            <!--floating image upload-->
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="companyLogo" name="logo"
+                                    accept="image/*" required>
+                                <label class="custom-file-label" for="companyLogo">Choose image</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="companyName">Company Name</label>
+                            <input type="text" class="form-control" id="companyName" name="name" required>
+                        </div>
+
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="kraPin">KRA PIN</label>
+                            <input type="text" class="form-control" id="kraPin" name="kra_pin" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="companyEmail">Company Email</label>
+                            <input type="email" class="form-control" id="companyEmail" name="email" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="companyPhone">Company Phone</label>
+                            <input type="tel" class="form-control" id="companyPhone" name="phone" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="companyAddress">Company Address</label>
+                            <input type="text" class="form-control" id="companyAddress" name="address" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="companyCity">Company City</label>
+                        <input type="text" class="form-control" id="companyCity" name="city">
+                    </div>
+
+
+                    <button type="submit" class="btn btn-primary ml-2" id="saveCompanyDetails">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </form>
+            </div>
         </div>
-        <div class="form-group col-md-6">
-            <label for="companyName">KRA PIN</label>
-            <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}" disabled>
+    </div>
+</div>
+<!--End of add company modal-->
+
+<div class="ml-2 mb-3">
+
+    {%if company%}
+    <form id="companyForm" method="post" enctype="multipart/form-data">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {% if company.logo %}
+                <img src="{{company.logo}}" alt="Company Logo" id="logo"
+                    style="width: 200px; height: 200px; object-fit: contain; border-radius: 10px;" class="img-fluid">
+
+                {% else %}
+                <img src="{% static 'default.png' %}" alt="Company Logo"
+                    style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);width: 200px; height: 200px; object-fit: contain; border-radius: 10px;"
+                    class="img-fluid" id="logo">
+                {% endif %}
+                <button type="button" id="uploadImageBtn" class="btn btn-success">
+                    Select Image
+                </button>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="companyName">KRA PIN</label>
+                <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}" disabled>
+            </div>
         </div>
-    </div>
-    {%csrf_token%}
-    <div class="form-row">
-        <div class="form-group col-md-6">
-            <label for="companyName">Company Name</label>
-            <input type="text" class="form-control" id="companyName" value="{{company.company_name}}" disabled>
+        {%csrf_token%}
+        <div class="form-row mt-3">
+            <div class="form-group col-md-6">
+                <label for="companyName">Company Name</label>
+                <input type="text" class="form-control" id="companyName" value="{{company.company_name}}" disabled>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="companyName">KRA PIN</label>
+                <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}" disabled>
+            </div>
         </div>
-        <div class="form-group col-md-6">
-            <label for="companyName">KRA PIN</label>
-            <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}" disabled>
+        <div class="form-group">
+            <label for="companyEmail">Company Email</label>
+            <input type="email" class="form-control" id="companyEmail" name="companyEmail" value="{{company.email}}">
         </div>
-    </div>
-    <div class="form-group">
-        <label for="companyEmail">Company Email</label>
-        <input type="email" class="form-control" id="companyEmail" name="companyEmail" value="{{company.email}}">
-    </div>
-    <div class="form-group">
-        <label for="companyPhone">Company Phone</label>
-        <input type="text" class="form-control" id="companyPhone" name="companyPhone" value="{{company.phone}}">
-    </div>
-    <div class="form-group">
-        <label for="companyAddress">Company Address</label>
-        <input type="text" class="form-control" id="companyAddress" name="companyAddress" value="{{company.address}}">
-    </div>
-    <div class="form-group">
-        <label for="companyCity">Company City</label>
-        <input type="text" class="form-control" id="companyCity" name="companyCity" value="{{company.city}}">
-    </div>
+        <div class="form-group">
+            <label for="companyPhone">Company Phone</label>
+            <input type="text" class="form-control" id="companyPhone" name="companyPhone" value="{{company.phone}}">
+        </div>
+        <div class="form-group">
+            <label for="companyAddress">Company Address</label>
+            <input type="text" class="form-control" id="companyAddress" name="companyAddress"
+                value="{{company.address}}">
+        </div>
+        <div class="form-group">
+            <label for="companyCity">Company City</label>
+            <input type="text" class="form-control" id="companyCity" name="companyCity" value="{{company.city}}">
+        </div>
 
 
 
-    <button type="button" class="btn btn-primary" id="updateCompany">Update</button>
+        <button type="button" class="btn btn-primary" id="updateCompany">Update</button>
 
-</form>
+    </form>
+    {%else%}
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">No Company Found!</h4>
+        <p>It seems you have not added your company details yet. Please add your company details to continue.</p>
+        <!--Please note that the details can only be set once-->
+        <i class="fas fa-exclamation-triangle"></i>
+        Please note that the details can only be set once
+        <hr>
+        <!--open modal button-->
+        <button type="button" class="btn btn-primary">Add
+            Company</button>
+    </div>
+    {%endif%}
+</div>
 
 
 
 <script>
+
+    $(document).ready(function () {
+        // on image change, show image preview
+        $('#companyLogo').change(function (e) {
+            // change default logo to uploaded image
+            $('#defaultLogo').attr('src', URL.createObjectURL(e.target.files[0]));
+        });
+        // upload image button
+        $('#uploadImageBtn').click(function () {
+            // select image from device
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.click();
+            input.onchange = e => {
+                // change default logo to uploaded image
+                $('#logo').attr('src', URL.createObjectURL(e.target.files[0]));
+                // change icon to upload
+                $('#uploadImageBtn').html('<i class="fas fa-upload"></i>');
+                setTimeout(() => {
+                    // loading upload button
+                    $('#uploadImageBtn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...');
+
+                    $('#uploadImageBtn').prop('disabled', true);
+                    var data = new FormData();
+                    data.append('logo', e.target.files[0]);
+                    data.append('company_name', $('#companyName').val());
+                    data.append('kra_pin', $('#kra_pin').val());
+                    data.append('email', $('#companyEmail').val());
+                    data.append('phone_number', $('#companyPhone').val());
+                    data.append('address', $('#companyAddress').val());
+                    data.append('city', $('#companyCity').val());
+
+                    $.ajax({
+                        processData: false,
+                        contentType: false,
+                        enctype: 'multipart/form-data',
+                        headers: {
+                            'X-CSRFToken': '{{csrf_token}}'
+                        },
+                        url: "{% url 'company:company_id' id=company.id%}",
+                        type: 'PUT',
+                        data: data,
+                        success: function (data) {
+                            if (data.status == "Okay") {
+                                $('#status').html('<div class="alert alert-success" role="alert">Company details saved successfully</div>')
+                                //clear form
+                                $('#companyForm').trigger('reset');
+                                // reload in 3s
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 3000);
+                            }
+                            else {
+                                $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
+                            }
+                        }
+
+
+
+
+
+
+                    }).done(function () {
+                        // enable upload button
+                        $('#uploadImageBtn').prop('disabled', false);
+                        // change icon to select image
+                        $('#uploadImageBtn').html('Select Image');
+                    });
+                }, 1000);
+
+            }
+
+
+        });
+        $('#companyDetailsForm').submit(function (e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('company_name', $('#companyName').val());
+            formData.append('kra_pin', $('#kraPin').val());
+            formData.append('email', $('#companyEmail').val());
+            formData.append('phone_number', $('#companyPhone').val());
+            formData.append('address', $('#companyAddress').val());
+            formData.append('city', $('#companyCity').val());
+            formData.append('logo', $('#companyLogo')[0].files[0]);
+
+            $("#saveCompanyDetails").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...').prop('disabled', true);
+            $.ajax({
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                headers: {
+                    'X-CSRFToken': '{{csrf_token}}'
+                },
+
+                url: "{% url 'company:company' %}",
+                type: 'POST',
+                data: formData,
+                success: function (data) {
+                    if (data.status == "Okay") {
+                        $('#status').html('<div class="alert alert-success" role="alert">Company details saved successfully</div>')
+                        //clear form
+                        $('#companyDetailsForm').trigger('reset');
+                        $('#addCompanyModal').modal('hide');
+                        // reload in 3s
+                        setTimeout(() => {
+                            location.reload();
+                        }, 3000);
+                    }
+                    else {
+                        $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
+                    }
+
+
+                },
+                error: function (data) {
+                    // unable to save company details
+                    $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
+
+                }
+            }).done(function () {
+                $("#saveCompanyDetails").html('<i class="fas fa-save"></i> Save').prop('disabled', false);
+                // close modal
+                $('#addCompanyModal').modal('hide');
+            });
+        });
+    })
 
 
 
