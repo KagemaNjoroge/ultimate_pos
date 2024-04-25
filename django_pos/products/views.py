@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
+
+from pos.views import check_subscription
 from .models import Category, Product
 from company.models import Company
 from inventory.models import Inventory
@@ -11,6 +13,7 @@ import time
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def categories_list_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
@@ -20,6 +23,7 @@ def categories_list_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def categories_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
@@ -61,6 +65,7 @@ def categories_add_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
 
     if request.method == "GET":
@@ -98,6 +103,7 @@ def categories_update_view(request: HttpRequest, category_id: str) -> HttpRespon
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def categories_delete_view(request: HttpRequest, category_id: str) -> HttpResponse:
     """
     Args:
@@ -123,6 +129,7 @@ def categories_delete_view(request: HttpRequest, category_id: str) -> HttpRespon
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def products_list_view(request: HttpRequest) -> HttpResponse:
     context = {"active_icon": "products", "products": Product.objects.all()}
     company = Company.objects.first()
@@ -135,6 +142,7 @@ def products_list_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def products_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
@@ -206,6 +214,7 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
     if request.method == "GET":
 
@@ -252,6 +261,7 @@ def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def products_delete_view(request: HttpRequest, product_id: str) -> HttpResponse:
     """
     Args:
@@ -281,6 +291,7 @@ def is_ajax(request: HttpRequest) -> bool:
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def get_products_ajax_view(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         if is_ajax(request=request):
@@ -295,6 +306,7 @@ def get_products_ajax_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def upload_excel_view(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
 
@@ -383,6 +395,7 @@ def download_template(request: HttpRequest):
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def product_detail_view(request: HttpRequest, product_id: str) -> HttpResponse:
     product = get_object_or_404(Product, id=product_id)
     context = {
