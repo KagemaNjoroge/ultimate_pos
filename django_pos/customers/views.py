@@ -2,6 +2,7 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
+from pos.views import check_subscription
 from sales.models import Sale
 from .models import Customer
 
@@ -10,12 +11,14 @@ from .models import Customer
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def customers_list_view(request: HttpRequest) -> HttpResponse:
     context = {"active_icon": "customers", "customers": Customer.objects.all()}
     return render(request, "customers/customers.html", context=context)
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def customers_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "customers",
@@ -75,6 +78,7 @@ def customers_add_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def customers_update_view(request: HttpRequest, customer_id: str) -> HttpResponse:
     """
     Args:
@@ -130,6 +134,7 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpResponse:
     """
     Args:
@@ -154,6 +159,7 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
 
 
 @login_required(login_url="/accounts/login/")
+@check_subscription
 def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
     customer = get_object_or_404(Customer, id=id)
     # 10 recent purchase histories
