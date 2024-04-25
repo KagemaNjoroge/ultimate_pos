@@ -2,18 +2,22 @@ import json
 
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render, get_object_or_404
-
+from django.contrib.auth.decorators import login_required
 from inventory.models import Inventory
+from pos.views import check_subscription
 from products.models import Product
 
 
 # Create your views here.
+@check_subscription
+@login_required(login_url="/accounts/login/")
 def index(request):
     inventory = Inventory.objects.all()
     context = {"inventory": inventory, "active_icon": "inventory"}
     return render(request, "inventory/inventory.html", context)
 
 
+@check_subscription
 def add_inventory(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         # only products that are not in the inventory
@@ -32,6 +36,8 @@ def add_inventory(request: HttpRequest) -> HttpResponse:
             return JsonResponse({"status": "fail", "error": str(ee)}, safe=True)
 
 
+@login_required(login_url="/accounts/login/")
+@check_subscription
 def update_inventory(request: HttpRequest, inventory_id: int) -> HttpResponse:
     inventory = get_object_or_404(Inventory, id=inventory_id)
     if request.method == "GET":
