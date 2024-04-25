@@ -1,7 +1,7 @@
-import json
-from re import T
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404, render
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.utils.datastructures import MultiValueDict
 from .models import Company
 from django.views import View
 
@@ -30,11 +30,35 @@ class CompanyView(View):
 
     def put(self, request: HttpRequest, id: int):
         company = get_object_or_404(Company, pk=id)
-        data = json.loads(request.body)
+        print(request.FILES)
+
+        # Create a QueryDict object
+        put_data = QueryDict(request.body, encoding=request._encoding)
+
+        # Create a MultiValueDict for the files
+        put_files = MultiValueDict({"logo": []})
+
+        # Check if there's a file in the request
+        if "logo" in request.FILES:
+            # Wrap the file in an InMemoryUploadedFile object
+            logo_file = InMemoryUploadedFile(
+                request.FILES["logo"].file,  # file
+                "logo",  # field_name
+                request.FILES["logo"].name,  # file name
+                request.FILES["logo"].content_type,  # content type
+                request.FILES["logo"].size,  # file size
+                request.FILES["logo"].charset,  # charset
+            )
+
+            # Add the file to put_files
+            put_files["logo"].append(logo_file)
+
+        # Now you can use put_data and put_files like request.POST and request.FILES
+        # print(put_data.dict())
+        # print(put_files)
+
         try:
-            for key, value in data.items():
-                setattr(company, key, value)
-            company.save()
+
             return JsonResponse(
                 {
                     "message": "Company updated successfully",
@@ -49,8 +73,13 @@ class CompanyView(View):
                 {"message": f"Error: {e}", "status": "Failed"}, status=500
             )
 
-    def post(request: HttpRequest):
-        data = json.loads(request.body)
+    def post(self, request: HttpRequest):
+        data = request.POST.dict()
+        logo = request.FILES.get("logo")
+
+        if logo:
+            data["logo"] = logo
+
         try:
             company = Company(**data)
             company.save()
@@ -64,6 +93,7 @@ class CompanyView(View):
                 safe=False,
             )
         except Exception as e:
+            print(e)
             return JsonResponse(
                 {"message": f"Error: {e}", "status": "Failed"}, status=500
             )
@@ -72,9 +102,7 @@ class CompanyView(View):
 def index(request: HttpRequest) -> HttpResponse:
     company = Company.objects.first()
 
-    if company == None:
-        company = {}
-    else:
+    if company != None:
         company = company.to_dict()
 
     return render(
