@@ -7,7 +7,7 @@ class Company(models.Model):
     email = models.EmailField(blank=True)
     city = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
-    logo = models.ImageField(blank=False, null=False)
+    logo = models.ImageField(blank=True, null=True, default="static/default.png")
     company_name = models.CharField(max_length=100, blank=False, null=False)
     currency_symbol = models.CharField(max_length=5, default="Kes")
     invoice_template_id = models.IntegerField(default=1)
