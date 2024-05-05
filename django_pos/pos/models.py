@@ -1,3 +1,4 @@
+from django import db
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -17,6 +18,7 @@ class Notifications(models.Model):
         verbose_name = "Notification"
         verbose_name_plural = "Notifications"
         ordering = ["-date"]
+        db_table = "Notifications"
 
 
 class License(models.Model):
@@ -39,3 +41,4 @@ class License(models.Model):
     class Meta:
         verbose_name = "License"
         verbose_name_plural = "Licenses"
+        db_table = "Licenses"
