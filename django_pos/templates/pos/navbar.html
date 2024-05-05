@@ -174,7 +174,7 @@
         }
 
         $(document).ready(function () {
-    
+
             $.ajax({
                 type: 'GET',
                 url: '{% url "pos:notifications" %}',
@@ -184,7 +184,7 @@
                     var count = 0;
 
                     for (let i in response) {
-
+                        saveNotificationsToSessionStorage(response[i].id, response[i].title, response[i].message, response[i].date);
                         count++;
                     }
 
