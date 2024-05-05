@@ -11,6 +11,7 @@
         position: fixed;
         top: 80px;
         right: 20px;
+        bottom: 20px;
     }
 </style>
 <div class="modal fade" id="aiAssistantModal" tabindex="-1" role="dialog" data-bs-backdrop="static"
@@ -50,3 +51,52 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        var chats = document.getElementById('chats');
+        var input = document.getElementById('input');
+        var send_msg = document.getElementById('send_msg');
+
+        let action = "{%url 'copilot:chat'%}";
+
+        send_msg.addEventListener('click', function () {
+            var msg = input.value;
+            if (msg != '') {
+                chats.innerHTML += '<div class="mt-2 justify-content-end text-sm mb-2">' + msg + '</div>';
+                input.value = '';
+                chats.scrollTop = chats.scrollHeight;
+                $.ajax({
+                    headers: {
+                        'X-CSRFToken': '{{csrf_token}}'
+                    },
+                    type: 'POST',
+                    url: action,
+                    data: {
+                        'query': msg
+                    },
+                    beforeSend: function () {
+                        // add circular loading spinner
+                        chats.innerHTML += ' <div class="spinner-border spinner-border-sm text-center" role="status"><span class="sr-only">Loading...</span></div>';
+
+                    },
+                    success: function (response) {
+                        // remove the "Please wait..." message
+                        chats.innerHTML = chats.innerHTML.slice(0, -100);
+                        // check if html in response is not "none"        
+                        if (response.html != 'none') {
+                            chats.innerHTML += `${response.html}`;
+                        } else {
+                            chats.innerHTML += '<div class="row mt-2 justify-content-start"><div class="col-12"><div class="alert alert-danger" role="alert">Sorry, I could not understand your query. Please try again.</div></div></div>';
+                        }
+
+                    },
+                    error: function (response) {
+                        chats.innerHTML += '<div class="row mt-2 justify-content-start"><div class="col-12"><div class="alert alert-danger" role="alert">Sorry, I could not understand your query. Please try again.</div></div></div>';
+                    }
+
+                });
+            }
+        });
+    });
+
+</script>
