@@ -1,8 +1,9 @@
+from re import A
 from django.urls import path
-from .views import list_models, chat
+from .views import chat
 
+app_name = "copilot"
 
 urlpatterns = [
-    path("models/", list_models),
-    path("chat/", chat),
+    path("chat/", chat, name="chat"),
 ]
