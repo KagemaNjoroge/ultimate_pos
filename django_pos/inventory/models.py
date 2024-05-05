@@ -1,3 +1,4 @@
+from django import db
 from django.db import models
 from products.models import Product
 
@@ -28,3 +29,4 @@ class Inventory(models.Model):
     class Meta:
         verbose_name_plural = "Inventories"
         verbose_name = "Inventory"
+        db_table = "Inventory"
