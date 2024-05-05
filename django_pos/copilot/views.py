@@ -1,17 +1,39 @@
+from datetime import datetime
 import json
 from django.http import HttpRequest, JsonResponse
-import requests
-from django.conf import settings
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
 from groq import Groq
 from dotenv import load_dotenv
 import os
-from sales.models import Sale
 from django.db import connection
+import pandas as pd
 
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+
+def preprocess_data_for_presentation(data: str) -> str:
+    """
+    Prompt the AI model to convert the data into html format for presentation
+    """
+    query = f"""
+            Convert the data into html format for presentation
+            Data: {data}
+            If the data can be converted into a table, return the table in html format. Use Bootstrap styling
+            Only generate the html code without any explanation, for example the following response is not valid:
+            'Here is the html code to for the best selling products in table format:\n\n```\n<table>\n<tr><th>Product Name</th><th>Total Sold</th></tr>\n<tr><td>Product 1</td><td>100</td></tr>\n<tr><td>Product 2</td><td>90</td></tr>\n</table>\n```'
+            instead, the response should be:
+            '<table><tr><th>Product Name</th><th>Total Sold</th></tr><tr><td>Product 1</td><td>100</td></tr><tr><td>Product 2</td><td>90</td></tr></table>'
+
+            If the data cannot be converted into a table, return the data as a paragraph
+            """
+    html = client.chat.completions.create(
+        messages=[{"role": "user", "content": query}],
+        model="llama3-70b-8192",
+    )
+    return html.choices[0].message.content
 
 
 statement = """
@@ -77,19 +99,8 @@ def get_sql_for_all_migrations():
         cursor.execute(statement)
         for row in cursor.fetchall():
             sql_commands.append(row[0])
-    print(sql_commands)
+
     return sql_commands
-
-
-# Create your views here.
-
-
-@require_http_methods(["GET"])
-def list_models(request: HttpRequest):
-    url = settings.COPILOT_ENDPOINT + "models"
-    response = requests.get(url)
-    models = response.json()
-    return JsonResponse(models)
 
 
 def determine_action(msg: str) -> str:
@@ -98,7 +109,28 @@ def determine_action(msg: str) -> str:
     query = f"""
             SQL statements used to create the tables in the database: {get_sql_for_all_migrations()}
             Based on the message: {msg} generate the SQL statement that satisfies the request. If no sql statement can be generated, return 'none' else only return the SQL statement
-            Only generate the SQL statement for the request without any explanation
+
+            Please include table names in the SQL statement within "", for example, SELECT * FROM "Products", and not  SELECT * FROM Products
+            Be care when perfoming joins, for example the statement:
+            SELECT "Product".name, SUM("SaleItems".quantity) as total_sold
+            FROM "SaleItems"
+            JOIN "Product" ON "SaleItems".product_id = "Product".id
+            GROUP BY "Product".name
+            ORDER BY total_sold DESC
+            LIMIT 1;
+            would result in an errore because the column product_id does not exist in the SaleItems table, 
+            the correct statement should be:
+            SELECT "Product".name, SUM("SaleItems".quantity) as total_sold
+            FROM "SaleItems"
+            JOIN "Product" ON "SaleItems".product = "Product".id
+            GROUP BY "Product".name
+            ORDER BY total_sold DESC
+            LIMIT 1;
+
+            Only generate the SQL statement for the request without any explanation, for example the following response is not valid:
+            	'Here is the SQL statement to generate a list of all products in the database:\n\n```\nSELECT * FROM "Product"\n```'
+            instead, the response should be:
+            'SELECT * FROM "Product"'
             The SQL statement should only read from the database and not write to the database
             In case the query is to modify the database, return 'none'
             """
@@ -106,8 +138,16 @@ def determine_action(msg: str) -> str:
         messages=[{"role": "user", "content": query}],
         model="llama3-70b-8192",
     )
-    print(action.choices[0].message.content)
+
     return action.choices[0].message.content
+
+
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            # Convert datetime objects to string in ISO 8601 format
+            return obj.isoformat()
+        return super(DateTimeEncoder, self).default(obj)
 
 
 def execute_action(sql: str):
@@ -122,29 +162,26 @@ def execute_action(sql: str):
         ]
 
         # Convert the dictionaries to JSON
-        json_data = json.dumps(rows_as_dict)
+        json_data = json.dumps(rows_as_dict, cls=DateTimeEncoder)
         return json_data
     return "none"
 
 
-# @require_http_methods(["POST"])
+@require_http_methods(["POST"])
+@csrf_exempt
 def chat(request: HttpRequest):
-    action = determine_action("Which was the latest sale?")
-    print(action)
+    query = request.POST.get("query", "")
+    action = determine_action(query)
+    html = ""
+
     res = ""
     if action == "none":
         pass
     else:
         res = execute_action(action)
+        if res != "none":
+            html = preprocess_data_for_presentation(res)
 
-    with connection.cursor() as cursor:
-        cursor.execute(action)
-        for row in cursor.fetchall():
-            res += row[0]
-    return JsonResponse({"action": action, "response": res, "sql": action})
-
-
-def get_latest_sale():
-    latest_sale = Sale.objects.latest("date_added")
-    if latest_sale:
-        return latest_sale.to_json()
+    return JsonResponse(
+        {"action": action, "response": res, "sql": action, "html": html}
+    )
