@@ -83,23 +83,23 @@ WSGI_APPLICATION = "django_pos.wsgi.application"
 
 # Database
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv("DATABASE_NAME"),
-#         "USER": os.getenv("DATABASE_USER"),
-#         "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-#         "HOST": os.getenv("DATABASE_HOST"),
-#         "PORT": os.getenv("DATABASE_PORT"),
-#     }
-# }
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DATABASE_NAME"),
+        "USER": os.getenv("DATABASE_USER"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+        "HOST": os.getenv("DATABASE_HOST"),
+        "PORT": os.getenv("DATABASE_PORT"),
     }
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -142,3 +142,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LICENSE_SERVER = "https://tomorrow.co.ke"
 MY_COMPANY_NAME = "Tomorrow Solutions"
 MY_COMPANY_ID = "1"
+
+
+COPILOT_ENDPOINT = "http://localhost:1337/v1/"
+COPILOT_MODEL = "llama3-70b-8192"
