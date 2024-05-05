@@ -24,5 +24,7 @@ urlpatterns = [
     path("reports/", include("reports.urls")),
     # company
     path("company/", include("company.urls")),
+    # copilot
+    path("copilot/", include("copilot.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
