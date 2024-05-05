@@ -174,45 +174,7 @@
         }
 
         $(document).ready(function () {
-            $("#send_msg").click(function () {
-                var msg = $("#input").val();
-                // add message on the left
-                var current_time = new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear() + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
-
-                var html = `
-                <div class="d-flex justify-content-start mb-4">
-                    <div class="msg_cotainer_send">
-                        ${msg}
-                        <span class="msg_time_send">${current_time}</span>
-                    </div>
-                    <div class="img_cont_msg">
-                        <img src="{% static 'img/undraw_profile.svg' %}" class="rounded-circle user_img_msg">
-                    </div>
-                `;
-                $("#chats").append(html);
-                // clear input
-                $("input").val('');
-                // scroll to bottom
-                var objDiv = document.getElementById("chats");
-                objDiv.scrollTop = objDiv.scrollHeight;
-                // add responding...
-                var html = `
-                <div class="d-flex justify-content-end mb-4">
-                    <div class="img_cont_msg">
-                        <img src="{% static 'img/ai.svg' %}" class="rounded-circle user_img_msg">
-                    </div>
-                    <div class="msg_cotainer">
-                        Responding...
-                        <span class="msg_time">${current_time}</span>
-                    </div>
-                
-                `;
-                $("#chats").append(html);
-
-
-
-
-            })
+    
             $.ajax({
                 type: 'GET',
                 url: '{% url "pos:notifications" %}',
