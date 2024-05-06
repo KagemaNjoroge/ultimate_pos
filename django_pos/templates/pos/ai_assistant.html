@@ -26,8 +26,8 @@
         display: inline-block;
         transform-origin: center center;
         margin: 0 3px;
-        width: 20px;
-        height: 20px;
+        width: 10px;
+        height: 10px;
     }
 
     .bubble:nth-child(1) {
@@ -128,8 +128,18 @@
             $('#zoe_default').remove();
             var msg = input.value;
             if (msg != '') {
-                chats.innerHTML += '<div class="mt-2 justify-content-end text-sm mb-2">' + msg + '</div>';
-                input.value = '';
+                // show user query on the right as a chat bubble, and show response on the left as a chat bubble
+                // just as in a typical chat app
+                chats.innerHTML += '<div class="row mt-2 justify-content-end"><div class="col-12"><small>' + msg + '</small></div></div>';
+                $("#loader").html(`
+                        <div class="loader mb-2" id="loader">
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        </div>`
+                );
+
                 chats.scrollTop = chats.scrollHeight;
                 $.ajax({
                     headers: {
@@ -142,33 +152,31 @@
                     },
                     beforeSend: function () {
                         // add loading bubbles
-                        $("#loader").html(`
-                        <div class="loader" id="loader">
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                        <div class="bubble"></div>
-                        </div>`
-                        );
+
 
 
                     },
                     success: function (response) {
-                        // remove the "Please wait..." message
-                        chats.innerHTML = chats.innerHTML.slice(0, -100);
+
+                        $('#loader').html('');
                         // check if html in response is not "none"        
                         if (response.html != 'none') {
-                            chats.innerHTML += `${response.html}`;
+
+                            chats.innerHTML += '<div class="row mt-2 justify-content-start"><div class="col-12">' + response.html + '</div></div>';
+
+
                         } else {
+
                             chats.innerHTML += '<div class="row mt-2 justify-content-start"><div class="col-12"><div class="alert alert-danger" role="alert">Sorry, I could not understand your query. Please try again.</div></div></div>';
                         }
 
                     },
                     error: function (response) {
+                        $('#loader').html('');
                         chats.innerHTML += '<div class="row mt-2 justify-content-start"><div class="col-12"><div class="alert alert-danger" role="alert">Sorry, I could not understand your query. Please try again.</div></div></div>';
                     },
                     complete: function () {
-                        $('#loader').remove();
+
                         chats.scrollTop = chats.scrollHeight;
                     }
 
