@@ -13,14 +13,63 @@
         right: 20px;
         bottom: 20px;
     }
+
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+    }
+
+    .bubble {
+        animation: expand .75s ease-in-out infinite;
+        border-radius: 10px;
+        display: inline-block;
+        transform-origin: center center;
+        margin: 0 3px;
+        width: 20px;
+        height: 20px;
+    }
+
+    .bubble:nth-child(1) {
+        background: #27ae60;
+    }
+
+    .bubble:nth-child(2) {
+        animation-delay: 180ms;
+        background: #f1c40f;
+    }
+
+    .bubble:nth-child(3) {
+        animation-delay: 360ms;
+        background: #e67e22;
+    }
+
+    .bubble:nth-child(4) {
+        animation-delay: 540ms;
+        background: #2980b9;
+    }
+
+    @keyframes expand {
+        0% {
+            transform: scale(1);
+        }
+
+        25% {
+            transform: scale(1.55);
+        }
+    }
 </style>
 <div class="modal fade" id="aiAssistantModal" tabindex="-1" role="dialog" data-bs-backdrop="static"
     data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-right">
         <div class="modal-content-assistant modal-content">
             <div class="modal-header">
-                <p class="modal-title mr-2"><small>Ask Zest</small><span><img src="{%static 'img/ai.svg'%}"
-                            alt="Ask AI"></span></p>
+                <p class="modal-title mr-2"><small>Chat with Zoe</small>
+                    <span>
+                        <img src="{%static 'img/ai_sparkles.svg'%}" alt="Ask AI"
+                            style="width: 20px; height: 20px; margin-top: -5px;">
+                    </span>
+                </p>
                 <p><small style="font-size: xx-small;">Powered by TomorrowAI<sup>&reg;</sup> platform</small></p>
 
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
@@ -32,11 +81,26 @@
                     <div id="chats"></div>
                     <div class="container container-fluid">
                         <div class="row mt-3">
-                            <div class="col">
+                            <div class="alert alert-info col-12" role="alert" id="zoe_default">
+                                <small>Hey there! I'm Zoe, your AI assistant.
+                                    Ask me anything about your business, products, sales, customers, etc.
+                                    <br>For example, you can ask "What is the best selling product?"</small>
+
+
+                            </div>
+                            <div id="zoe_response" class="col-12"></div>
+                            <div id="loader" class="col-12 justify-content-center mb-2"></div>
+
+                            <div class="col mt-3">
                                 <div class="input-group flex-nowrap">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="addon-wrapping">
+                                            <i class="fas fa-comment-dots"></i>
+                                        </span>
+                                    </div>
+
                                     <input type="text" class="form-control text-sm" style="width: 100%;"
-                                        placeholder="Try something like What is the best selling product"
-                                        aria-label="Chat input" id="input">
+                                        value="What is the best selling product?" aria-label="Chat input" id="input">
                                     <div class="input-group-append">
                                         <button class="btn btn-success" type="button" id="send_msg">
                                             <i class="fas fa-paper-plane"></i>
@@ -53,13 +117,15 @@
 </div>
 <script>
     $(document).ready(function () {
-        var chats = document.getElementById('chats');
+        var chats = document.getElementById('zoe_response');
         var input = document.getElementById('input');
         var send_msg = document.getElementById('send_msg');
 
         let action = "{%url 'copilot:chat'%}";
 
         send_msg.addEventListener('click', function () {
+            // remove #zoe_default
+            $('#zoe_default').remove();
             var msg = input.value;
             if (msg != '') {
                 chats.innerHTML += '<div class="mt-2 justify-content-end text-sm mb-2">' + msg + '</div>';
@@ -75,8 +141,16 @@
                         'query': msg
                     },
                     beforeSend: function () {
-                        // add circular loading spinner
-                        chats.innerHTML += ' <div class="spinner-border spinner-border-sm text-center" role="status"><span class="sr-only">Loading...</span></div>';
+                        // add loading bubbles
+                        $("#loader").html(`
+                        <div class="loader" id="loader">
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        <div class="bubble"></div>
+                        </div>`
+                        );
+
 
                     },
                     success: function (response) {
@@ -92,7 +166,12 @@
                     },
                     error: function (response) {
                         chats.innerHTML += '<div class="row mt-2 justify-content-start"><div class="col-12"><div class="alert alert-danger" role="alert">Sorry, I could not understand your query. Please try again.</div></div></div>';
+                    },
+                    complete: function () {
+                        $('#loader').remove();
+                        chats.scrollTop = chats.scrollHeight;
                     }
+
 
                 });
             }
