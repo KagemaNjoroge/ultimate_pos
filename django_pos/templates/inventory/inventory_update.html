@@ -1,16 +1,13 @@
 {% extends 'pos/base.html' %}
 {% load static %}
-<!-- Page title  -->
+
 {% block title %}Inventory{% endblock title %}
 {% block heading %}{{ inventory.product.name }} {%endblock heading %}
 
 
-
-<!-- Page content  -->
 {% block content %}
 
 
-<!--Go back-->
 <div class="row ml-4 mb-3">
     <a href="{% url 'inventory:inventory_index' %}">
         <button type="button" class="btn btn-success font-weight-bold">
