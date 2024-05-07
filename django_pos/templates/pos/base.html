@@ -3,6 +3,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
@@ -19,9 +20,12 @@
     <link rel="stylesheet" href="{%static 'libs/simplebar/dist/simplebar.css'%}">
     <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
     {% block stylesheets %}{% endblock stylesheets %}
+    <!--Manifest-->
+    <link rel="manifest" href="{%static 'manifest.json'%}">
 </head>
 
 <body>
+    {%include 'pos/ai_assistant.html'%}
     <!--  Body Wrapper -->
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed">
@@ -118,7 +122,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                            <a class="sidebar-link" href="{%url 'customers:customers_list'%}" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-users"></i>
                                 </span>
@@ -143,7 +147,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                            <a class="sidebar-link" href="{%url 'company:settings'%}" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-settings"></i>
                                 </span>
@@ -156,7 +160,7 @@
                             <span class="hide-menu">EXTRA</span>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
+                            <a class="sidebar-link" href="{%url 'pos:subscription_page'%}" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-wallet"></i>
                                 </span>
@@ -164,7 +168,7 @@
                             </a>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
+                            <a class="sidebar-link" href="{%url 'etims:etims'%}" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-calculator"></i>
                                 </span>
@@ -216,7 +220,7 @@
                     </ul>
                     <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
                         <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-                            <a class="nav-link btn">
+                            <a class="nav-link btn" data-bs-toggle="modal" data-bs-target="#aiAssistantModal">
                                 <img src="{%static 'img/logos/ai_sparkles.svg'%}" alt="Ask AI"
                                     style="width: 20px; height: 20px; margin-top: -5px;">
 
