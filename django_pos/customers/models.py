@@ -29,10 +29,8 @@ class Customer(models.Model):
 
     def get_full_name(self) -> str:
         """
-        Returns the full name of the customer.
-
         Returns:
-            str: The full name of the customer.
+          str: The full name of the customer.
         """
         return f"{self.first_name} {self.last_name}"
 
