@@ -12,6 +12,9 @@
         top: 80px;
         right: 20px;
         bottom: 20px;
+        margin-left: 10px;
+        margin-right: 10px;
+        border-radius: 10px;
     }
 
     .loader {
@@ -58,11 +61,18 @@
             transform: scale(1.55);
         }
     }
+
+    .modal-content-notify {
+        width: 400px;
+        position: fixed;
+        top: 80px;
+        right: 20px;
+    }
 </style>
 <div class="modal fade" id="aiAssistantModal" tabindex="-1" role="dialog" data-bs-backdrop="static"
     data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-right">
-        <div class="modal-content-assistant modal-content">
+        <div class="modal-content-notify modal-content">
             <div class="modal-header">
                 <p class="modal-title mr-2"><small>Chat with Zoe</small>
                     <span>
