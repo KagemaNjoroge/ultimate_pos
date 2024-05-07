@@ -13,47 +13,53 @@
 
 <!--Go back-->
 <div class="row ml-3 mb-3">
-    <div>
-        <a href="{% url 'sales:sales_list' %}">
-            <button type="button" class="btn btn-success font-weight-bold">
-                <i class="fas fa-long-arrow-alt-left mr-2"></i>
-                Go back
-            </button>
-        </a>
+    <div class="row align-items-start">
+        <div class="col-6">
+            <a href="{% url 'sales:sales_list' %}">
+                <button type="button" class="btn btn-success font-weight-bold">
+                    <i class="fas fa-long-arrow-alt-left mr-2"></i>
+                    Go back
+                </button>
+            </a>
+
+        </div>
+        <div class="col-6 row justify-content-end">
+            <div class="col-4">
+
+                <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-share-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5">
+                        </path>
+                    </svg>
+                    Share
+                </button>
+
+            </div>
+            <div class="col-4">
+
+                <a href="{%url 'sales:sales_receipt_pdf' sale.id %}">
+                    <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
+                        <i class="fa fa-print"></i>
+                        Print
+                    </button>
+                </a>
+
+            </div>
+            <div class="col-4">
+                <a href="{% url 'sales:sales_list' %}">
+                    <button type="button" class="btn btn-primary font-weight-bold">
+                        <i class="fas fa-edit mr-2"></i>
+                        Edit
+                    </button>
+                </a>
+
+            </div>
+        </div>
 
     </div>
-    <div class="ml-2">
 
-        <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill"
-                viewBox="0 0 16 16">
-                <path
-                    d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5">
-                </path>
-            </svg>
-            Share
-        </button>
-
-    </div>
-    <div class="ml-2">
-
-        <a href="{%url 'sales:sales_receipt_pdf' sale.id %}">
-            <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
-                <i class="fa fa-print"></i>
-                Print
-            </button>
-        </a>
-
-    </div>
-    <div class="ml-2">
-        <a href="{% url 'sales:sales_list' %}">
-            <button type="button" class="btn btn-primary font-weight-bold">
-                <i class="fas fa-edit mr-2"></i>
-                Edit
-            </button>
-        </a>
-
-    </div>
     <!-- Modal -->
     <div class="modal fade" id="myModel" tabindex="-1" aria-labelledby="myModelLabel" aria-hidden="true">
         <div class="modal-dialog">
