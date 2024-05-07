@@ -18,10 +18,17 @@
 
 <!--Create new product-->
 <div class="row ml-0 mb-3">
-    <a href="{% url 'products:products_add' %}">
+    <a href="{% url 'products:products_add' %}" class="col">
         <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-plus mr-2"></i>
+            <i class="fas fa-plus"></i>
             Create new product
+        </button>
+    </a>
+    <!--Product Categories-->
+    <a href="{% url 'products:categories_list' %}" class="col align-self-center">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="fas fa-list"></i>
+            Product Categories
         </button>
     </a>
 </div>
@@ -130,6 +137,7 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <!-- Datatables -->
+<script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
 <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 <!--Datatable buttons-->
