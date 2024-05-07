@@ -1,6 +1,5 @@
 # Create your views here.
 import json
-import time
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -46,7 +45,7 @@ def profile(request: HttpRequest) -> HttpResponse:
         user.last_name = last_name or user.last_name
 
         user.save()
-        time.sleep(2)
+        
         return JsonResponse(
             {"message": "Profile updated successfully", "status": "Ok"}, status=200
         )
