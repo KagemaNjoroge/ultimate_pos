@@ -33,7 +33,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover" id="dataTable" style="width: 85vw;">
+            <table class="table table-bordered table-hover table-responsive" id="dataTable" style="width: 100%">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -115,6 +115,7 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <!-- Datatables -->
+<script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
 <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 <!--Datatable buttons-->
