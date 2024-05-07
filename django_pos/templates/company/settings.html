@@ -170,9 +170,10 @@ Settings
         });
         // upload image button
         $('#uploadImageBtn').click(function () {
-            // select image from device
             var input = document.createElement('input');
             input.type = 'file';
+            document.body.appendChild(input); // Append the input element to the document
+            input.style.display = 'none'; // Hide the input element
             input.click();
             input.onchange = e => {
                 // change default logo to uploaded image
