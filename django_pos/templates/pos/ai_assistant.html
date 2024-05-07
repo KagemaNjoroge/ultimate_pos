@@ -69,8 +69,7 @@
         right: 20px;
     }
 </style>
-<div class="modal fade" id="aiAssistantModal" tabindex="-1" role="dialog" data-bs-backdrop="static"
-    data-bs-keyboard="false">
+<div class="modal fade" id="aiAssistantModal" tabindex="-1" role="dialog" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-right">
         <div class="modal-content-notify modal-content">
             <div class="modal-header">
@@ -82,7 +81,7 @@
                 </p>
                 <p><small style="font-size: xx-small;">Powered by TomorrowAI<sup>&reg;</sup> platform</small></p>
 
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close" id="close_zoe">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
@@ -122,9 +121,13 @@
                     </div>
                 </div>
             </div>
+
         </div>
+
     </div>
 </div>
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
 <script>
     $(document).ready(function () {
         var chats = document.getElementById('zoe_response');
@@ -132,6 +135,10 @@
         var send_msg = document.getElementById('send_msg');
 
         let action = "{%url 'copilot:chat'%}";
+
+        $('#close_zoe').click(function () {
+            $('#aiAssistantModal').modal('hide');
+        });
 
         send_msg.addEventListener('click', function () {
             // remove #zoe_default
