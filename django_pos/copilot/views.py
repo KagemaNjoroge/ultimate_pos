@@ -7,8 +7,10 @@ from groq import Groq
 from dotenv import load_dotenv
 import os
 from django.db import connection
-import pandas as pd
+import logging
 
+
+logger = logging.getLogger(__name__)
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -33,6 +35,8 @@ def preprocess_data_for_presentation(data: str) -> str:
         messages=[{"role": "user", "content": query}],
         model="llama3-70b-8192",
     )
+    # log query and response
+    logger.info(f"Query: {query} Response: {html.choices[0].message.content}")
     return html.choices[0].message.content
 
 
@@ -138,6 +142,8 @@ def determine_action(msg: str) -> str:
         messages=[{"role": "user", "content": query}],
         model="llama3-70b-8192",
     )
+    # log query and response
+    logger.info(f"Query: {query} Response: {action.choices[0].message.content}")
 
     return action.choices[0].message.content
 
@@ -155,6 +161,7 @@ def execute_action(sql: str):
         with connection.cursor() as cursor:
             cursor.execute(sql)
             rows = cursor.fetchall()
+            logger.info(f"SQL: {sql} Response: {rows}")
 
         # Convert the rows to dictionaries
         rows_as_dict = [
