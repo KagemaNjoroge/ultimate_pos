@@ -1,147 +1,287 @@
-{% load static %}
-<!DOCTYPE html>
+{%load static%}
+<!doctype html>
 <html lang="en">
 
 <head>
-
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}{% endblock title%}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        {%block title%}
+        Ultimate POS
+        {%endblock title%}
+    </title>
+    <link rel="shortcut icon" type="image/png" href="{%static 'img/logos/favicon.png'%}" />
+    <link rel="stylesheet" href="{%static 'css/styles.min.css'%}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
-    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}" />
-
+    <link rel="stylesheet" href="{%static 'libs/simplebar/dist/simplebar.css'%}">
+    <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
     {% block stylesheets %}{% endblock stylesheets %}
-
 </head>
 
-<body id="page-top">
-
-    <div id="wrapper">
-
-        <div class="bar">
-            <style>
-                .bar {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    bottom: 0;
-
-                    height: 100%;
-
-
-                    z-index: 1000;
-                    transition: all 0.5s;
-                }
-
-                #content-wrapper {
-                    transition: all 0.3s;
-
-                }
-            </style>
-            {% include 'pos/sidebar.html' %}
-        </div>
-        <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content">
-                {% include 'pos/navbar.html' %}
-
-                <div class="container-fluid">
-
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <strong>
-                            <h1 class="h1 mb-0 text-gray-800">{% block heading %}{% endblock heading%}</h1>
-                        </strong>
+<body>
+    <!--  Body Wrapper -->
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+        data-sidebar-position="fixed" data-header-position="fixed">
+        <!-- Sidebar Start -->
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div>
+                <div class="brand-logo d-flex align-items-center justify-content-between">
+                    <a href="{% url 'pos:index' %}" class="text-nowrap logo-img">
+                        <img src="{%static 'img/logos/UltimatePOS Logo(2).svg'%}" width="180" alt="" />
+                    </a>
+                    <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                        <i class="ti ti-x fs-8"></i>
                     </div>
+                </div>
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                    <ul id="sidebarnav">
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <span class="hide-menu">Home</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{% url 'pos:index' %}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-layout-dashboard"></i>
+                                </span>
+                                <span class="hide-menu">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <span class="hide-menu">Essentials</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{% url 'pos:pos' %}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-brand-shopee"></i>
+                                </span>
+                                <span class="hide-menu">POS</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{% url 'products:products_list' %}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-package"></i>
+                                </span>
+                                <span class="hide-menu">Products</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{% url 'sales:sales_list' %}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-shopping-cart"></i>
+                                </span>
+                                <span class="hide-menu">Sales</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{% url 'inventory:inventory_index' %}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-package"></i>
+                                </span>
+                                <span class="hide-menu">Inventory</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="{% url 'reports:index' %}" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-file-description"></i>
+                                </span>
+                                <span class="hide-menu">Reports</span>
+                            </a>
+                        </li>
 
-                    <!--Messages will appear here-->
-                    {% include 'pos/messages.html' with messages=messages%}
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <span class="hide-menu">Company</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-building-store"></i>
+                                </span>
+                                <span class="hide-menu">Stores</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-truck-loading"></i>
+                                </span>
+                                <span class="hide-menu">Suppliers</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-users"></i>
+                                </span>
+                                <span class="hide-menu">Customers</span>
+                            </a>
+                        </li>
 
-                    <!--Page content goes here-->
-                    {% block content %}{% endblock content %}
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-cash"></i>
+                                </span>
+                                <span class=" hide-menu">Accounting</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-user"></i>
+                                </span>
+                                <span class="hide-menu">Users</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./authentication-login.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-settings"></i>
+                                </span>
+                                <span class="hide-menu">Settings</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-small-cap">
+                            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                            <span class="hide-menu">EXTRA</span>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-wallet"></i>
+                                </span>
+                                <span class="hide-menu">Subscription</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./icon-tabler.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-calculator"></i>
+                                </span>
+                                <span class="hide-menu">eTIMS</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="./sample-page.html" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-cloud"></i>
+                                </span>
+                                <span class="hide-menu">Cloud</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!--  Sidebar End -->
+        <!--  Main wrapper -->
+        <div class="body-wrapper">
+            <!--  Header Start -->
+            <header class="app-header">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <ul class="navbar-nav">
+                        <li class="nav-item d-block d-xl-none">
+                            <a class="nav-link sidebartoggler nav-icon-hover" id="headerCollapse"
+                                href="javascript:void(0)">
+                                <i class="ti ti-menu-2"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+                                <i class="ti ti-bell-ringing"></i>
+                                <div class="notification bg-primary rounded-circle"></div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="">
+                                {%block heading%}
+                                {%endblock heading%}
+
+                            </a>
+                        </li>
+
+                    </ul>
+                    <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+                        <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+                            <a class="nav-link btn">
+                                <img src="{%static 'img/logos/ai_sparkles.svg'%}" alt="Ask AI"
+                                    style="width: 20px; height: 20px; margin-top: -5px;">
+
+                            </a>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{%static 'img/profile/user-1.jpg'%}" alt="" width="35" height="35"
+                                        class="rounded-circle">
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
+                                    aria-labelledby="drop2">
+                                    <div class="message-body">
+                                        <a href="{%url 'authentication:profile'%}"
+                                            class="d-flex align-items-center gap-2 dropdown-item">
+                                            <i class="ti ti-user fs-6"></i>
+                                            <p class="mb-0 fs-3">My Profile</p>
+                                        </a>
+
+                                        <a href="javascript:void(0)"
+                                            class="d-flex align-items-center gap-2 dropdown-item">
+                                            <!--logout-->
+                                            <i class="ti ti-power-off fs-6"></i>
+                                            <p class="mb-0 fs-3">Logout</p>
+                                        </a>
+                                        <a href="./authentication-login.html"
+                                            class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <!--  Header End -->
+            <div class="container-fluid">
+                <!--  Row 1 -->
+
+                {% block content %}{% endblock content %}
 
 
+                <div class="py-6 px-6 text-center">
+                    <p class="mb-0 fs-4">Brought to you by the good folks at <a href="https://tomorrow.co.ke"
+                            target="_blank" class="pe-1 text-primary text-decoration-underline">
+                            TomorrowAI
+                        </a></p>
                 </div>
             </div>
-            {% include 'pos/footer.html' %}
         </div>
-
-
     </div>
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-
-    {% include 'pos/logout_modal.html' %}
-
-
-
     {% block javascripts %}{% endblock javascripts %}
+    <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
+    <script src="{%static 'libs/bootstrap/dist/js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{%static 'js/sidebarmenu.js'%}"></script>
+    <script src="{%static 'js/app.min.js'%}"></script>
+    <script src="{%static 'libs/simplebar/dist/simplebar.js'%}"></script>
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
     <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+    <script src="{% static 'js/color-modes.js' %}"></script>
     <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
-    <script>
 
-        var toggled = false;
-
-        $(document).ready(function () {
-
-            let btn = $('#sidebarToggle');
-            btn.click();
-        });
-        $('#sidebarToggle').click(function () {
-            if (toggled) {
-                $('.bar').css('width', '250px');
-                $('.bar').css('overflow', 'auto');
-                $('#content-wrapper').css('margin-left', '250px');
-                toggled = false;
-            } else {
-                $('.bar').css('width', '100px');
-                $('.bar').css('overflow', 'hidden');
-                $('#content-wrapper').css('margin-left', '100px');
-                toggled = true;
-            }
-            if (toggled && $(window).width() < 768) {
-                $('.bar').css('width', '100%');
-                $('.bar').css('overflow', 'auto');
-                $('#content-wrapper').css('margin-left', '0px');
-            }
-        });
-        // colapse sider in small screens and 
-        $(window).resize(function () {
-            let margin = $('#content-wrapper').css('margin-left');
-            if (parseInt(margin) > 100) {
-                $('.bar').css('width', '100px');
-                $('.bar').css('overflow', 'hidden');
-                $('#content-wrapper').css('margin-left', '100px');
-                toggled = true;
-            }
-            else {
-                $('.bar').css('width', '250px');
-                $('.bar').css('overflow', 'auto');
-                $('#content-wrapper').css('margin-left', '250px');
-                toggled = false;
-            }
-
-
-
-        });
-
-
-
-
-    </script>
 
 </body>
 
