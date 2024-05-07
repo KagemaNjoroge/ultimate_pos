@@ -1,4 +1,5 @@
 .env
 **/media/
+.vscode/
 
 node_modules/
