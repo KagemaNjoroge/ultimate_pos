@@ -1,6 +1,9 @@
-{% extends "pos/base.html" %} {% block title %}Add category{% endblock title %}
-{% block stylesheets %}{% endblock stylesheets %} {% block heading %}Add
-category{% endblock heading %} {% block content %}
+{% extends "pos/base.html" %}
+{%load static%}
+{% block title %}Add category{% endblock title %}
+{% block stylesheets %}{% endblock stylesheets %}
+{% block heading %}Add category{% endblock heading %}
+{% block content %}
 
 <div class="row ml-0 mb-3 ml-2">
     <a href="{% url 'products:categories_list' %}">
@@ -54,6 +57,7 @@ category{% endblock heading %} {% block content %}
         </div>
     </div>
 </div>
+<script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
 <script>
     $(document).ready(function () {
         $("#category_form").submit(function (e) {
@@ -95,7 +99,7 @@ category{% endblock heading %} {% block content %}
                     }
                 },
                 error: function () {
-                    
+
                     $(".update_msg").html(
                         `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong>An unknown error occurred, please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
                     );
