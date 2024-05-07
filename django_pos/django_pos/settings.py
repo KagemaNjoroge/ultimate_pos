@@ -8,8 +8,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-SECRET_KEY = "django-insecure-shfzstshi=+%g-@_=nc4_x=9xdpt1thdo=^k#($km%htb-se)("
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -94,13 +94,6 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -116,61 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
-
-# logging
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "formatters": {
-#         "verbose": {
-#             "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
-#             "style": "{",
-#         },
-#         "simple": {
-#             "format": "{levelname} {message}",
-#             "style": "{",
-#         },
-#     },
-#     "filters": {
-#         "special": {
-#             "()": "project.logging.SpecialFilter",
-#             "foo": "bar",
-#         },
-#         "require_debug_true": {
-#             "()": "django.utils.log.RequireDebugTrue",
-#         },
-#     },
-#     "handlers": {
-#         "console": {
-#             "level": "INFO",
-#             "filters": ["require_debug_true"],
-#             "class": "logging.StreamHandler",
-#             "formatter": "simple",
-#         },
-#         "mail_admins": {
-#             "level": "ERROR",
-#             "class": "django.utils.log.AdminEmailHandler",
-#             "filters": ["special"],
-#         },
-#     },
-#     "loggers": {
-#         "django": {
-#             "handlers": ["console"],
-#             "propagate": True,
-#         },
-#         "django.request": {
-#             "handlers": ["mail_admins"],
-#             "level": "ERROR",
-#             "propagate": False,
-#         },
-#         "myproject.custom": {
-#             "handlers": ["console", "mail_admins"],
-#             "level": "INFO",
-#             "filters": ["special"],
-#         },
-#     },
-# }
 
 
 LANGUAGE_CODE = "en-us"
@@ -197,7 +135,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LICENSE_SERVER = "https://tomorrow.co.ke"
 MY_COMPANY_NAME = "Tomorrow Solutions"
 MY_COMPANY_ID = "1"
-
-
-COPILOT_ENDPOINT = "http://localhost:1337/v1/"
-COPILOT_MODEL = "llama3-70b-8192"
