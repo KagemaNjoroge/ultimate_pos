@@ -2,6 +2,7 @@ from django.db import models
 from django.forms import model_to_dict
 
 
+
 class Category(models.Model):
     STATUS_CHOICES = (("ACTIVE", "Active"), ("INACTIVE", "Inactive"))  # new
 
@@ -50,6 +51,11 @@ class Product(models.Model):
     )
 
     price = models.FloatField(default=0)
+
+    # def save(self, *args, **kwargs):
+    #     # if track inventory, create a new inventory record
+    #     if self.track_inventory:
+    #         Inventory.objects.create(product=self, quantity=0)
 
     class Meta:
         # Table's name
