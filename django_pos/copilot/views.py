@@ -28,7 +28,7 @@ def preprocess_data_for_presentation(data: str) -> str:
             'Here is the html code to for the best selling products in table format:\n\n```\n<table>\n<tr><th>Product Name</th><th>Total Sold</th></tr>\n<tr><td>Product 1</td><td>100</td></tr>\n<tr><td>Product 2</td><td>90</td></tr>\n</table>\n```'
             instead, the response should be:
             '<table><tr><th>Product Name</th><th>Total Sold</th></tr><tr><td>Product 1</td><td>100</td></tr><tr><td>Product 2</td><td>90</td></tr></table>'
-
+            The tables should have table-responsive class to make them scrollable on small screens
             If the data cannot be converted into a table, return the data as a paragraph
             """
     html = client.chat.completions.create(
