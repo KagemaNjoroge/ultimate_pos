@@ -32,7 +32,8 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         {%if product.image%}
-                        <img src=" {{product.image.url}}" id="product_image" alt="{{product.name}}">
+                        <img src=" {{product.image.url}}" id="product_image" alt="{{product.name}}" width="200"
+                            height="100">
                         {%else%}
                         <!--No image-->
                         <img src="{%static 'default.png'%}" alt="{{product.name}}" id="product_image">
@@ -115,6 +116,7 @@
         </div>
     </div>
 </div>
+<script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
 <script>
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
