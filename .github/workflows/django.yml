@@ -6,14 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  DATABASE_NAME: "verceldb"
-  DATABASE_USER: "default"
-  DATABASE_PASSWORD: "3dzgrJBoAk8Y"
-  DATABASE_HOST: "ep-winter-bonus-a4826y7y-pooler.us-east-1.aws.neon.tech"
-  DATABASE_PORT : 5432	
-  DJANGO_SECRET_KEY: "django-insecure-shfzstshi=+%g-@_=nc4_x=9xdpt1thdo=^k#($km%htb-se)("
-
 jobs:
   build:
 
