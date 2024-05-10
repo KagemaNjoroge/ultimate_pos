@@ -26,6 +26,7 @@
 
 <body>
     {%include 'pos/ai_assistant.html'%}
+    {%include 'pos/notifications_modal.html'%}
     <!--  Body Wrapper -->
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed">
@@ -204,7 +205,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link nav-icon-hover" href="javascript:void(0)">
+                            <a class="nav-link nav-icon-hover" data-bs-target="#notificationsModal" data-bs-toggle="modal">
                                 <i class="ti ti-bell-ringing"></i>
                                 <div class="notification bg-primary rounded-circle"></div>
                             </a>
