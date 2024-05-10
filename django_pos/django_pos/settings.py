@@ -96,8 +96,6 @@ DATABASES = {
 }
 
 
-# if "test" or "check" in sys.argv:
-#     DATABASES["default"] = {"ENGINE": "django.db.backends.sqlite3"}
 
 # DATABASES = {
 #     "default": {
