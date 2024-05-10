@@ -84,34 +84,29 @@ WSGI_APPLICATION = "django_pos.wsgi.application"
 
 # Database
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv("DATABASE_NAME"),
-#         "USER": os.getenv("DATABASE_USER"),
-#         "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-#         "HOST": os.getenv("DATABASE_HOST"),
-#         "PORT": os.getenv("DATABASE_PORT"),
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DATABASE_NAME"),
+        "USER": os.getenv("DATABASE_USER"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+        "HOST": os.getenv("DATABASE_HOST"),
+        "PORT": os.getenv("DATABASE_PORT"),
+    }
+}
 
 
 # if "test" or "check" in sys.argv:
 #     DATABASES["default"] = {"ENGINE": "django.db.backends.sqlite3"}
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> c5b331fbd2b0837d1e7fcd1f32b31164b2505e81
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
