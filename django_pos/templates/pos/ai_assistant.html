@@ -81,9 +81,15 @@
                 </p>
                 <p><small style="font-size: xx-small;">Powered by TomorrowAI<sup>&reg;</sup> platform</small></p>
 
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close" id="close_zoe">
-                    <span aria-hidden="true">×</span>
-                </button>
+                <!--Expand modal button-->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="close_zoe">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="expand_zoe_modal">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
             </div>
             <div class="modal-body">
                 <div class="quiz">
@@ -129,6 +135,9 @@
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 
 <script>
+
+
+
     $(document).ready(function () {
         var chats = document.getElementById('zoe_response');
         var input = document.getElementById('input');
@@ -139,6 +148,7 @@
         $('#close_zoe').click(function () {
             $('#aiAssistantModal').modal('hide');
         });
+
 
         send_msg.addEventListener('click', function () {
             // remove #zoe_default
