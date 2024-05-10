@@ -20,7 +20,7 @@
 A modern POS/ERP/CRM system for businesses of the AI era. Powered by [Django.](https://djangoproject.com)
 
 <p align="center">
-  <img src="https://posapp.linksengineering.net/assets/images/logo-seegreen.png">
+  <img src="https://github.com/KagemaNjoroge/ultimate_pos/blob/main/django_pos/static/img/logos/UltimatePOS%20Logo(2).svg">
 </p>
 
 ## Features
