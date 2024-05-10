@@ -107,6 +107,11 @@ DATABASES = {
 }
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> c5b331fbd2b0837d1e7fcd1f32b31164b2505e81
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
