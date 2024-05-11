@@ -5,7 +5,7 @@ from products.models import Product
 
 
 class Sale(models.Model):
-    date_added = models.DateTimeField(default=django.utils.timezone.now)
+    date_added = models.DateTimeField(auto_now_add=True)
     customer = models.ForeignKey(
         Customer, models.SET_NULL, db_column="customer", blank=True, null=True
     )
@@ -33,6 +33,7 @@ class Sale(models.Model):
 
     def to_json(self) -> dict:
         return {
+            "id": self.id,
             "date_added": self.date_added,
             "customer": self.customer.get_full_name(),
             "sub_total": self.sub_total,
