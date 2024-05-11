@@ -1,9 +1,20 @@
+import os
 from django.http import HttpRequest, HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404, render
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.datastructures import MultiValueDict
-from .models import Company
+
+from company.utils.subscription import check_subscription_in_firebase
+from .models import Company, Subscription
 from django.views import View
+import firebase_admin
+from dotenv import load_dotenv
+from firebase_admin import credentials
+
+
+load_dotenv()
+cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
+app = firebase_admin.initialize_app(cred)
 
 
 class CompanyView(View):
@@ -110,3 +121,12 @@ def index(request: HttpRequest) -> HttpResponse:
         template_name="company/settings.html",
         context={"active_icon": "settings", "company": company},
     )
+
+
+def test_firebase(request: HttpRequest) -> HttpResponse:
+
+    subs = Subscription.objects.first()
+    # print(save_subscription_to_firebase(subs))
+    print(check_subscription_in_firebase(subs))
+
+    return HttpResponse("Firebase test successful")
