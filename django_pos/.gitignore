@@ -1,5 +1,5 @@
 .env
 **/media/
 .vscode/
-
+firebase_config.json
 node_modules/
