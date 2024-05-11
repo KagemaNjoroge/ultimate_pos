@@ -18,19 +18,21 @@
 
 <!--Create new product-->
 <div class="row ml-0 mb-3">
-    <a href="{% url 'products:products_add' %}" class="col">
-        <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-plus"></i>
-            Create new product
-        </button>
-    </a>
-    <!--Product Categories-->
-    <a href="{% url 'products:categories_list' %}" class="col align-self-center">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="fas fa-list"></i>
-            Product Categories
-        </button>
-    </a>
+    <div class="ml-auto">
+        <a href="{% url 'products:products_add' %}" class="col">
+            <button type="button" class="btn btn-success font-weight-bold">
+                <i class="fas fa-plus"></i>
+                Create new product
+            </button>
+        </a>
+        <!--Product Categories-->
+        <a href="{% url 'products:categories_list' %}" class="col align-self-center">
+            <button type="button" class="btn btn-primary font-weight-bold">
+                <i class="fas fa-list"></i>
+                Product Categories
+            </button>
+        </a>
+    </div>
 </div>
 
 <!-- DataTable -->
