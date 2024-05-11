@@ -11,6 +11,7 @@
         Ultimate POS
         {%endblock title%}
     </title>
+    <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
     <link rel="shortcut icon" type="image/png" href="{%static 'img/logos/favicon.png'%}" />
     <link rel="stylesheet" href="{%static 'css/styles.min.css'%}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -274,7 +275,7 @@
         </div>
     </div>
     {% block javascripts %}{% endblock javascripts %}
-    <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
+
     <script src="{%static 'libs/bootstrap/dist/js/bootstrap.bundle.min.js'%}"></script>
     <script src="{%static 'js/sidebarmenu.js'%}"></script>
     <script src="{%static 'js/app.min.js'%}"></script>
