@@ -11,6 +11,7 @@
         Ultimate POS
         {%endblock title%}
     </title>
+    <link rel="stylesheet" href="{%static 'libs/bootstrap/dist/css/bootstrap.min.css'%}">
     <link rel="shortcut icon" type="image/png" href="{%static 'img/logos/favicon.png'%}" />
     <link rel="stylesheet" href="{%static 'css/styles.min.css'%}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -19,6 +20,7 @@
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{%static 'libs/simplebar/dist/simplebar.css'%}">
     <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
+
     {% block stylesheets %}{% endblock stylesheets %}
     <!--Manifest-->
     <link rel="manifest" href="{%static 'manifest.json'%}">
