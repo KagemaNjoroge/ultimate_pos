@@ -5,4 +5,247 @@
 Reports
 {%endblock heading%}
 {%block content%}
+<!--Report export modal-->
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportModalLabel">Export Report as</h5>
+                <button type="button" class="close" aria-label="Close" id="closeExportModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-primary">
+                        <i class="fas fa-file-csv"></i>
+                    </button>
+                    <button type="button" class="btn btn-secondary">
+                        <i class="fas fa-file-pdf"></i>
+                    </button>
+                    <button type="button" class="btn btn-success">
+                        <i class="fas fa-file-excel"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Expanded reports modal-->
+<div class="modal fade" id="expandedReportsModal" tabindex="-1" role="dialog"
+    aria-labelledby="expandedReportsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="expandedReportsModalLabel">Expanded Report</h5>
+                <button type="button" class="close" aria-label="Close" id="closeExpandedReportsModal">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="expanded_report"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Sales Reports</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Sales for the past 7 days</h5>
+                                    <!--Export and expand buttons on the right-->
+                                    <div class="card-tools float-right">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                            id="expandReport7">
+                                            <i class="fas fa-expand"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-tool" id="export_7">
+                                            <i class="fas fa-file-export"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="sales_7_days"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title">Sales for the past 1 month</h5>
+                                    <div class="card-tools float-right">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                            id="expandReport31">
+                                            <i class="fas fa-expand"></i>
+                                        </button>
+
+                                        <button type="button" class="btn btn-tool" id="export_31">
+                                            <i class="fas fa-file-export"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="sales_1_month"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loader mb-4" id="loader">
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+
+    </span>
+
+</div>
+
+<!--Inventory reports-->
+<!--show cards-->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script>
+
+
+
+    function saveReportToSessionStorage(data) {
+        // save the data to session storage
+        sessionStorage.setItem("reports", JSON.stringify(data))
+    }
+
+    function getReports(start_date, end_date, dur) {
+        $.ajax({
+            url: "{%url 'reports:duration_sales_report'%}",
+            type: "GET",
+            data: {
+                start_date: start_date.toISOString(),
+                end_date: end_date.toISOString()
+            },
+            success: function (data) {
+                let rep = data;
+                if (dur == "seven_days" || dur == "one_month") {
+                    // Group data by date and sum sales
+                    let salesByDate = rep.reduce((acc, sale) => {
+                        let date = new Date(sale.date_added).toLocaleDateString();
+                        if (!acc[date]) {
+                            acc[date] = 0;
+                        }
+                        acc[date] += sale.grand_total;
+                        return acc;
+                    }, {});
+
+                    // Transform data into the format expected by the chart
+                    let transformedData = {
+                        dates: Object.keys(salesByDate),
+                        sales: Object.values(salesByDate)
+                    };
+
+                    // Save the data to session storage
+                    saveReportToSessionStorage(transformedData);
+
+                    // Get the canvas
+                    let canvasId = dur == "seven_days" ? 'sales_7_days' : 'sales_1_month';
+                    let ctx = document.getElementById(canvasId).getContext('2d');
+
+                    // Create the chart
+                    let chartType = dur == "seven_days" ? 'bar' : 'line';
+                    let myChart = new Chart(ctx, {
+                        type: chartType,
+                        data: {
+                            labels: transformedData.dates,
+                            datasets: [{
+                                label: 'Sales',
+                                data: transformedData.sales,
+                                backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+                                borderColor: ['rgba(255, 99, 132, 1)'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        }).done(function (data) {
+            // remove the loader
+            $("#loader").remove()
+        })
+    }
+
+    $(document).ready(function () {
+
+        $("#export_7").click(function () {
+            // add csv, pdf, excel export options to the modal
+
+            // show modal
+            $("#exportModal").modal("show")
+            // show the canvas in the modal
+
+        })
+        $("#closeExpandedReportsModal").click(function () {
+            // hide modal
+            $("#expandedReportsModal").modal("hide")
+        })
+        $("#export_31").click(function () {
+
+            // show modal
+            $("#exportModal").modal("show")
+        })
+        $("#closeExportModal").click(function () {
+            // hide modal
+            $("#exportModal").modal("hide")
+        })
+
+
+
+
+        $('#expandReport7').click(function () {
+            // show modal
+            $("#expandedReportsModal").modal("show")
+            // show the canvas in the modal
+        })
+        $('#expandReport31').click(function () {
+            // show modal
+            $("#expandedReportsModal").modal("show")
+            // show the canvas in the modal
+        })
+
+        // get for the last one month, 7 days
+        let current_date = new Date();
+        let last_month = new Date(current_date.getFullYear(), current_date.getMonth() - 1, current_date.getDate());
+        let current_month = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate());
+        let last_week = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate() - 7);
+
+        // past seven days
+        getReports(last_week, current_date, "seven_days");
+        // last month
+        getReports(last_month, current_month, "one_month")
+
+
+
+    })
+</script>
 {%endblock content%}
