@@ -87,7 +87,6 @@ class Subscription(models.Model):
 
     def to_dict(self):
         return {
-            "company": self.company.to_dict(),
             "start_date": self.start_date,
             "end_date": self.end_date,
             "is_active": self.is_active,
