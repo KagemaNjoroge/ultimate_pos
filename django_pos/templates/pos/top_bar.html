@@ -1,0 +1,31 @@
+{%load static%}
+<div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+    <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
+        <a class="nav-link btn" data-bs-toggle="modal" data-bs-target="#aiAssistantModal">
+            <img src="{%static 'img/logos/ai_sparkles.svg'%}" alt="Ask AI"
+                style="width: 20px; height: 20px; margin-top: -5px;">
+
+        </a>
+        <li class="nav-item dropdown">
+            <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                <img src="{%static 'img/profile/user-1.jpg'%}" alt="" width="35" height="35" class="rounded-circle">
+            </a>
+            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                <div class="message-body">
+                    <a href="{%url 'authentication:profile'%}" class="d-flex align-items-center gap-2 dropdown-item">
+                        <i class="ti ti-user fs-6"></i>
+                        <p class="mb-0 fs-3">My Profile</p>
+                    </a>
+
+                    <a href="javascript:void(0)" class="d-flex align-items-center gap-2 dropdown-item">
+                        <!--logout-->
+                        <i class="ti ti-power-off fs-6"></i>
+                        <p class="mb-0 fs-3">Logout</p>
+                    </a>
+                    <a href="./authentication-login.html" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
