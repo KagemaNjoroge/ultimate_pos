@@ -2,7 +2,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 from pos.views import check_subscription
 from django.contrib.auth.decorators import login_required
-from products.models import Product
+from datetime import datetime
 from sales.models import Sale
 from django.views.decorators.http import require_http_methods
 
@@ -27,7 +27,13 @@ def duration_sales_report(request: HttpRequest):
         sales = Sale.objects.filter(date_added__range=[start_date, end_date])
     else:
         # return for the past month
-        sales = Sale.objects.filter(date_added__month=1)
+        sales = Sale.objects.filter(
+            date_added__range=[
+                datetime.now().replace(day=1),
+                datetime.now().replace(day=31),
+            ]
+        )
+
     return JsonResponse(
         data=[sale.to_json() for sale in sales],
         status=200,
