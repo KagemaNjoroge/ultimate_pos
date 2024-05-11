@@ -10,3 +10,4 @@ djangorestframework
 whitenoise
 psycopg2-binary
 psycopg2
+firebase-admin
