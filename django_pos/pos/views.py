@@ -7,7 +7,7 @@ from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-
+from firebase_admin import firestore
 from company.models import Company, Subscription
 from customers.models import Customer
 from inventory.models import Inventory
@@ -15,6 +15,25 @@ from pos.models import Notifications
 from products.models import Product, Category
 from sales.models import Sale
 from sales.models import SaleDetail, SaleItem
+
+# load_dotenv()
+# cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
+# app = firebase_admin.initialize_app(cred)
+
+
+def fetch_packages(request: HttpRequest) -> JsonResponse:
+    db = firestore.client()
+    docs = db.collection("packages").stream()
+    packages = []
+    for doc in docs:
+
+        packages.append(
+            {
+                "name": doc.id,
+                "amount": doc.to_dict()["amount"],
+            }
+        )
+    return JsonResponse(packages, safe=False)
 
 
 def check_subscription(view_func):
@@ -265,3 +284,7 @@ def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
                 "date": notification.date.strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
+
+
+def checkout(request: HttpRequest, amount) -> HttpResponse:
+    return render(request, "pos/checkout.html", context={"amount": amount})
