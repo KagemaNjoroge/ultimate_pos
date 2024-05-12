@@ -31,15 +31,15 @@
                     <h3 style="color: black">Basic</h3>
                 </div>
                 <div class="card-body">
-                    <h4 class="card-title text-center"><strong>Kshs 1500</strong></h4>
+                    <h4 class="card-title text-center"><strong id="basic">Kshs 1500</strong></h4>
                     <p class="card-text text-center">
                         <small>
                             Per month
                         </small>
                     </p>
-                    <button class="btn btn-success mb-2" style="width: 100%;">
+                    <a class="btn btn-success mb-2" style="width: 100%;" href="" id="basic_checkout">
                         Select
-                    </button>
+                    </a>
                     <ul class="list-group">
                         <li class="list-group-item">1 User</li>
                         <li class="list-group-item">Unlimited products</li>
@@ -61,15 +61,15 @@
                     <h3 style="color: black">Standard</h3>
                 </div>
                 <div class="card-body">
-                    <h4 class="card-title text-center"><strong>Kshs 3500</strong></h4>
+                    <h4 class="card-title text-center"><strong id="standard">Kshs 3500</strong></h4>
                     <p class="card-text text-center">
                         <small>
                             Per month
                         </small>
                     </p>
-                    <button class="btn btn-success mb-2" style="width: 100%;">
+                    <a class="btn btn-success mb-2" style="width: 100%;" href="" id="standard_checkout">
                         Select
-                    </button>
+                    </a>
                     <ul class="list-group">
                         <li class="list-group-item">5 Users</li>
                         <li class="list-group-item">ETIMS Integration</li>
@@ -92,15 +92,15 @@
                     <h3 style="color: black">Premium</h3>
                 </div>
                 <div class="card-body">
-                    <h4 class="card-title text-center"><strong>Kshs 5000</strong></h4>
+                    <h4 class="card-title text-center"><strong id="premium">Kshs 5000</strong></h4>
                     <p class="card-text text-center">
                         <small>
                             Per month
                         </small>
                     </p>
-                    <button class="btn btn-success mb-2" style="width: 100%;">
+                    <a class="btn btn-success mb-2" style="width: 100%;" href="" id="premium_checkout">
                         Select
-                    </button>
+                    </a>
                     <ul class="list-group">
                         <li class="list-group-item">Unlimited Users</li>
                         <li class="list-group-item">ETIMS Integration</li>
@@ -122,6 +122,11 @@
 
 
     </div>
+    <span style="display:block; text-align: center"> <a href="https://intasend.com/security" target="_blank"><img
+                src="https://intasend-prod-static.s3.amazonaws.com/img/trust-badges/intasend-trust-badge-with-mpesa-hr-dark.png"
+                width="375px" alt="IntaSend Secure Payments (PCI-DSS Compliant)"></a> <strong><a
+                style="display: block; color: #fafafa; text-decoration: none; font-size: 0.8em; margin-top: 0.6em;"
+                href="https://intasend.com/security" target="_blank">Secured by IntaSend Payments</a></strong> </span>
     <div class="row">
 
         <div class="col-md-12 mt-3 ml-2">
@@ -150,5 +155,56 @@
 </div>
 {% endif %}
 
+
+<script>
+    var checkout_url = "{% url 'pos:checkout' amount=1%}"
+
+
+    function fetchPackages() {
+        // show loading spinners in #basic, #standard and #premium
+        document.getElementById('basic').innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>';
+        document.getElementById('standard').innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>';
+        document.getElementById('premium').innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>';
+        $.ajax({
+            url: "{% url 'pos:fetch_packages' %}",
+            type: 'GET',
+            success: function (data) {
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].name === 'Basic') {
+                        document.getElementById('basic').innerHTML = 'Kshs ' + data[i].amount;
+                        // add data-amout attribute to the button
+                        document.querySelector('#basic_checkout').setAttribute('data-amount', data[i].amount);
+
+                    } else if (data[i].name === 'Standard') {
+                        document.getElementById('standard').innerHTML = 'Kshs ' + data[i].amount;
+                        // add data-amout attribute to the button
+                        document.querySelector('#standard_checkout').setAttribute('data-amount', data[i].amount);
+                    } else if (data[i].name === 'Premium') {
+                        document.getElementById('premium').innerHTML = 'Kshs ' + data[i].amount;
+                        // add data-amout attribute to the button
+                        document.querySelector('#premium_checkout').setAttribute('data-amount', data[i].amount);
+                    }
+                }
+            },
+            error: function (error) {
+                // show error message, maybe you are not connected to the internet
+                document.getElementById('basic').innerHTML = 'Error fetching data';
+                document.getElementById('standard').innerHTML = 'Error fetching data';
+                document.getElementById('premium').innerHTML = 'Error fetching data';
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        //Hide the alert after 5 seconds
+        setTimeout(() => {
+            document.getElementById('alert').style.display = 'none';
+        }, 5000);
+        fetchPackages();
+    });
+
+
+</script>
 
 {%endblock content%}
