@@ -1,0 +1,53 @@
+{%extends 'pos/base.html'%}
+{%load static%}
+{%block title%}Checkout{%endblock title%}
+{%block heading%}
+Checkout
+{%endblock heading%}
+{%block content%}
+<!--Centered mobile money payment form-->
+<style>
+    .checkout-form {
+        border: 1px solid #000;
+        /* Change the color as needed */
+        padding: 20px;
+        /* Add some padding so the content isn't right up against the border */
+        border-radius: 5px;
+        /* Optional: add a slight roundness to the corners */
+        width: 100%;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <form action="" method="post" class="checkout-form">
+                {% csrf_token %}
+                <div class="form-group mt-3">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" name="phone" required>
+                </div>
+                <div class="form-group mt-3">
+                    <label for="amount">Amount</label>
+                    <input type="text" class="form-control" id="amount" name="amount" disabled value="{{amount}}">
+                </div>
+                <span style="display:block; text-align: center"> <a href="https://intasend.com/security"
+                        target="_blank"><img
+                            src="https://intasend-prod-static.s3.amazonaws.com/img/trust-badges/intasend-trust-badge-with-mpesa-hr-light.png"
+                            width="375px" alt="IntaSend Secure Payments (PCI-DSS Compliant)"></a> <strong><a
+                            style="display: block; color: #454545; text-decoration: none; font-size: 0.8em; margin-top: 0.6em;"
+                            href="https://intasend.com/security" target="_blank">Secured by IntaSend
+                            Payments</a></strong> </span>
+                <div class="d-grid gap-2">
+
+                    <button type="submit" class="btn btn-success mt-3">
+                        <i class="ti ti-credit-card"></i> Pay
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+{%endblock content%}
