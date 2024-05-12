@@ -2,7 +2,6 @@ from django.db import models
 from django.forms import model_to_dict
 
 
-
 class Category(models.Model):
     STATUS_CHOICES = (("ACTIVE", "Active"), ("INACTIVE", "Inactive"))  # new
 
@@ -29,6 +28,9 @@ class Category(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def to_json(self) -> dict:
+        return model_to_dict(self)
 
 
 class Product(models.Model):
