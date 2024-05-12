@@ -12,11 +12,6 @@ from dotenv import load_dotenv
 from firebase_admin import credentials
 
 
-load_dotenv()
-cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
-app = firebase_admin.initialize_app(cred)
-
-
 class CompanyView(View):
     def get(self, request: HttpRequest, id: int = None):
 
