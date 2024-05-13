@@ -85,6 +85,14 @@
                 <span class="hide-menu">Customers</span>
             </a>
         </li>
+        <li class="sidebar-item">
+            <a class="sidebar-link" href="{%url 'expenses:index'%}" aria-expanded="false">
+                <span>
+                    <i class="ti ti-truck"></i>
+                </span>
+                <span class="hide-menu">Expenses</span>
+            </a>
+        </li>
 
         <li class="sidebar-item">
             <a class="sidebar-link" href="{%url 'accounting:accounting'%}" aria-expanded="false">
@@ -132,7 +140,7 @@
             </a>
         </li>
         <li class="sidebar-item">
-            <a class="sidebar-link" href="" aria-expanded="false">
+            <a class="sidebar-link" href="{%url 'cloud:cloud'%}" aria-expanded="false">
                 <span>
                     <i class="ti ti-cloud"></i>
                 </span>
