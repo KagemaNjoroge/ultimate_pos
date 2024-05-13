@@ -1,14 +1,19 @@
-# Create your views here.
 import json
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
+from django.contrib.auth.models import User
 
 from authentication.utils import get_all_permissions
 from .forms import SignUpForm
+
+
+def index(request: HttpRequest) -> HttpResponse:
+    # for users management
+    users = User.objects.all()
+    return render(request, "accounts/index.html", {"users": users})
 
 
 def request_is_ajax(request: HttpRequest) -> bool:
@@ -45,7 +50,7 @@ def profile(request: HttpRequest) -> HttpResponse:
         user.last_name = last_name or user.last_name
 
         user.save()
-        
+
         return JsonResponse(
             {"message": "Profile updated successfully", "status": "Ok"}, status=200
         )
@@ -94,7 +99,7 @@ def register_user(request: HttpRequest) -> HttpResponse:
             raw_password = form.cleaned_data.get("password")
             authenticate(username=username, password=raw_password)
             return redirect("/login/")
-        #TODO: Return error message as json response
+        # TODO: Return error message as json response
 
     elif request.method == "GET":
         return render(
