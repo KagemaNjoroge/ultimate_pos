@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
@@ -65,12 +64,12 @@ LOGIN_REDIRECT_URL = "authentication:home"
 LOGOUT_REDIRECT_URL = "authentication:login"
 
 # ROOT dir for templates
-TEMPLATE_DIR = os.path.join(CORE_DIR, "templates")
+
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [TEMPLATE_DIR],
+        "DIRS": ["templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -123,11 +122,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_ROOT = os.path.join(CORE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 STATIC_URL = "/static/"
 
-# Extra places for collect static to find static files.
-STATICFILES_DIRS = (os.path.join(CORE_DIR, "static"),)
 # Media Files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
