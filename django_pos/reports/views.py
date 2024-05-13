@@ -10,13 +10,13 @@ from django.views.decorators.http import require_http_methods
 # Create your views here.
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def index(request: HttpRequest) -> HttpResponse:
     return render(request, "reports/index.html", context={"active_icon": "reports"})
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 @require_http_methods(["GET"])
 def duration_sales_report(request: HttpRequest):
@@ -42,7 +42,7 @@ def duration_sales_report(request: HttpRequest):
     )
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 @require_http_methods(["GET"])
 def sales_this_month(request: HttpRequest) -> JsonResponse:
@@ -66,7 +66,7 @@ def sales_this_month(request: HttpRequest) -> JsonResponse:
     )
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 @require_http_methods(["GET"])
 def sales_this_week(request: HttpRequest) -> JsonResponse:
@@ -90,7 +90,7 @@ def sales_this_week(request: HttpRequest) -> JsonResponse:
     )
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 @require_http_methods(["GET"])
 def best_selling_product(request: HttpRequest) -> JsonResponse:
@@ -120,7 +120,7 @@ def best_selling_product(request: HttpRequest) -> JsonResponse:
     )
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 @require_http_methods(["GET"])
 def get_best_selling_category(request: HttpRequest) -> JsonResponse:

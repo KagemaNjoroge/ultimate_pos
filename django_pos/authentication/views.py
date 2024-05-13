@@ -27,7 +27,7 @@ def logout_view(request: HttpRequest) -> HttpResponse:
     )
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @require_http_methods(["GET", "POST"])
 def profile(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":

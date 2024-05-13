@@ -12,7 +12,7 @@ import openpyxl
 import time
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def categories_list_view(request: HttpRequest) -> HttpResponse:
     context = {
@@ -22,7 +22,7 @@ def categories_list_view(request: HttpRequest) -> HttpResponse:
     return render(request, "products/categories.html", context=context)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def categories_add_view(request: HttpRequest) -> HttpResponse:
     context = {
@@ -64,7 +64,7 @@ def categories_add_view(request: HttpRequest) -> HttpResponse:
         return HttpResponse(status=405)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
 
@@ -102,7 +102,7 @@ def categories_update_view(request: HttpRequest, category_id: str) -> HttpRespon
         return HttpResponse(status=405)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def categories_delete_view(request: HttpRequest, category_id: str) -> HttpResponse:
     """
@@ -128,7 +128,7 @@ def categories_delete_view(request: HttpRequest, category_id: str) -> HttpRespon
         return redirect("products:categories_list")
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def products_list_view(request: HttpRequest) -> HttpResponse:
     context = {"active_icon": "products", "products": Product.objects.all()}
@@ -141,7 +141,7 @@ def products_list_view(request: HttpRequest) -> HttpResponse:
     return render(request, "products/products.html", context=context)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def products_add_view(request: HttpRequest) -> HttpResponse:
     context = {
@@ -213,7 +213,7 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
     return render(request, "products/products_add.html", context=context)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
     if request.method == "GET":
@@ -260,7 +260,7 @@ def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
         return JsonResponse({"message": "Method not allowed"}, status=405)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def products_delete_view(request: HttpRequest, product_id: str) -> HttpResponse:
     """
@@ -290,7 +290,7 @@ def is_ajax(request: HttpRequest) -> bool:
     return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def get_products_ajax_view(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
@@ -305,7 +305,7 @@ def get_products_ajax_view(request: HttpRequest) -> HttpResponse:
             return JsonResponse(data, safe=False)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def upload_excel_view(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
@@ -385,7 +385,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
             )
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 def download_template(request: HttpRequest):
     file_path = "static/upload_products.xltx"
     with open(file_path, "rb") as file:
@@ -394,7 +394,7 @@ def download_template(request: HttpRequest):
         return response
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def product_detail_view(request: HttpRequest, product_id: str) -> HttpResponse:
     product = get_object_or_404(Product, id=product_id)

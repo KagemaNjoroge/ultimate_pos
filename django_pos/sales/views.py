@@ -26,7 +26,7 @@ def is_ajax(request: HttpRequest) -> bool:
     return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def sales_list_view(request: HttpRequest) -> HttpResponse:
     sale_details = SaleDetail.objects.all()
@@ -34,7 +34,7 @@ def sales_list_view(request: HttpRequest) -> HttpResponse:
     return render(request, "sales/sales.html", context=context)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def sales_add_view(request: HttpRequest) -> HttpResponse:
     context = {
@@ -124,7 +124,7 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
         return JsonResponse({"message": "Method not allowed"}, status=405)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     """
@@ -152,7 +152,7 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         return redirect("sales:sales_list")
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     """

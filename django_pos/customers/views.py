@@ -10,14 +10,14 @@ from .models import Customer
 # TODO: Remove duplicate code
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def customers_list_view(request: HttpRequest) -> HttpResponse:
     context = {"active_icon": "customers", "customers": Customer.objects.all()}
     return render(request, "customers/customers.html", context=context)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def customers_add_view(request: HttpRequest) -> HttpResponse:
     context = {
@@ -77,7 +77,7 @@ def customers_add_view(request: HttpRequest) -> HttpResponse:
         )
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def customers_update_view(request: HttpRequest, customer_id: str) -> HttpResponse:
     """
@@ -133,7 +133,7 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
             return JsonResponse({"status": "error", "message": str(e)})
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpResponse:
     """
@@ -158,7 +158,7 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
         )
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
     customer = get_object_or_404(Customer, id=id)

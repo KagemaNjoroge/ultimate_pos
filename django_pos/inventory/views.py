@@ -10,7 +10,7 @@ from products.models import Product
 
 # Create your views here.
 @check_subscription
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 def index(request):
     inventory = Inventory.objects.all()
     context = {"inventory": inventory, "active_icon": "inventory"}
@@ -36,7 +36,7 @@ def add_inventory(request: HttpRequest) -> HttpResponse:
             return JsonResponse({"status": "fail", "error": str(ee)}, safe=True)
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 @check_subscription
 def update_inventory(request: HttpRequest, inventory_id: int) -> HttpResponse:
     inventory = get_object_or_404(Inventory, id=inventory_id)

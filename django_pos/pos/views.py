@@ -15,6 +15,7 @@ from pos.models import Notifications
 from products.models import Product, Category
 from sales.models import Sale
 from sales.models import SaleDetail, SaleItem
+from django.conf import settings
 
 # load_dotenv()
 # cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
@@ -59,7 +60,7 @@ def check_subscription(view_func):
     return _wrapped_view
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 def register_company(request: HttpRequest) -> HttpResponse:
     return render(
         request, "pos/register_company.html", context={"active_icon": "settings"}
@@ -70,7 +71,7 @@ def subscription_page(request: HttpRequest) -> HttpResponse:
     return render(request, "pos/subscription.html", context={"active_icon": "settings"})
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 def index(request: HttpRequest) -> HttpResponse:
     today = date.today()
 
@@ -156,7 +157,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 
 @check_subscription
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/users/login/")
 def pos(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         products = Product.objects.all()
