@@ -14,7 +14,12 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["*"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    "http://pos.tomorrow.co.ke",
+    "https://pos.tomorrow.co.ke",
+    "https://localhost",
+]
 
 # Application definition
 
