@@ -38,6 +38,10 @@ LOCAL_APPS = [
     "etims",
     "payments",
     "reports",
+    "suppliers",
+    "accounting",
+    "expenses",
+    "cloud",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
@@ -54,7 +58,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "django_pos.urls"
-LOGIN_URL = "/accounts/login/"
+LOGIN_URL = "/users/login/"
 # Route defined in authentication/urls.py
 LOGIN_REDIRECT_URL = "authentication:home"
 # Route defined in authentication/urls.py
