@@ -1,7 +1,7 @@
 from calendar import c
 import json
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from expenses.models import Expense, ExpenseCategory
 
@@ -89,7 +89,7 @@ def index(request: HttpRequest) -> HttpResponse:
             return JsonResponse({"error": "Invalid data", "status": "error"})
 
 
-def expense_categories(request: HttpRequest) -> HttpResponse:
+def expense_categories(request: HttpRequest, id=None) -> HttpResponse:
     if request.method == "GET":
         expense_categs = ExpenseCategory.objects.all()
         return render(
@@ -98,6 +98,97 @@ def expense_categories(request: HttpRequest) -> HttpResponse:
             context={"categories": expense_categs},
         )
     elif request.method == "POST":
-        data = request.POST
-        print(data)
-        return JsonResponse({"name": "UltimatePOS"})
+        data = json.loads(request.body)
+        category_name = data.get("category_name", None)
+        category_description = data.get("category_description", None)
+        is_recurring = data.get("is_recurring", None)
+
+        if is_recurring == "1":
+            is_recurring = True
+        else:
+            is_recurring = False
+        if category_name:
+            category = ExpenseCategory(
+                category_name=category_name,
+                category_description=category_description,
+                is_recurring=is_recurring,
+            )
+            try:
+                category.save()
+                return JsonResponse(
+                    {
+                        "category": category.to_json(),
+                        "status": "success",
+                    }
+                )
+            except Exception as e:
+                return JsonResponse(
+                    {
+                        "error": str(e),
+                        "status": "error",
+                    }
+                )
+        else:
+            return JsonResponse(
+                {
+                    "error": "Invalid data",
+                    "status": "error",
+                }
+            )
+
+    elif request.method == "PUT":
+        id = request.GET.get("id", None)
+        if id:
+            category = ExpenseCategory.objects.get(id=id)
+            if request.body:
+                data = json.loads(request.body)
+                if "category_name" in data:
+                    category.category_name = data["category_name"]
+                if "category_description" in data:
+                    category.category_description = data["category_description"]
+                if "is_recurring" in data:
+                    if data["is_recurring"] == "1":
+                        category.is_recurring = True
+                    else:
+                        category.is_recurring = False
+
+            try:
+                category.save()
+                return JsonResponse(
+                    {
+                        "category": category.to_json(),
+                        "status": "success",
+                    }
+                )
+            except Exception as e:
+                return JsonResponse(
+                    {
+                        "error": str(e),
+                        "status": "error",
+                    }
+                )
+        else:
+            return JsonResponse(
+                {
+                    "error": "Invalid data",
+                    "status": "error",
+                }
+            )
+
+    elif request.method == "DELETE":
+        id = request.GET.get("id", None)
+        category = get_object_or_404(ExpenseCategory, id=id)
+        try:
+            category.delete()
+            return JsonResponse(
+                {
+                    "status": "success",
+                }
+            )
+        except Exception as e:
+            return JsonResponse(
+                {
+                    "error": str(e),
+                    "status": "error",
+                }
+            )
