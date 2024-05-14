@@ -200,39 +200,41 @@
 <div class="row ml-2">
     <div class="col-md-12">
         {% if expenses %}
-        <table class="table table-striped" id="dataTable">
-            <thead>
-                <tr>
-                    <th>Expense</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Category</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for expense in expenses %}
-                <tr>
-                    <td>{{expense.expense_name}}</td>
-                    <td>{{expense.amount}}</td>
-                    <td>{{expense.date_added}}</td>
-                    <td>{{expense.category}}</td>
-                    <td>
-                        <button class="btn btn-primary edit" data-id="{{expense.id}}"
-                            data-name="{{expense.expense_name}}" data-amount="{{expense.amount}}"
-                            data-category="{{expense.category}}" data-description="{{expense.expense_description}}">
-                            <i class="ti ti-pencil"></i>
-                        </button>
-                        <button class="btn btn-danger delete" data-id="{{expense.id}}"
-                            data-name="{{expense.expense_name}}">
+        <div class="table-responsive">
+            <table class="table table-striped " id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Expense</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{expense.expense_name}}</td>
+                        <td>{{expense.amount}}</td>
+                        <td>{{expense.date_added}}</td>
+                        <td>{{expense.category}}</td>
+                        <td>
+                            <button class="btn btn-primary edit" data-id="{{expense.id}}"
+                                data-name="{{expense.expense_name}}" data-amount="{{expense.amount}}"
+                                data-category="{{expense.category}}" data-description="{{expense.expense_description}}">
+                                <i class="ti ti-pencil"></i>
+                            </button>
+                            <button class="btn btn-danger delete" data-id="{{expense.id}}"
+                                data-name="{{expense.expense_name}}">
 
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
         <p>No expenses found</p>
         {% endif %}
@@ -267,6 +269,7 @@
                     'X-CSRFToken': '{{csrf_token}}'
                 },
                 url: `?id=${id}`,
+
                 data: JSON.stringify({
                     "description_": $('#description_').val(),
                     "amount_": $('#amount_').val(),
@@ -276,7 +279,7 @@
 
                 }),
                 success: function (response) {
-                    console.log(response);
+
                     if (response['status'] == 'success') {
                         $('#editExpenseModal').modal('hide');
                         // clear form fields
@@ -399,6 +402,9 @@
             $('#save_expense').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
             $.ajax({
                 type: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{csrf_token}}'
+                },
                 url: '',
                 data: $(this).serialize(),
                 success: function (response) {
