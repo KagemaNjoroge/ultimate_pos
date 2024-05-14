@@ -19,42 +19,45 @@
         </button>
     </a>
 </div>
-<table class="table table-hover table-bordered" id="dataTable" style="width: 100%;">
-    <thead>
-        <tr>
-            <th>Inventory ID</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for invent in inventory %}
-        <tr>
-            <th style="width: 10%;">{{ invent.id }}</th>
-            <td style="width: 20%;">{{ invent.product.name }}</td>
-            <td style="width: 15%;">{{ invent.quantity }}</td>
-            <td class="text-center" style="width: 20%;"> <!--Update-->
-                <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}" class="text-decoration-none">
-                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
-                        title="Update Inventory">
-                        <i class="fas fa-pen"></i>
-                    </button>
-                </a>
-                <!--Delete modal-->
-                <!-- Button trigger modal -->
-                <a class="text-decoration-none">
-                    <button type="button" class="btn btn-danger btn-sm">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </a>
-            </td>
+<div class="table-responsive">
+    <table class="table table-hover table-bordered" id="dataTable">
+        <thead>
+            <tr>
+                <th>Inventory ID</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invent in inventory %}
+            <tr>
+                <th>{{ invent.id }}</th>
+                <td>{{ invent.product.name }}</td>
+                <td>{{ invent.quantity }}</td>
+                <td> <!--Update-->
+                    <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}"
+                        class="text-decoration-none">
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
+                            title="Update Inventory">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </a>
+                    <!--Delete modal-->
+                    <!-- Button trigger modal -->
+                    <a class="text-decoration-none">
+                        <button type="button" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </a>
+                </td>
 
-        </tr>
+            </tr>
 
-        {% endfor %}
-    </tbody>
-</table>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {%endblock content%}
 
 {% block javascripts %}
