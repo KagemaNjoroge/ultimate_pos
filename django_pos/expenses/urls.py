@@ -7,4 +7,5 @@ urlpatterns = [
     path("<int:id>", views.index, name="expenses_operations"),
     path("", views.index, name="index"),
     path("category", views.expense_categories, name="category"),
+    path("category/<int:id>", views.expense_categories, name="category_operations"),
 ]
