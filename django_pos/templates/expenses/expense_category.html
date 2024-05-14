@@ -15,8 +15,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to delete this expense: <strong id="category_name"></strong> category?</p>
-                <input type="hidden" id="category_id" name="category_id">
+                <p>Are you sure you want to delete this expense: <strong id="category_name_"></strong> category?</p>
+                <input type="hidden" id="category_id_" name="category_id">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger close_delete" data-dismiss="modal">
@@ -44,29 +44,29 @@
                 <form action="" method="POST" id="edit_expense_form">
                     {%csrf_token%}
                     <div class="form-group row">
-                        <label for="category_name" class="col-sm-3 col-form-label">Category Name</label>
+                        <label for="_category_name" class="col-sm-3 col-form-label">Category Name</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="category_name" name="category_name" required>
+                            <input type="text" class="form-control" id="_category_name" name="category_name" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="category_description" class="col-sm-3 col-form-label">Description</label>
+                        <label for="_category_description" class="col-sm-3 col-form-label">Description</label>
                         <div class="col-sm-9">
-                            <textarea class="form-control" id="category_description" name="category_description"
+                            <textarea class="form-control" id="_category_description" name="category_description"
                                 required></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="is_recurring" class="col-sm-3 col-form-label">Recurring</label>
+                        <label for="_is_recurring" class="col-sm-3 col-form-label">Recurring</label>
                         <div class="col-sm-9">
-                            <select class="form-control" id="is_recurring" name="is_recurring" required>
+                            <select class="form-control" id="_is_recurring" name="is_recurring" required>
                                 <option value="1">Yes</option>
                                 <option value="0">No</option>
                             </select>
                         </div>
                     </div>
                     <!--Hidden id-->
-                    <input type="hidden" id="category_id" name="category_id">
+                    <input type="hidden" id="_category_id" name="category_id">
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger close_edit" data-dismiss="modal">
                             <i class="fa fa-times"></i>
@@ -215,7 +215,7 @@
 <script>
     $(document).ready(function () {
         $('#delete_category').click(function () {
-            var id = $('#category_id').val();
+            var id = $('#category_id_').val();
             // loading spinner
             $('#delete_category').html('<i class="fa fa-spinner fa-spin"></i> Deleting...');
             $.ajax({
@@ -270,9 +270,9 @@
             e.preventDefault();
             $('#save_category_').html('<i class="fa fa-spinner fa-spin"></i> Updating...');
             var category_name = $('#category_name').val();
-            var category_description = $('#category_description').val();
-            var is_recurring = $('#is_recurring').val();
-            var id = $('#category_id').val();
+            var category_description = $('#_category_description').val();
+            var is_recurring = $('#_is_recurring').val();
+            var id = $('#_category_id').val();
             var data = {
                 'category_name': category_name,
                 'category_description': category_description,
@@ -334,17 +334,17 @@
     })
     $('.edit').click(function () {
         $('#editExpenseCategoryModal').modal('show');
-        $('#category_name').val($(this).data('category_name'));
-        $('#category_description').val($(this).data('category_description'));
-        $('#is_recurring').val($(this).data('is_recurring'));
-        $('#category_id').val($(this).data('id'));
+        $('#_category_name').val($(this).data('category_name'));
+        $('#_category_description').val($(this).data('category_description'));
+        $('#_is_recurring').val($(this).data('is_recurring'));
+        $('#_category_id').val($(this).data('id'));
 
 
     })
     $('.delete').click(function () {
         $('#deleteExpenseCategoryModal').modal('show');
-        $('#category_name').html($(this).data('category_name'));
-        $('#category_id').val($(this).data('id'));
+        $('#category_name_').html($(this).data('category_name'));
+        $('#category_id_').val($(this).data('id'));
     });
     $('.close_delete').click(function () {
         $('#deleteExpenseCategoryModal').modal('hide');
