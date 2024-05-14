@@ -3,4 +3,456 @@
 {% block title %}Expenses{% endblock %}
 {%block heading%}Expenses{%endblock%}
 {% block content %}
+<!--Delete expense modal-->
+<div class="modal fade" id="deleteExpenseModal" tabindex="-1" role="dialog" aria-labelledby="deleteExpenseModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteExpenseModalLabel">Delete Expense</h5>
+                <button type="button" class="close close_delete" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="expense_name_"></strong>?</p>
+                <input type="hidden" id="expense_id_">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close_delete" data-dismiss="modal">
+                    <i class="fa fa-times"></i>
+                </button>
+                <button type="button" class="btn btn-danger" id="delete_expense">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Edit expense modal-->
+<div class="modal fade" id="editExpenseModal" tabindex="-1" role="dialog" aria-labelledby="editExpenseModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense</h5>
+                <button type="button" class="close close_edit_expense" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST" id="edit_expense_form">
+                    {%csrf_token%}
+                    <div class="form-group row">
+                        <label for="name" class="col-sm-3 col-form-label">Expense Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="amount" class="col-sm-3 col-form-label">Amount</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="amount_" name="amount_" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="description" class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="description_" name="description_" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="category" class="col-sm-3 col-form-label">Category</label>
+                        <div class="col-sm-9">
+                            <select name="category_" id="category_" class="form-control" required>
+                                <option value="">Select Category</option>
+                                {% for category in categories %}
+                                <option value="{{category.id}}">{{category.category_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger close_edit_expense" data-dismiss="modal">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="22"
+                                height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M18 6l-12 12" />
+                                <path d="M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <button type="submit" class="btn btn-success" id="save_edit_expense">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy"
+                                width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                                <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                <path d="M14 4l0 4l-6 0l0 -4" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Add expense modal-->
+<div class="modal fade" id="addExpenseModal" tabindex="-1" role="dialog" aria-labelledby="addExpenseModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
+                <button type="button" class="close close_add_expense" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST" id="expense_form">
+                    {%csrf_token%}
+                    <div class="form-group row">
+                        <label for="expense_name" class="col-sm-3 col-form-label">Expense Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="expense_name" name="expense_name" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="amount" class="col-sm-3 col-form-label">Amount</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="amount" name="amount" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="description" class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="description" name="description" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="category" class="col-sm-3 col-form-label">Category</label>
+                        <div class="col-sm-9">
+                            <select name="category" id="category" class="form-control" required>
+                                <option value="">Select Category</option>
+                                {% for category in categories %}
+                                <option value="{{category.id}}">{{category.category_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                    </div>
+                    <!--Hidden id-->
+                    <input type="hidden" name="id" id="id">
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger close_add_expense" data-dismiss="modal">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="22"
+                                height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M18 6l-12 12" />
+                                <path d="M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <button type="submit" class="btn btn-success" id="save_expense">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy"
+                                width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                                <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                                <path d="M14 4l0 4l-6 0l0 -4" />
+                            </svg>
+                        </button>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Result alerts for error or success-->
+<div id="alerts"></div>
+
+<div class="row ml-0 mb-3">
+    <div class="ml-auto">
+        <a class="col">
+            <button type="button" class="btn btn-success font-weight-bold" id="show_add_expense_modal">
+                <i class="ti ti-plus mr-2"></i>
+                Add Expense
+            </button>
+        </a>
+
+        <a href="{%url 'expenses:category'%}" class="col">
+            <button type="button" class="btn btn-success font-weight-bold ml-2">
+                <i class="ti ti-list mr-2"></i>
+                Expense Categories
+            </button>
+        </a>
+    </div>
+</div>
+<br>
+<!--10 recent expenses table-->
+<div class="row ml-2">
+    <div class="col-md-12">
+        {% if expenses %}
+        <table class="table table-striped" id="dataTable">
+            <thead>
+                <tr>
+                    <th>Expense</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{expense.expense_name}}</td>
+                    <td>{{expense.amount}}</td>
+                    <td>{{expense.date_added}}</td>
+                    <td>{{expense.category}}</td>
+                    <td>
+                        <button class="btn btn-primary edit" data-id="{{expense.id}}"
+                            data-name="{{expense.expense_name}}" data-amount="{{expense.amount}}"
+                            data-category="{{expense.category}}" data-description="{{expense.expense_description}}">
+                            <i class="ti ti-pencil"></i>
+                        </button>
+                        <button class="btn btn-danger delete" data-id="{{expense.id}}"
+                            data-name="{{expense.expense_name}}">
+
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No expenses found</p>
+        {% endif %}
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#dataTable').on('click', '.edit', function () {
+            let id = $(this).data('id');
+            let name = $(this).data('name');
+            let amount = $(this).data('amount');
+            let category = $(this).data('category');
+            let description = $(this).data('description');
+            $('#editExpenseModal').modal('show');
+            $('#name').val(name);
+            $('#amount_').val(amount);
+            $('#category_').val(category);
+            $('#description_').val(description);
+            $('#id').val(id);
+
+
+        });
+        $('#edit_expense_form').submit(function (e) {
+            e.preventDefault();
+            $('#save_edit_expense').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+            var id = $('#id').val();
+            console.log($(this).serialize())
+            $.ajax({
+                type: 'PUT',
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRFToken': '{{csrf_token}}'
+                },
+                url: `?id=${id}`,
+                data: JSON.stringify({
+                    "description_": $('#description_').val(),
+                    "amount_": $('#amount_').val(),
+                    "category_": $('#category_').val(),
+                    "name": $('#name').val()
+
+
+                }),
+                success: function (response) {
+                    console.log(response);
+                    if (response['status'] == 'success') {
+                        $('#editExpenseModal').modal('hide');
+                        // clear form fields
+                        $('#edit_expense_form').trigger('reset');
+                        // show success alert
+                        $('#alerts').html(
+                            `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Sucsess:</strong> Expense <strong>${response.expense.expense_name}</strong> updated successfully.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                            `
+
+                        )
+                        //reload in 2 seconds
+                        setTimeout(() => {
+                            location.reload();
+
+                        }, 2000);
+
+                    }
+                    else if (response['status'] == 'error') {
+                        $('#edit_expense_form').trigger('reset');
+                        $('#alerts').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> ${response['error']}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        `);
+                    }
+                    else {
+                        $('#alerts').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> An error occurred. Please try again later.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        `);
+                    }
+                }
+            }).done(function () {
+                $('#save_edit_expense').html('Save');
+            });
+        });
+        let tblCategories = $('#dataTable').DataTable({
+            "order": [
+                [2, "desc"]
+            ]
+        })
+        $('#show_add_expense_modal').click(function () {
+            $('#addExpenseModal').modal('show');
+        });
+        $('.close_add_expense').click(function () {
+            $('#addExpenseModal').modal('hide');
+        });
+        $('.close_edit_expense').click(function () {
+            $('#editExpenseModal').modal('hide');
+        });
+        $('#dataTable').on('click', '.delete', function () {
+            let id = $(this).data('id');
+            let name = $(this).data('name');
+            $('#deleteExpenseModal').modal('show');
+            $('#expense_name_').html(name);
+            $('#expense_id_').val(id);
+        });
+        $('.close_delete').click(function () {
+            $('#deleteExpenseModal').modal('hide');
+        });
+        $('#delete_expense').click(function () {
+            let id = $('#expense_id_').val();
+            // show spinner
+            $('#delete_expense').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleting...');
+            $.ajax({
+                type: 'DELETE',
+                url: `?id=${id}`,
+                headers: {
+                    'X-CSRFToken': '{{csrf_token}}'
+                },
+                success: function (response) {
+                    if (response['status'] == 'success') {
+                        $('#deleteExpenseModal').modal('hide');
+                        // show success alert
+                        $('#alerts').html(
+                            `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Sucsess:</strong> Expense  deleted successfully.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                            `
+
+                        )
+                        //reload in 2 seconds
+                        setTimeout(() => {
+                            location.reload();
+
+                        }, 2000);
+                    }
+                    else {
+                        $('#alerts').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> An error occurred. Please try again later.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        `);
+                    }
+                }
+            });
+        });
+        $('#expense_form').submit(function (e) {
+            e.preventDefault();
+            $('#save_expense').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+            $.ajax({
+                type: 'POST',
+                url: '',
+                data: $(this).serialize(),
+                success: function (response) {
+
+                    if (response['status'] == 'success') {
+                        $('#addExpenseModal').modal('hide');
+                        // clear form fields
+                        $('#expense_form').trigger('reset');
+                        // show success alert
+
+                        // reload in 2 seconds
+                        setTimeout(() => {
+                            $('#alerts').html(
+                                `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>Sucsess:</strong> Expense <strong>${response.expense.expense_name}</strong> added successfully.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                            `
+
+                            )
+                            location.reload();
+
+                        }, 2000);
+
+                    }
+                    else if (response['status'] == 'error') {
+                        $('#expense_form').trigger('reset');
+                        $('#alerts').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> ${response['error']}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        `);
+                    }
+                    else {
+                        $('#alerts').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> An error occurred. Please try again later.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        `);
+                    }
+                }
+            }).done(function () {
+                $('#save_expense').html('Save');
+            });
+        });
+    });
+</script>
 {%endblock content%}
