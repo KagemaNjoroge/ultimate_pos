@@ -1,7 +1,10 @@
 from django.shortcuts import render
 
+from suppliers.models import Supplier
+
 # Create your views here.
 
 
 def index(request):
-    return render(request, "suppliers/index.html")
+    suppliers = Supplier.objects.all()
+    return render(request, "suppliers/index.html", {"suppliers": suppliers})
