@@ -16,7 +16,14 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Avg Earning per Month</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{avg_month}} {{currency_symbol}}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <div id="avg_m">
+                                {{avg_month}}
+                            </div>
+                            <div id="currency">
+                                {{currency_symbol}}
+                            </div>
+                        </div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -34,7 +41,13 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                             Earnings (Annual)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{annual_earnings}} {{currency_symbol}}
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            <div id="avg_a">
+                                {{annual_earnings}}
+                            </div>
+                            <div id="currency">
+                                {{currency_symbol}}
+                            </div>
                         </div>
                     </div>
                     <div class="col-auto">
@@ -152,4 +165,17 @@
 <script src="{% static 'js/chart-area.js' %}"></script>
 <!--Chart pie-->
 <script src="{% static 'js/chart-pie.js' %}"></script>
+<script>
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    $(document).ready(function () {
+        // format #avg_m, avg_a
+        var avg_m = document.getElementById('avg_m').innerHTML;
+        var avg_a = document.getElementById('avg_a').innerHTML;
+        document.getElementById('avg_m').innerHTML = formatNumberWithCommas(avg_m);
+        document.getElementById('avg_a').innerHTML = formatNumberWithCommas(avg_a);
+
+    })
+</script>
 {% endblock javascripts %}
