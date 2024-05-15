@@ -18,7 +18,7 @@ Reports
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Sales this month</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Kshs 90,000</div>
+                            <div class="h6 mb-0 font-weight-bold text-gray-800 mt-3" id="sales_this_month"></div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -36,7 +36,7 @@ Reports
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 This week</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Kshs 20,000</div>
+                            <div class="h6 mt-3 font-weight-bold text-gray-800" id="sales_this_week"></div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -57,15 +57,21 @@ Reports
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                        <img src="{%static 'img/backgrounds/rocket.png'%}" alt="Product"
-                                            style="width: 50px;">
+                                    <div id="best_selling_product_name">
+                                        <div class="spinner-border text-info" role="status">
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                        <div id="best_selling_product_quantity">
+                                            <div class="spinner-border text-info" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-fw fa-tag fa-2x text-gray-300"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-fw fa-tag fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
@@ -248,8 +254,60 @@ Reports
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script>
+    function formatNumberWithCommas(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    function get_best_selling_category() {
+        $.ajax({
+            url: "{%url 'reports:best_selling_category'%}",
+            type: "GET",
+            success: function (data) {
+                con1sole.log(data)
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+    }
+    function get_best_selling_product() {
+        $.ajax({
+            url: "{%url 'reports:best_selling_product'%}",
+            type: "GET",
+            success: function (data) {
+                $("#best_selling_product_name").html(data.top_selling[0])
+                $("#best_selling_product_quantity").html(data.top_selling[1])
 
 
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+    }
+    function get_this_month_sales() {
+        $.ajax({
+            url: "{%url 'reports:sales_this_month'%}",
+            type: "GET",
+            success: function (data) {
+                $("#sales_this_month").text(`Ksh ${formatNumberWithCommas(data.total)}`)
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+    }
+    function get_this_week_sales() {
+        $.ajax({
+            url: "{%url 'reports:sales_this_week'%}",
+            type: "GET",
+            success: function (data) {
+                $("#sales_this_week").text(`Ksh ${formatNumberWithCommas(data.total)}`)
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+    }
 
     function saveReportToSessionStorage(data) {
         // save the data to session storage
@@ -324,7 +382,10 @@ Reports
     }
 
     $(document).ready(function () {
-
+        get_this_month_sales();
+        get_this_week_sales();
+        get_best_selling_product();
+        //get_best_selling_category();
         $("#export_7").click(function () {
             // add csv, pdf, excel export options to the modal
 
