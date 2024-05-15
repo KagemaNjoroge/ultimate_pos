@@ -1,4 +1,5 @@
 from django.db import models
+from company.models import Branch
 
 # Create your models here.
 
@@ -11,6 +12,9 @@ class Supplier(models.Model):
     kra_pin = models.CharField(max_length=11, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
     logo = models.ImageField(upload_to="suppliers/", blank=True, null=True)
+    branch = models.ForeignKey(
+        Branch, on_delete=models.CASCADE, blank=False, null=False, default=1
+    )
 
     def __str__(self):
         return self.name
@@ -24,6 +28,7 @@ class Supplier(models.Model):
             "kra_pin": self.kra_pin,
             "website": self.website,
             "logo": self.logo.url if self.logo else "",
+            "branch": self.branch.branch_name,
         }
 
     class Meta:
