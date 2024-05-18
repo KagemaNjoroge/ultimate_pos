@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import os
 from django.db import connection
 import logging
-
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 load_dotenv()
@@ -175,6 +175,7 @@ def execute_action(sql: str):
 
 
 @require_http_methods(["POST"])
+@login_required(login_url="/users/login/")
 @csrf_exempt
 def chat(request: HttpRequest):
     query = request.POST.get("query", "")
