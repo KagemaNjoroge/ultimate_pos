@@ -1,13 +1,14 @@
-from calendar import c
 import json
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
 
+
 from expenses.models import Expense, ExpenseCategory
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
-
-
+@login_required(login_url="/users/login/")
 def index(request: HttpRequest) -> HttpResponse:
 
     if request.method == "GET":
@@ -89,6 +90,7 @@ def index(request: HttpRequest) -> HttpResponse:
             return JsonResponse({"error": "Invalid data", "status": "error"})
 
 
+@login_required(login_url="/users/login/")
 def expense_categories(request: HttpRequest, id=None) -> HttpResponse:
     if request.method == "GET":
         expense_categs = ExpenseCategory.objects.all()
