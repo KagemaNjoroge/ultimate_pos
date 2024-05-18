@@ -34,5 +34,7 @@ urlpatterns = [
     path("cloud/", include("cloud.urls")),
     # expenses
     path("expenses/", include("expenses.urls")),
+    # purchases
+    path("purchases/", include("purchases.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
