@@ -18,6 +18,7 @@ def index(request):
 
 
 @check_subscription
+@login_required(login_url="/users/login/")
 def add_inventory(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         # only products that are not in the inventory
