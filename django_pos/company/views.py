@@ -2,9 +2,8 @@ from django.http import HttpRequest, HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404, render
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.utils.datastructures import MultiValueDict
-
-from company.utils.subscription import check_subscription_in_firebase
-from .models import Branch, Company, Subscription
+from django.contrib.auth.decorators import login_required
+from .models import Branch, Company
 from django.views import View
 
 
@@ -101,6 +100,7 @@ class CompanyView(View):
             )
 
 
+@login_required(login_url="/users/login/")
 def index(request: HttpRequest) -> HttpResponse:
     company = Company.objects.first()
 
@@ -114,6 +114,12 @@ def index(request: HttpRequest) -> HttpResponse:
     )
 
 
+@login_required(login_url="/users/login/")
 def branches(request: HttpRequest) -> HttpResponse:
     all_branches = Branch.objects.all()
     return render(request, "company/branches.html", {"branches": all_branches})
+
+
+@login_required(login_url="/users/login/")
+def invoice_design(request: HttpRequest) -> HttpResponse:
+    return render(request, "company/invoice_design.html")
