@@ -10,6 +10,7 @@ from authentication.utils import get_all_permissions
 from .forms import SignUpForm
 
 
+@login_required(login_url="/users/login/")
 def index(request: HttpRequest) -> HttpResponse:
     # for users management
     users = User.objects.all()
