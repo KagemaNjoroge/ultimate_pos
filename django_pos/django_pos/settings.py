@@ -41,12 +41,13 @@ LOCAL_APPS = [
     "company",
     "inventory",
     "etims",
-    "payments",
     "reports",
     "suppliers",
     "accounting",
     "expenses",
     "cloud",
+    "purchases",
+    "authentication",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
