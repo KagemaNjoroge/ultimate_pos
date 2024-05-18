@@ -9,7 +9,6 @@ from .models import Category, Product
 from company.models import Company
 from inventory.models import Inventory
 import openpyxl
-import time
 
 
 @login_required(login_url="/users/login/")
@@ -35,7 +34,6 @@ def categories_add_view(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         # Save the POST arguments
         data = json.loads(request.body)
-        time.sleep(3)
 
         attributes = {
             "name": data["name"],
