@@ -73,7 +73,7 @@ def sales_this_week(request: HttpRequest) -> JsonResponse:
     sales = Sale.objects.filter(
         date_added__range=[
             datetime.now().replace(day=1),
-            datetime.now().replace(day=7),
+            datetime.now().replace(day=8),
         ]
     )
 
