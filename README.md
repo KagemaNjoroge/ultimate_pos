@@ -161,7 +161,7 @@ Contributions are always welcome!
 
 - Push to your branch: `git push origin my-feature`.
 
-  ## License
+## License
 
 This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
 
