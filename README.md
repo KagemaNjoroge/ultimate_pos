@@ -23,6 +23,14 @@ A modern POS/ERP/CRM system for businesses of the AI era. Powered by [Django.](h
   <img src="https://github.com/KagemaNjoroge/ultimate_pos/blob/main/django_pos/static/img/logos/UltimatePOS%20Logo(2).svg">
 </p>
 
+## Demo
+
+You can access the demo [here](https://pos.tomorrow.co.ke/).
+The credentials are:
+
+- `username: demo`
+- `password: 12345678`
+
 ## Features
 
 - Dashboard Page with statistics and graphs
@@ -34,11 +42,11 @@ A modern POS/ERP/CRM system for businesses of the AI era. Powered by [Django.](h
 
 ## Proposed Features
 
-- [ ] Business Level Inventory Management
+- [x] Business Level Inventory Management
 - [ ] Lipa-na-MPESA Gateway integration
 - [ ] KRA Tax Returns Auto-filing
 - [ ] Plugin system
-- [ ] AI Assistant
+- [x] AI Assistant
 - [x] Suppliers Management
 - [x] Purchase Management
 - [x] CRM (Customer Relationship Management)
