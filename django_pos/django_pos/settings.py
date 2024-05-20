@@ -48,6 +48,7 @@ LOCAL_APPS = [
     "cloud",
     "purchases",
     "authentication",
+    "onboarding",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
