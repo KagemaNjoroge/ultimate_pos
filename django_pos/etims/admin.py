@@ -5,6 +5,7 @@ from .models import Country, Notice, TaxType, UnitOfQuantity, PackagingUnits
 # Register your models here.
 
 
+@admin.register(Country)
 class CountryAdmin(admin.ModelAdmin):
     list_display = ("countryId", "countryCode", "countryName", "currencyCode")
 
@@ -18,9 +19,7 @@ class CountryAdmin(admin.ModelAdmin):
         return False
 
 
-admin.site.register(Country, CountryAdmin)
-
-
+@admin.register(Notice)
 class NoticeAdmin(admin.ModelAdmin):
     list_display = ("noticeNumber", "title", "read")
 
@@ -34,9 +33,7 @@ class NoticeAdmin(admin.ModelAdmin):
         return False
 
 
-admin.site.register(Notice, NoticeAdmin)
-
-
+@admin.register(TaxType)
 class TaxTypeAdmin(admin.ModelAdmin):
     list_display = ("taxTypeName", "taxTypeIdentifier")
 
@@ -50,9 +47,7 @@ class TaxTypeAdmin(admin.ModelAdmin):
         return False
 
 
-admin.site.register(TaxType, TaxTypeAdmin)
-
-
+@admin.register(UnitOfQuantity)
 class UnitOfQuantityAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
@@ -70,9 +65,7 @@ class UnitOfQuantityAdmin(admin.ModelAdmin):
     )
 
 
-admin.site.register(UnitOfQuantity, UnitOfQuantityAdmin)
-
-
+@admin.register(PackagingUnits)
 class PackagingUnitsAdmin(admin.ModelAdmin):
     list_display = ("packagingUnitId", "packagingUnitName", "packagingUnitDescription")
 
@@ -84,6 +77,3 @@ class PackagingUnitsAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
-
-
-admin.site.register(PackagingUnits, PackagingUnitsAdmin)

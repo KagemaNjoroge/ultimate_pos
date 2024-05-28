@@ -148,12 +148,8 @@
     </div>
 </div>
 
-{% endblock content %}
-
-<!-- Specific Page JS goes HERE  -->
-{% block javascripts %}
 <!--Chart JS-->
-<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
 <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 <!--Monthly earnings variable-->
 <input type="hidden" id="monthly_earnings" value="{{monthly_earnings|safe}}">
@@ -178,4 +174,5 @@
 
     })
 </script>
-{% endblock javascripts %}
+
+{% endblock content %}
