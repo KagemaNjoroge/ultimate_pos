@@ -5,14 +5,8 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<!-- Datatables -->
-<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css ' %}" rel="stylesheet">
-<!--Select2 CSS-->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
-<!--Bootstrap Touchspin-->
-<link rel="stylesheet" href="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.css' %}">
+
+>
 {% endblock stylesheets %}
 
 <!-- Page Heading -->
@@ -153,19 +147,8 @@
 </form>
 {% endblock content %}
 
-<!-- Specific Page JS goes HERE  -->
-{% block javascripts %}
-<!-- Datatables -->
-<script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
-<script src="{% static 'utils/cart.js' %}"></script>
-<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
-<!--Select2-->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
-<!--Bootstrap Touchspin-->
-<script src="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.js' %}"></script>
-<!--Sweet Alert-->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.15/dist/sweetalert2.all.min.js"></script>
+
+
 
 <script>
     $('#tax_percentage').on('change', function () {
@@ -348,4 +331,3 @@
         });
     });
 </script>
-{% endblock javascripts %}

@@ -1,9 +1,6 @@
 {% extends "pos/base.html" %}
 {% load static %}
 {% block title %}Update category{% endblock title %}
-
-{% block stylesheets %}{% endblock stylesheets %}
-
 {% block heading %}Update category{% endblock heading %}
 
 {% block content %}
@@ -66,7 +63,7 @@
         </div>
     </div>
 </div>
-<script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
+
 <script>
     // capture #update_form post event and send it via ajax
     $(document).ready(function () {
@@ -151,6 +148,3 @@
 </script>
 
 {% endblock content %}
-
-<!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
