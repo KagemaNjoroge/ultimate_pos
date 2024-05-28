@@ -1,12 +1,12 @@
 import datetime
 import json
 from datetime import date, datetime
-
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from dotenv import load_dotenv
 from firebase_admin import firestore
 from company.models import Company, Subscription
 from customers.models import Customer
@@ -15,11 +15,14 @@ from pos.models import Notifications
 from products.models import Product, Category
 from sales.models import Sale
 from sales.models import SaleDetail, SaleItem
-from django.conf import settings
+from firebase_admin import credentials
+import firebase_admin
+import os
 
-# load_dotenv()
-# cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
-# app = firebase_admin.initialize_app(cred)
+
+load_dotenv()
+cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
+app = firebase_admin.initialize_app(cred)
 
 
 def fetch_packages(request: HttpRequest) -> JsonResponse:
