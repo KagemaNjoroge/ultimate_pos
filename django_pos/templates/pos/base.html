@@ -11,6 +11,7 @@
         Ultimate POS
         {%endblock title%}
     </title>
+    <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
@@ -18,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.css' %}"
         <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
-    <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
+
     <link rel="shortcut icon" type="image/png" href="{%static 'img/logos/favicon.png'%}" />
     <link rel="stylesheet" href="{%static 'css/styles.min.css'%}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -28,14 +29,13 @@
     <link rel="stylesheet" href="{%static 'libs/simplebar/dist/simplebar.css'%}">
     <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
 
-    {% block stylesheets %}{% endblock stylesheets %}
+
     <!--Manifest-->
     <link rel="manifest" href="{%static 'manifest.json'%}">
 </head>
 
 <body>
-    {%include 'pos/ai_assistant.html'%}
-    {%include 'pos/notifications_modal.html'%}
+
     <!--  Body Wrapper -->
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed">
@@ -98,16 +98,31 @@
             </div>
         </div>
     </div>
+    <style>
+        .copyright:hover {
+            text-decoration: none;
+            /*tooltip*/
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            color: #ff0074;
+            /*text color*/
+
+
+        }
+    </style>
     <footer>
         <div class="py-6 px-6 text-center">
             <p class="mb-0 fs-4">Brought to you by the good folks at <a href="https://tomorrow.co.ke" target="_blank"
-                    class="pe-1 text-primary text-decoration-underline">
+                data
+                    class="pe-1 copyright">
                     TomorrowAI<sup>&reg;</sup>
                 </a></p>
         </div>
 
     </footer>
     {% block javascripts %}
+
     <script src="{%static 'libs/bootstrap/dist/js/bootstrap.js'%}"></script>
     <script src="{%static 'js/sidebarmenu.js'%}"></script>
     <script src="{%static 'js/app.min.js'%}"></script>
@@ -131,6 +146,8 @@
     <script src="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.js' %}"></script>
     <!--Sweet Alert-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.15/dist/sweetalert2.all.min.js"></script>
+    {%include 'pos/ai_assistant.html'%}
+    {%include 'pos/notifications_modal.html'%}
 
     {% endblock javascripts %}
 
