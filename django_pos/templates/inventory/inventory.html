@@ -6,6 +6,13 @@
 
 <!-- Page content  -->
 {% block content %}
+<style>
+    #actions {
+        margin-bottom: 10px;
+
+
+    }
+</style>
 <div class="row ml-0 mb-3">
     <a href="{% url 'inventory:inventory_add' %}">
         <button type="button" class="btn btn-success font-weight-bold">
@@ -14,6 +21,8 @@
         </button>
     </a>
 </div>
+<div id="actions" class="ml-2"></div>
+
 <div class="table-responsive">
     <table class="table table-hover table-bordered" id="dataTable">
         <thead>
@@ -57,20 +66,98 @@
     // Call the dataTables jQuery plugin
     $(document).ready(function () {
         let tblProducts = $('#dataTable').DataTable({
+
             "lengthMenu": [
                 [5, 10, 25, 50, -1],
                 [5, 10, 25, 50, "All"]
             ],
-            "pageLength": 5,
-            "dom": 'Bfrtip',
+            "pageLength": 10,
+
             "buttons": [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                {
+                    extend: 'print',
+                    text: 'Print <i class="fas fa-file ml-2"></i>',
+                    titleAttr: 'Print',
+                    className: 'btn btn-info',
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Download Excel <i class="fas fa-file-excel ml-2"></i>',
+                    titleAttr: 'Download Excel',
+                    className: 'btn btn-success ml-2',
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'Download PDF <i class="fas fa-file-pdf ml-2"></i>',
+                    titleAttr: 'Download PDF',
+                    className: 'btn btn-danger ml-2',
+                    download: 'open',
+                    orientation: 'vertical',
+                    pageSize: 'A4',
+                    title: '*',
+                    exportOptions: {
+                        columns: [0, 1, 2]
+                    },
+                    customize: function (doc) {
+                        doc.styles = {
+                            header: {
+                                fontSize: 18,
+                                bold: true,
+                                alignment: 'center'
+                            },
+                            subheader: {
+                                fontSize: 13,
+                                bold: true
+                            },
+                            quote: {
+                                italics: true
+                            },
+                            small: {
+                                fontSize: 8
+                            },
+                            tableHeader: {
+                                bold: true,
+                                fontSize: 11,
+                                color: 'white',
+                                fillColor: '#2d4154',
+                                alignment: 'center'
+                            }
+                        };
+                        doc.content[1].table.widths = ['10%', '10%', '30%', '30%', '20%'];
+                        doc.content[1].margin = [0, 35, 0, 0];
+                        doc.content[1].layout = {};
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns: [
+                                    {
+                                        alignment: 'left',
+                                        text: ['Creation date: ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
+                                    },
+                                    {
+                                        alignment: 'right',
+                                        text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                    }
+                                ],
+                                margin: 20
+                            }
+                        });
+
+                    }
+                }
             ],
             "columnDefs": [{
                 "targets": 3,
                 "orderable": false
-            }]
+            }],
+
         });
+        tblProducts.buttons().container().appendTo('#actions');
     });
 
 
