@@ -1,50 +1,73 @@
 {% extends 'pos/base.html'%}
 
-{% block title %}ETIMS{% endblock title %}
-
-<!-- Specific Page CSS goes HERE  -->
+{% block title %}eTIMS | UltimatePOS{% endblock title %}
 {% block stylesheets %}{% endblock stylesheets %}
 
-<!-- Page Heading -->
-{% block heading %}Electronic Tax Invoice Management System{% endblock heading %}
+{% block heading %}eTIMS{% endblock heading %}
 
-<!--Etims is not available in demo mode-->
+
 {% block content %}
 <div class="row">
-    <div class="col-lg-12">
-        <div class="alert alert-danger">
-            <strong>Sorry!</strong> ETIMS is not available in demo mode.
+    <div class="col-md-3">
+        <div class="card text-bg-secondary mb-3" style="max-width: 18rem;">
+            <div class="card-header text-black">Server state</div>
+            <div class="card-body">
+                <p class="card-text">
+                    <i class="fas fa-server"></i>
+                    <span class="ml-2" id="status"></span>
+                </p>
+            </div>
         </div>
-        <div class="alert alert-info">
-            <strong>ETIMS</strong> is a system that allows you to generate and submit invoices to KRA. It also allows
-            you to file your VAT returns.
-            <br>
-            <strong>Ultimate POS</strong> is integrated with ETIMS. You can generate ETIMS compliant invoices and submit
-            them to KRA directly from Ultimate POS.
+    </div>
+    <!-- <div class="col-md-3">
+        <div class="card text-bg-info mb-3" style="max-width: 18rem;">
+            <div class="card-header">Header</div>
+            <div class="card-body">
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                    card's
+                    content.</p>
+            </div>
         </div>
+    </div> -->
+</div>
 
-    </div>
-</div>
-<!-- Instructions for ETIMS integration-->
-<div class="row">
-    <div class="col-lg-12">
-        <h3>Instructions for ETIMS integration</h3>
-        <p>Get in touch with us at <a href="tel:+254706076039">+254706076039</a></p>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <h3>Benefits of our ETIMS integration</h3>
-        <ul>
-            <li>Seamless integration with Ultimate POS</li>
-            <li>Automatically generate ETIMS compliant invoices</li>
-            <li>Automatically submit invoices to KRA</li>
-            <li>Auto File your VAT returns</li>
-            <li>Travel with your business, access your invoices from anywhere, jump from mobile to desktop seamlessly
-            </li>
-            <li>Everything runs in the cloud- the BusinessCloud</li>
-            <li>We are a KRA approved ETIMS integrator</li>
-        </ul>
-    </div>
-</div>
+
+<script>
+    function get_etims_server_state() {
+        $('#status').html('<i class="fas fa-spinner fa-spin"></i> Checking server state...')
+
+        $.ajax({
+            url: "{% url 'etims:server-status' %}",
+            type: 'GET',
+            success: function (data) {
+                if (data['status'] == 'success') {
+                    $('.card.text-bg-secondary').addClass('bg-success');
+                    $('#status').text('Online');
+                }
+                else {
+                    $('.card.text-bg-secondary').addClass('bg-danger');
+                    $('#status').text('Offline');
+
+                }
+            },
+            error: function (error) {
+                console.log(error);
+
+            }
+        });
+
+    }
+    $(document).ready(function () {
+        get_etims_server_state();
+
+
+        // get server state after every 3 minutes
+        setInterval(function () {
+            get_etims_server_state();
+        }, 180000);
+
+
+
+    });
+</script>
 {% endblock content %}
