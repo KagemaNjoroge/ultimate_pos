@@ -18,7 +18,6 @@ schema_view = get_schema_view(
     public=True,
 )
 
-
 urlpatterns = [
     path("admin/", admin.site.urls),
     # Authentication: Login and Logout
@@ -57,5 +56,10 @@ urlpatterns = [
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
+    # api
+    path(
+        "api/",
+        include('api.urls')
+    )
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

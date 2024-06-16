@@ -1,14 +1,13 @@
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -57,7 +56,9 @@ LOCAL_APPS = [
     "purchases",
     "authentication",
     "onboarding",
-    "api"
+    "api",
+    # another sales app to replace the existing one
+    "SalesV2"
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
@@ -114,7 +115,6 @@ DATABASES = {
     }
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -130,7 +130,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Africa/Nairobi"
@@ -138,7 +137,6 @@ TIME_ZONE = "Africa/Nairobi"
 USE_I18N = True
 
 USE_TZ = True
-
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")

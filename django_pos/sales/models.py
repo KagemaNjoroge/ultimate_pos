@@ -1,5 +1,5 @@
 from django.db import models
-import django.utils.timezone
+
 from customers.models import Customer
 from products.models import Product
 
