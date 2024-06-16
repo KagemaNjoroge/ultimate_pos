@@ -1,6 +1,5 @@
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
-from pydantic import Json
 from pos.views import check_subscription
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
@@ -49,7 +48,7 @@ def sales_this_month(request: HttpRequest) -> JsonResponse:
     sales = Sale.objects.filter(
         date_added__range=[
             datetime.now().replace(day=1),
-            datetime.now().replace(day=31),
+            datetime.now().replace(day=30),
         ]
     )
 
@@ -97,7 +96,7 @@ def best_selling_product(request: HttpRequest) -> JsonResponse:
     sales = Sale.objects.filter(
         date_added__range=[
             datetime.now().replace(day=1),
-            datetime.now().replace(day=31),
+            datetime.now().replace(day=30),
         ]
     )
     tops = {}
@@ -129,7 +128,7 @@ def get_best_selling_category(request: HttpRequest) -> JsonResponse:
     sales = Sale.objects.filter(
         date_added__range=[
             datetime.now().replace(day=1),
-            datetime.now().replace(day=31),
+            datetime.now().replace(day=30),
         ]
     )
     tops = {}
@@ -143,7 +142,7 @@ def get_best_selling_category(request: HttpRequest) -> JsonResponse:
                 tops[z.product.category] += z.quantity
             else:
                 tops[z.product.category] = z.quantity
-    # get best selling category
+    # get best-selling category
     tops = sorted(tops.items(), key=lambda x: x[1], reverse=True)[0]
     return JsonResponse(
         data={"top_selling": tops},

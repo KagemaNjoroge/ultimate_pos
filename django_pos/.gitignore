@@ -3,3 +3,5 @@
 .vscode/
 firebase_config.json
 node_modules/
+google-services.json
+python_etims_vscu_wrapper/

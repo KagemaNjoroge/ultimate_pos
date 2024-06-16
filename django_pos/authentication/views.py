@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
-
+from django.core.mail import send_mail
 from authentication.utils import get_all_permissions
 from .forms import SignUpForm
 
@@ -78,6 +78,21 @@ def login_view(request: HttpRequest) -> HttpResponse:
 
             if user is not None:
                 login(request, user)
+                try:
+                    print(user.email)
+                    # send email to user
+                    send_mail(
+                        "Account Login Notification",
+                        "You have successfully logged in to your account. If you did not perform this action, please contact us immediately.",
+                        "reecejames934@gmail.com",
+                        [
+                            user.email,
+                        ],
+                        fail_silently=False,
+                    )
+                except Exception as e:
+                    pass
+
                 return JsonResponse({"message": "success"})
             else:
                 return JsonResponse({"message": "Invalid email or password!"})

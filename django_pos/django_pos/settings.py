@@ -1,19 +1,24 @@
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "http://localhost",
+    "http://pos.tomorrow.co.ke",
+    "https://pos.tomorrow.co.ke",
+    "https://localhost",
+    "localhost",
+]
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
     "http://pos.tomorrow.co.ke",
@@ -31,6 +36,8 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    # Third party apps
+    "drf_yasg",
 ]
 
 LOCAL_APPS = [
@@ -49,6 +56,9 @@ LOCAL_APPS = [
     "purchases",
     "authentication",
     "onboarding",
+    "api",
+    # another sales app to replace the existing one
+    "SalesV2"
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
@@ -105,7 +115,6 @@ DATABASES = {
     }
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -121,7 +130,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Africa/Nairobi"
@@ -129,7 +137,6 @@ TIME_ZONE = "Africa/Nairobi"
 USE_I18N = True
 
 USE_TZ = True
-
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
@@ -144,8 +151,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-# configuration for the license server
-LICENSE_SERVER = "https://tomorrow.co.ke"
-MY_COMPANY_NAME = "Tomorrow Solutions"
-MY_COMPANY_ID = "1"
+# Email Settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")

@@ -20,7 +20,7 @@ class Purchase(models.Model):
 
     # TODO: to add more fields
     def __str__(self) -> str:
-        return self.id
+        return str(self.id)
 
     class Meta:
         db_table = "Purchases"

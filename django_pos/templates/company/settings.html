@@ -123,10 +123,7 @@ Settings
                         Select Image
                     </button>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="companyName">KRA PIN</label>
-                    <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}" disabled>
-                </div>
+
             </div>
             {%csrf_token%}
             <div class="form-row mt-3">
@@ -160,7 +157,7 @@ Settings
 
 
 
-            <button type="button" class="btn btn-primary" id="updateCompany">Update</button>
+            <button type="button" class="btn btn-success" id="updateCompany">Update</button>
 
         </form>
         {%else%}

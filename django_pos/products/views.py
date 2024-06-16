@@ -1,14 +1,15 @@
 import json
+
+import openpyxl
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 
-from pos.views import check_subscription
-from .models import Category, Product
 from company.models import Company
 from inventory.models import Inventory
-import openpyxl
+from pos.views import check_subscription
+from .models import Category, Product
 
 
 @login_required(login_url="/users/login/")
@@ -58,14 +59,13 @@ def categories_add_view(request: HttpRequest) -> HttpResponse:
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
     else:
-        # method not allowed
+        # method isn't allowed
         return HttpResponse(status=405)
 
 
 @login_required(login_url="/users/login/")
 @check_subscription
 def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
-
     if request.method == "GET":
         category = get_object_or_404(Category, id=category_id)
         context = {
@@ -96,7 +96,7 @@ def categories_update_view(request: HttpRequest, category_id: str) -> HttpRespon
         except Exception as e:
             return JsonResponse({"status": "error", "message": str(e)})
     else:
-        # method not allowed
+        # method isn't allowed
         return HttpResponse(status=405)
 
 
@@ -230,11 +230,7 @@ def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
 
         data = request.body
         data = json.loads(data)
-        try:
-            print("FIles")
-            print(data["image"])
-        except:
-            pass
+
         product = Product.objects.get(id=product_id)
         product.name = data["name"]
         product.description = data["description"]
@@ -318,7 +314,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
             if not excel_file.name.endswith(".xlsx"):
                 messages.error(request, "File is not Excel type")
                 return redirect("products:upload_excel")
-            # if file is too large, return
+            # if the file is too large, return
             if excel_file.multiple_chunks():
                 messages.error(
                     request,
@@ -331,7 +327,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
             wb = openpyxl.load_workbook(excel_file)
             worksheet = wb.active
             for row in worksheet.iter_rows(
-                min_row=2, max_row=worksheet.max_row, min_col=1, max_col=6
+                    min_row=2, max_row=worksheet.max_row, min_col=1, max_col=6
             ):
 
                 # Coca Cola A nice soft drink 250 1 1
@@ -355,7 +351,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
                     category = Category.objects.first()
                 product.category = category
                 product.save()
-                # add to  if specified
+                # add to if specified
                 if product.track_inventory:
                     inv = Inventory.objects.filter(product=product)
                     if inv.exists():
