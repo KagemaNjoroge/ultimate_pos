@@ -37,6 +37,8 @@ DJANGO_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    # Third party apps
+    "drf_yasg",
 ]
 
 LOCAL_APPS = [
@@ -55,6 +57,7 @@ LOCAL_APPS = [
     "purchases",
     "authentication",
     "onboarding",
+    "api"
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
