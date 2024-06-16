@@ -1,4 +1,5 @@
 from django.urls import path
+from .api import CategoryView, ProductView
 
 from . import views
 
@@ -36,4 +37,13 @@ urlpatterns = [
     path("download_template", views.download_template, name="download_template"),
     # product details
     path("details/<str:product_id>", views.product_detail_view, name="product_details"),
+]
+
+
+# experimental api
+urlpatterns += [
+    path("api/categories/", CategoryView.as_view(), name="api_categories"),
+    path("api/products/", ProductView.as_view(), name="api_products"),
+    path("api/products/<int:id>/", ProductView.as_view()),
+    path("api/category/<int:pk>/", CategoryView.as_view()),
 ]
