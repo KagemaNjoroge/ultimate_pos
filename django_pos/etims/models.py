@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your views here.
 class Country(models.Model):
     countryId = models.AutoField(primary_key=True)
@@ -61,7 +62,7 @@ class EtimsNotice(models.Model):
 
 class TaxType(models.Model):
 
-    taxTypeCode = models.CharField(max_length=1, primary_key=True)
+    taxTypeCode = models.CharField(max_length=1, unique=True)
     taxTypeName = models.CharField(
         max_length=20,
     )
