@@ -1,15 +1,17 @@
 import json
-
 import openpyxl
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
-
 from company.models import Company
+from rest_framework.decorators import api_view, renderer_classes
 from inventory.models import Inventory
 from pos.views import check_subscription
 from .models import Category, Product
+from rest_framework.response import Response
+from .serializers import CategorySerializer, ProductSerializer
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 
 @login_required(login_url="/users/login/")
@@ -42,22 +44,17 @@ def categories_add_view(request: HttpRequest) -> HttpResponse:
             "description": data["description"],
         }
 
-        # Check if a category with the same attributes exists
-        if Category.objects.filter(**attributes).exists():
+        serializer = CategorySerializer(data=attributes)
+        if serializer.is_valid():
+            serializer.save()
             return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "A category with those details already exists!",
-                }
+                {"status": "success", "message": "Category created successfully!"}
+            )
+        else:
+            return JsonResponse(
+                {"status": "error", "message": serializer.errors}, status=400
             )
 
-        try:
-            new_category = Category.objects.create(**attributes)
-            new_category.save()
-            return JsonResponse({"status": "success", "message": "Category created!"})
-
-        except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)})
     else:
         # method isn't allowed
         return HttpResponse(status=405)
@@ -122,7 +119,7 @@ def categories_delete_view(request: HttpRequest, category_id: str) -> HttpRespon
             "That category cannot be deleted as some products are associated with it",
             extra_tags="danger",
         )
-        print(e)
+
         return redirect("products:categories_list")
 
 
@@ -142,12 +139,6 @@ def products_list_view(request: HttpRequest) -> HttpResponse:
 @login_required(login_url="/users/login/")
 @check_subscription
 def products_add_view(request: HttpRequest) -> HttpResponse:
-    context = {
-        "active_icon": "products_categories",
-        "product_status": Product.status.field.choices,
-        "categories": Category.objects.all().filter(status="ACTIVE"),
-    }
-
     if request.method == "POST":
         # Save the POST arguments
         data = request.POST
@@ -165,93 +156,76 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
             "name": data["name"],
             "status": data["state"],
             "description": data["description"],
-            "category": Category.objects.get(id=data["category"]),
+            "category": data["category"],
             "price": data["price"],
             "track_inventory": track_inventory,
         }
 
-        # Check if a product with the same attributes exists
-        if Product.objects.filter(**attributes).exists():
-            messages.error(request, "Product already exists!", extra_tags="warning")
-            return redirect("products:products_add")
-
-        try:
-            # Create the product
-            new_product = Product.objects.create(**attributes)
-
-            # If it doesn't exist, save it
-            new_product.save()
-            # track inventory
+        serializer = ProductSerializer(data=attributes)
+        if serializer.is_valid():
+            serializer.save()
             if track_inventory:
-                # if inventory exists, update it
-                inventory = Inventory.objects.filter(product=new_product)
-                if inventory.exists():
-                    inventory = inventory.first()
-                    inventory.quantity += 1
-                    inventory.save()
-                else:
-                    inventory = Inventory.objects.create(
-                        product=new_product, quantity=1
-                    )
-                    inventory.save()
-
-            messages.success(
-                request,
-                "Product: " + attributes["name"] + " created successfully!",
-                extra_tags="success",
+                inventory = Inventory.objects.create(
+                    product=serializer.instance, quantity=1
+                )
+                inventory.save()
+            return JsonResponse(
+                {"status": "success", "message": "Product created successfully!"}
             )
-            return redirect("products:products_list")
-        except Exception as e:
-            messages.success(
-                request, "An error occurred, try again!", extra_tags="danger"
+        else:
+            return JsonResponse(
+                {"status": "error", "message": serializer.errors}, status=400
             )
 
-            return redirect("products:products_add")
+    elif request.method == "GET":
+        context = {
+            "active_icon": "products_categories",
+            "product_status": Product.status.field.choices,
+            "categories": Category.objects.all().filter(status="ACTIVE"),
+        }
+        return render(request, "products/products_add.html", context=context)
 
-    return render(request, "products/products_add.html", context=context)
+    else:
+        return JsonResponse({"message": "Method not allowed"}, status=405)
 
 
 @login_required(login_url="/users/login/")
 @check_subscription
-def products_update_view(request: HttpRequest, product_id: str) -> HttpResponse:
+@api_view(["POST", "GET"])
+@renderer_classes([JSONRenderer, TemplateHTMLRenderer])
+def products_update_view(request, product_id: str):
+    product = get_object_or_404(Product, id=product_id)
+
     if request.method == "GET":
-
-        product = get_object_or_404(Product, id=product_id)
-
         context = {
             "active_icon": "products",
             "product_status": Product.status.field.choices,
             "product": product,
-            "categories": Category.objects.all(),
+            "categories": [
+                category.to_json()
+                for category in Category.objects.all().filter(status="ACTIVE")
+            ],
         }
-        return render(request, "products/products_update.html", context=context)
 
-    elif request.method == "POST":
+        # Check if the request is for HTML or JSON
+        if request.accepted_renderer.format == "html":
+            return render(request, "products/products_update.html", context)
+        else:
+            return Response(context)
 
-        data = request.body
-        data = json.loads(data)
-
-        product = Product.objects.get(id=product_id)
-        product.name = data["name"]
-        product.description = data["description"]
-        product.price = data["price"]
-        product.status = data["state"]
-        product.category = Category.objects.get(id=data["category"])
-        product.track_inventory = data["track_inventory"]
-        product.save()
-
-        if product.track_inventory:
-            inventory = Inventory.objects.filter(product=product)
-            if inventory.exists():
-                inventory = inventory.first()
-                inventory.quantity = 1
-                inventory.save()
-            else:
-                inventory = Inventory.objects.create(product=product, quantity=1)
-                inventory.save()
-        return JsonResponse({"message": "Product updated successfully"}, status=200)
-    else:  # not allowed
-        return JsonResponse({"message": "Method not allowed"}, status=405)
+    if request.method == "POST":
+        serializer = ProductSerializer(
+            data=request.data, instance=product, partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                data={"status": "success", "message": "Product updated successfully!"}
+            )
+        else:
+            return Response(
+                data={"status": "error", "message": serializer.errors}, status=400
+            )
 
 
 @login_required(login_url="/users/login/")
@@ -327,7 +301,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
             wb = openpyxl.load_workbook(excel_file)
             worksheet = wb.active
             for row in worksheet.iter_rows(
-                    min_row=2, max_row=worksheet.max_row, min_col=1, max_col=6
+                min_row=2, max_row=worksheet.max_row, min_col=1, max_col=6
             ):
 
                 # Coca Cola A nice soft drink 250 1 1
