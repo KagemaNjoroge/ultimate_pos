@@ -27,7 +27,7 @@
 <div class="row mb-3 ml-3">
     <div class="card col-md-10">
         <div class="card-body">
-            <form id="product_update">
+            <form id="product_update" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -116,7 +116,6 @@
         </div>
     </div>
 </div>
-
 <script>
     $.ajaxSetup({
         beforeSend: function (xhr, settings) {
@@ -137,7 +136,6 @@
         });
         $("#product_update").submit(function (e) {
             e.preventDefault();
-            const form = $(this);
 
             const url = "{% url 'products:products_update' product.id %}";
             // add spinner to the button
@@ -145,41 +143,30 @@
                 '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
             );
             $.ajax({
-
                 type: 'POST',
                 url: url,
+                contentType: false,  // Fix the content type
+                processData: false,  // Prevent jQuery from processing the data
                 headers: {
                     "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
                 },
-                data: JSON.stringify({
-                    "name": form.find('input[name="name"]').val(),
-                    "state": form.find('select[name="state"]').val(),
-                    "description": form.find('input[name="description"]').val(),
-                    "category": form.find('select[name="category"]').val(),
-                    "price": form.find('input[name="price"]').val(),
-                    "track_inventory": form.find('input[name="track_inventory"]').is(':checked'),
-                    "image": form.find('input[name="image"]').val(),
-                },
-                ),
-                success: function (response) {
+                data: new FormData($('#product_update')[0]),
 
-                    if (response['message'] === "Product updated successfully") {
+                success: function (response) {
+                    if (response['status'] === "success") {
                         $('.update_msg').html(
                             '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success!</strong> Product updated successfully<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
                         );
-                    }
-                    else {
+                    } else {
                         $('.update_msg').html(
                             '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> Product not updated<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
                         );
                     }
-
                 },
                 error: function () {
                     $('.update_msg').html(
                         '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> Product not updated<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
                     );
-
                 }
             }).done(function () {
                 // remove spinner from the button
@@ -188,5 +175,6 @@
         });
     });
 </script>
+
 
 {% endblock content %}
