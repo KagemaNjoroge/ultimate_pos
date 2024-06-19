@@ -1,103 +1,48 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse, QueryDict
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.utils.datastructures import MultiValueDict
 from django.contrib.auth.decorators import login_required
 from .models import Branch, Company
-from django.views import View
+from .serializers import CompanySerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
-class CompanyView(View):
-    def get(self, request: HttpRequest, id: int = None):
+class CompanyView(APIView):
+    def get(self, request, id: int = None):
 
         if id:
             company = get_object_or_404(Company, pk=id)
-            return JsonResponse(company.to_dict(), safe=False)
+            return Response(company.to_dict())
         else:
             company = Company.objects.first()
             if company == None:
-                return JsonResponse({}, safe=True)
-            return JsonResponse(company.to_dict(), safe=False)
+                return Response({})
+            return Response(company.to_dict())
 
-    def delete(self, request: HttpRequest, id: int):
+    def delete(self, request, id: int):
         company = get_object_or_404(Company, pk=id)
         try:
             company.delete()
-            return JsonResponse({"message": "Company deleted successfully"})
+            return Response({"message": "Company deleted successfully"})
         except Exception as e:
-            return JsonResponse(
-                {"message": f"Error deleting company: {str(e)}"}, status=500
+            return Response(
+                {"message": f"Error deleting company: {str(e)}"}, status=400
             )
 
-    def put(self, request: HttpRequest, id: int):
+    def put(self, request, id: int):
         company = get_object_or_404(Company, pk=id)
-        print(request.FILES)
+        serializer = CompanySerializer(company, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
-        # Create a QueryDict object
-        put_data = QueryDict(request.body, encoding=request._encoding)
-
-        # Create a MultiValueDict for the files
-        put_files = MultiValueDict({"logo": []})
-
-        # Check if there's a file in the request
-        if "logo" in request.FILES:
-            # Wrap the file in an InMemoryUploadedFile object
-            logo_file = InMemoryUploadedFile(
-                request.FILES["logo"].file,  # file
-                "logo",  # field_name
-                request.FILES["logo"].name,  # file name
-                request.FILES["logo"].content_type,  # content type
-                request.FILES["logo"].size,  # file size
-                request.FILES["logo"].charset,  # charset
-            )
-
-            # Add the file to put_files
-            put_files["logo"].append(logo_file)
-
-        # Now you can use put_data and put_files like request.POST and request.FILES
-        # print(put_data.dict())
-        # print(put_files)
-
-        try:
-
-            return JsonResponse(
-                {
-                    "message": "Company updated successfully",
-                    "company": company.to_dict(),
-                    "status": "Okay",
-                },
-                status=200,
-                safe=False,
-            )
-        except Exception as e:
-            return JsonResponse(
-                {"message": f"Error: {e}", "status": "Failed"}, status=500
-            )
-
-    def post(self, request: HttpRequest):
-        data = request.POST.dict()
-        logo = request.FILES.get("logo")
-
-        if logo:
-            data["logo"] = logo
-
-        try:
-            company = Company(**data)
-            company.save()
-            return JsonResponse(
-                {
-                    "message": "Company added successfully",
-                    "company": company.to_dict(),
-                    "status": "Okay",
-                },
-                status=201,
-                safe=False,
-            )
-        except Exception as e:
-            print(e)
-            return JsonResponse(
-                {"message": f"Error: {e}", "status": "Failed"}, status=500
-            )
+    def post(self, request):
+        serializer = CompanySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
 
 @login_required(login_url="/users/login/")
