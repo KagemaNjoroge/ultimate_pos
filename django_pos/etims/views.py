@@ -5,7 +5,6 @@ import os
 from dotenv import load_dotenv
 from etims_vscu_wrapper.clients.http_client import HttpClient
 from etims_vscu_wrapper.core.VSCUProtocol.code_data import CodeData
-from pydantic import Json
 
 from etims.utils.server_status import ping
 from .models import EtimsBranch, EtimsNotice, ItemClassCodes
