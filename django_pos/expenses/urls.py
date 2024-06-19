@@ -1,11 +1,16 @@
+from django.db import router
 from django.urls import path
-from . import views
+from .views import expense_categories, ExpenseView
+
 
 app_name = "expenses"
 
+
 urlpatterns = [
-    path("<int:id>", views.index, name="expenses_operations"),
-    path("", views.index, name="index"),
-    path("category", views.expense_categories, name="category"),
-    path("category/<int:id>", views.expense_categories, name="category_operations"),
+    # expenses
+    path("", ExpenseView.as_view(), name="index"),
+    path("<int:pk>", ExpenseView.as_view(), name="expense_operations"),
+    # expense categories
+    path("category", expense_categories, name="category"),
+    path("category/<int:id>", expense_categories, name="category_operations"),
 ]
