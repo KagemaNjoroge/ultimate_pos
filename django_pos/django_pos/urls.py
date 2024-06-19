@@ -5,6 +5,7 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
 from django_pos import settings
+import sales
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -57,9 +58,8 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     # api
-    path(
-        "api/",
-        include('api.urls')
-    )
+    path("api/", include("api.urls")),
+    # sales v2
+    path("sales-v2/", include("SalesV2.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
