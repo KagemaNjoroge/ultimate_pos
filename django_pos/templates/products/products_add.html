@@ -12,7 +12,7 @@
 <!-- Page content  -->
 {% block content %}
 <!--Go back-->
-<div class="row ml-0 mb-3">
+<div class="row mb-3">
   <div class="ml-auto">
     <a href="{% url 'products:products_list' %}" class="col">
       <button type="button" class="btn btn-success font-weight-bold">
@@ -29,10 +29,16 @@
     </a>
   </div>
 </div>
+<!--Add product status-->
+<div id="status" class="text-center">
+
+</div>
+
 
 
 <!-- Tabs for product, taxes, expiry, images-->
 <ul class="nav nav-tabs ml-2" id="myTab" role="tablist">
+
   <li class="nav-item">
     <a class="nav-link active" id="product-tab" data-toggle="tab" href="#product" role="tab" aria-controls="product"
       aria-selected="true">Product</a>
@@ -56,7 +62,12 @@
   <div class="tab-pane fade show active" id="product" role="tabpanel" aria-labelledby="product-tab">
     <div class="card col-md-10 ">
       <div class="card-body">
-        <form action="{% url 'products:products_add' %}" method="post">
+        <div class="alert alert-info" role="alert">
+          <i class="fas fa-info-circle mr-2"></i>
+          Fill in the details of the product you want to add.
+        </div>
+
+        <form action="{% url 'products:products_add' %}" method="post" id="product_form">
           {% csrf_token %}
           <div class="form-row">
             <div class="form-group col-md-12">
@@ -119,7 +130,7 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-success font-weight-bold">
+          <button type="submit" class="btn btn-success font-weight-bold" id="submit">
             Create product
           </button>
         </form>
@@ -194,7 +205,54 @@
       </div>
     </div>
   </div>
-
-
 </div>
+<script>
+
+  $(document).ready(function () {
+    $("#product_form").submit(function (e) {
+      e.preventDefault();
+      // spinner #submit button
+      $('#submit').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating product...');
+      // Get the form data
+      var formData = new FormData(this);
+      // Send the data to the server
+      let url = $(this).attr('action');
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        success: function (response) {
+          if (response.status == 'success') {
+            // show success message, clear form
+            $('#status').html('<div class="alert alert-success" role="alert">' + response.message + '</div>');
+            $('#product_form').trigger('reset');
+
+
+
+          }
+          else {
+            // show error message
+            $('#status').html('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
+          }
+
+        },
+        error: function (error) {
+          // show error message
+          $('#status').html('<div class="alert alert-danger" role="alert">An error occurred. Please try again later.</div>');
+        },
+        cache: false,
+        contentType: false,
+        processData: false
+      }).done(function () {
+        // clear the status message after 5 seconds
+        setTimeout(function () {
+          $('#status').html('');
+        }, 5000);
+        // remove spinner
+        $('#submit').html('Create product');
+      });
+
+    });
+  });
+</script>
 {% endblock content %}
