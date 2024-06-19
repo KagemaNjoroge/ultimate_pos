@@ -42,6 +42,8 @@ The credentials are:
 
 ## Proposed Features
 
+- [ ] Migrating views from templates to restful API
+
 - [x] Business Level Inventory Management
 - [ ] Lipa-na-MPESA Gateway integration
 - [ ] KRA Tax Returns Auto-filing
@@ -118,13 +120,23 @@ After restarting your computer
     cd ultimate_pos/django_pos
     ```
 
-4.  Make database migrations:
+4.  Copy the .env.example file to .env:
+    Replace the values with your own values
+
+```bash
+cp .env.example .env
+```
+
+5. Create a Firebase collection and add the pricing data as you wish your pricing to be.  
+   Example:
+   ![Example pricing configuration](image.png)
+6. Make database migrations:
 
 ```bash
  python manage.py makemigrations && python manage.py migrate
 ```
 
-5.  Create superuser to access the admin panel:
+7.  Create superuser to access the admin panel:
 
 > [!IMPORTANT]
 > You will need a super user account in order to access the admin page. You can create one by running the following command:
@@ -139,15 +151,15 @@ with the following data, or with the data you prefer:
 - `password: YOUR_PASSWORD`
 - `email: YOUR_EMAIL@EMAIL.COM`
 
-6. Run the server:
+8. Run the server:
 
    ```bash
    python manage.py runserver
    ```
 
-7. Open a browser and navigate : `http://127.0.0.1:8000/`
+9. Open a browser and navigate : `http://127.0.0.1:8000/`
 
-8. Log In with your superuser credentials.
+10. Log In with your superuser credentials.
 
 ## Contributing
 
