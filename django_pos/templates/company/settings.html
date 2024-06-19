@@ -10,80 +10,13 @@ Settings
 </div>
 {%block content%}
 <div id="status">
+
+    <!--hidden company id-->
+    <input type="hidden" id="companyId" value="{{company.id}}">
+    <!--Hidden company name-->
+    <input type="hidden" id="companyName" value="{{company.company_name}}">
 </div>
-<!--Add company modal-->
 
-<div class="modal fade" id="addCompanyModal" tabindex="-1" role="dialog" aria-labelledby="addCompanyModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addCompanyModalLabel">Add Company details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="companyDetailsForm" method="post" enctype=multipart/form-data>
-                    {%csrf_token%}
-                    <!--Fields logo, company name, email, phone, address, city, kra pin-->
-                    <div class="form-row">
-                        <!--Company logo-->
-                        <div class="form-group col-md-6">
-                            <img src="{% static 'default.png' %}" alt="Company Logo"
-                                style="width: 100px; height: 100px; object-fit: contain; border-radius: 10px;"
-                                class="img-fluid" id="defaultLogo">
-
-
-
-                            <!--floating image upload-->
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="companyLogo" name="logo"
-                                    accept="image/*" required>
-                                <label class="custom-file-label" for="companyLogo">Choose image</label>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="companyName">Company Name</label>
-                            <input type="text" class="form-control" id="companyName" name="name" required>
-                        </div>
-
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="kraPin">KRA PIN</label>
-                            <input type="text" class="form-control" id="kraPin" name="kra_pin" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="companyEmail">Company Email</label>
-                            <input type="email" class="form-control" id="companyEmail" name="email" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="companyPhone">Company Phone</label>
-                            <input type="tel" class="form-control" id="companyPhone" name="phone" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="companyAddress">Company Address</label>
-                            <input type="text" class="form-control" id="companyAddress" name="address" required>
-                        </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="companyCity">Company City</label>
-                        <input type="text" class="form-control" id="companyCity" name="city">
-                    </div>
-
-
-                    <button type="submit" class="btn btn-primary ml-2" id="saveCompanyDetails">
-                        <i class="fas fa-save"></i> Save
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!--End of add company modal-->
 <!--Go to invoice/receipt customization-->
 <div class="row mb-3">
     <div class="col-md-4">
@@ -138,26 +71,28 @@ Settings
             </div>
             <div class="form-group">
                 <label for="companyEmail">Company Email</label>
-                <input type="email" class="form-control" id="companyEmail" name="companyEmail"
-                    value="{{company.email}}">
+                <input type="email" class="form-control" id="companyEmail" name="companyEmail" value="{{company.email}}"
+                    required>
             </div>
             <div class="form-group">
                 <label for="companyPhone">Company Phone</label>
-                <input type="text" class="form-control" id="companyPhone" name="companyPhone" value="{{company.phone}}">
+                <input type="text" class="form-control" id="companyPhone" name="companyPhone" value="{{company.phone}}"
+                    required>
             </div>
             <div class="form-group">
                 <label for="companyAddress">Company Address</label>
                 <input type="text" class="form-control" id="companyAddress" name="companyAddress"
-                    value="{{company.address}}">
+                    value="{{company.address}}" required>
             </div>
             <div class="form-group">
                 <label for="companyCity">Company City</label>
-                <input type="text" class="form-control" id="companyCity" name="companyCity" value="{{company.city}}">
+                <input type="text" class="form-control" id="companyCity" name="companyCity" value="{{company.city}}"
+                    required>
             </div>
 
 
 
-            <button type="button" class="btn btn-success" id="updateCompany">Update</button>
+            <button type="submit" class="btn btn-success" id="updateCompany">Update</button>
 
         </form>
         {%else%}
@@ -181,6 +116,54 @@ Settings
 <script>
 
     $(document).ready(function () {
+        $('#companyForm').submit(function (e) {
+            e.preventDefault();
+            let formData = new FormData();
+            // same url as the form
+            formData.append('company_name', $('#companyName').val());
+            formData.append('kra_pin', $('#kra_pin').val());
+            formData.append('email', $('#companyEmail').val());
+            formData.append('phone_number', $('#companyPhone').val());
+            formData.append('address', $('#companyAddress').val());
+            formData.append('city', $('#companyCity').val());
+
+            $('#updateCompany').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...').prop('disabled', true);
+
+            let id = $('#companyId').val();
+            let company_name = $('#companyName').val();
+
+            // add company name
+            formData.append('company_name', company_name);
+
+
+            $.ajax({
+                headers: {
+                    'X-CSRFToken': '{{csrf_token}}'
+                },
+                method: 'PUT',
+                url: "{% url 'company:company' %}" + id + '/',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $('#status').html('<div class="alert alert-success" role="alert">Company details saved successfully</div>')
+                    //clear form
+                    $('#companyForm').trigger('reset');
+                    // reload in 3s
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                },
+                error: function (data) {
+                    // unable to save company details
+                    $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
+                }
+
+
+            }).done(function () {
+                $('#updateCompany').html('Update').prop('disabled', false);
+            });
+        });
         // on image change, show image preview
         $('#companyLogo').change(function (e) {
             // change default logo to uploaded image
@@ -205,12 +188,7 @@ Settings
                     $('#uploadImageBtn').prop('disabled', true);
                     var data = new FormData();
                     data.append('logo', e.target.files[0]);
-                    data.append('company_name', $('#companyName').val());
-                    data.append('kra_pin', $('#kra_pin').val());
-                    data.append('email', $('#companyEmail').val());
-                    data.append('phone_number', $('#companyPhone').val());
-                    data.append('address', $('#companyAddress').val());
-                    data.append('city', $('#companyCity').val());
+
 
                     $.ajax({
                         processData: false,
@@ -223,24 +201,21 @@ Settings
                         type: 'PUT',
                         data: data,
                         success: function (data) {
-                            if (data.status == "Okay") {
-                                $('#status').html('<div class="alert alert-success" role="alert">Company details saved successfully</div>')
-                                //clear form
-                                $('#companyForm').trigger('reset');
-                                // reload in 3s
-                                setTimeout(() => {
-                                    location.reload();
-                                }, 3000);
-                            }
-                            else {
-                                $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
-                            }
+
+                            $('#status').html('<div class="alert alert-success" role="alert">Company details saved successfully</div>')
+                            //clear form
+                            $('#companyForm').trigger('reset');
+                            // reload in 3s
+                            setTimeout(() => {
+                                location.reload();
+                            }, 3000);
+
+                        },
+                        error: function (data) {
+                            // unable to save company details
+                            $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
+
                         }
-
-
-
-
-
 
                     }).done(function () {
                         // enable upload button
@@ -254,58 +229,7 @@ Settings
 
 
         });
-        $('#companyDetailsForm').submit(function (e) {
-            e.preventDefault();
 
-            var formData = new FormData();
-            formData.append('company_name', $('#companyName').val());
-            formData.append('kra_pin', $('#kraPin').val());
-            formData.append('email', $('#companyEmail').val());
-            formData.append('phone_number', $('#companyPhone').val());
-            formData.append('address', $('#companyAddress').val());
-            formData.append('city', $('#companyCity').val());
-            formData.append('logo', $('#companyLogo')[0].files[0]);
-
-            $("#saveCompanyDetails").html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...').prop('disabled', true);
-            $.ajax({
-                processData: false,
-                contentType: false,
-                enctype: 'multipart/form-data',
-                headers: {
-                    'X-CSRFToken': '{{csrf_token}}'
-                },
-
-                url: "{% url 'company:company' %}",
-                type: 'POST',
-                data: formData,
-                success: function (data) {
-                    if (data.status == "Okay") {
-                        $('#status').html('<div class="alert alert-success" role="alert">Company details saved successfully</div>')
-                        //clear form
-                        $('#companyDetailsForm').trigger('reset');
-                        $('#addCompanyModal').modal('hide');
-                        // reload in 3s
-                        setTimeout(() => {
-                            location.reload();
-                        }, 3000);
-                    }
-                    else {
-                        $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
-                    }
-
-
-                },
-                error: function (data) {
-                    // unable to save company details
-                    $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
-
-                }
-            }).done(function () {
-                $("#saveCompanyDetails").html('<i class="fas fa-save"></i> Save').prop('disabled', false);
-                // close modal
-                $('#addCompanyModal').modal('hide');
-            });
-        });
     })
 
 
