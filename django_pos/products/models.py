@@ -84,7 +84,7 @@ class Product(models.Model):
         item = {}
         item["id"] = self.id
         item["text"] = self.name
-        item["category"] = self.category.name
+        item["category"] = self.category.to_json()
         item["quantity"] = 1
         item["total_product"] = 0
         item["image"] = self.image.url if self.image else None
