@@ -1,93 +1,53 @@
 import json
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
-
-
+from .serializers import ExpenseCategorySerializer, ExpenseSerializer
 from expenses.models import Expense, ExpenseCategory
 from django.contrib.auth.decorators import login_required
+from rest_framework import generics
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+from rest_framework.parsers import JSONParser
 
 
-# Create your views here.
-@login_required(login_url="/users/login/")
-def index(request: HttpRequest) -> HttpResponse:
+class ExpenseView(generics.ListCreateAPIView, generics.RetrieveUpdateDestroyAPIView):
+    queryset = Expense.objects.all()
+    serializer_class = ExpenseSerializer
+    renderer_classes = [
+        TemplateHTMLRenderer,
+        JSONRenderer,
+    ]
+    parser_classes = [JSONParser]
 
-    if request.method == "GET":
-        recent_expenses = Expense.objects.order_by("-date_added")[:10]
-        all_expense_categories = ExpenseCategory.objects.all()
-        return render(
-            request,
-            "expenses/index.html",
-            {"expenses": recent_expenses, "categories": all_expense_categories},
-        )
-    elif request.method == "POST":
-        description = request.POST.get("description", "")
-        category = request.POST.get("category", None)
-        amount = request.POST.get("amount", 0.00)
-        name = request.POST.get("expense_name", None)
-
-        if category and name:
-            category = ExpenseCategory.objects.get(id=category)
-            expense = Expense(
-                expense_description=description,
-                category=category,
-                amount=amount,
-                expense_name=name,
+    def get(self, request, *args, **kwargs):
+        if request.accepted_renderer.format == "html":
+            categories = ExpenseCategory.objects.all()
+            return render(
+                request,
+                "expenses/index.html",
+                context={"expenses": self.get_queryset(), "categories": categories},
             )
-            expense.save()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if request.accepted_renderer.format == "html":
+            data = request.data
+            serializer = ExpenseSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return render(
+                    request,
+                    "expenses/index.html",
+                    context={"expenses": self.get_queryset()},
+                )
             return JsonResponse(
                 {
-                    "expense": expense.to_json(),
-                    "status": "success",
-                }
+                    "status": "error",
+                    "message": "Invalid data",
+                    "errors": serializer.errors,
+                },
+                status=400,
             )
-        else:
-            return JsonResponse({"error": "Invalid data", "status": "error"})
-    elif request.method == "PUT":
-        id = request.GET.get("id", None)
-
-        if id:
-            expense = Expense.objects.get(id=id)
-            if request.body:
-                data = json.loads(request.body)
-                if "description_" in data:
-                    expense.expense_description = data["description_"]
-                if "category_" in data:
-                    expense.category = ExpenseCategory.objects.get(id=data["category_"])
-                if "amount_" in data:
-                    expense.amount = data["amount_"]
-                if "name" in data:
-                    expense.expense_name = data["name"]
-
-            expense.save()
-            return JsonResponse(
-                {
-                    "expense": expense.to_json(),
-                    "status": "success",
-                }
-            )
-        else:
-            return JsonResponse({"error": "Invalid data", "status": "error"})
-    elif request.method == "DELETE":
-        id = request.GET.get("id", None)
-        if id:
-            try:
-                expense = Expense.objects.get(id=id)
-                expense.delete()
-                return JsonResponse(
-                    {
-                        "status": "success",
-                    }
-                )
-            except Expense.DoesNotExist:
-                return JsonResponse(
-                    {
-                        "error": "Expense does not exist",
-                        "status": "error",
-                    }
-                )
-
-        else:
-            return JsonResponse({"error": "Invalid data", "status": "error"})
+        return super().post(request, *args, **kwargs)
 
 
 @login_required(login_url="/users/login/")
@@ -101,42 +61,24 @@ def expense_categories(request: HttpRequest, id=None) -> HttpResponse:
         )
     elif request.method == "POST":
         data = json.loads(request.body)
-        category_name = data.get("category_name", None)
-        category_description = data.get("category_description", None)
-        is_recurring = data.get("is_recurring", None)
-
-        if is_recurring == "1":
-            is_recurring = True
-        else:
-            is_recurring = False
-        if category_name:
-            category = ExpenseCategory(
-                category_name=category_name,
-                category_description=category_description,
-                is_recurring=is_recurring,
-            )
-            try:
-                category.save()
-                return JsonResponse(
-                    {
-                        "category": category.to_json(),
-                        "status": "success",
-                    }
-                )
-            except Exception as e:
-                return JsonResponse(
-                    {
-                        "error": str(e),
-                        "status": "error",
-                    }
-                )
-        else:
+        serializer = ExpenseCategorySerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
             return JsonResponse(
                 {
-                    "error": "Invalid data",
-                    "status": "error",
+                    "status": "success",
+                    "message": "Category added",
+                    "category": serializer.data,
                 }
             )
+        return JsonResponse(
+            {
+                "status": "error",
+                "message": "Invalid data",
+                "errors": serializer.errors,
+            },
+            status=400,
+        )
 
     elif request.method == "PUT":
         id = request.GET.get("id", None)
@@ -144,31 +86,33 @@ def expense_categories(request: HttpRequest, id=None) -> HttpResponse:
             category = ExpenseCategory.objects.get(id=id)
             if request.body:
                 data = json.loads(request.body)
-                if "category_name" in data:
-                    category.category_name = data["category_name"]
-                if "category_description" in data:
-                    category.category_description = data["category_description"]
-                if "is_recurring" in data:
-                    if data["is_recurring"] == "1":
-                        category.is_recurring = True
-                    else:
-                        category.is_recurring = False
-
-            try:
-                category.save()
-                return JsonResponse(
-                    {
-                        "category": category.to_json(),
-                        "status": "success",
-                    }
+                serializer = ExpenseCategorySerializer(
+                    category, data=data, partial=True
                 )
-            except Exception as e:
+                if serializer.is_valid():
+                    serializer.save()
+                    return JsonResponse(
+                        {
+                            "status": "success",
+                            "message": "Category updated",
+                            "category": serializer.data,
+                        }
+                    )
                 return JsonResponse(
                     {
-                        "error": str(e),
                         "status": "error",
-                    }
+                        "message": "Invalid data",
+                        "errors": serializer.errors,
+                    },
+                    status=400,
                 )
+            return JsonResponse(
+                {
+                    "error": "Invalid data",
+                    "status": "error",
+                }
+            )
+
         else:
             return JsonResponse(
                 {
