@@ -271,9 +271,9 @@
                 url: `?id=${id}`,
 
                 data: JSON.stringify({
-                    "description_": $('#description_').val(),
-                    "amount_": $('#amount_').val(),
-                    "category_": $('#category_').val(),
+                    "description": $('#description_').val(),
+                    "amount": $('#amount_').val(),
+                    "category": $('#category_').val(),
                     "name": $('#name').val()
 
 
@@ -400,13 +400,23 @@
         $('#expense_form').submit(function (e) {
             e.preventDefault();
             $('#save_expense').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...');
+
             $.ajax({
                 type: 'POST',
                 headers: {
                     'X-CSRFToken': '{{csrf_token}}'
                 },
                 url: '',
-                data: $(this).serialize(),
+                processData: false,
+                contentType: "application/json",
+                data: JSON.stringify(
+                    {
+                        "expense_name": $('#expense_name').val(),
+                        "amount": $('#amount').val(),
+                        "description": $('#description').val(),
+                        "category": $('#category').val()
+                    }
+                ),
                 success: function (response) {
 
                     if (response['status'] == 'success') {
