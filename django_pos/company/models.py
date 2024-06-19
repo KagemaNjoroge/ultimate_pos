@@ -3,10 +3,12 @@ from django.db import models
 
 # Create your models here.
 class Company(models.Model):
-    phone_number = models.CharField(max_length=20)  # Updated field type
-    email = models.EmailField(blank=True)
-    city = models.CharField(max_length=100)
-    address = models.CharField(max_length=100)
+    phone_number = models.CharField(
+        max_length=20, blank=True, null=True
+    )  # Updated field type
+    email = models.EmailField(blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    address = models.CharField(max_length=100, blank=True, null=True)
     logo = models.ImageField(blank=True, null=True, default="static/default.png")
     company_name = models.CharField(max_length=100, blank=False, null=False)
     currency_symbol = models.CharField(max_length=5, default="Kes")
