@@ -1,5 +1,5 @@
 import json
-
+from .serializers import InventorySerializer
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -26,15 +26,22 @@ def add_inventory(request: HttpRequest) -> HttpResponse:
         return render(request, "inventory/inventory_add.html", {"products": products})
     elif request.method == "POST":
         data = json.loads(request.body)
-        product_id = int(data["product"])
-        quantity = int(data["quantity"])
-        product = Product.objects.get(id=product_id)
-        inventory = Inventory(product=product, quantity=quantity)
-        try:
-            inventory.save()
-            return JsonResponse({"status": "success"}, safe=True)
-        except Exception as ee:
-            return JsonResponse({"status": "fail", "error": str(ee)}, safe=True)
+        serializer = InventorySerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return JsonResponse(
+                {"status": "success", "message": "Inventory added"}, safe=True
+            )
+        return JsonResponse(
+            {
+                "status": "error",
+                "message": "Invalid data",
+                "errors": serializer.errors,
+            },
+            status=400,
+        )
 
 
 @login_required(login_url="/users/login/")
@@ -47,7 +54,9 @@ def update_inventory(request: HttpRequest, inventory_id: int) -> HttpResponse:
         )
     elif request.method == "POST":
         data = json.loads(request.body)
-        quantity = int(data["quantity"])
-        inventory.quantity = quantity
-        inventory.save()
-        return JsonResponse({"status": "success"}, safe=True)
+        serializer = InventorySerializer(inventory, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({"status": "success"}, safe=True)
+        else:
+            return JsonResponse({"status": "error"}, safe=True)
