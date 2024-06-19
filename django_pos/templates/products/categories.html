@@ -16,32 +16,45 @@
 <!-- Page content  -->
 {% block content %}
 
-<!--Create a new category-->
-<div class="row ml-0 mb-3">
-    <a href="{% url 'products:categories_add' %}">
-        <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-plus mr-2"></i>
-            Create new category
-        </button>
-    </a>
+
+<div class="container text-left">
+    <!-- Adjusted layout to keep buttons on the left and close to each other -->
+    <div class="row mb-3">
+        <!-- Wrap buttons in a single column -->
+        <div class="col-auto">
+            <a href="{% url 'products:products_list' %}" class="">
+                <button type="button" class="btn btn-success font-weight-bold">
+                    <i class="fas fa-long-arrow-alt-left mr-2"></i>
+                    Products
+                </button>
+            </a>
+            <a href="{% url 'products:categories_add' %}" class="">
+                <button type="button" class="btn btn-success font-weight-bold">
+                    <i class="fas fa-plus mr-2"></i>
+                    Create new category
+                </button>
+            </a>
+
+        </div>
+    </div>
 </div>
 
 <!-- DataTable -->
-<div class="card shadow mb-12">
+<div class="card shadow mb-12 ml-3">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Categories</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover table-responsive" id="dataTable" style="width: 100%">
+            <table class="table table-bordered table-hover" id="dataTable">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th style="width:7%">#</th>
-                        <th style="width: 20%;">Name</th>
-                        <th style="width: 30%;">Description</th>
-                        <th class="text-center" style="width:15%">Status</th>
-                        <th class="text-center" style="width:15%">Actions</th>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
