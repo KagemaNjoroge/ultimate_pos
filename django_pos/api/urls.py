@@ -5,6 +5,7 @@ from .vie.etims import (
     ItemClassCodesViewSet,
     UnitsOfQuantityViewSet,
 )
+from .vie.products import CategoryViewSet, ProductsViewSet
 from .vie.customers import CustomersViewSet
 from .vie.expenses import ExpensesViewSet, ExpenseCategoryViewSet
 
@@ -19,5 +20,7 @@ router.register("item-class-codes", ItemClassCodesViewSet, basename="item_class_
 router.register(
     "units-of-quantity", UnitsOfQuantityViewSet, basename="units_of_quantity"
 )
+router.register("products", ProductsViewSet, basename="products")
+router.register("categories", CategoryViewSet, basename="categories")
 
 urlpatterns = router.urls
