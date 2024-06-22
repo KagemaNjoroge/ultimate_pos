@@ -1,10 +1,11 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from pos.views import check_subscription
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from sales.models import Sale, SaleDetail
-from django.views.decorators.http import require_http_methods
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 # Create your views here.
 
@@ -17,8 +18,8 @@ def index(request: HttpRequest) -> HttpResponse:
 
 @login_required(login_url="/users/login/")
 @check_subscription
-@require_http_methods(["GET"])
-def duration_sales_report(request: HttpRequest):
+@api_view(["GET"])
+def duration_sales_report(request):
     # get duration span
     start_date = request.GET.get("start_date", None)
     end_date = request.GET.get("end_date", None)
@@ -34,17 +35,16 @@ def duration_sales_report(request: HttpRequest):
             ]
         )
 
-    return JsonResponse(
+    return Response(
         data=[sale.to_json() for sale in sales],
         status=200,
-        safe=False,
     )
 
 
 @login_required(login_url="/users/login/")
 @check_subscription
-@require_http_methods(["GET"])
-def sales_this_month(request: HttpRequest) -> JsonResponse:
+@api_view(["GET"])
+def sales_this_month(request) -> Response:
     sales = Sale.objects.filter(
         date_added__range=[
             datetime.now().replace(day=1),
@@ -54,45 +54,43 @@ def sales_this_month(request: HttpRequest) -> JsonResponse:
 
     total = sum([sale.grand_total for sale in sales])
 
-    return JsonResponse(
+    return Response(
         data={
             "total": total,
             "sales": [sale.to_json() for sale in sales],
             "count": sales.count(),
         },
         status=200,
-        safe=False,
     )
 
 
 @login_required(login_url="/users/login/")
 @check_subscription
-@require_http_methods(["GET"])
-def sales_this_week(request: HttpRequest) -> JsonResponse:
+@api_view(["GET"])
+def sales_this_week(request) -> Response:
     sales = Sale.objects.filter(
         date_added__range=[
             datetime.now().replace(day=1),
-            datetime.now().replace(day=8),
+            datetime.now().replace(day=9),
         ]
     )
 
     total = sum([sale.grand_total for sale in sales])
 
-    return JsonResponse(
+    return Response(
         data={
             "total": total,
             "sales": [sale.to_json() for sale in sales],
             "count": sales.count(),
         },
         status=200,
-        safe=False,
     )
 
 
 @login_required(login_url="/users/login/")
 @check_subscription
-@require_http_methods(["GET"])
-def best_selling_product(request: HttpRequest) -> JsonResponse:
+@api_view(["GET"])
+def best_selling_product(request) -> Response:
     sales = Sale.objects.filter(
         date_added__range=[
             datetime.now().replace(day=1),
@@ -114,17 +112,16 @@ def best_selling_product(request: HttpRequest) -> JsonResponse:
     # product with the highest quantity
     tops = sorted(tops.items(), key=lambda x: x[1], reverse=True)[0]
 
-    return JsonResponse(
+    return Response(
         data={"top_selling": tops},
         status=200,
-        safe=False,
     )
 
 
 @login_required(login_url="/users/login/")
 @check_subscription
-@require_http_methods(["GET"])
-def get_best_selling_category(request: HttpRequest) -> JsonResponse:
+@api_view(["GET"])
+def get_best_selling_category(request) -> Response:
     sales = Sale.objects.filter(
         date_added__range=[
             datetime.now().replace(day=1),
@@ -144,8 +141,7 @@ def get_best_selling_category(request: HttpRequest) -> JsonResponse:
                 tops[z.product.category] = z.quantity
     # get best-selling category
     tops = sorted(tops.items(), key=lambda x: x[1], reverse=True)[0]
-    return JsonResponse(
+    return Response(
         data={"top_selling": tops},
         status=200,
-        safe=False,
     )
