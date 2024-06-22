@@ -25,7 +25,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://pos.tomorrow.co.ke",
     "https://localhost",
 ]
-
+# new auth model
+AUTH_USER_MODEL = "authentication.CustomUser"
 # Application definition
 
 DJANGO_APPS = [
@@ -58,7 +59,7 @@ LOCAL_APPS = [
     "onboarding",
     "api",
     # another sales app to replace the existing one
-    "SalesV2"
+    "SalesV2",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
