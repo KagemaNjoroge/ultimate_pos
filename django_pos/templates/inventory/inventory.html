@@ -23,49 +23,59 @@
 </div>
 <div id="actions" class="ml-2"></div>
 
-<div class="table-responsive">
-    <table class="table table-hover table-bordered" id="dataTable">
-        <thead>
-            <tr>
-                <th>Inventory ID</th>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for invent in inventory %}
-            <tr>
-                <th>{{ invent.id }}</th>
-                <td>{{ invent.product.name }}</td>
-                <td>{{ invent.quantity }}</td>
-                <td> <!--Update-->
-                    <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}"
-                        class="text-decoration-none">
-                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
-                            title="Update Inventory">
-                            <i class="fas fa-pen"></i>
-                        </button>
-                    </a>
-                    <!--Delete modal-->
-                    <!-- Button trigger modal -->
-                    <a class="text-decoration-none">
-                        <button type="button" class="btn btn-danger btn-sm">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </a>
-                </td>
+<div class="card shadow mb-12 ml-2">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+            Inventory
+        </h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Inventory ID</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invent in inventory %}
+                    <tr>
+                        <th>{{ invent.id }}</th>
+                        <td>{{ invent.product.name }}</td>
+                        <td>{{ invent.quantity }}</td>
+                        <td> <!--Update-->
+                            <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}"
+                                class="text-decoration-none">
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
+                                    title="Update Inventory">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                            </a>
+                            <!--Delete modal-->
+                            <!-- Button trigger modal -->
+                            <a class="text-decoration-none">
+                                <button type="button" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </a>
+                        </td>
 
-            </tr>
+                    </tr>
 
-            {% endfor %}
-        </tbody>
-    </table>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <script>
     // Call the dataTables jQuery plugin
     $(document).ready(function () {
         let tblProducts = $('#dataTable').DataTable({
+            dom: 'Bfrtip',
 
             "lengthMenu": [
                 [5, 10, 25, 50, -1],
@@ -157,7 +167,7 @@
             }],
 
         });
-        tblProducts.buttons().container().appendTo('#actions');
+
     });
 
 
