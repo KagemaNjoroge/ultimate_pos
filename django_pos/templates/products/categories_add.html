@@ -68,21 +68,25 @@
             let name = $("#name").val();
             let action = form.attr("action");
 
-            let data = {
-                description: description,
-                status: status,
-                name: name,
-            };
+
             $("#create_btn").html(
                 '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...'
             );
             $.ajax({
                 type: "POST",
                 url: action,
+                processData: false,
                 headers: {
                     "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json",
                 },
-                data: JSON.stringify(data),
+                data: JSON.stringify(
+                    {
+                        "description": description,
+                        "status": status,
+                        "name": name,
+                    }
+                ),
                 success: function (data) {
                     if (data.status === "success") {
                         $(".update_msg").html(
