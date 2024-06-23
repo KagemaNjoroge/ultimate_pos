@@ -1,0 +1,54 @@
+{%extends 'pos/base.html'%}
+{%load static%}
+{%block title%}
+Logout
+{%endblock title%}
+{%block heading%}
+Logout
+{%endblock heading%}
+{%block content%}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">Logout</h5>
+    </div>
+    <div class="card-body">
+        <h5>
+            Are you sure you want to logout?
+        </h5>
+        <form method="post" id="logout_form">
+            {%csrf_token%}
+            <button class="btn btn-danger" type="submit" id="logout">
+                <i class="fa fa-sign-out"></i>
+                Logout
+            </button>
+        </form>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#logout_form").submit(function (e) {
+            e.preventDefault();
+            $('#logout').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Logging out');
+            $.ajax({
+                type: "POST",
+                url: "{%url 'authentication:logout'%}",
+                headers: {
+                    "X-CSRFToken": "{{csrf_token}}"
+                },
+                data: {},
+                success: function (response) {
+                    if (response.message === "success") {
+                        window.location.href = "{%url 'authentication:login'%}";
+                    }
+
+                },
+                error: function (response) {
+
+                    console.log(response);
+                }
+            });
+        });
+    });
+</script>
+{%endblock content%}
