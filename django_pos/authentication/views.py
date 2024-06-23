@@ -1,13 +1,15 @@
 import json
+import re
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
-from django.views.decorators.http import require_http_methods
-
+from rest_framework.response import Response
 from django.core.mail import send_mail
-
+from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from .forms import SignUpForm
+from .serializers import CustomUserSerializer
 
 # get_user_model
 from django.contrib.auth import get_user_model
@@ -22,48 +24,41 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "accounts/index.html", {"users": users})
 
 
-def request_is_ajax(request: HttpRequest) -> bool:
-    return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
-
-
-def logout_view(request: HttpRequest) -> HttpResponse:
-    logout(request)
-    return JsonResponse(
-        {"message": "Logged out successfully", "status": "Ok"}, status=200
-    )
+@login_required(login_url="/users/login/")
+@api_view(["GET", "POST"])
+def logout_view(request) -> Response:
+    if request.method == "POST":
+        logout(request)
+        return Response({"message": "success"})
+    else:
+        return render(request, "accounts/logout.html")
 
 
 @login_required(login_url="/users/login/")
-@require_http_methods(["GET", "POST"])
+@api_view(["GET", "POST"])
+@renderer_classes([TemplateHTMLRenderer, JSONRenderer])
 def profile(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
-        return render(request, "accounts/profile.html")
+        if request.accepted_renderer.format == "html":
+            return render(request, "accounts/profile.html")
+        else:
+            user = User.objects.get(pk=request.user.id)
+            serializer = CustomUserSerializer(user)
+            return Response(
+                serializer.data, status=200, template_name="accounts/profile.html"
+            )
     elif request.method == "POST":
-
-        email = request.POST.get(key="email").lower()
-        first_name = request.POST.get(key="first_name").title()
-        last_name = request.POST.get(key="last_name").title()
-        user = request.user
-        if email == "":
-            email = None
-        if first_name == "":
-            first_name = None
-        if last_name == "":
-            last_name = None
-
-        user.email = email or user.email
-        user.first_name = first_name or user.first_name
-        user.last_name = last_name or user.last_name
-
-        user.save()
-
-        return JsonResponse(
-            {"message": "Profile updated successfully", "status": "Ok"}, status=200
+        serializer = CustomUserSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {"message": "Profile updated successfully"},
+                status=200,
+                template_name="accounts/profile.html",
+            )
+        return Response(
+            serializer.errors, status=400, template_name="accounts/profile.html"
         )
-
-    else:
-        # method isn't allowed
-        return JsonResponse({"message": "Invalid request method"}, status=405)
 
 
 def login_view(request: HttpRequest) -> HttpResponse:
