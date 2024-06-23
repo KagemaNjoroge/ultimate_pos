@@ -182,7 +182,7 @@
                               <td>
                                 <b>Total:</b> &nbsp;
                                 <span class="price_total total-cart"></span>
-                              </td>w
+                              </td>
                             </tr>
 
                           </tbody>
@@ -617,17 +617,20 @@
         let query = $(this).val();
         if (query.length > 0) {
           $.ajax({
-            url: "{% url 'products:get_products' %}",
-            type: "POST",
+            url: "{% url 'products:get_products' %}" + "?term=" + query,
+            type: "GET",
             headers: {
               "X-CSRFToken": getCookie('csrftoken')
             },
-            data: {
-              'term': query
-            },
+
             success: function (data) {
+
+
+
+
               var htm = '';
-              for (let i in data.slice(0, 4)) {
+              for (let i in data) {
+
                 data[i]['image'] = data[i]['image'] ? data[i]['image'] : "{% static 'default.png' %}";
 
                 // render the data for each product
