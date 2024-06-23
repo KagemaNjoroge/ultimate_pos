@@ -5,7 +5,10 @@ from django.shortcuts import get_object_or_404, render
 from pos.views import check_subscription
 from sales.models import Sale
 from .models import Customer
-
+from rest_framework.decorators import api_view, renderer_classes, parser_classes
+from rest_framework.response import Response
+from .serializers import CustomerSerializer
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 # TODO: Remove duplicate code
 
@@ -19,62 +22,37 @@ def customers_list_view(request: HttpRequest) -> HttpResponse:
 
 @login_required(login_url="/users/login/")
 @check_subscription
-def customers_add_view(request: HttpRequest) -> HttpResponse:
+@api_view(["GET", "POST"])
+@renderer_classes([TemplateHTMLRenderer, JSONRenderer])
+def customers_add_view(request) -> Response:
     context = {
         "active_icon": "customers",
     }
 
     if request.method == "POST":
-        # Save the POST arguments
-        data = request.POST
-
-        attributes = {
-            "first_name": data["first_name"],
-            "last_name": data["last_name"],
-            "address": data["address"],
-            "email": data["email"],
-            "phone": data["phone"],
-            "kra_pin": data["kra_pin"],
-        }
-        # try to get the photo
-        try:
-            attributes["photo"] = request.FILES["photo"]
-        except KeyError:
-            pass
-
-        # Check if a customer with the same attributes exists
-        if Customer.objects.filter(**attributes).exists():
-            # return JsonResponse
-            return JsonResponse(
-                {
-                    "status": "error",
-                    "message": "Customer with the same attributes already exists",
-                },
-                status=400,
-            )
-
-        try:
-            # Create the customer
-            new_customer = Customer.objects.create(**attributes)
-
-            # If it doesn't exist, save it
-            new_customer.save()
-            return JsonResponse(
+        serializer = CustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
                 {"status": "success", "message": "Customer added successfully!"},
+                status=201,
+            )
+        return Response({"status": "error", "message": serializer.errors}, status=400)
+
+    elif request.method == "GET":
+        # This part remains unchanged, serving HTML for GET requests
+        if request.accepted_renderer.format == "html":
+            return render(
+                request,
+                template_name="customers/customers_add.html",
+                context=context,
                 status=200,
             )
-
-        except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)}, status=400)
-    elif request.method == "GET":
-
-        return render(
-            request, "customers/customers_add.html", context=context, status=200
-        )
-    else:
-        return JsonResponse(
-            {"status": "error", "message": "Method not allowed!"}, status=405
-        )
+        else:
+            # For non-HTML requests, inform about the method not being allowed
+            return Response(
+                {"status": "error", "message": "Method not allowed!"}, status=405
+            )
 
 
 @login_required(login_url="/users/login/")
