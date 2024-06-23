@@ -10,11 +10,7 @@
         Ultimate POS
         {%endblock title%}
     </title>
-    <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
-    <!--Bootstrap Touchspin-->
+    <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script> <!--Bootstrap Touchspin-->
     <link rel="stylesheet" href="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.css' %}">
     <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
@@ -143,7 +139,12 @@
     <script src="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.js' %}"></script>
     <!--Sweet Alert-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.15/dist/sweetalert2.all.min.js"></script>
-    <script src="{%static 'libs/bootstrap/dist/js/bootstrap.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
     {%include 'pos/ai_assistant.html'%}
     {%include 'pos/notifications_modal.html'%}
 
