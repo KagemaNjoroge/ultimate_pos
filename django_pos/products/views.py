@@ -12,6 +12,10 @@ from .models import Category, Product
 from rest_framework.response import Response
 from .serializers import CategorySerializer, ProductSerializer
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.request import Request
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
 
 @login_required(login_url="/users/login/")
@@ -26,42 +30,46 @@ def categories_list_view(request: HttpRequest) -> HttpResponse:
 
 @login_required(login_url="/users/login/")
 @check_subscription
-def categories_add_view(request: HttpRequest) -> HttpResponse:
-    context = {
-        "active_icon": "products_categories",
-        "category_status": Category.status.field.choices,
-    }
+@api_view(["POST", "GET"])
+@renderer_classes([JSONRenderer, TemplateHTMLRenderer])
+@parser_classes([JSONParser, FormParser, MultiPartParser])
+def categories_add_view(request: Request) -> Response:
+
     if request.method == "GET":
-        return render(request, "products/categories_add.html", context=context)
+        context = {
+            "active_icon": "products_categories",
+            "category_status": Category.status.field.choices,
+        }
+        if request.accepted_renderer.format == "html":
+            return render(request, "products/categories_add.html", context=context)
+        else:
+            return Response(context, status=200)
 
     if request.method == "POST":
         # Save the POST arguments
-        data = json.loads(request.body)
+        data = request.data
 
         attributes = {
-            "name": data["name"],
-            "status": data["status"],
-            "description": data["description"],
+            "name": data.get("name", ""),
+            "status": data.get("status", ""),
+            "description": data.get("description", ""),
         }
 
         serializer = CategorySerializer(data=attributes)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(
+            return Response(
                 {"status": "success", "message": "Category created successfully!"}
             )
         else:
-            return JsonResponse(
+            return Response(
                 {"status": "error", "message": serializer.errors}, status=400
             )
-
-    else:
-        # method isn't allowed
-        return HttpResponse(status=405)
 
 
 @login_required(login_url="/users/login/")
 @check_subscription
+@api_view(["POST", "GET"])
 def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
     if request.method == "GET":
         category = get_object_or_404(Category, id=category_id)
@@ -71,30 +79,29 @@ def categories_update_view(request: HttpRequest, category_id: str) -> HttpRespon
             "category": category,
         }
 
-        return render(request, "products/categories_update.html", context=context)
+        if request.accepted_renderer.format == "html":
+            return render(request, "products/categories_update.html", context)
+        else:
+            return Response(context)
 
     if request.method == "POST":
-
         try:
 
-            data = json.loads(request.body)
+            data = request.data
 
             attributes = {
-                "name": data["name"],
-                "status": data["status"],
-                "description": data["description"],
+                "name": data.get("name", ""),
+                "status": data.get("status", ""),
+                "description": data.get("description", ""),
             }
             Category.objects.filter(id=category_id).update(**attributes)
 
-            return JsonResponse(
+            return Response(
                 {"status": "success", "message": "Category updated successfully!"}
             )
 
         except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)})
-    else:
-        # method isn't allowed
-        return HttpResponse(status=405)
+            return Response({"status": "error", "message": str(e)})
 
 
 @login_required(login_url="/users/login/")
@@ -131,7 +138,7 @@ def products_list_view(request: HttpRequest) -> HttpResponse:
     if company:
         context["currency_symbol"] = company.currency_symbol
     else:
-        context["currency_symbol"] = "$"
+        context["currency_symbol"] = "Ksh"
 
     return render(request, "products/products.html", context=context)
 
@@ -260,17 +267,12 @@ def is_ajax(request: HttpRequest) -> bool:
 
 @login_required(login_url="/users/login/")
 @check_subscription
-def get_products_ajax_view(request: HttpRequest) -> HttpResponse:
-    if request.method == "POST":
-        if is_ajax(request=request):
-            data = []
-
-            products = Product.objects.filter(name__icontains=request.POST["term"])
-            for product in products[0:10]:
-                item = product.to_json()
-                data.append(item)
-
-            return JsonResponse(data, safe=False)
+@api_view(["GET"])
+def get_products_ajax_view(request: Request) -> Response:
+    query = request.query_params.dict().get("term", "")
+    products = Product.objects.filter(name__icontains=query)
+    serializer = ProductSerializer(products, many=True)
+    return Response(data=serializer.data, status=200)
 
 
 @login_required(login_url="/users/login/")
