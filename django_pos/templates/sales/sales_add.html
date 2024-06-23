@@ -1,20 +1,20 @@
 {% extends "pos/base.html" %}
 {% load static %}
-<!-- Page title  -->
+
 {% block title %}Add sale{% endblock title %}
 
-<!-- Specific Page CSS goes HERE  -->
+
 {% block stylesheets %}
 
->
+
 {% endblock stylesheets %}
 
-<!-- Page Heading -->
+
 {% block heading %}Add sale{% endblock heading %}
 
-<!-- Page content  -->
+
 {% block content %}
-<!--Go back-->
+
 <div class="row ml-2 mb-3">
     <a href="{% url 'sales:sales_list' %}">
         <button type="button" class="btn btn-success font-weight-bold">
@@ -23,23 +23,23 @@
         </button>
     </a>
 </div>
-<!--Sale add result-->
+
 <div id="result">
 
 </div>
-<!--Sale products and details-->
-<form action="{% url 'sales:sales_add' %}" class="saleForm" method="post">
+
+<form action="{% url 'sales:sales_add' %}" class="saleForm ml-2" method="post">
     <div class="row mt-3 ml-2 mb-5">
         <div class="card col-md-12">
             <div class="card-body ml-0">
                 <div class="row">
-                    <!--Left column-->
+
                     <div class="col-md-9 pl-0">
                         <div class="card card-secondary">
                             <div class="card-header">Sale products</div>
 
                             <div class="card-body">
-                                <!--Search product-->
+
                                 <div class="form-group">
                                     <label>Search product</label>
                                     <div class="input-group">
@@ -52,15 +52,15 @@
                                         </button>
                                     </div>
                                 </div>
-                                <!--End Search product-->
+
                                 <div id="search_results"></div>
-                                <!--Delete all products from sale-->
+
                                 <button type="button" class="mb-4 btn btn-danger btn-sm deleteAll">
                                     Delete all products <i class="ml-1 fas fa-trash-alt fa-xs"></i>
                                 </button>
-                                <!--End Delete all products from sale-->
 
-                                <!--Products table-->
+
+
                                 <div class="card-body table-responsive p-0">
                                     <table class="table table-hover text-nowrap" id="table_products">
                                         <thead>
@@ -77,13 +77,13 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <!--End Products table-->
+
                             </div>
                         </div>
                     </div>
-                    <!--End Left column-->
 
-                    <!--Righ column-->
+
+
                     <div class="col-md-3 pr-0">
                         <div class="card card-secondary">
                             <div class="card-header">Sale details</div>
@@ -132,31 +132,21 @@
                                     <button type="submit" class="btn btn-success font-weight-bold"
                                         id="submit_btn">Create sale</button>
                                 </div>
-                                <!--End card-body-->
+
                             </div>
-                            <!--End Right column-->
+
                         </div>
-                        <!--End row-->
+
                     </div>
-                    <!--End card-body-->
+
                 </div>
 
             </div>
         </div>
     </div>
 </form>
-{% endblock content %}
-
-
-
-
+<script src="{% static 'utils/cart.js' %}"></script>
 <script>
-    $('#tax_percentage').on('change', function () {
-        updateTotal();
-    });
-
-
-
     function updateTotal() {
         var total = shoppingCart.totalCart();
         $('#grand_total').val(total);
@@ -164,10 +154,6 @@
         $('[name="tax_amount"]').val(total * $('[name="tax_percentage"]').val() / 100);
         $('#amount_paid').val(total);
     }
-
-    var table = $('#table_products tbody');
-
-
 
     function displayCart() {
         updateTotal();
@@ -204,34 +190,44 @@
             displayCart();
         });
     }
+    $(document).ready(function () {
+        $('#tax_percentage').on('change', function () {
+            updateTotal();
+        });
 
-    displayCart();
 
-    $('#form1').on('keyup', function () {
 
-        var query = $(this).val();
-        if (query.length === 0) {
-            $('#search_results').html('');
-        }
-        if (query.length > 0) {
-            $.ajax({
-                url: "{% url 'products:get_products' %}",
-                type: "POST",
-                data: {
-                    'term': query
-                },
-                headers: {
-                    "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
-                },
-                success: function (data) {
-                    // results card
-                    if (data.length < 1) {
-                        $('#search_results').html('<div class="alert alert-warning">No products found</div>');
-                    }
-                    else {
-                        for (var i = 0; i < data.slice(0, 3).length; i++) {
-                            $('#search_results').html(
-                                `<div class="card card-secondary mt-2 mb-2">
+
+        var table = $('#table_products tbody');
+
+
+
+
+        displayCart();
+
+        $('#form1').on('keyup', function () {
+
+
+            var query = $(this).val();
+            if (query.length === 0) {
+                $('#search_results').html('');
+            }
+            if (query.length > 0) {
+                $.ajax({
+                    url: "{% url 'products:get_products' %}" + `?term=${query}`,
+                    type: "GET",
+                    headers: {
+                        "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    success: function (data) {
+                        // results card
+                        if (data.length < 1) {
+                            $('#search_results').html('<div class="alert alert-warning">No products found</div>');
+                        }
+                        else {
+                            for (var i = 0; i < data.slice(0, 3).length; i++) {
+                                $('#search_results').html(
+                                    `<div class="card card-secondary mt-2 mb-2">
                                 <div class="card-body">
                                     <h5 class="card-title">${data[i].name}</h5>
                                     <p class="card-text">Price: ${data[i].price}</p>
@@ -240,94 +236,96 @@
                                     </button>
                                 </div>
                             </div>`
-                            );
+                                );
+                            }
                         }
                     }
-                }
-            });
-        }
-    });
-
-    $('.deleteAll').on('click', function () {
-        shoppingCart.clearCart();
-        displayCart();
-    });
-    $('.saleForm').on('submit', function (e) {
-        e.preventDefault();
-        var customer = $('[name="customer"]').val();
-        var sub_total = $('[name="sub_total"]').val();
-        var tax_percentage = $('[name="tax_percentage"]').val();
-        var tax_amount = $('[name="tax_amount"]').val();
-        var grand_total = $('[name="grand_total"]').val();
-        var amount_payed = $('[name="amount_payed"]').val();
-        var products = shoppingCart.listCart();
-        for (let x in products) {
-            products[x].id = parseInt(products[x].id);
-            products[x].price = parseFloat(products[x].price);
-            products[x].count = parseInt(products[x].count);
-            products[x].total = parseFloat(products[x].total);
-            products[x].total_product = products[x].count * products[x].price;
-        }
-
-        var amount_change = amount_payed - grand_total;
-        if (amount_change < 0) {
-            Swal.fire({
-                title: 'Error',
-                text: 'The amount payed is less than the grand total',
-                icon: 'error',
-                confirmButtonText: 'Ok'
-            });
-            return;
-        }
-        $('#submit_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...')
-        $.ajax({
-            url: "{% url 'sales:sales_add' %}",
-            type: "POST",
-            data: JSON.stringify({
-                'customer': customer,
-                'sub_total': sub_total,
-                'tax_percentage': tax_percentage,
-                'tax_amount': tax_amount,
-                'grand_total': grand_total,
-                'amount_payed': amount_payed,
-                'amount_change': amount_change,
-                'products': products,
-
-            }),
-            success: function (data) {
-                // clear cart
-                shoppingCart.clearCart()
-                if (data.status === "success") {
-                    // sale added successfully
-                    $('#result').html(
-                        `<div class="alert alert-success alert-dismissible fade show" role="alert">${data.message}<a href="/sales/pdf/${data.sale_id}"><button type="button" class="btn btn-link"><span aria-hidden="true"> Print Invoice</a></span></button><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
-                    )
-                }
-                else if (data.status === "error") {
-                    // error, such as less stock
-                    $('#result').html(
-                        `<div class="alert alert-danger alert-dismissible fade show" role="alert">${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
-                    )
-                }
-                else {
-                    // unknown error, such as network error
-                    $('#result').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">Unknown error occurred<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-                }
-
-                displayCart()
-
-            },
-            headers: {
-                "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
-
-            },
-            error: function (data) {
-                $('#result').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">Unknown error occurred<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-
-
+                });
             }
-        }).done(function () {
-            $('#submit_btn').html("Create Sale")
         });
-    });
+
+        $('.deleteAll').on('click', function () {
+            shoppingCart.clearCart();
+            displayCart();
+        });
+        $('.saleForm').on('submit', function (e) {
+            e.preventDefault();
+            var customer = $('[name="customer"]').val();
+            var sub_total = $('[name="sub_total"]').val();
+            var tax_percentage = $('[name="tax_percentage"]').val();
+            var tax_amount = $('[name="tax_amount"]').val();
+            var grand_total = $('[name="grand_total"]').val();
+            var amount_payed = $('[name="amount_payed"]').val();
+            var products = shoppingCart.listCart();
+            for (let x in products) {
+                products[x].id = parseInt(products[x].id);
+                products[x].price = parseFloat(products[x].price);
+                products[x].count = parseInt(products[x].count);
+                products[x].total = parseFloat(products[x].total);
+                products[x].total_product = products[x].count * products[x].price;
+            }
+
+            var amount_change = amount_payed - grand_total;
+            if (amount_change < 0) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'The amount payed is less than the grand total',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+                return;
+            }
+            $('#submit_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...')
+            $.ajax({
+                url: "{% url 'sales:sales_add' %}",
+                type: "POST",
+                data: JSON.stringify({
+                    'customer': customer,
+                    'sub_total': sub_total,
+                    'tax_percentage': tax_percentage,
+                    'tax_amount': tax_amount,
+                    'grand_total': grand_total,
+                    'amount_payed': amount_payed,
+                    'amount_change': amount_change,
+                    'products': products,
+
+                }),
+                success: function (data) {
+                    // clear cart
+                    shoppingCart.clearCart()
+                    if (data.status === "success") {
+                        // sale added successfully
+                        $('#result').html(
+                            `<div class="alert alert-success alert-dismissible fade show" role="alert">${data.message}<a href="/sales/pdf/${data.sale_id}"><button type="button" class="btn btn-link"><span aria-hidden="true"> Print Invoice</a></span></button><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+                        )
+                    }
+                    else if (data.status === "error") {
+                        // error, such as less stock
+                        $('#result').html(
+                            `<div class="alert alert-danger alert-dismissible fade show" role="alert">${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
+                        )
+                    }
+                    else {
+                        // unknown error, such as network error
+                        $('#result').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">Unknown error occurred<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                    }
+
+                    displayCart()
+
+                },
+                headers: {
+                    "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
+
+                },
+                error: function (data) {
+                    $('#result').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">Unknown error occurred<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+
+
+                }
+            }).done(function () {
+                $('#submit_btn').html("Create Sale")
+            });
+        });
+    })
 </script>
+{% endblock content %}
