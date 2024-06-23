@@ -46,6 +46,7 @@ class Branch(models.Model):
     city = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     branch_id = models.CharField(max_length=10, blank=True, null=True, unique=True)
+    is_headquarter = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.branch_name
@@ -60,6 +61,7 @@ class Branch(models.Model):
             "city": self.city,
             "address": self.address,
             "branch_id": self.branch_id,
+            "is_headquarter": self.is_headquarter,
         }
 
     class Meta:
