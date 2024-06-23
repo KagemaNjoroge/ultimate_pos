@@ -10,98 +10,100 @@
 
 
 {% block content %}
+<div class="ml-4">
+    <a href="{% url 'sales:sales_list' %}">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="fas fa-long-arrow-alt-left mr-2"></i>
+            Go back
+        </button>
+    </a>
+    <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill"
+            viewBox="0 0 16 16">
+            <path
+                d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5">
+            </path>
+        </svg>
+        Share
+    </button>
+    <a href="{%url 'sales:sales_receipt_pdf' sale.id %}">
+        <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
+            <i class="fa fa-print"></i>
+            Print
+        </button>
+    </a>
+    <a href="{% url 'sales:sales_list' %}">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="fas fa-edit mr-2"></i>
+            Edit
+        </button>
+    </a>
+</div>
 
 <!--Go back-->
-<div class="row ml-3 mb-3">
-    <div class="row align-items-start">
-        <div class="col-6">
-            <a href="{% url 'sales:sales_list' %}">
-                <button type="button" class="btn btn-success font-weight-bold">
-                    <i class="fas fa-long-arrow-alt-left mr-2"></i>
-                    Go back
-                </button>
-            </a>
 
-        </div>
-        <div class="col-6 row justify-content-end">
-            <div class="col-4">
 
-                <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-share-fill" viewBox="0 0 16 16">
-                        <path
-                            d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5">
-                        </path>
-                    </svg>
-                    Share
-                </button>
+<!-- Modal -->
+<div class="modal fade" id="myModel" tabindex="-1" aria-labelledby="myModelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title" id="myModelLabel">
+                    <i class="fas fa-share-alt"></i>
+                    Share sale details
+                </p>
 
             </div>
-            <div class="col-4">
-
-                <a href="{%url 'sales:sales_receipt_pdf' sale.id %}">
-                    <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
-                        <i class="fa fa-print"></i>
-                        Print
-                    </button>
-                </a>
-
-            </div>
-            <div class="col-4">
-                <a href="{% url 'sales:sales_list' %}">
-                    <button type="button" class="btn btn-primary font-weight-bold">
-                        <i class="fas fa-edit mr-2"></i>
-                        Edit
-                    </button>
-                </a>
-
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="myModel" tabindex="-1" aria-labelledby="myModelLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="myModelLabel">Share Modal</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Share this link via</p>
-                    <div class="d-flex align-items-center icons">
-                        <a href="#" class="fs-5 d-flex align-items-center justify-content-center">
-                            <span class="fab fa-facebook-f"></span>
-                        </a>
-                        <a href="#" class="fs-5 d-flex align-items-center justify-content-center">
-                            <span class="fab fa-twitter"></span>
-                        </a>
-                        <a href="#" class="fs-5 d-flex align-items-center justify-content-center">
-                            <span class="fab fa-instagram"></span>
-                        </a>
-                        <a href="#" class="fs-5 d-flex align-items-center justify-content-center">
-                            <span class="fab fa-whatsapp"></span>
-                        </a>
-                        <a href="#" class="fs-5 d-flex align-items-center justify-content-center">
-                            <span class="fab fa-telegram-plane"></span>
-                        </a>
-                    </div>
-                    <p>Or copy link</p>
-                    <div class="field d-flex align-items-center justify-content-between">
-                        <span class="fas fa-link text-center"></span>
-                        <input type="text" value="some.com/share">
-                        <button>Copy</button>
+            <div class="modal-body">
+                <p>Share this link via</p>
+                <div class="d-flex align-items-center icons">
+                    <div class="container">
+                        <div class="row">
+                            <a href="#"
+                                class="btn btn-primary d-flex align-items-center justify-content-center col-sm mx-2">
+                                <span class="fab fa-facebook-f"></span>
+                            </a>
+                            <a href="#"
+                                class="btn btn-dark d-flex align-items-center justify-content-center col-sm mx-2">
+                                <span class="fab fa-x"></span>
+                            </a>
+                            <a href="#"
+                                class="btn btn-success d-flex align-items-center justify-content-center col-sm mx-2">
+                                <span class="fab fa-whatsapp"></span>
+                            </a>
+                            <a href="#"
+                                class="btn btn-primary d-flex align-items-center justify-content-center col-sm mx-2">
+                                <span class="fab fa-telegram-plane"></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
+                <p>Or copy link</p>
+                <div class="field d-flex align-items-center justify-content-between">
+                    <span class="fas fa-link text-center"></span>
+                    <input type="text" value="some.com/share"
+                        class="form-control d-flex align-items-center justify-content-center mr-2 ml-2" readonly>
+                    <button class="btn btn-primary font-weight-bold d-flex align-items-center justify-content-center">
+                        <span class="fas fa-copy"></span>
+                        <span>Copy</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-bs-dismiss="modal" aria-label="Close"
+                    class="btn btn-secondary font-weight-bold">
+                    <span aria-hidden="true">Close</span>
+                </button>
             </div>
         </div>
+
     </div>
 </div>
 
 
+
 <!--Sale products and details-->
-<form action="{% url 'sales:sales_add' %}" class="saleForm" method="post">
+<form action="{% url 'sales:sales_add' %}" class="saleForm ml-2" method="post">
     <div class="row mt-3 ml-3 mb-5">
         <div class="card col-md-12">
             <div class="card-body ml-0">
@@ -205,21 +207,22 @@
         </div>
     </div>
 </form>
-{% endblock content %}
-
-
-
-
 <script>
 
 
 
-    tblProducts = $('#table_products').DataTable({
-    });
     $(document).ready(function () {
-        $('#share_btn').click(function () {
-            $('#myModel').modal('show');
+        $("#share_btn").click(function () {
+            $("#myModel").modal("show");
+        });
+        let tblProducts = $('#table_products').DataTable({
+        });
+        $(document).ready(function () {
+            $('#share_btn').click(function () {
+                $('#myModel').modal('show');
+            });
         });
     });
 
 </script>
+{% endblock content %}
