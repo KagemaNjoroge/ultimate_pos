@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 
 from django.core.mail import send_mail
-from authentication.utils import get_all_permissions
+
 from .forms import SignUpForm
 
 # get_user_model
@@ -84,8 +84,6 @@ def login_view(request: HttpRequest) -> HttpResponse:
             if user is not None:
                 login(request, user)
                 try:
-                    print(user.email)
-                    # send email to user
                     send_mail(
                         "Account Login Notification",
                         "You have successfully logged in to your account. If you did not perform this action, please contact us immediately.",
@@ -109,9 +107,6 @@ def register_user(request: HttpRequest) -> HttpResponse:
     msg = None
     success = False
 
-    # all permissions available in the system.
-    perms = get_all_permissions()
-
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -126,7 +121,7 @@ def register_user(request: HttpRequest) -> HttpResponse:
         return render(
             request,
             "accounts/register.html",
-            {"perms": perms, "msg": msg, "success": success},
+            {"msg": msg, "success": success},
         )
     else:
         # not allowed
