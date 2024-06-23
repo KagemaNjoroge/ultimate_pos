@@ -14,32 +14,24 @@
 
 <!-- Page content  -->
 {% block content %}
-
-<!--Create new product-->
-<div class="row ml-0 mb-3">
-    <div class="ml-auto d-flex flex-column flex-md-row">
-        <div class="col-12 col-md-auto mb-3 mb-md-0">
-            <a href="{% url 'products:products_add' %}" class="col">
-                <button type="button" class="btn btn-success font-weight-bold">
-                    <i class="fas fa-plus"></i>
-                    Create new product
-                </button>
-            </a>
-        </div>
-        <!--Product Categories-->
-        <div class="col-12 col-md-auto">
-            <a href="{% url 'products:categories_list' %}" class="col">
-                <button type="button" class="btn btn-primary font-weight-bold">
-                    <i class="fas fa-list"></i>
-                    Product Categories
-                </button>
-            </a>
-        </div>
-    </div>
+<div class="ml-2 mb-3">
+    <a href="{% url 'products:categories_list' %}" class="col">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="fas fa-list"></i>
+            Product Categories
+        </button>
+    </a>
+    <a href="{% url 'products:products_add' %}" class="col">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="fas fa-plus"></i>
+            Create new product
+        </button>
+    </a>
 </div>
 
+
 <!-- DataTable -->
-<div class="card shadow mb-12">
+<div class="card shadow mb-12 ml-3">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Products</h6>
     </div>
