@@ -3,7 +3,7 @@ openpyxl==3.1.2
 pillow==10.3.0
 python-dotenv==1.0.1
 qrcode==7.4.2
-requests==2.31.0
+requests==2.32.2
 weasyprint==60.2
 groq~=0.5.0
 djangorestframework
