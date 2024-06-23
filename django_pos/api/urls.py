@@ -8,6 +8,7 @@ from .vie.etims import (
 from .vie.products import CategoryViewSet, ProductsViewSet
 from .vie.customers import CustomersViewSet
 from .vie.expenses import ExpensesViewSet, ExpenseCategoryViewSet
+from .vie.company import CompanyViewSet, BranchViewSet, SubscriptionViewSet
 
 app_name = "api"
 router = DefaultRouter()
@@ -22,5 +23,8 @@ router.register(
 )
 router.register("products", ProductsViewSet, basename="products")
 router.register("categories", CategoryViewSet, basename="categories")
+router.register("company", CompanyViewSet, basename="company")
+router.register("branch", BranchViewSet, basename="branch")
+router.register("subscription", SubscriptionViewSet, basename="subscription")
 
 urlpatterns = router.urls
