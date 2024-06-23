@@ -18,14 +18,16 @@ from sales.models import SaleDetail, SaleItem
 from firebase_admin import credentials
 import firebase_admin
 import os
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 load_dotenv()
 cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
 app = firebase_admin.initialize_app(cred)
 
 
-def fetch_packages(request: HttpRequest) -> JsonResponse:
+@api_view(["GET"])
+def fetch_packages(request) -> Response:
     db = firestore.client()
     docs = db.collection("packages").stream()
     packages = []
@@ -37,7 +39,7 @@ def fetch_packages(request: HttpRequest) -> JsonResponse:
                 "amount": doc.to_dict()["amount"],
             }
         )
-    return JsonResponse(packages, safe=False)
+    return Response(packages)
 
 
 def check_subscription(view_func):
@@ -258,12 +260,13 @@ def pos(request: HttpRequest) -> HttpResponse:
     return HttpResponse("Invalid request", status=400)
 
 
-def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
+@api_view(["GET"])
+def get_notifications(request, id: int = None) -> Response:
     if id is None:
         notifications = Notifications.objects.filter(
             read=False, user=request.user
         ).order_by("date")
-        return JsonResponse(
+        return Response(
             [
                 {
                     "id": notification.id,
@@ -273,14 +276,14 @@ def get_notifications(request: HttpRequest, id: int = None) -> JsonResponse:
                 }
                 for notification in notifications
             ],
-            safe=False,
+            status=200,
         )
 
     else:
         notification = get_object_or_404(Notifications, id=id)
         notification.read = True
         notification.save()
-        return JsonResponse(
+        return Response(
             {
                 "id": notification.id,
                 "title": notification.title,
