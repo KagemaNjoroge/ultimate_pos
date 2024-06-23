@@ -1,11 +1,12 @@
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 import os
 from dotenv import load_dotenv
 from etims_vscu_wrapper.clients.http_client import HttpClient
 from etims_vscu_wrapper.core.VSCUProtocol.code_data import CodeData
-
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from etims.utils.server_status import ping
 from .models import EtimsBranch, EtimsNotice, ItemClassCodes
 import datetime
@@ -23,11 +24,12 @@ http_client = HttpClient(etims_url)
 
 
 @login_required(login_url="/users/login/")
-def get_etims_server_status(request: HttpRequest) -> HttpResponse:
+@api_view(["GET"])
+def get_etims_server_status(request) -> Response:
     status = ping(etims_url)
     if status:
-        return JsonResponse({"status": "success"}, safe=False)
-    return JsonResponse({"status": "error"}, safe=False)
+        return Response({"status": "success"})
+    return Response({"status": "error"})
 
 
 @login_required(login_url="/users/login/")
@@ -35,7 +37,8 @@ def etims(request: HttpRequest) -> HttpResponse:
     return render(request, "etims/etims.html", {"active_icon": "etims"})
 
 
-def get_etims_branches_list(request: HttpRequest) -> HttpResponse:
+@api_view(["GET"])
+def get_etims_branches_list(request) -> Response:
 
     code_data = CodeData(http_client, kra_pin, bhf_id)
     code_list = code_data.get_branch_list().json()
@@ -60,7 +63,7 @@ def get_etims_branches_list(request: HttpRequest) -> HttpResponse:
             manager_email=branch["mgrEmail"],
         )
 
-    return JsonResponse(branches, safe=False)
+    return Response(branches)
 
 
 def parse_bool(value: str) -> bool:
@@ -69,7 +72,8 @@ def parse_bool(value: str) -> bool:
     return False
 
 
-def get_etims_notices(request: HttpRequest) -> HttpResponse:
+@api_view(["GET"])
+def get_etims_notices(request) -> Response:
 
     code_data = CodeData(http_client, kra_pin, bhf_id)
     code_list = code_data.get_notice_list().json()
@@ -91,10 +95,11 @@ def get_etims_notices(request: HttpRequest) -> HttpResponse:
             ),
         )
 
-    return JsonResponse(notices, safe=False)
+    return Response(notices)
 
 
-def get_etims_items_class_codes(request: HttpRequest) -> HttpResponse:
+@api_view(["GET"])
+def get_etims_items_class_codes(request) -> Response:
     code_data = CodeData(http_client, kra_pin, bhf_id)
     code_list = code_data.get_item_classification_list().json()
     try:
@@ -119,19 +124,20 @@ def get_etims_items_class_codes(request: HttpRequest) -> HttpResponse:
                 majorTargetYN=parse_bool(item_class_code_info["mjrTgYn"]),
                 useYN=parse_bool(item_class_code_info["useYn"]),
             )
-        return JsonResponse(item_class_codes, safe=False)
+        return Response(item_class_codes)
     except KeyError:
-        return JsonResponse({"error": "No data found"}, safe=False)
+        return Response({"error": "No data found"})
 
 
-def get_etims_items_list(request: HttpRequest) -> HttpResponse:
+@api_view(["GET"])
+def get_etims_items_list(request) -> Response:
     client = ItemInformation(http_client=http_client, tin=kra_pin, bhf_id=bhf_id)
     try:
         items = client.get_item_list().json()
         if items["resultCd"] == "000":
             items = items["data"]["itemList"]
-            return JsonResponse(items, safe=False)
+            return Response(items)
         else:
-            return JsonResponse({"error": items["resultMsg"]}, safe=False)
+            return Response({"error": items["resultMsg"]})
     except KeyError:
-        return JsonResponse({"error": "No data found"}, safe=False)
+        return Response({"error": "No data found"})
