@@ -83,7 +83,7 @@ class Product(models.Model):
     def to_json(self):
         item = {}
         item["id"] = self.id
-        item["text"] = self.name
+        item["name"] = self.name
         item["category"] = self.category.to_json()
         item["quantity"] = 1
         item["total_product"] = 0
