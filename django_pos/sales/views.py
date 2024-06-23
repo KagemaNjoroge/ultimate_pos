@@ -46,6 +46,7 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
         if is_ajax(request=request):
 
             data = json.load(request)
+            
             customer_id = int(data["customer"])
             customer = Customer.objects.get(id=customer_id)
             sub_total = float(data["sub_total"])
