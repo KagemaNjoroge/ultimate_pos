@@ -1,4 +1,5 @@
 from django.db import models
+from suppliers.models import Supplier
 
 
 class Category(models.Model):
@@ -40,7 +41,13 @@ class Product(models.Model):
             "Service without stock",
         ),
     )
-
+    supllier = models.ForeignKey(
+        to=Supplier,
+        on_delete=models.CASCADE,
+        verbose_name="supplier",
+        blank=True,
+        null=True,
+    )
     name = models.CharField(max_length=256)
     description = models.TextField(max_length=256)
     track_inventory = models.BooleanField(default=False)
@@ -93,6 +100,7 @@ class Product(models.Model):
         item["packaging_unit"] = (self.packaging_unit,)
         item["quantity_unit"] = (self.quantity_unit,)
         item["country_of_origin"] = self.country_of_origin
+        item["supplier"] = self.supllier.id
         return item
 
     def get_product_code(self) -> str:
