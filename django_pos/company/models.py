@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.html import escape
 
 
 # Create your models here.
@@ -48,6 +49,8 @@ class Branch(models.Model):
     branch_id = models.CharField(max_length=10, blank=True, null=True, unique=True)
     is_headquarter = models.BooleanField(default=False)
 
+    logo = models.ImageField(blank=True, null=True, default="static/default.png")
+
     def __str__(self) -> str:
         return self.branch_name
 
@@ -62,6 +65,7 @@ class Branch(models.Model):
             "address": self.address,
             "branch_id": self.branch_id,
             "is_headquarter": self.is_headquarter,
+            "logo": self.logo.url,
         }
 
     class Meta:
