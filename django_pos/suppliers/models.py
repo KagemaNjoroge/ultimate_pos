@@ -11,10 +11,15 @@ class Supplier(models.Model):
     email = models.EmailField(blank=True, null=True)
     kra_pin = models.CharField(max_length=11, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
-    logo = models.ImageField(upload_to="suppliers/", blank=True, null=True)
+    logo = models.ImageField(
+        upload_to="suppliers/",
+        blank=True,
+        null=True,
+    )
     branch = models.ForeignKey(
         Branch, on_delete=models.CASCADE, blank=False, null=False, default=1
     )
+    additional_notes = models.CharField(max_length=300, null=True, blank=True)
 
     def __str__(self):
         return self.name
