@@ -14,7 +14,22 @@ class CompanyAdmin(admin.ModelAdmin):
 
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
-    list_display = ("branch_name", "phone_number", "city", "is_headquarter")
+
+    fields = (
+        "company",
+        "branch_name",
+        "phone_number",
+        "city",
+        "is_headquarter",
+        "logo",
+    )
+
+    list_display = (
+        "branch_name",
+        "phone_number",
+        "city",
+        "is_headquarter",
+    )
 
 
 @admin.register(Subscription)
