@@ -46,7 +46,7 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
         if is_ajax(request=request):
 
             data = json.load(request)
-            
+
             customer_id = int(data["customer"])
             customer = Customer.objects.get(id=customer_id)
             sub_total = float(data["sub_total"])
@@ -231,7 +231,7 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     )
 
     # Create the pdf
-    pdf = HTML(string=html_template).write_pdf(stylesheets=[CSS(css_url)])
+    pdf = HTML(string=html_template, ).write_pdf(stylesheets=[CSS(css_url)],)
 
     return HttpResponse(pdf, content_type="application/pdf")
 
