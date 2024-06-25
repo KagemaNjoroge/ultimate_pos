@@ -2,3 +2,4 @@
 [ ] Suppliers
 [ ] Customer
 [ ] Auth roles and permissions
+[ ] Theme toggle
