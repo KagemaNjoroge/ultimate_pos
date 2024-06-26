@@ -1,8 +1,7 @@
 from django.db import models
+from company.models import Branch
 from products.models import Product
 from suppliers.models import Supplier
-
-# Create your models here.
 
 
 class Purchase(models.Model):
@@ -17,8 +16,10 @@ class Purchase(models.Model):
     )
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    branch = models.ForeignKey(
+        to=Branch, blank=True, null=True, on_delete=models.CASCADE
+    )
 
-    # TODO: to add more fields
     def __str__(self) -> str:
         return str(self.id)
 
