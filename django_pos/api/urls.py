@@ -9,6 +9,8 @@ from .vie.products import CategoryViewSet, ProductsViewSet
 from .vie.customers import CustomersViewSet
 from .vie.expenses import ExpensesViewSet, ExpenseCategoryViewSet
 from .vie.company import CompanyViewSet, BranchViewSet, SubscriptionViewSet
+from .vie.suppliers import SupplierViewset
+from .vie.purchases import PurchaseViewset
 
 app_name = "api"
 router = DefaultRouter()
@@ -26,5 +28,7 @@ router.register("categories", CategoryViewSet, basename="categories")
 router.register("company", CompanyViewSet, basename="company")
 router.register("branch", BranchViewSet, basename="branch")
 router.register("subscription", SubscriptionViewSet, basename="subscription")
+router.register("purchases", PurchaseViewset, basename="purchases")
+router.register("suppliers", SupplierViewset, basename="suppliers")
 
 urlpatterns = router.urls
