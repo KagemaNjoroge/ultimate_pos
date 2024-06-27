@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from pos.views import check_subscription
 from sales.models import Sale
 from .models import Customer
-from rest_framework.decorators import api_view, renderer_classes, parser_classes
+from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 from .serializers import CustomerSerializer
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
