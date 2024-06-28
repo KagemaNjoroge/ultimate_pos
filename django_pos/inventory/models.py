@@ -8,6 +8,7 @@ class Inventory(models.Model):
     quantity = models.PositiveIntegerField()
     date_added = models.DateField(auto_now_add=True)
     date_modified = models.DateField(auto_now=True)
+    alert_quantity = models.FloatField(default=1.0)
 
     def __str__(self):
         return f"{self.product} - {self.quantity}"
@@ -23,6 +24,7 @@ class Inventory(models.Model):
             "quantity": self.quantity,
             "date_added": self.date_added,
             "date_modified": self.date_modified,
+            "alert_quantity": self.alert_quantity,
         }
 
     class Meta:
