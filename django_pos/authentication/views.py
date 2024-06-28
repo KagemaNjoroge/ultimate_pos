@@ -51,12 +51,18 @@ def profile(request: HttpRequest) -> HttpResponse:
         if serializer.is_valid():
             serializer.save()
             return Response(
-                {"message": "Profile updated successfully"},
+                {"message": "Profile updated successfully", "status": "Ok"},
                 status=200,
                 template_name="accounts/profile.html",
             )
         return Response(
-            serializer.errors, status=400, template_name="accounts/profile.html"
+            data={
+                "errors": serializer.errors,
+                "status": "error",
+                "message": "An error occurred",
+            },
+            status=400,
+            template_name="accounts/profile.html",
         )
 
 
@@ -68,7 +74,7 @@ def login_view(request: HttpRequest) -> HttpResponse:
         if request.method == "GET":
             return render(request, "accounts/signin.html")
         elif request.method == "POST":
-
+            print(request.body)
             data = json.loads(request.body)
             username = data.get("username")
             password = data.get("password")
