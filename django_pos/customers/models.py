@@ -33,3 +33,13 @@ class Customer(models.Model):
           str: The full name of the customer.
         """
         return f"{self.first_name} {self.last_name}"
+
+    def to_select2(self) -> dict:
+        """
+        Converts the customer object to a dictionary format compatible with a Select2 library.
+
+        Returns:
+            dict: A dictionary containing the label and value of the customer object.
+        """
+        item = {"label": self.get_full_name(), "value": self.id}
+        return item
