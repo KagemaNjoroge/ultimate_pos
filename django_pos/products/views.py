@@ -71,17 +71,15 @@ def categories_add_view(request: Request) -> Response:
 @api_view(["POST", "GET"])
 def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
     if request.method == "GET":
+
         category = get_object_or_404(Category, id=category_id)
+        serializer = CategorySerializer(instance=category)
         context = {
-            "active_icon": "products_categories",
             "category_status": Category.status.field.choices,
-            "category": category,
+            "category": serializer.data,
         }
 
-        if request.accepted_renderer.format == "html":
-            return render(request, "products/categories_update.html", context)
-        else:
-            return Response(context)
+        return render(request, "products/categories_update.html", context)
 
     if request.method == "POST":
         try:
