@@ -7,19 +7,103 @@
 
 
 {% block content %}
-<div class="row">
-    <div class="col-md-3">
-        <div class="card text-bg-secondary mb-3" style="max-width: 18rem;">
-            <div class="card-header text-black">Server state</div>
-            <div class="card-body">
-                <p class="card-text">
-                    <i class="fas fa-server"></i>
-                    <span class="ml-2" id="status"></span>
-                </p>
+<div class="card">
+    <div class="card-header">
+        <h6 class="m-0 font-weight-bold text-primary">eTIMS Sync state</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Server state</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    <div id="status" class="card-text">
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="ti ti-server ti-2x text-gray-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Products Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pending invoices
+                                </div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">46</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="ti ti-receipt text-gray-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pending products
+
+                                </div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">14</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="ti ti-tag text-gray-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Notices
+
+                                </div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">3</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="ti ti-bell text-gray-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-
 </div>
 
 
@@ -32,7 +116,7 @@
             type: 'GET',
             success: function (data) {
                 if (data['status'] == 'success') {
-                    $('.card.text-bg-secondary').addClass('bg-success');
+                    $('#status').addClass('text-success');
                     $('#status').text('Online');
                 }
                 else {
