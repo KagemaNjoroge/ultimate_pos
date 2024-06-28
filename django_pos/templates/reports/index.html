@@ -21,7 +21,7 @@ Reports
                             <div class="h6 mb-0 font-weight-bold text-gray-800 mt-3" id="sales_this_month"></div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                            <i class="ti ti-calendar fa-2x text-gray-600"></i>
                         </div>
                     </div>
                 </div>
@@ -39,7 +39,7 @@ Reports
                             <div class="h6 mt-3 font-weight-bold text-gray-800" id="sales_this_week"></div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            <i class="ti ti-currency-dollar fa-2x text-gray-600"></i>
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@ Reports
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fas fa-fw fa-tag fa-2x text-gray-300"></i>
+                                    <i class="ti ti-tag text-gray-600"></i>
                                 </div>
                             </div>
                         </div>
@@ -96,7 +96,7 @@ Reports
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-fw fa-tag fa-2x text-gray-300"></i>
+                            <i class="ti ti-tag text-gray-600"></i>
                         </div>
                     </div>
                 </div>
@@ -156,15 +156,18 @@ Reports
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title">Sales Reports</h5>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        Sales Reports
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="card-title">Sales for the past 7 days</h5>
-                                    <!--Export and expand buttons on the right-->
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        Sales for the past 7 days
+                                    </h6>
                                     <div class="card-tools float-right">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse"
                                             id="expandReport7">
@@ -184,7 +187,9 @@ Reports
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="card-title">Sales for the past 1 month</h5>
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        Sales for the past 1 month
+                                    </h6>
                                     <div class="card-tools float-right">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse"
                                             id="expandReport31">
@@ -217,7 +222,7 @@ Reports
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 <script>
     function formatNumberWithCommas(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -378,9 +383,9 @@ Reports
 
         // get for the last one month, 7 days
         let current_date = new Date();
-        let last_month = new Date(current_date.getFullYear(), current_date.getMonth() - 1, current_date.getDate());
+        let last_month = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate());
         let current_month = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate());
-        let last_week = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate() - 7);
+        let last_week = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate() - 6);
 
         // past seven days
         getReports(last_week, current_date, "seven_days");
