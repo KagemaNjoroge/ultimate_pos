@@ -22,141 +22,7 @@
     background-size: 240px 24px;
   }
 }
-.fa,
-.fas {
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  display: inline-block;
-  font-style: normal;
-  font-variant: normal;
-  text-rendering: auto;
-  line-height: 1;
-}
-.fa-lg {
-  font-size: 1.3333333333em;
-  line-height: 0.75em;
-  vertical-align: -0.0667em;
-}
-.fa-2x {
-  font-size: 2em;
-}
-.fa-spin {
-  -webkit-animation: fa-spin 2s linear infinite;
-  animation: fa-spin 2s linear infinite;
-}
-.fa-angle-up:before {
-  content: "\F106";
-}
-.fa-backward:before {
-  content: "\F04A";
-}
-.fa-barcode:before {
-  content: "\F02A";
-}
-.fa-briefcase:before {
-  content: "\F0B1";
-}
-.fa-calculator:before {
-  content: "\F1EC";
-}
-.fa-check:before {
-  content: "\F00C";
-}
-.fa-clock:before {
-  content: "\F017";
-}
-.fa-credit-card:before {
-  content: "\F09D";
-}
-.fa-edit:before {
-  content: "\F044";
-}
-.fa-envelope:before {
-  content: "\F0E0";
-}
-.fa-gift:before {
-  content: "\F06B";
-}
-.fa-globe:before {
-  content: "\F0AC";
-}
-.fa-id-badge:before {
-  content: "\F2C1";
-}
-.fa-info:before {
-  content: "\F129";
-}
-.fa-info-circle:before {
-  content: "\F05A";
-}
-.fa-keyboard:before {
-  content: "\F11C";
-}
-.fa-map-marker:before {
-  content: "\F041";
-}
-.fa-minus:before {
-  content: "\F068";
-}
-.fa-mobile:before {
-  content: "\F10B";
-}
-.fa-money-bill-alt:before {
-  content: "\F3D1";
-}
-.fa-money-check-alt:before {
-  content: "\F53D";
-}
-.fa-pause:before {
-  content: "\F04C";
-}
-.fa-pause-circle:before {
-  content: "\F28B";
-}
-.fa-pen:before {
-  content: "\F304";
-}
-.fa-phone:before {
-  content: "\F095";
-}
-.fa-plus:before {
-  content: "\F067";
-}
-.fa-plus-circle:before {
-  content: "\F055";
-}
-.fa-print:before {
-  content: "\F02F";
-}
-.fa-spinner:before {
-  content: "\F110";
-}
-.fa-terminal:before {
-  content: "\F120";
-}
-.fa-times:before {
-  content: "\F00D";
-}
-.fa-trash:before {
-  content: "\F1F8";
-}
-.fa-user:before {
-  content: "\F007";
-}
-.fa-users:before {
-  content: "\F0C0";
-}
-.fa-window-close:before {
-  content: "\F410";
-}
-.fa-window-maximize:before {
-  content: "\F2D0";
-}
-.fa,
-.fas {
-  font-family: Font Awesome\5 Free;
-  font-weight: 900;
-}
+
 .pace {
   -webkit-pointer-events: none;
   pointer-events: none;
@@ -750,8 +616,7 @@ input[type="checkbox"]:focus {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   -webkit-transition: border-color ease-in-out 0.15s,
     -webkit-box-shadow ease-in-out 0.15s;
-  -o-transition: border-color ease-in-out 0.15s,
-    box-shadow ease-in-out 0.15s;
+  -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
 .form-control:focus {
@@ -1307,9 +1172,7 @@ button.close {
   user-select: none;
   -webkit-user-select: none;
 }
-.select2-container
-  .select2-selection--single
-  .select2-selection__rendered {
+.select2-container .select2-selection--single .select2-selection__rendered {
   display: block;
   padding-left: 8px;
   padding-right: 20px;
@@ -1325,9 +1188,7 @@ button.close {
   user-select: none;
   -webkit-user-select: none;
 }
-.select2-container
-  .select2-selection--multiple
-  .select2-selection__rendered {
+.select2-container .select2-selection--multiple .select2-selection__rendered {
   display: inline-block;
   overflow: hidden;
   padding-left: 8px;
@@ -1436,9 +1297,7 @@ button.close {
   .select2-selection__choice__remove:hover {
   color: #333;
 }
-.select2-container--default
-  .select2-search--inline
-  .select2-search__field {
+.select2-container--default .select2-search--inline .select2-search__field {
   background: 0 0;
   border: none;
   outline: 0;
@@ -1449,8 +1308,7 @@ body {
   height: 100%;
 }
 body {
-  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial,
-    sans-serif;
+  font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   overflow-x: hidden;
   overflow-y: auto;
@@ -1741,9 +1599,7 @@ a:hover {
   padding: 6px 12px;
   height: 34px;
 }
-.select2-container
-  .select2-selection--single
-  .select2-selection__rendered {
+.select2-container .select2-selection--single .select2-selection__rendered {
   padding-left: 0;
   padding-right: 0;
   height: auto;
@@ -1793,9 +1649,7 @@ a:hover {
   .select2-selection__choice__remove:hover {
   color: #fff;
 }
-.select2-container
-  .select2-selection--single
-  .select2-selection__rendered {
+.select2-container .select2-selection--single .select2-selection__rendered {
   padding-right: 10px;
 }
 .bg-maroon,
