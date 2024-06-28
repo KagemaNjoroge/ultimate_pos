@@ -3,214 +3,83 @@
 {% block title %}Expense Categories{% endblock %}
 {%block heading%}Expenses Categories{%endblock%}
 {% block content %}
-<!--Delete expense category modal-->
-<div class="modal fade" id="deleteExpenseCategoryModal" tabindex="-1" role="dialog"
-    aria-labelledby="deleteExpenseCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteExpenseCategoryModalLabel">Delete Expense Category</h5>
-                <button type="button" class="close close_delete" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete this expense: <strong id="category_name_"></strong> category?</p>
-                <input type="hidden" id="category_id_" name="category_id">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger close_delete" data-dismiss="modal">
-                    <i class="fa fa-times"></i>
-                </button>
-                <button type="button" class="btn btn-success" id="delete_category">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-<!--Edit expense category modal-->
-<div class="modal fade" id="editExpenseCategoryModal" tabindex="-1" role="dialog"
-    aria-labelledby="editExpenseCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editExpenseCategoryModalLabel">Edit Expense Category</h5>
-                <button type="button" class="close close_edit" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" id="edit_expense_form">
-                    {%csrf_token%}
-                    <div class="form-group row">
-                        <label for="_category_name" class="col-sm-3 col-form-label">Category Name</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="_category_name" name="_category_name" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="_category_description" class="col-sm-3 col-form-label">Description</label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" id="_category_description" name="category_description"
-                                required></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="_is_recurring" class="col-sm-3 col-form-label">Recurring</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" id="_is_recurring" name="is_recurring" required>
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!--Hidden id-->
-                    <input type="hidden" id="_category_id" name="category_id">
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger close_edit" data-dismiss="modal">
-                            <i class="fa fa-times"></i>
-                        </button>
-                        <button type="submit" class="btn btn-success" id="save_category_">
-                            <i class="fa fa-save"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
+
+
+<div class="ml-3 mb-3">
+    <a href="{%url 'expenses:index'%}">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="ti ti-arrow-left"></i>
+            Back
+        </button>
+    </a>
+
+    <a>
+        <button type="button" class="btn btn-success font-weight-bold" id="add_expense">
+            <i class="ti ti-plus"></i>
+            Add Expense Category
+        </button>
+    </a>
 </div>
 
+<div class="card ml-3">
+    <div class="card-body">
+        <div id="alerts"></div>
+        {% if categories %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Category Name</th>
+                        <th>Description</th>
+                        <th>Recurring</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{category.category_name}}</td>
+                        <td>{{category.category_description}}</td>
+                        <td>{%if category.is_recurring%}
+                            <span class="badge badge-success">Yes</span>
+                            {%else%}
+                            <span class="badge badge-danger">No</span>
+                            {%endif%}
+                        </td>
 
-
-<!--Add Expense Category modal-->
-<div class="modal fade" id="addExpenseCategoryModal" tabindex="-1" role="dialog"
-    aria-labelledby="addExpenseCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addExpenseCategoryModalLabel">Add Expense Category</h5>
-                <button type="button" class="close close_add" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" id="add_expense_form">
-                    {%csrf_token%}
-                    <div class="form-group row">
-                        <label for="category_name" class="col-sm-3 col-form-label">Category Name</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="category_name" name="category_name" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="category_description" class="col-sm-3 col-form-label">Description</label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" id="category_description" name="category_description"
-                                required></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="is_recurring" class="col-sm-3 col-form-label">Recurring</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" id="is_recurring" name="is_recurring" required>
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger close_add" data-dismiss="modal">
-                            <i class="fa fa-times"></i>
-                        </button>
-
-
-                        <button type="submit" class="btn btn-success" id="save_category">
-                            <i class="fa fa-save"></i>
-                        </button>
-
-
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="alerts"></div>
-
-<div class="row ml-0 mb-3">
-    <div class="ml-auto">
-        <a href="{%url 'expenses:index'%}" class="col">
-            <button type="button" class="btn btn-success font-weight-bold">
-                <i class="ti ti-arrow-left mr-2"></i>
-                Back
-            </button>
-        </a>
-
-        <a class="col">
-            <button type="button" class="btn btn-success font-weight-bold ml-2" id="add_expense">
-                <i class="ti ti-plus mr-2"></i>
-                Add Expense Category
-            </button>
-        </a>
-    </div>
-</div>
-<br>
-<!--Categories table-->
-<div class="ml-2">
-    {% if categories %}
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered table-hover" id="dataTable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Category Name</th>
-                    <th>Description</th>
-                    <th>Recurring</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for category in categories %}
-                <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{category.category_name}}</td>
-                    <td>{{category.category_description}}</td>
-                    <td>{%if category.is_recurring%}
-                        <span class="badge badge-success">Yes</span>
-                        {%else%}
-                        <span class="badge badge-danger">No</span>
-                        {%endif%}
-                    </td>
-
-                    <td>
-                        <a class="btn btn-primary btn-sm edit" data-id="{{category.id}}"
-                            data-category_name="{{category.category_name}}"
-                            data-category_description="{{category.category_description}}" {%if category.is_recurring%}
-                            data-is_recurring="1" {%else%} data-is_recurring="0" {%endif%}>
-                            <i class="ti ti-pencil" data-id="{{category.id}}"
+                        <td>
+                            <a class="btn btn-primary btn-sm edit" data-id="{{category.id}}"
                                 data-category_name="{{category.category_name}}"
                                 data-category_description="{{category.category_description}}"
                                 {%if category.is_recurring%} data-is_recurring="1" {%else%} data-is_recurring="0"
-                                {%endif%}></i>
-                        </a>
-                        <a class="btn btn-danger btn-sm delete" data-id="{{category.id}}"
-                            data-category_name="{{category.category_name}}">
-                            <i class="ti ti-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <div class="alert alert-warning">
-        <strong>Warning!</strong> No expense categories found.
-    </div>
-    {% endif %}
+                                {%endif%}>
+                                <i class="ti ti-pencil" data-id="{{category.id}}"
+                                    data-category_name="{{category.category_name}}"
+                                    data-category_description="{{category.category_description}}"
+                                    {%if category.is_recurring%} data-is_recurring="1" {%else%} data-is_recurring="0"
+                                    {%endif%}></i>
+                            </a>
+                            <a class="btn btn-danger btn-sm delete" data-id="{{category.id}}"
+                                data-category_name="{{category.category_name}}">
+                                <i class="ti ti-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            <strong>Warning!</strong> No expense categories found.
+        </div>
+        {% endif %}
 
+
+    </div>
 </div>
 <script>
     $(document).ready(function () {

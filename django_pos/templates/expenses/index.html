@@ -3,205 +3,30 @@
 {% block title %}Expenses{% endblock %}
 {%block heading%}Expenses{%endblock%}
 {% block content %}
-<!--Delete expense modal-->
-<div class="modal fade" id="deleteExpenseModal" tabindex="-1" role="dialog" aria-labelledby="deleteExpenseModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteExpenseModalLabel">Delete Expense</h5>
-                <button type="button" class="close close_delete" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to delete <strong id="expense_name_"></strong>?</p>
-                <input type="hidden" id="expense_id_">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary close_delete" data-dismiss="modal">
-                    <i class="fa fa-times"></i>
-                </button>
-                <button type="button" class="btn btn-danger" id="delete_expense">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
-        </div>
-    </div>
+
+<div class="mb-3 ml-3">
+    <a>
+        <button type="button" class="btn btn-primary font-weight-bold" id="show_add_expense_modal">
+            <i class="ti ti-plus"></i>
+            Add Expense
+        </button>
+    </a>
+
+    <a href="{%url 'expenses:category'%}">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="ti ti-list"></i>
+            Expense Categories
+        </button>
+    </a>
 </div>
-<!--Edit expense modal-->
-<div class="modal fade" id="editExpenseModal" tabindex="-1" role="dialog" aria-labelledby="editExpenseModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense</h5>
-                <button type="button" class="close close_edit_expense" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" id="edit_expense_form">
-                    {%csrf_token%}
-                    <div class="form-group row">
-                        <label for="name" class="col-sm-3 col-form-label">Expense Name</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="amount" class="col-sm-3 col-form-label">Amount</label>
-                        <div class="col-sm-9">
-                            <input type="number" class="form-control" id="amount_" name="amount_" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="description" class="col-sm-3 col-form-label">Description</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="description_" name="description_" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="category" class="col-sm-3 col-form-label">Category</label>
-                        <div class="col-sm-9">
-                            <select name="category_" id="category_" class="form-control" required>
-                                <option value="">Select Category</option>
-                                {% for category in categories %}
-                                <option value="{{category.id}}">{{category.category_name}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger close_edit_expense" data-dismiss="modal">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="22"
-                                height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M18 6l-12 12" />
-                                <path d="M6 6l12 12" />
-                            </svg>
-                        </button>
-                        <button type="submit" class="btn btn-success" id="save_edit_expense">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy"
-                                width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50"
-                                fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
-                                <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                                <path d="M14 4l0 4l-6 0l0 -4" />
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!--Add expense modal-->
-<div class="modal fade" id="addExpenseModal" tabindex="-1" role="dialog" aria-labelledby="addExpenseModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addExpenseModalLabel">Add Expense</h5>
-                <button type="button" class="close close_add_expense" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="" method="POST" id="expense_form">
-                    {%csrf_token%}
-                    <div class="form-group row">
-                        <label for="expense_name" class="col-sm-3 col-form-label">Expense Name</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="expense_name" name="expense_name" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="amount" class="col-sm-3 col-form-label">Amount</label>
-                        <div class="col-sm-9">
-                            <input type="number" class="form-control" id="amount" name="amount" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="description" class="col-sm-3 col-form-label">Description</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="description" name="description" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="category" class="col-sm-3 col-form-label">Category</label>
-                        <div class="col-sm-9">
-                            <select name="category" id="category" class="form-control" required>
-                                <option value="">Select Category</option>
-                                {% for category in categories %}
-                                <option value="{{category.id}}">{{category.category_name}}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                    </div>
-                    <!--Hidden id-->
-                    <input type="hidden" name="id" id="id">
 
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger close_add_expense" data-dismiss="modal">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="22"
-                                height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M18 6l-12 12" />
-                                <path d="M6 6l12 12" />
-                            </svg>
-                        </button>
-                        <button type="submit" class="btn btn-success" id="save_expense">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy"
-                                width="22" height="22" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50"
-                                fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
-                                <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                                <path d="M14 4l0 4l-6 0l0 -4" />
-                            </svg>
-                        </button>
-                    </div>
-
-
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!--Result alerts for error or success-->
-<div id="alerts"></div>
-
-<div class="row ml-0 mb-3">
-    <div class="ml-auto">
-        <a class="col">
-            <button type="button" class="btn btn-success font-weight-bold" id="show_add_expense_modal">
-                <i class="ti ti-plus mr-2"></i>
-                Add Expense
-            </button>
-        </a>
-
-        <a href="{%url 'expenses:category'%}" class="col">
-            <button type="button" class="btn btn-success font-weight-bold ml-2">
-                <i class="ti ti-list mr-2"></i>
-                Expense Categories
-            </button>
-        </a>
-    </div>
-</div>
-<br>
-<!--10 recent expenses table-->
-<div class="row ml-2">
-    <div class="col-md-12">
+<div class="card ml-3">
+    <div class="card-body">
+        <div id="alerts"></div>
         {% if expenses %}
         <div class="table-responsive">
-            <table class="table table-striped " id="dataTable">
+            <table class="table table-striped table-bordered table-hover" id="dataTable">
                 <thead>
                     <tr>
                         <th>Expense</th>
@@ -227,7 +52,7 @@
                             <button class="btn btn-danger delete" data-id="{{expense.id}}"
                                 data-name="{{expense.expense_name}}">
 
-                                <i class="fa fa-trash"></i>
+                                <i class="ti ti-trash"></i>
                             </button>
                         </td>
                     </tr>
@@ -238,6 +63,8 @@
         {% else %}
         <p>No expenses found</p>
         {% endif %}
+
+
     </div>
 </div>
 <script>
