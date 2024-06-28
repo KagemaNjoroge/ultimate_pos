@@ -1,27 +1,17 @@
 {% extends "pos/base.html" %} {% load static %}
-<!-- Page title  -->
 {% block title %}Inventory{% endblock title %}
-
 {% block heading %}Inventory{%endblock heading %}
-
-<!-- Page content  -->
 {% block content %}
-<style>
-    #actions {
-        margin-bottom: 10px;
 
-
-    }
-</style>
-<div class="row ml-0 mb-3">
+<div class="ml-3 mb-3">
     <a href="{% url 'inventory:inventory_add' %}">
         <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-plus mr-2"></i>
+            <i class="ti ti-plus mr-2"></i>
             Add Inventory
         </button>
     </a>
 </div>
-<div id="actions" class="ml-2"></div>
+
 
 <div class="card shadow mb-12 ml-2">
     <div class="card-header py-3">
@@ -31,7 +21,7 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-hover table-bordered" id="dataTable">
+            <table class="table table-hover table-bordered table-striped" id="dataTable">
                 <thead>
                     <tr>
                         <th>Inventory ID</th>
@@ -51,14 +41,14 @@
                                 class="text-decoration-none">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
                                     title="Update Inventory">
-                                    <i class="fas fa-pen"></i>
+                                    <i class="ti ti-pencil"></i>
                                 </button>
                             </a>
                             <!--Delete modal-->
                             <!-- Button trigger modal -->
                             <a class="text-decoration-none">
                                 <button type="button" class="btn btn-danger btn-sm">
-                                    <i class="fas fa-trash"></i>
+                                    <i class="ti ti-trash"></i>
                                 </button>
                             </a>
                         </td>
