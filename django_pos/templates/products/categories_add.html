@@ -5,56 +5,55 @@
 {% block heading %}Add category{% endblock heading %}
 {% block content %}
 
-<div class="row ml-0 mb-3 ml-2">
+<div class="mb-3 ml-3">
     <a href="{% url 'products:categories_list' %}">
         <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-long-arrow-alt-left mr-2"></i>
+            <i class="ti ti-arrow-left"></i>
             Go back
         </button>
     </a>
 </div>
 
-<div class="row text-center">
-    <div class="col-md-4"></div>
 
-    <div class="update_msg col-md-4"></div>
-    <div class="col-md-4"></div>
-</div>
 
-<div class="row mb-5 ml-2">
-    <div class="card col-md-10">
-        <div class="card-body">
-            <form action="{% url 'products:categories_add' %}" method="post" id="category_form">
-                {% csrf_token %}
-                <div class="form-row">
-                    <div class="form-group col-md-8">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" name="name" placeholder="Drinks..." required
-                            id="name" />
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="status">State</label>
-                        <select name="state" class="form-control" required id="status">
-                            {% for status in category_status %}
-                            <option value="{{status.0}}">{{status.1}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
+<div class="card col-md-11 ml-3">
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-4"></div>
 
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label for="description">Description</label>
-                        <input type="text" name="description" class="form-control" placeholder="Drinks and beverages.."
-                            required id="description" />
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-success font-weight-bold" id="create_btn">
-                    Create category
-                </button>
-            </form>
+            <div class="update_msg col-md-4"></div>
+            <div class="col-md-4"></div>
         </div>
+
+        <form action="{% url 'products:categories_add' %}" method="post" id="category_form">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" name="name" placeholder="Drinks..." required id="name" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="status">State</label>
+                    <select name="state" class="form-control" required id="status">
+                        {% for status in category_status %}
+                        <option value="{{status.0}}">{{status.1}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label for="description">Description</label>
+                    <input type="text" name="description" class="form-control" placeholder="Drinks and beverages.."
+                        required id="description" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success font-weight-bold" id="create_btn">
+                Create category
+            </button>
+        </form>
     </div>
 </div>
 

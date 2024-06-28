@@ -1,44 +1,26 @@
 {% extends "pos/base.html" %}
 {% load static %}
-<!-- Page title  -->
 {% block title %}Product categories{% endblock title %}
-
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<!-- Datatables -->
-<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
-<link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
-
-<!-- Page Heading -->
 {% block heading %}Product categories{% endblock heading %}
-
-<!-- Page content  -->
 {% block content %}
 
+<div class="ml-3 mb-3">
 
-<div class="container text-left">
-    <!-- Adjusted layout to keep buttons on the left and close to each other -->
-    <div class="row mb-3">
-        <!-- Wrap buttons in a single column -->
-        <div class="col-auto">
-            <a href="{% url 'products:products_list' %}" class="">
-                <button type="button" class="btn btn-primary font-weight-bold">
-                    <i class="fas fa-long-arrow-alt-left mr-2"></i>
-                    Products
-                </button>
-            </a>
-            <a href="{% url 'products:categories_add' %}" class="">
-                <button type="button" class="btn btn-success font-weight-bold">
-                    <i class="fas fa-plus mr-2"></i>
-                    Create new category
-                </button>
-            </a>
-
-        </div>
-    </div>
+    <a href="{% url 'products:products_list' %}" class="">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="ti ti-arrow-left"></i>
+            Products
+        </button>
+    </a>
+    <a href="{% url 'products:categories_add' %}" class="">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="ti ti-plus"></i>
+            Create new category
+        </button>
+    </a>
 </div>
-
 <!-- DataTable -->
 <div class="card shadow mb-12 ml-3">
     <div class="card-header py-3">
@@ -78,7 +60,7 @@
                             <a href="{% url 'products:categories_update' c.id %}" class="text-decoration-none">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
                                     title="Update category">
-                                    <i class="fas fa-pen"></i>
+                                    <i class="ti ti-pencil"></i>
                                 </button>
                             </a>
                             <!--Delete modal-->
@@ -86,7 +68,7 @@
                             <a class="text-decoration-none">
                                 <button rel="delete" type="button" class="btn btn-danger btn-sm" data-toggle="modal"
                                     data-target="#exampleModal">
-                                    <i class="fas fa-trash"></i>
+                                    <i class="ti ti-trash"></i>
                                 </button>
                             </a>
 
