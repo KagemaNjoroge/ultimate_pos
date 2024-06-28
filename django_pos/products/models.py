@@ -51,7 +51,9 @@ class Product(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField(max_length=256)
     track_inventory = models.BooleanField(default=False)
-    image = models.ImageField(upload_to="products", blank=True, null=True)
+    image = models.ImageField(
+        upload_to="products", blank=True, null=True, default="/defaults/default.png"
+    )
     status = models.CharField(
         choices=STATUS_CHOICES,
         max_length=100,
