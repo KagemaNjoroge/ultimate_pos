@@ -7,7 +7,11 @@
   font-style: normal;
   font-weight: 400;
   src: url("fonts/tabler-icons.eot");
-  src: url("fonts/tabler-icons.eot?#iefix") format("embedded-opentype"), url("fonts/tabler-icons.woff2") format("woff2"), url("fonts/tabler-icons.woff") format("woff"), url("fonts/tabler-icons.ttf") format("truetype"), url("fonts/tabler-icons.svg#tabler-icons") format("svg");
+  src: url("fonts/tabler-icons.eot?#iefix") format("embedded-opentype"),
+    url("fonts/tabler-icons.woff2") format("woff2"),
+    url("fonts/tabler-icons.woff") format("woff"),
+    url("fonts/tabler-icons.ttf") format("truetype"),
+    url("fonts/tabler-icons.svg#tabler-icons") format("svg");
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
@@ -19,7 +23,7 @@
 
 .ti {
   font-family: "tabler-icons" !important;
-  speak: none;
+
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
