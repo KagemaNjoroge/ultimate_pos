@@ -15,7 +15,7 @@
 
 {% block content %}
 
-<div class="row ml-2 mb-3">
+<div class="ml-2 mb-3">
     <a href="{% url 'sales:sales_list' %}">
         <button type="button" class="btn btn-success font-weight-bold">
             <i class="fas fa-long-arrow-alt-left mr-2"></i>
@@ -24,115 +24,63 @@
     </a>
 </div>
 
-<div id="result">
 
-</div>
 
 <form action="{% url 'sales:sales_add' %}" class="saleForm ml-2" method="post">
-    <div class="row mt-3 ml-2 mb-5">
-        <div class="card col-md-12">
-            <div class="card-body ml-0">
-                <div class="row">
 
-                    <div class="col-md-9 pl-0">
-                        <div class="card card-secondary">
-                            <div class="card-header">Sale products</div>
+    <div class="card col-md-12">
+        <div class="card-body ml-0">
+            <div id="result">
 
-                            <div class="card-body">
-
-                                <div class="form-group">
-                                    <label>Search product</label>
+            </div>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="card card-secondary">
+                        <div class="card-header">Sale details</div>
+                        <div class="card-body">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="customer">Customer</label>
+                                <select name="customer" class="form-control" id="searchbox_customers" required>
+                                    <option value="" selected disabled hidden>Select the customer</option>
+                                    {% for customer in customers %}
+                                    <option value="{{customer.value}}">{{customer.label}}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="form-group mt-4">
+                                    <label>Subtotal</label>
                                     <div class="input-group">
-                                        <div class="form-outline">
-                                            <input type="search" id="form1" class="form-control" />
-
-                                        </div>
-                                        <button type="button" class="btn btn-primary ml-2">
-                                            <i class="fas fa-search"></i>
-                                        </button>
+                                        <input name="sub_total" class="form-control" required id="sub_total">
                                     </div>
                                 </div>
-
-                                <div id="search_results"></div>
-
-                                <button type="button" class="mb-4 btn btn-danger btn-sm deleteAll">
-                                    Delete all products <i class="ml-1 fas fa-trash-alt fa-xs"></i>
-                                </button>
-
-
-
-                                <div class="card-body table-responsive p-0">
-                                    <table class="table table-hover text-nowrap" id="table_products">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Name</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
-                                                <th>Total</th>
-                                                <th class="text-center">Delete</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <div class="col-md-3 pr-0">
-                        <div class="card card-secondary">
-                            <div class="card-header">Sale details</div>
-                            <div class="card-body">
-                                {% csrf_token %}
                                 <div class="form-group">
-                                    <label for="customer">Customer</label>
-                                    <select name="customer" class="form-control" id="searchbox_customers" required>
-                                        <option value="" selected disabled hidden>Select the customer</option>
-                                        {% for customer in customers %}
-                                        <option value="{{customer.value}}">{{customer.label}}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <div class="form-group mt-4">
-                                        <label>Subtotal</label>
-                                        <div class="input-group">
-                                            <input name="sub_total" class="form-control" required id="sub_total">
-                                        </div>
+                                    <label>Tax Inclusive (%)</label>
+                                    <div class="input-group">
+                                        <input name="tax_percentage" class="form-control" value=0 required
+                                            id="tax_percentage">
                                     </div>
-                                    <div class="form-group">
-                                        <label>Tax Inclusive (%)</label>
-                                        <div class="input-group">
-                                            <input name="tax_percentage" class="form-control" value=0 required
-                                                id="tax_percentage">
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Tax Amount</label>
+                                    <div class="input-group">
+                                        <input name="tax_amount" class="form-control" disabled>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Tax Amount</label>
-                                        <div class="input-group">
-                                            <input name="tax_amount" class="form-control" disabled>
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Grand Total</label>
+                                    <div class="input-group">
+                                        <input name="grand_total" class="form-control" id="grand_total" disabled>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Grand Total</label>
-                                        <div class="input-group">
-                                            <input name="grand_total" class="form-control" id="grand_total" disabled>
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Amount paid</label>
+                                    <div class="input-group">
+                                        <input name="amount_payed" class="form-control" required id="amount_paid">
                                     </div>
-                                    <div class="form-group">
-                                        <label>Amount paid</label>
-                                        <div class="input-group">
-                                            <input name="amount_payed" class="form-control" required id="amount_paid">
-                                        </div>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-success font-weight-bold"
-                                        id="submit_btn">Create sale</button>
                                 </div>
 
+                                <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">Create
+                                    sale</button>
                             </div>
 
                         </div>
@@ -140,10 +88,59 @@
                     </div>
 
                 </div>
+                <div class="col-md-7">
+                    <div class="card card-secondary">
+                        <div class="card-header">Sale products</div>
+
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label>Search product</label>
+                                <div class="input-group">
+                                    <div class="form-outline">
+                                        <input type="search" id="form1" class="form-control" />
+
+                                    </div>
+                                    <button type="button" class="btn btn-primary ml-2">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="search_results"></div>
+
+                            <button type="button" class="mb-4 btn btn-danger btn-sm deleteAll">
+                                Delete all products <i class="ml-1 fas fa-trash-alt fa-xs"></i>
+                            </button>
+
+
+
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-hover text-nowrap" id="table_products">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                            <th class="text-center">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
 
             </div>
+
         </div>
     </div>
+
 </form>
 <script src="{% static 'utils/cart.js' %}"></script>
 <script>

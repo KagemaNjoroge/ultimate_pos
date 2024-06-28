@@ -13,7 +13,7 @@
 <div class="ml-4">
     <a href="{% url 'sales:sales_list' %}">
         <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-long-arrow-alt-left mr-2"></i>
+            <i class="ti ti-arrow-left"></i>
             Go back
         </button>
     </a>
@@ -28,13 +28,13 @@
     </button>
     <a href="{%url 'sales:sales_receipt_pdf' sale.id %}">
         <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
-            <i class="fa fa-print"></i>
+            <i class="ti ti-printer"></i>
             Print
         </button>
     </a>
     <a href="{% url 'sales:sales_list' %}">
         <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="fas fa-edit mr-2"></i>
+            <i class="ti ti-edit mr-2"></i>
             Edit
         </button>
     </a>
