@@ -2,12 +2,12 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from pos.views import check_subscription
 from django.contrib.auth.decorators import login_required
-from datetime import datetime
+from datetime import datetime, timedelta
 from sales.models import Sale, SaleDetail
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-# Create your views here.
+
 
 
 @login_required(login_url="/users/login/")
@@ -45,10 +45,11 @@ def duration_sales_report(request):
 @check_subscription
 @api_view(["GET"])
 def sales_this_month(request) -> Response:
+
     sales = Sale.objects.filter(
         date_added__range=[
-            datetime.now().replace(day=1),
-            datetime.now().replace(day=30),
+            datetime.now() - timedelta(days=28),
+            datetime.now(),
         ]
     )
 
@@ -69,10 +70,7 @@ def sales_this_month(request) -> Response:
 @api_view(["GET"])
 def sales_this_week(request) -> Response:
     sales = Sale.objects.filter(
-        date_added__range=[
-            datetime.now().replace(day=1),
-            datetime.now().replace(day=9),
-        ]
+        date_added__range=[datetime.now() - timedelta(days=7), datetime.now()]
     )
 
     total = sum([sale.grand_total for sale in sales])
