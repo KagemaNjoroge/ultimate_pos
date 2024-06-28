@@ -170,7 +170,7 @@ def pos(request: HttpRequest) -> HttpResponse:
         customers = Customer.objects.all()
         return render(
             request,
-            "pos/pos.html",
+            "pos/pos2.html",
             {"products": products, "categories": categories, "customers": customers},
         )
     elif request.method == "POST":
