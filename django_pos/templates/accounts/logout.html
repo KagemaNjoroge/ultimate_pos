@@ -9,16 +9,16 @@ Logout
 {%block content%}
 <div class="card">
     <div class="card-header">
-        <h5 class="card-title">Logout</h5>
+        <p class="text-primary">Logout</p>
     </div>
     <div class="card-body">
-        <h5>
+        <p>
             Are you sure you want to logout?
-        </h5>
+        </p>
         <form method="post" id="logout_form">
             {%csrf_token%}
             <button class="btn btn-danger" type="submit" id="logout">
-                <i class="fa fa-sign-out"></i>
+                <i class="ti ti-logout"></i>
                 Logout
             </button>
         </form>
@@ -29,7 +29,7 @@ Logout
     $(document).ready(function () {
         $("#logout_form").submit(function (e) {
             e.preventDefault();
-            $('#logout').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Logging out');
+            $('#logout').prop('disabled', true).html('<i class="fa fa-spinner"></i> Logging out');
             $.ajax({
                 type: "POST",
                 url: "{%url 'authentication:logout'%}",
