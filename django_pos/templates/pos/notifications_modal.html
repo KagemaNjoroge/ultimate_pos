@@ -1,18 +1,12 @@
 {%load static%}
-<!--Notifications modal-->
-<style>
-    .modal-title {
 
-        color: black;
-    }
-</style>
 
 <div class="modal fade" id="notificationsModal" tabindex="-1" role="dialog" aria-labelledby="notificationsModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-dialog modal-dialog-scrollable modal-center" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="notificationsModalLabel">Notifications</h5>
+                <h5 class="modal-title text-black" id="notificationsModalLabel">Notifications</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                     id="close_notifications_modal">
                     <span aria-hidden="true">&times;</span>
@@ -38,7 +32,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="viewNotificationModalLabel">Notification</h5>
+                <h5 class="text-black text-center" id="viewNotificationModalLabel">Notification</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_notif">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -47,10 +41,10 @@
                 <!--Actions delete and mark as read-->
                 <div class="btn-group mb-2" role="group" aria-label="Basic example" id="actions_">
                     <button type="button" class="btn btn-danger">
-                        <i class="fa fa-trash"></i>
+                        <i class="ti ti-trash"></i>
                     </button>
                     <button type="button" class="btn btn-primary">
-                        <i class="fa fa-check"></i>
+                        <i class="ti ti-check"></i>
                     </button>
                 </div>
                 <h5 id="notification_title"></h5>

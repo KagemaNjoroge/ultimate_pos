@@ -12,7 +12,8 @@
   <!--Styles-->
   <link href="{% static 'css/pos.css' %}" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma/bulma.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
+
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,24 +42,24 @@
         <div class="col-md-6">
           <div class="m-6 mt-5 hidden-xs">
             <p>
-              <i class="fa fa-keyboard hover-q text-muted" title=""></i>
+              <i class="ti ti-keyboard hover-q text-muted" title=""></i>
             </p>
           </div>
         </div>
         <div class="col-md-6">
           <a class="btn btn-info btn-flat m-6 btn-xs m-5 pull-right" data-original-title="Go Back"
             href="{% url "pos:index" %}">
-            <strong><i class="fa fa-home" aria-hidden="true"></i></strong>
+            <strong><i class="ti ti-home" aria-hidden="true"></i></strong>
           </a>
 
           <button type="button" id="view_suspended_sales" title=""
             class="btn bg-yellow btn-flat m-6 btn-xs m-5 btn-modal pull-right" data-href="{% url 'pos:index' %}">
-            <strong><i class="fa fa-pause-circle fa-lg"></i></strong>
+            <strong><i class="ti ti-player-pause"></i></strong>
           </button>
           <!--Switch to toggle beep sound on receipt  -->
           <div class="m-6 mt-5 hidden-xs">
             <p>
-              <button class="btn btn-success" id="sound_btn"><i class="fa fa-volume-up hover-q text-muted"
+              <button class="btn btn-success" id="sound_btn"><i class="ti ti-volume hover-q text-muted"
                   title=""></i></button>
             </p>
           </div>
@@ -83,7 +84,7 @@
                         <div class="form-group" style="width: 100% !important">
                           <div class="input-group">
                             <span class="input-group-addon">
-                              <i class="fa fa-user"></i>
+                              <i class="ti ti-user"></i>
                             </span>
 
 
@@ -106,8 +107,7 @@
 
                               <button type="button" class="btn btn-default bg-white btn-flat add_new_customer"
                                 onclick="window.location=`{% url 'customers:customers_add' %}`">
-                                <i href="{% url 'customers:customers_add' %}"
-                                  class="fa fa-plus-circle text-primary fa-lg"></i>
+                                <i href="{% url 'customers:customers_add' %}" class="ti ti-plus text-primary"></i>
                               </button>
                             </span>
                           </div>
@@ -119,7 +119,7 @@
                             <div class="input-group-btn">
                               <button type="button" class="btn btn-default bg-white btn-flat"
                                 title="Configure product search">
-                                <i class="fa fa-barcode"></i>
+                                <i class="ti ti-barcode"></i>
                               </button>
                             </div>
                             <input class="form-control mousetrap ui-autocomplete-input" id="search_product"
@@ -129,7 +129,7 @@
 
 
                               <button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product">
-                                <i class="fa fa-plus-circle text-primary fa-lg"></i>
+                                <i class="ti ti-plus text-primary"></i>
                               </button>
                             </span>
                           </div>
@@ -148,7 +148,7 @@
                             <tr>
                               <th class="tex-center col-md-4">
                                 Product
-                                <i class="fa fa-info-circle text-info hover-q no-print" aria-hidden="true"
+                                <i class="ti ti-info-circle text-info hover-q no-print" aria-hidden="true"
                                   data-trigger="hover"></i>
                               </th>
                               <th class="text-center col-md-3">
@@ -161,7 +161,7 @@
                                 Subtotal
                               </th>
                               <th class="text-center">
-                                <i class="fas fa-times" aria-hidden="true"></i>
+                                <i class="ti ti-x" aria-hidden="true"></i>
                               </th>
                             </tr>
                           </thead>
@@ -262,24 +262,24 @@
             <div class="col-md-12">
               <button type="button" class="btn bg-red btn-default btn-flat no-print pos-express-finalize"
                 id="suspend_sale" data-pay_method="suspend" title="Suspend Sales (pause)">
-                <i class="fas fa-pause" aria-hidden="true"></i>
+                <i class="ti ti-player-pause" aria-hidden="true"></i>
                 Suspend
               </button>
 
               <button type="button" class="btn bg-maroon btn-default btn-flat no-print pos-express-finalize"
                 data-pay_method="card" title="Express checkout using card">
-                <i class="fas fa-credit-card" aria-hidden="true"></i> Card
+                <i class="ti ti-brand-mastercard" aria-hidden="true"></i> Card
               </button>
 
               <button type="button" class="btn bg-navy btn-default btn-flat no-print" id="pos-finalize"
                 title="Checkout using multiple payment methods">
-                <i class="fas fa-money-check-alt" aria-hidden="true"></i>
+                <i class="ti ti-moneybag" aria-hidden="true"></i>
                 Multiple Pay
               </button>
 
               <button type="button" class="btn btn-success btn-flat no-print pos-express-finalize"
                 data-pay_method="cash" id="complete_payment" title="Mark complete paid &amp; checkout">
-                <i class="fas fa-money-bill-alt" aria-hidden="true"></i>
+                <i class="ti ti-cash" aria-hidden="true"></i>
                 Cash
               </button>
               &nbsp;&nbsp;
@@ -288,11 +288,11 @@
               <span id="total_payable" class="text-success lead text-bold total-cart"></span>
 
               &nbsp;<button type="button" class="btn btn-danger btn-flat clear-cart">
-                <i class="fas fa-window-close "></i> Cancel
+                <i class="ti ti-home-cancel"></i> Cancel
               </button>
               <button style="margin-right: 10px" type="button" class="btn btn-primary btn-flat pull-right"
                 id="recent-transactions">
-                <i class="fas fa-clock"></i> Recent Transactions
+                <i class="ti ti-clock"></i> Recent Transactions
               </button>
             </div>
           </div>
@@ -422,7 +422,7 @@
           cartArray[i].total +
           "</td>" + "<td><button class='delete-item btn btn-danger' data-name='" +
           cartArray[i].name +
-          "'><i class='fa fa-trash-alt'></i></button></td>" +
+          "'><i class='ti ti-trash'></i></button></td>" +
 
           "</tr>";
 

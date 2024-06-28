@@ -12,8 +12,7 @@
         {%endblock title%}
     </title>
     <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script> <!--Bootstrap Touchspin-->
-    <link rel="stylesheet" href="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.css' %}">
-    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+
     <link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
 
     <link rel="shortcut icon" type="image/png" href="{%static 'img/logos/favicon.png'%}" />
@@ -21,7 +20,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+
     <link rel="stylesheet" href="{%static 'libs/simplebar/dist/simplebar.css'%}">
     <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
 
@@ -187,7 +188,6 @@
     <script src="{%static 'js/app.min.js'%}"></script>
     <script src="{%static 'libs/simplebar/dist/simplebar.js'%}"></script>
     <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
-    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
@@ -208,9 +208,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-        crossorigin="anonymous"></script>
+    <script src="{%static 'libs/bootstrap/dist/js/bootstrap.bundle.min.js'%}"></script>
     <script src="{% static 'js/color-modes.js' %}"></script>
 
     {%include 'pos/ai_assistant.html'%}
