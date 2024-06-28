@@ -9,20 +9,15 @@
 <link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
 
 <!--Create new customer-->
-<div class="row ml-0 mb-3">
+<div class="ml-2 mb-3">
     <a href="{% url 'customers:customers_add' %}">
         <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-plus mr-2"></i>
+            <i class="ti ti-plus"></i>
             Create new customer
         </button>
     </a>
 </div>
-<!--Outcome after delete operation-->
-<div>
-    <div class="text-center" id="result">
 
-    </div>
-</div>
 
 <!-- DataTable -->
 <div class="card shadow mb-12 ml-2">
@@ -30,6 +25,12 @@
         <h6 class="m-0 font-weight-bold text-primary">Customers</h6>
     </div>
     <div class="card-body">
+        <!--Outcome after delete operation-->
+        <div>
+            <div class="text-center" id="result">
+
+            </div>
+        </div>
 
         <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" style="width: 100%;">
@@ -75,7 +76,7 @@
                             <a href="{% url 'customers:customers_update' c.id %}" class="text-decoration-none">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
                                     title="Update customer">
-                                    <i class="fas fa-pen"></i>
+                                    <i class="ti ti-pencil"></i>
                                 </button>
                             </a>
                             <!--Delete modal-->
@@ -84,13 +85,9 @@
                                 <button rel="delete" type="button" class="btn btn-danger btn-sm" data-toggle="modal"
                                     data-target="#exampleModal" data-bs-toggle="tooltip" title="Delete customer"
                                     onclick="setModalid({{c.id}})">
-                                    <i class="fas fa-trash"></i>
+                                    <i class="ti ti-trash"></i>
                                 </button>
                             </a>
-
-
-
-
 
                         </td>
                     </tr>
@@ -109,7 +106,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Delete customer
-                    <i class="fas fa-exclamation-triangle text-danger ml-2"></i>
+                    <i class="ti ti-exclamation text-danger ml-2"></i>
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -137,7 +134,7 @@
             buttons: [
                 {
                     extend: 'print',
-                    text: 'Print <i class="fas fa-file ml-2"></i>',
+                    text: 'Print <i class="ti ti-file ml-2"></i>',
                     titleAttr: 'Print',
                     className: 'btn btn-info',
                     exportOptions: {
@@ -146,7 +143,7 @@
                 },
                 {
                     extend: 'excelHtml5',
-                    text: 'Download Excel <i class="fas fa-file-excel ml-2"></i>',
+                    text: 'Download Excel <i class="ti ti-file-excel ml-2"></i>',
                     titleAttr: 'Download Excel',
                     className: 'btn btn-success ml-2',
                     exportOptions: {
@@ -155,7 +152,7 @@
                 },
                 {
                     extend: 'pdfHtml5',
-                    text: 'Download PDF <i class="fas fa-file-pdf ml-2"></i>',
+                    text: 'Download PDF <i class="ti ti-file-pdf ml-2"></i>',
                     titleAttr: 'Download PDF',
                     className: 'btn btn-danger ml-2',
                     download: 'open',

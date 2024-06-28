@@ -4,125 +4,108 @@
 {% block stylesheets %}{% endblock stylesheets %}
 {% block heading %}Add customer{% endblock heading %}
 {% block content %}
-<!--Go back-->
-<div class="row ml-0 mb-3">
-    <div class="ml-auto">
-        <a href="{% url 'customers:customers_list' %}" class="col">
-            <button type="button" class="btn btn-success font-weight-bold">
-                <i class="fas fa-long-arrow-alt-left mr-2"></i>
-                Go back
-            </button>
-        </a>
-        <!--Import Customers-->
-        <!--TODO: Add upload customers functionality-->
-        <a href="{% url 'customers:customers_list' %}" class="col">
-            <button type="button" class="btn btn-success font-weight-bold ml-2">
-                <i class="fas fa-file-upload mr-2"></i>
-                Import customers
-            </button>
-        </a>
-    </div>
+<div class="ml-3 mb-3">
+    <a href="{% url 'customers:customers_list' %}" class="">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="ti ti-arrow-left"></i>
+            Go back
+        </button>
+    </a>
+    <a href="{% url 'customers:customers_list' %}" class="">
+        <button type="button" class="btn btn-success font-weight-bold ml-2">
+            <i class="ti ti-file-upload"></i>
+            Import customers
+        </button>
+    </a>
 </div>
 <!--Error, success-->
-<div class="row">
+<div class="row ml-3">
     <div class="col-md-10" id="status">
 
     </div>
 </div>
+<div class="card col-md-11 tab-content pl-3 pr-3 ml-3">
+    <div class="card-body">
+        <!--Tabs for customer info, VAT Settings, Photo-->
+        <ul class="nav nav-tabs mt-2 mb-3" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="customer-tab" data-toggle="tab" href="#customer" role="tab"
+                    aria-controls="customer" aria-selected="true">Bio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="vat-tab" data-toggle="tab" href="#vat" role="tab" aria-controls="vat"
+                    aria-selected="false">VAT Settings</a>
+            </li>
 
-<!--Tabs for customer info, VAT Settings, Photo-->
-<ul class="nav nav-tabs ml-3" id="myTab" role="tablist">
-    <li class="nav-item">
-        <a class="nav-link active" id="customer-tab" data-toggle="tab" href="#customer" role="tab"
-            aria-controls="customer" aria-selected="true">Bio</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="vat-tab" data-toggle="tab" href="#vat" role="tab" aria-controls="vat"
-            aria-selected="false">VAT Settings</a>
-    </li>
-
-</ul>
-
-
-
-<div class="row mb-4 ml-3">
-    <div class="card col-md-10 tab-content mt-3 ml-2">
-        <!--Customer tab-->
-        <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
-            <div class="card-body pl-3">
-                <form action="{% url 'customers:customers_add' %}" method="post" enctype="multipart/form-data"
-                    id="customer_form">
-                    {% csrf_token %}
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <div class="form-group col-md-10">
-                                <label for="inputDescription">First Name</label>
-                                <input type="text" class="form-control" name="first_name" placeholder="John..."
-                                    required>
-                            </div>
-                            <div class="form-group col-md-10">
-                                <label for="inputDescription">Last Name</label>
-                                <input type="text" class="form-control" name="last_name" placeholder="Doe..." required>
-                            </div>
-                        </div>
-                        <!--Image-->
-                        <div class="form-group col-md-4 items-end">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <img src="{% static 'img/undraw_profile.svg' %}" alt="Customer photo"
-                                        class="img-thumbnail ml-2" width="200" height="200" id="customer_photo">
-                                </div>
-                                <div class="form-group col-md-6">
-
-                                    <div class="mb-3 ml-3">
-                                        <label for="photo" class="form-label">Photo</label>
-                                        <input class="form-control form-control-lg btn" type="file" id="photo"
-                                            name="photo">
-                                    </div>
-
-
-
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label for="inputDescription">Email</label>
-                            <input type="email" name="email" class="form-control" placeholder="johndoe@gmail.com">
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="inputDescription">Phone number</label>
-                            <input type="text" name="phone" class="form-control" placeholder="(412) 727-2736">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
+        </ul>
+        <div class="alert alert-info" role="alert">
+            <i class="ti ti-info-circle"></i>
+            Fill in the details of the customer you want to add.
+        </div>
+        <form action="{% url 'customers:customers_add' %}" method="post" enctype="multipart/form-data"
+            id="customer_form">
+            <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+                {% csrf_token %}
+                <div class="form-row items-start">
+                    <div class="form-group col-md-8">
                         <div class="form-group col-md-12">
-                            <label for="inputDescription">Address</label>
-                            <textarea name="address" class="form-control"
-                                placeholder="5340 Brett Dr #A Fort Knox, Kentucky(KY), 40121 ..." rows="2"></textarea>
+                            <label for="inputDescription">First Name</label>
+                            <input type="text" class="form-control" name="first_name" placeholder="John..." required>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputDescription">Last Name</label>
+                            <input type="text" class="form-control" name="last_name" placeholder="Doe..." required>
                         </div>
                     </div>
+                    <!--Image-->
+                    <div class="form-group col-md-4 items-end">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <img src="{% static 'img/undraw_profile.svg' %}" alt="Customer photo"
+                                    class="img-thumbnail ml-2" width="300" height="3000" id="customer_photo">
+                            </div>
+                            <div class="form-group col-md-6">
 
+                                <div class="mb-3 ml-3">
+                                    <label for="photo" class="form-label">Photo</label>
+                                    <input class="form-control form-control-lg btn" type="file" id="photo" name="photo">
+                                </div>
+                            </div>
+                        </div>
 
-                    <!--Next btn -> switch to vat tab-->
-                    <!--Next icon-->
-                    <a class="btn btn-success font-weight-bold" id="vat-tab-btn">
-                        Next
-                        <i class="fas fa-arrow-right mr-2"></i>
+                    </div>
+                </div>
 
-                    </a>
+                <div class="form-row items-start">
+                    <div class="form-group col-md-6">
+                        <label for="inputDescription">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="johndoe@gmail.com">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputDescription">Phone number</label>
+                        <input type="text" name="phone" class="form-control" placeholder="(412) 727-2736">
+                    </div>
+                </div>
+
+                <div class="form-row items-start">
+                    <div class="form-group col-md-12">
+                        <label for="inputDescription">Address</label>
+                        <textarea name="address" class="form-control"
+                            placeholder="5340 Brett Dr #A Fort Knox, Kentucky(KY), 40121 ..." rows="2"></textarea>
+                    </div>
+                </div>
+
+                <a class="btn btn-success font-weight-bold" id="vat-tab-btn">
+                    Next
+                    <i class="ti ti-arrow-right"></i>
+
+                </a>
 
 
             </div>
-        </div>
-        <!--VAT tab-->
-        <div class="tab-pane fade" id="vat" role="tabpanel" aria-labelledby="vat-tab">
-            <div class="card-body">
+            <!--VAT tab-->
+            <div class="tab-pane fade" id="vat" role="tabpanel" aria-labelledby="vat-tab">
+
 
 
                 <div class="form-row">
@@ -139,12 +122,12 @@
                 <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">
                     Create customer
                 </button>
-                </form>
-            </div>
-        </div>
-        </form>
 
+
+            </div>
+        </form>
     </div>
+
 </div>
 <script>
     $(document).ready(function () {
@@ -153,7 +136,7 @@
         });
         // set tab active
         $('#vat-tab-btn').click(function () {
-            
+
             $('#vat-tab').addClass('active');
         }
         );
