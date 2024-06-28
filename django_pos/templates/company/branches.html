@@ -6,50 +6,47 @@
 <div class="ml-2 mb-3">
     <a href="{% url 'company:company' %}" class="col">
         <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="fas fa-arrow-left"></i>
+            <i class="ti ti-arrow-left"></i>
             Back
         </button>
     </a>
     <a href="" class="col">
         <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-plus"></i>
+            <i class="ti ti-plus"></i>
             Create New Branch
         </button>
     </a>
 </div>
-<!--Branches-->
-<div class="row ml-2">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Branches</h4>
-                <div class="table-responsive">
-                    <table id="branch_table" class="table table-striped table-bordered no-wrap">
-                        <thead>
-                            <tr>
-                                <th>Branch Name</th>
-                                <th>Location</th>
-                                <th>Phone</th>
-                                <th>Email</th>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for branch in branches %}
-                            <tr>
-                                <td>{{branch.branch_name}}</td>
-                                <td>{{branch.city}}</td>
-                                <td>{{branch.phone_number}}</td>
-                                <td>{{branch.email}}</td>
+<div class="card ml-3">
 
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="branch_table" class="table table-striped table-bordered no-wrap">
+                <thead>
+                    <tr>
+                        <th>Branch Name</th>
+                        <th>Location</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for branch in branches %}
+                    <tr>
+                        <td>{{branch.branch_name}}</td>
+                        <td>{{branch.city}}</td>
+                        <td>{{branch.phone_number}}</td>
+                        <td>{{branch.email}}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-<!--Branches-->
+
 {%endblock content%}
