@@ -13,17 +13,15 @@ $(document).ready(function () {
   $("#sound_btn").on("click", function () {
     let sound = togglePlaySound();
     if (sound) {
-      $(this).html(
-        '<i class="fa fa-volume-up hover-q text-muted" title=""></i>'
-      );
+      $(this).html('<i class="ti ti-volume hover-q text-muted" title=""></i>');
     } else {
       $(this).html(
-        '<i class="fa fa-volume-mute hover-q text-muted" title=""></i>'
+        '<i class="ti ti-volume-off hover-q text-muted" title=""></i>'
       );
     }
   });
 });
-let csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
