@@ -1,29 +1,20 @@
 {% extends "pos/base.html" %}
 {% load static %}
-<!-- Page title  -->
 {% block title %}Products{% endblock title %}
-
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-<!-- Datatables -->
-
 {% endblock stylesheets %}
-
-<!-- Page Heading -->
 {% block heading %}Products{% endblock heading %}
-
-<!-- Page content  -->
 {% block content %}
-<div class="ml-2 mb-3">
-    <a href="{% url 'products:categories_list' %}" class="col">
+<div class="ml-3 mb-3">
+    <a href="{% url 'products:categories_list' %}">
         <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="fas fa-list"></i>
+            <i class="ti ti-list"></i>
             Product Categories
         </button>
     </a>
-    <a href="{% url 'products:products_add' %}" class="col">
+    <a href="{% url 'products:products_add' %}">
         <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-plus"></i>
+            <i class="ti ti-plus"></i>
             Create new product
         </button>
     </a>
@@ -82,7 +73,7 @@
                             <a href="{% url 'products:products_update' p.id %}" class="text-decoration-none">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
                                     title="Update product">
-                                    <i class="fas fa-pen"></i>
+                                    <i class="ti ti-pencil"></i>
                                 </button>
                             </a>
                             <!--Delete modal-->
@@ -90,7 +81,7 @@
                             <a class="text-decoration-none">
                                 <button rel="delete" type="button" class="btn btn-danger btn-sm" data-toggle="modal"
                                     data-target="#exampleModal">
-                                    <i class="fas fa-trash"></i>
+                                    <i class="ti ti-trash"></i>
                                 </button>
                             </a>
 

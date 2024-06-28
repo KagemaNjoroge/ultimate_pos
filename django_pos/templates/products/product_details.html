@@ -14,7 +14,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="delete_product_modal_label">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <i class="ti ti-exclamation mr-2"></i>
                     Delete Product
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -33,54 +33,58 @@
     </div>
 </div>
 
-<div class="row ml-3 mb-2">
+<div class="ml-3 mb-2">
     <a href="{% url 'products:products_list' %}">
         <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-long-arrow-alt-left mr-2"></i>
+            <i class="ti ti-arrow-left"></i>
             Back
         </button>
     </a>
 </div>
 
-<!--Delete msg-->
-<div class="row text-center mb-2 ml-3">
-    <div class="col-md-4"></div>
+<div class="card ml-3">
+    <div class="card-body">
+        <!--Delete msg-->
+        <div class="row text-center mb-2 ml-3">
+            <div class="col-md-4"></div>
 
-    <div class="update_msg col-md-4"></div>
-    <div class="col-md-4"></div>
+            <div class="update_msg col-md-4"></div>
+            <div class="col-md-4"></div>
 
-</div>
-<div class="row mb-5 ml-2 mb-5">
-    <div class="col-md-6">
-        {%if product.image%}
-        <img src="{{product.image.url}}" class="img-fluid" alt="{{product.name}}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        ">
-        {%else%}
+        </div>
+        <div class="row mb-5 mb-5">
+            <div class="col-md-6">
+                {%if product.image%}
+                <img src="{{product.image.url}}" class="img-fluid" alt="{{product.name}}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                ">
+                {%else%}
 
-        <img src="{%static 'default.png'%}" class="img-fluid" alt="{{product.name}}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
-                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                        ">
-        {%endif%}
-    </div>
-    <div class="col-md-6">
-        <h3>{{product.name}}</h3>
-        <p>{{product.description}}</p>
-        <p>Price: <strong>{{product.price}}</strong></p>
-        <p>Category: {{product.category}}</p>
+                <img src="{%static 'default.png'%}" class="img-fluid" alt="{{product.name}}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
+                                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+                                ">
+                {%endif%}
+            </div>
+            <div class="col-md-6">
+                <h3>{{product.name}}</h3>
+                <p>{{product.description}}</p>
+                <p>Price: <strong>{{product.price}}</strong></p>
+                <p>Category: {{product.category}}</p>
 
-        <a href="{% url 'products:products_update' product.id %}">
-            <button type="button" class="btn btn-primary">
-                <i class="fas fa-edit mr-2"></i>
-                Edit
-            </button>
-        </a>
+                <a href="{% url 'products:products_update' product.id %}">
+                    <button type="button" class="btn btn-primary">
+                        <i class="ti ti-edit mr-2"></i>
+                        Edit
+                    </button>
+                </a>
 
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_product_modal">
-            <i class="fas fa-trash-alt mr-2"></i>
-            Delete
-        </button>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_product_modal">
+                    <i class="ti ti-trash"></i>
+                    Delete
+                </button>
 
+            </div>
+        </div>
     </div>
 </div>
 

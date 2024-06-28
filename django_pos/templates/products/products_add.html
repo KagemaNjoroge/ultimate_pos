@@ -1,69 +1,53 @@
 {% extends "pos/base.html" %}
-
-<!-- Page title  -->
 {% block title %}Add product{% endblock title %}
-
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
-
-<!-- Page Heading -->
 {% block heading %}Add product{% endblock heading %}
-
-<!-- Page content  -->
 {% block content %}
-<!--Go back-->
-<div class="row mb-3">
-  <div class="ml-auto">
-    <a href="{% url 'products:products_list' %}" class="col">
-      <button type="button" class="btn btn-success font-weight-bold">
-        <i class="fas fa-long-arrow-alt-left mr-2"></i>
-        Go back
-      </button>
-    </a>
+<div class="ml-3 mb-3">
+  <a href="{% url 'products:products_list' %}">
+    <button type="button" class="btn btn-primary font-weight-bold">
+      <i class="ti ti-arrow-left"></i>
+      Go back
+    </button>
+  </a>
 
-    <a href="{% url 'products:upload_excel' %}" class="ml-4 col">
-      <button type="button" class="btn btn-success font-weight-bold">
-        <i class="fas fa-upload mr-2"></i>
-        Upoad CSV / Excel
-      </button>
-    </a>
-  </div>
+  <a href="{% url 'products:upload_excel' %}">
+    <button type="button" class="btn btn-success font-weight-bold">
+      <i class="ti ti-upload"></i>
+      Upoad CSV / Excel
+    </button>
+  </a>
 </div>
-<!--Add product status-->
 <div id="status" class="text-center">
 
 </div>
-
-
-
-<!-- Tabs for product, taxes, expiry, images-->
-<ul class="nav nav-tabs ml-2" id="myTab" role="tablist">
-
-  <li class="nav-item">
-    <a class="nav-link active" id="product-tab" data-toggle="tab" href="#product" role="tab" aria-controls="product"
-      aria-selected="true">Product</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="taxes-tab" data-toggle="tab" href="#taxes" role="tab" aria-controls="taxes"
-      aria-selected="false">Taxes</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="expiry-tab" data-toggle="tab" href="#expiry" role="tab" aria-controls="expiry"
-      aria-selected="false">Expiry</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="images-tab" data-toggle="tab" href="#images" role="tab" aria-controls="images"
-      aria-selected="false">Images</a>
-  </li>
-</ul>
-
-<div class="mt-4 ml-2 tab-content">
+<div class="mt-4 ml-3 tab-content">
   <!-- Product tab -->
   <div class="tab-pane fade show active" id="product" role="tabpanel" aria-labelledby="product-tab">
-    <div class="card col-md-10 ">
+    <div class="card col-md-11">
       <div class="card-body">
+        <!-- Tabs for product, taxes, expiry, images-->
+        <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
+
+          <li class="nav-item">
+            <a class="nav-link active" id="product-tab" data-toggle="tab" href="#product" role="tab"
+              aria-controls="product" aria-selected="true">Product</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="taxes-tab" data-toggle="tab" href="#taxes" role="tab" aria-controls="taxes"
+              aria-selected="false">Taxes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="expiry-tab" data-toggle="tab" href="#expiry" role="tab" aria-controls="expiry"
+              aria-selected="false">Expiry</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="images-tab" data-toggle="tab" href="#images" role="tab" aria-controls="images"
+              aria-selected="false">Images</a>
+          </li>
+        </ul>
         <div class="alert alert-info" role="alert">
-          <i class="fas fa-info-circle mr-2"></i>
+          <i class="ti ti-info-circle mr-2"></i>
           Fill in the details of the product you want to add.
         </div>
 
@@ -226,8 +210,6 @@
             // show success message, clear form
             $('#status').html('<div class="alert alert-success" role="alert">' + response.message + '</div>');
             $('#product_form').trigger('reset');
-
-
 
           }
           else {
