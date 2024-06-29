@@ -5,7 +5,6 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 
 from django_pos import settings
-import sales
 
 schema_view = get_schema_view(
     openapi.Info(
