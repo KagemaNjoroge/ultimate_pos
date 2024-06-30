@@ -1,5 +1,6 @@
 from django.db import models
 from products.models import Product
+from company.models import Branch
 
 
 # Create your models here.
@@ -9,13 +10,16 @@ class Inventory(models.Model):
     date_added = models.DateField(auto_now_add=True)
     date_modified = models.DateField(auto_now=True)
     alert_quantity = models.FloatField(default=1.0)
+    branch = models.ForeignKey(
+        to=Branch,
+        on_delete=models.CASCADE,
+        verbose_name="branch",
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
-        return f"{self.product} - {self.quantity}"
-
-    def update_stock(self, quantity):
-        self.quantity += quantity
-        self.save()
+        return str(self.id)
 
     def to_dict(self):
         return {
@@ -25,6 +29,7 @@ class Inventory(models.Model):
             "date_added": self.date_added,
             "date_modified": self.date_modified,
             "alert_quantity": self.alert_quantity,
+            "branch": self.branch,
         }
 
     class Meta:

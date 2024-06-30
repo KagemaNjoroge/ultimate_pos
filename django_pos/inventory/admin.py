@@ -5,7 +5,7 @@ from django.db.models import F
 
 @admin.register(Inventory)
 class InventoryAdmin(admin.ModelAdmin):
-    list_display = ("product", "quantity", "alert_quantity")
+    list_display = ("product", "quantity", "alert_quantity", "branch")
 
     search_fields = ("product__name", "product__description")
     list_per_page = 10
