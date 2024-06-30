@@ -3,25 +3,21 @@
 {% block title %}Accounts{% endblock %}
 {%block heading%}Accounts{%endblock%}
 {% block content %}
-<div class="ml-3 mb-3">
+<div class="ml-2 mb-3">
     <a href="{%url 'pos:index'%}">
         <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left mr-2"></i>
+            <i class="ti ti-arrow-left"></i>
             Back
         </button>
     </a>
-
     <a>
         <button type="button" class="btn btn-success font-weight-bold ml-2">
-            <i class="ti ti-plus mr-2"></i>
+            <i class="ti ti-plus"></i>
             Add User
         </button>
     </a>
 </div>
-<div class="card ml-3">
-    <div class="card-header">
-        <h6 class="m-0 font-weight-bold text-primary">Users management</h6>
-    </div>
+<div class="card ml-2">
     <div class="card-body">
 
         <div class="table-responsive">
@@ -39,8 +35,12 @@
                         <td>{{user.username}}</td>
                         <td>{{user.email}}</td>
                         <td>
-                            <a href="" class="btn btn-primary">Edit</a>
-                            <a href="" class="btn btn-danger">Delete</a>
+                            <a href="" class="btn btn-primary">
+                                <i class="ti ti-edit"></i>
+                            </a>
+                            <a href="" class="btn btn-danger">
+                                <i class="ti ti-trash"></i>
+                            </a>
                         </td>
                     </tr>
                     {% endfor %}
