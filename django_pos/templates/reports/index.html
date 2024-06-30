@@ -7,209 +7,141 @@ Reports
 {%block content%}
 
 
-<div class="container">
-    <div class="row">
 
-        <!-- Earnings (Monthly) Card  -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Sales this month</div>
-                            <div class="h6 mb-0 font-weight-bold text-gray-800 mt-3" id="sales_this_month"></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="ti ti-calendar fa-2x text-gray-600"></i>
-                        </div>
+<div class="row">
+
+    <!-- Earnings (Monthly) Card  -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Sales this month</div>
+                        <div class="h6 mb-0 font-weight-bold text-gray-800 mt-3" id="sales_this_month"></div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Earnings (Annual) Card  -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                This week</div>
-                            <div class="h6 mt-3 font-weight-bold text-gray-800" id="sales_this_week"></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="ti ti-currency-dollar fa-2x text-gray-600"></i>
-                        </div>
+                    <div class="col-auto">
+                        <i class="ti ti-calendar fa-2x text-gray-600"></i>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Products Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Top product this
-                                month
-                            </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-                                    <div id="best_selling_product_name">
-                                        <div class="spinner-border text-info" role="status">
-                                            <span class="sr-only">Loading...</span>
-                                        </div>
-                                        <div id="best_selling_product_quantity">
-                                            <div class="spinner-border text-info" role="status">
-                                                <span class="sr-only">Loading...</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="ti ti-tag text-gray-600"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Categories Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Best selling
-                                category
-                            </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                        Software
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="ti ti-tag text-gray-600"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
-<!--Report export modal-->
-<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exportModalLabel">Export Report as</h5>
-                <button type="button" class="close" aria-label="Close" id="closeExportModal">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-primary">
-                        <i class="fas fa-file-csv"></i>
-                    </button>
-                    <button type="button" class="btn btn-secondary">
-                        <i class="fas fa-file-pdf"></i>
-                    </button>
-                    <button type="button" class="btn btn-success">
-                        <i class="fas fa-file-excel"></i>
-                    </button>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!--Expanded reports modal-->
-<div class="modal fade" id="expandedReportsModal" tabindex="-1" role="dialog"
-    aria-labelledby="expandedReportsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="expandedReportsModalLabel">Expanded Report</h5>
-                <button type="button" class="close" aria-label="Close" id="closeExpandedReportsModal">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="expanded_report"></div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        Sales Reports
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="m-0 font-weight-bold text-primary">
-                                        Sales for the past 7 days
-                                    </h6>
-                                    <div class="card-tools float-right">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"
-                                            id="expandReport7">
-                                            <i class="fas fa-expand"></i>
-                                        </button>
-
-                                        <button type="button" class="btn btn-tool" id="export_7">
-                                            <i class="fas fa-file-export"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="sales_7_days"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="m-0 font-weight-bold text-primary">
-                                        Sales for the past 1 month
-                                    </h6>
-                                    <div class="card-tools float-right">
-                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"
-                                            id="expandReport31">
-                                            <i class="fas fa-expand"></i>
-                                        </button>
-
-                                        <button type="button" class="btn btn-tool" id="export_31">
-                                            <i class="fas fa-file-export"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="sales_1_month"></canvas>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Earnings (Annual) Card  -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            This week</div>
+                        <div class="h6 mt-3 font-weight-bold text-gray-800" id="sales_this_week"></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="ti ti-currency-dollar fa-2x text-gray-600"></i>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Best selling
+                            product
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="best_selling_product_name">
+                                    <div class="spinner-border text-info" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="ti ti-tag text-gray-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Card -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Best selling
+                            category
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    Software
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="ti ti-tag text-gray-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+    <div class="card-header">
+        <h6 class="m-0 font-weight-bold text-primary">
+            Sales for the past 7 days
+        </h6>
+        <div class="card-tools float-right">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" id="expandReport7">
+                <i class="fas fa-expand"></i>
+            </button>
+
+            <button type="button" class="btn btn-tool" id="export_7">
+                <i class="fas fa-file-export"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <canvas id="sales_7_days"></canvas>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">
+        <h6 class="m-0 font-weight-bold text-primary">
+            Sales for the past 1 month
+        </h6>
+        <div class="card-tools float-right">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" id="expandReport31">
+                <i class="fas fa-expand"></i>
+            </button>
+
+            <button type="button" class="btn btn-tool" id="export_31">
+                <i class="fas fa-file-export"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <canvas id="sales_1_month"></canvas>
     </div>
 </div>
 
@@ -234,7 +166,7 @@ Reports
             type: "GET",
             success: function (data) {
                 $("#best_selling_product_name").html(data.top_selling[0])
-                $("#best_selling_product_quantity").html(data.top_selling[1])
+
 
 
             },
@@ -249,8 +181,10 @@ Reports
             type: "GET",
             success: function (data) {
                 $("#sales_this_month").text(`Ksh ${formatNumberWithCommas(data.total)}`)
+
             },
             error: function (error) {
+                $("#sales_this_month").html('<i class="ti ti-exclamation-mark"></i> An error occured')
                 console.log(error)
             }
         })
@@ -263,14 +197,10 @@ Reports
                 $("#sales_this_week").text(`Ksh ${formatNumberWithCommas(data.total)}`)
             },
             error: function (error) {
+                $("#sales_this_week").html('<i class="ti ti-exclamation-mark"></i> An error occured')
                 console.log(error)
             }
         })
-    }
-
-    function saveReportToSessionStorage(data) {
-        // save the data to session storage
-        sessionStorage.setItem("reports", JSON.stringify(data))
     }
 
     function getReports(start_date, end_date, dur) {
@@ -299,9 +229,6 @@ Reports
                         dates: Object.keys(salesByDate),
                         sales: Object.values(salesByDate)
                     };
-
-                    // Save the data to session storage
-                    saveReportToSessionStorage(transformedData);
 
                     // Get the canvas
                     let canvasId = dur == "seven_days" ? 'sales_7_days' : 'sales_1_month';
@@ -344,48 +271,13 @@ Reports
         get_this_month_sales();
         get_this_week_sales();
         get_best_selling_product();
-        //get_best_selling_category();
-        $("#export_7").click(function () {
-            // add csv, pdf, excel export options to the modal
-
-            // show modal
-            $("#exportModal").modal("show")
-            // show the canvas in the modal
-
-        })
-        $("#closeExpandedReportsModal").click(function () {
-            // hide modal
-            $("#expandedReportsModal").modal("hide")
-        })
-        $("#export_31").click(function () {
-
-            // show modal
-            $("#exportModal").modal("show")
-        })
-        $("#closeExportModal").click(function () {
-            // hide modal
-            $("#exportModal").modal("hide")
-        })
-
-
-
-
-        $('#expandReport7').click(function () {
-            // show modal
-            $("#expandedReportsModal").modal("show")
-            // show the canvas in the modal
-        })
-        $('#expandReport31').click(function () {
-            // show modal
-            $("#expandedReportsModal").modal("show")
-            // show the canvas in the modal
-        })
 
         // get for the last one month, 7 days
         let current_date = new Date();
-        let last_month = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate());
-        let current_month = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate());
+        let last_month = new Date(current_date.getFullYear(), current_date.getMonth() - 1, current_date.getDate());
+        let current_month = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate() + 1);
         let last_week = new Date(current_date.getFullYear(), current_date.getMonth(), current_date.getDate() - 6);
+
 
         // past seven days
         getReports(last_week, current_date, "seven_days");
