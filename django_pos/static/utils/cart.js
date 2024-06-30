@@ -10,14 +10,18 @@ function togglePlaySound() {
 }
 
 $(document).ready(function () {
+  let sound = togglePlaySound();
+  if (sound) {
+    $(this).html('<i class="ti ti-volume hover-q text-muted"></i>Sound');
+  } else {
+    $(this).html('<i class="ti ti-volume-off hover-q text-muted"></i>Sound');
+  }
   $("#sound_btn").on("click", function () {
     let sound = togglePlaySound();
     if (sound) {
-      $(this).html('<i class="ti ti-volume hover-q text-muted" title=""></i>');
+      $(this).html('<i class="ti ti-volume hover-q text-muted"></i>Sound');
     } else {
-      $(this).html(
-        '<i class="ti ti-volume-off hover-q text-muted" title=""></i>'
-      );
+      $(this).html('<i class="ti ti-volume-off hover-q text-muted"></i>Sound');
     }
   });
 });
