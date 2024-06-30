@@ -141,7 +141,7 @@ def index(request: HttpRequest) -> HttpResponse:
         top_products_quantity.append(product["quantity"])
 
     context = {
-        "active_icon": "dashboard",
+   
         "products": Product.objects.all().count(),
         "categories": Category.objects.all().count(),
         "annual_earnings": annual_earnings,
@@ -156,7 +156,7 @@ def index(request: HttpRequest) -> HttpResponse:
     if company:
         context["currency_symbol"] = company.currency_symbol
     else:
-        context["currency_symbol"] = "$"
+        context["currency_symbol"] = "Kshs"
 
     return render(request, "pos/index.html", context)
 
