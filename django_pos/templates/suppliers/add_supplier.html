@@ -3,140 +3,71 @@
 {% block title %}Add Supplier{% endblock %}
 {%block heading%}Add Supplier{%endblock%}
 {% block content %}
-<!--Go back-->
-<div class="ml-3 mb-3">
-    <div class="ml-auto">
-        <a href="{% url 'suppliers:index' %}">
-            <button type="button" class="btn btn-success font-weight-bold">
-                <i class="ti ti-arrow-left"></i>
-                Go back
-            </button>
-        </a>
-        <!--Import Customers-->
-        <!--TODO: Add upload customers functionality-->
-        <a href="{% url 'customers:customers_list' %}">
-            <button type="button" class="btn btn-success font-weight-bold ml-2">
-                <i class="ti ti-file-upload"></i>
-                Import Suppliers
-            </button>
-        </a>
-    </div>
+
+<div class="ml-2 mb-3">
+
+    <a href="{% url 'suppliers:index' %}">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="ti ti-arrow-left"></i>
+            Go back
+        </button>
+    </a>
+
+    <a href="{% url 'customers:customers_list' %}">
+        <button type="button" class="btn btn-success font-weight-bold ml-2">
+            <i class="ti ti-file-upload"></i>
+            Import Suppliers
+        </button>
+    </a>
+
 </div>
 
-<div class="card col-md-11 tab-content ml-3">
-    <!--Customer tab-->
-    <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
-        <div class="card-body pl-3">
-            <!--Tabs for customer info, VAT Settings, Photo-->
-            <ul class="nav nav-tabs ml-3" id="myTab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="customer-tab" data-toggle="tab" href="#customer" role="tab"
-                        aria-controls="customer" aria-selected="true">Bio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="vat-tab" data-toggle="tab" href="#vat" role="tab" aria-controls="vat"
-                        aria-selected="false">VAT Settings</a>
-                </li>
+<div class="card ml-2">
+    <div class="card-body">
+        <div class="text-center" id="status">
+        </div>
 
-            </ul>
-            <!--Error, success-->
-
-            <div class="text-center" id="status">
-
-            </div>
-
-            <form action="" method="post" enctype="multipart/form-data" id="customer_form">
-                {% csrf_token %}
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <div class="form-group col-md-12">
-                            <label for="inputDescription">Name</label>
-                            <input type="text" class="form-control" name="first_name" placeholder="Bakari suppliers"
-                                required>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="inputDescription">Email</label>
-                                <input type="email" name="email" class="form-control" placeholder="johndoe@gmail.com">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputDescription">Phone number</label>
-                                <input type="text" name="phone" class="form-control" placeholder="(412) 727-2736">
-                            </div>
-                        </div>
-
-                        <!--Image-->
-
+        <form action="" method="post" enctype="multipart/form-data" id="customer_form">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <div class="form-row">
+                        <label for="name">Name</label>
+                        <input id="name" type="text" class="form-control" name="name" placeholder="Bakari suppliers"
+                            required>
                     </div>
                     <div class="form-row">
-                        <div class="form-group mr-3">
-                            <img src="{% static 'img/undraw_profile.svg' %}" alt="Customer photo"
-                                class="img-thumbnail ml-2" width="200" height="200" id="customer_photo">
+                        <div class="form-group col-6">
+                            <label for="email">Email</label>
+                            <input id="email" type="email" name="email" class="form-control"
+                                placeholder="johndoe@gmail.com">
                         </div>
-                        <div class="form-group">
-                            <label for="photo" class="form-label">Photo</label>
-                            <input class="form-control form-control-lg btn" type="file" id="photo" name="photo">
+                        <div class="form-group col-6">
+                            <label for="phone">Phone number</label>
+                            <input id="phone" type="text" name="phone" class="form-control"
+                                placeholder="(412) 727-2736">
                         </div>
-
                     </div>
+
                 </div>
+                <div class="form-row">
+                    <div class="form-group mr-3">
+                        <img src="{% static 'img/undraw_profile.svg' %}" alt="Customer photo" class="img-thumbnail ml-2"
+                            width="200" height="200" id="customer_photo">
+                    </div>
+                    <div class="form-group">
+                        <label for="photo" class="form-label">Photo</label>
+                        <input class="form-control form-control-lg btn" type="file" id="photo" name="photo">
+                    </div>
 
-        </div>
-
-        <a class="btn btn-success font-weight-bold mb-2" id="vat-tab-btn">
-            Next
-            <i class="ti ti-arrow-right"></i>
-
-        </a>
-
-    </div>
-    <!--VAT tab-->
-    <div class="tab-pane fade" id="vat" role="tabpanel" aria-labelledby="vat-tab">
-
-        <div class="form-row">
-            <div class="form-group col-md-12">
-
-                <label for="inputDescription">KRA PIN</label>
-                <!-- caps -->
-                <input type="text" class="form-control text-uppercase" name="kra_pin"
-                    placeholder="KRA PIN for tax returns filing">
+                </div>
             </div>
-        </div>
-
-
-        <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">
-            Create Supplier
-        </button>
+            <button type="submit" class="btn btn-success font-weight-bold" id="submit">
+                Save
+            </button>
         </form>
-
     </div>
-
-
-
 </div>
-
-
 <script>
-    $(document).ready(function () {
-        $('#vat-tab-btn').click(function () {
-            $('#vat-tab').tab('show');
-        });
-        // set tab active
-        $('#vat-tab-btn').click(function () {
-            $('#vat-tab').addClass('active');
-        }
-        );
-
-    });
-    // replace photo on file selection
-    $('#photo').change(function () {
-        var i = $(this).prev('label').clone();
-        var file = $('#photo')[0].files[0].name;
-        $(this).prev('label').text(file);
-        // set customer photo with a width of 100 and height of 100
-        $('#customer_photo').attr('src', URL.createObjectURL(this.files[0]));
-    });
-
-
 </script>
 {%endblock content%}

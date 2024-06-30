@@ -2,7 +2,6 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,22 +10,16 @@
         Ultimate POS
         {%endblock title%}
     </title>
-    <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script> <!--Bootstrap Touchspin-->
-
+    <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
     <link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
-
     <link rel="shortcut icon" type="image/png" href="{%static 'img/logos/favicon.png'%}" />
     <link rel="stylesheet" href="{%static 'css/styles.min.css'%}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-
     <link rel="stylesheet" href="{%static 'libs/simplebar/dist/simplebar.css'%}">
     <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
-
-
     <!--Manifest-->
     <link rel="manifest" href="{%static 'manifest.json'%}">
 </head>
@@ -50,11 +43,11 @@
                 </div>
                 <!-- Sidebar navigation-->
                 {%include 'pos/sidenav.html'%}
-                <!-- End Sidebar navigation -->
+
             </div>
-            <!-- End Sidebar scroll-->
+
         </aside>
-        <!--  Sidebar End -->
+
         <!--  Main wrapper -->
         <div class="body-wrapper">
             <!--  Header Start -->
@@ -160,25 +153,14 @@
             </div>
         </div>
     </div>
-    <style>
-        .copyright:hover {
-            text-decoration: none;
-            /*tooltip*/
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            color: #ff0074;
-            /*text color*/
 
-
-        }
-    </style>
     <footer>
         <div class="py-6 px-6 text-center">
-            <p class="mb-0 fs-4">Brought to you by the good folks at <a href="https://tomorrow.co.ke" target="_blank"
-                    data class="pe-1 copyright">
+            <p class="mb-0 fs-4">Brought to you by the good folks at
+                <a href="https://tomorrow.co.ke" target="_blank" data class="pe-1 copyright">
                     TomorrowAI<sup>&reg;</sup>
-                </a></p>
+                </a>
+            </p>
         </div>
 
     </footer>

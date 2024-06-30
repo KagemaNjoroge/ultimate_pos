@@ -1,12 +1,12 @@
 {% extends "pos/base.html" %}
 {%load static%}
-{% block title %}{{product.name}}{% endblock title %}
-{% block stylesheets %}{% endblock stylesheets %}
-{% block heading %}{{product.name}}{% endblock heading %}
+{% block title %}
+{{product.name}}
+{% endblock title %}
+{% block heading %}
+{{product.name}}
+{% endblock heading %}
 {% block content %}
-<!--Product info-->
-
-
 <!--Delete product modal-->
 <div class="modal fade" id="delete_product_modal" tabindex="-1" role="dialog"
     aria-labelledby="delete_product_modal_label" aria-hidden="true">
@@ -33,37 +33,27 @@
     </div>
 </div>
 
-<div class="ml-3 mb-2">
+<div class="ml-2 mb-2">
     <a href="{% url 'products:products_list' %}">
-        <button type="button" class="btn btn-success font-weight-bold">
+        <button type="button" class="btn btn-primary font-weight-bold">
             <i class="ti ti-arrow-left"></i>
             Back
         </button>
     </a>
 </div>
 
-<div class="card ml-3">
+<div class="card ml-2">
     <div class="card-body">
-        <!--Delete msg-->
-        <div class="row text-center mb-2 ml-3">
-            <div class="col-md-4"></div>
+        <div class="update_msg text-center"></div>
 
-            <div class="update_msg col-md-4"></div>
-            <div class="col-md-4"></div>
-
-        </div>
-        <div class="row mb-5 mb-5">
+        <div class="row mb-5">
             <div class="col-md-6">
-                {%if product.image%}
-                <img src="{{product.image.url}}" class="img-fluid" alt="{{product.name}}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
+
+                <img {%if product.image%} src="{{product.image.url}}" {%else%} src="{%static 'default.png'%}" {%endif%}
+                    class="img-fluid" alt="{{product.name}}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
                 box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
                 ">
-                {%else%}
 
-                <img src="{%static 'default.png'%}" class="img-fluid" alt="{{product.name}}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
-                                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-                                ">
-                {%endif%}
             </div>
             <div class="col-md-6">
                 <h3>{{product.name}}</h3>

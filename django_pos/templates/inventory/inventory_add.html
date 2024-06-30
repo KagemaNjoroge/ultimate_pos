@@ -9,9 +9,9 @@
 
 {% block content %}
 
-<div class="ml-3 mb-3">
+<div class="ml-2 mb-3">
     <a href="{% url 'inventory:inventory_index' %}">
-        <button type="button" class="btn btn-success font-weight-bold">
+        <button type="button" class="btn btn-primary font-weight-bold">
             <i class="ti ti-arrow-left"></i>
             Go back
         </button>
@@ -20,14 +20,14 @@
 </div>
 
 
-<div class="card col-md-11 ml-3">
+<div class="card ml-2">
     <div class="card-body">
+        {%if products%}
         <div class="text-center" id="status_msg"></div>
         <form action="{% url 'inventory:inventory_add' %}" method="post" id="inventory">
             {% csrf_token %}
             <div class="form-row">
                 <div class="form-group col-md-4">
-
                     <label for="product">
                         Product
                     </label>
@@ -36,7 +36,6 @@
                         <option value="{{product.id}}">{{ product.name }}</option>
                         {% endfor %}
                     </select>
-
 
                 </div>
                 <div class="form-group col-md-8">
@@ -51,6 +50,22 @@
             <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">Create Inventory</button>
 
         </form>
+        {%else%}
+        <div id="contact_admin">
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Oops!</h4>
+                <p>Looks like all your products have been added to the inventory.</p>
+                <hr>
+                <p class="mb-0">
+                    You can add new products and then track them in the inventory.
+                </p>
+                <a href="{% url 'products:products_add' %}" class="btn btn-success mt-3">
+                    <i class="ti ti-plus"></i>
+                    Add product
+                </a>
+            </div>
+        </div>
+        {%endif%}
     </div>
 </div>
 

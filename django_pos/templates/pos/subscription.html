@@ -2,7 +2,7 @@
 {%load static%}
 {%block title%}Renew Subscription{%endblock title%}
 {%block heading%}
-<h1>Renew Subscription</h1>
+Renew Subscription
 {%endblock heading%}
 {%block content%}
 <!--Oops looks like your subscription has ended-->
@@ -28,7 +28,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h3 style="color: black">Basic</h3>
+                    <h3 class="text-success">Basic</h3>
                 </div>
                 <div class="card-body">
                     <h4 class="card-title text-center"><strong id="basic">Kshs 1500</strong></h4>
@@ -58,7 +58,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h3 style="color: black">Standard</h3>
+                    <h3 class="text-success">Standard</h3>
                 </div>
                 <div class="card-body">
                     <h4 class="card-title text-center"><strong id="standard">Kshs 3500</strong></h4>
@@ -89,7 +89,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <h3 style="color: black">Premium</h3>
+                    <h3 class="text-success">Premium</h3>
                 </div>
                 <div class="card-body">
                     <h4 class="card-title text-center"><strong id="premium">Kshs 5000</strong></h4>
@@ -132,7 +132,12 @@
         <div class="col-md-12 mt-3 ml-2">
             <div class="alert alert-info" role="alert">
                 <h4 class="alert-heading">Contact us</h4>
-                <p>Believe there is an error with your subscription?, contact us.</p>
+                <p>Believe there is an error with your subscription?, contact us.
+
+                    <a href="tel:+254706076039" class="btn btn-success">
+                        <i class="ti ti-phone"></i>
+                    </a>
+                </p>
                 <hr>
                 <p class="mb-0">Contact us if you believe there is an error with your subscription.</p>
             </div>

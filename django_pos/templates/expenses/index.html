@@ -4,16 +4,16 @@
 {%block heading%}Expenses{%endblock%}
 {% block content %}
 
-<div class="mb-3 ml-3">
+<div class="mb-3 ml-2">
     <a>
-        <button type="button" class="btn btn-primary font-weight-bold" id="show_add_expense_modal">
+        <button type="button" class="btn btn-success font-weight-bold" id="show_add_expense_modal">
             <i class="ti ti-plus"></i>
             Add Expense
         </button>
     </a>
 
     <a href="{%url 'expenses:category'%}">
-        <button type="button" class="btn btn-success font-weight-bold">
+        <button type="button" class="btn btn-secondary font-weight-bold">
             <i class="ti ti-list"></i>
             Expense Categories
         </button>
@@ -21,7 +21,7 @@
 </div>
 
 
-<div class="card ml-3">
+<div class="card ml-2">
     <div class="card-body">
         <div id="alerts"></div>
         {% if expenses %}

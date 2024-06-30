@@ -17,8 +17,8 @@
 
 <div class="ml-2 mb-3">
     <a href="{% url 'sales:sales_list' %}">
-        <button type="button" class="btn btn-success font-weight-bold">
-            <i class="fas fa-long-arrow-alt-left mr-2"></i>
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="ti ti-arrow-left"></i>
             Go back
         </button>
     </a>
@@ -95,22 +95,21 @@
                         <div class="card-body">
 
                             <div class="form-group">
-                                <label>Search product</label>
+                                <label>Search products</label>
                                 <div class="input-group">
                                     <div class="form-outline">
-                                        <input type="search" id="form1" class="form-control" />
+                                        <input type="search" id="form1" class="form-control"
+                                            placeholder="Product Name" />
 
                                     </div>
-                                    <button type="button" class="btn btn-primary ml-2">
-                                        <i class="fas fa-search"></i>
-                                    </button>
+
                                 </div>
                             </div>
 
                             <div id="search_results"></div>
 
                             <button type="button" class="mb-4 btn btn-danger btn-sm deleteAll">
-                                Delete all products <i class="ml-1 fas fa-trash-alt fa-xs"></i>
+                                Delete all products <i class="ml-1 ti ti-trash"></i>
                             </button>
 
 
@@ -163,7 +162,7 @@
                 + "<td>" + cartArray[i].price + "</td>"
                 + "<td><input type='number' class='item-count' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "'></td>"
                 + "<td>" + cartArray[i].total + "</td>"
-                + "<td><button class='delete-item btn btn-danger btn-sm' data-name='" + cartArray[i].name + "'><i class='fa fa-trash-alt'></i></button></td>"
+                + "<td><button class='delete-item btn btn-danger btn-sm' data-name='" + cartArray[i].name + "'><i class='ti ti-trash'></i></button></td>"
                 + "</tr>";
         }
         var body = $('#table_products tbody');

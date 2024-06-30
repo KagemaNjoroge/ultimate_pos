@@ -1,16 +1,14 @@
 {% extends "pos/base.html" %}
 {% load static %}
-<!-- Page title  -->
-{% block title %}Sales{% endblock title %}
+{% block title %}
+Sales
+{% endblock title %}
+{% block heading %}
+Sales
+{% endblock heading %}
 
-
-<!-- Page Heading -->
-{% block heading %}Sales{% endblock heading %}
-
-<!-- Page content  -->
 {% block content %}
-
-<div class="ml-3 mb-3">
+<div class="ml-2 mb-3">
     <a href="{% url 'sales:sales_add' %}">
         <button type="button" class="btn btn-success font-weight-bold">
             <i class="ti ti-plus mr-2"></i>
@@ -19,23 +17,19 @@
     </a>
 </div>
 
-<!-- DataTable -->
-<div class="card shadow mb-12 ml-3">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Sales</h6>
-    </div>
+<div class="card shadow ml-2">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover table-responsive" id="dataTable" style="width: 100%;">
+            <table class="table table-bordered table-hover" id="dataTable" style="width: 100%;">
                 <thead>
                     <tr>
 
-                        <th style="width:15%">ID</th>
-                        <th style="width:20%">Date</th>
-                        <th style="width:20%">Customer</th>
-                        <th class="text-center" style="width:10%">Total</th>
-                        <th class="text-center" style="width:5%">Items</th>
-                        <th class="text-center" style="width:5%">Actions</th>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-center">Items</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -68,13 +62,7 @@
         </div>
     </div>
 </div>
-{% endblock content %}
-
-</script>
-
-<!--Datatables-->
 <script>
-    // Call the dataTables jQuery plugin
     $(document).ready(function () {
         let tblCategories = $('#dataTable').DataTable({
             dom: 'Bfrtip', // Buttons are draw at this element
@@ -171,3 +159,4 @@
         });
     });
 </script>
+{% endblock content %}

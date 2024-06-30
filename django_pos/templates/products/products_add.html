@@ -1,6 +1,5 @@
 {% extends "pos/base.html" %}
 {% block title %}Add product{% endblock title %}
-{% block stylesheets %}{% endblock stylesheets %}
 {% block heading %}Add product{% endblock heading %}
 {% block content %}
 <div class="ml-3 mb-3">
@@ -18,178 +17,102 @@
     </button>
   </a>
 </div>
-<div id="status" class="text-center">
 
-</div>
-<div class="mt-4 ml-3 tab-content">
-  <!-- Product tab -->
-  <div class="tab-pane fade show active" id="product" role="tabpanel" aria-labelledby="product-tab">
-    <div class="card col-md-11">
-      <div class="card-body">
-        <!-- Tabs for product, taxes, expiry, images-->
-        <ul class="nav nav-tabs mb-2" id="myTab" role="tablist">
 
-          <li class="nav-item">
-            <a class="nav-link active" id="product-tab" data-toggle="tab" href="#product" role="tab"
-              aria-controls="product" aria-selected="true">Product</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="taxes-tab" data-toggle="tab" href="#taxes" role="tab" aria-controls="taxes"
-              aria-selected="false">Taxes</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="expiry-tab" data-toggle="tab" href="#expiry" role="tab" aria-controls="expiry"
-              aria-selected="false">Expiry</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="images-tab" data-toggle="tab" href="#images" role="tab" aria-controls="images"
-              aria-selected="false">Images</a>
-          </li>
-        </ul>
-        <div class="alert alert-info" role="alert">
-          <i class="ti ti-info-circle mr-2"></i>
-          Fill in the details of the product you want to add.
+
+<div class="card ml-3">
+  <div class="card-body">
+
+    <div class="alert alert-info" role="alert">
+      <i class="ti ti-info-circle"></i>
+      Fill in the details of the product you want to add.
+    </div>
+
+    <form action="{% url 'products:products_add' %}" method="post" id="product_form">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="product_type">Product Type</label>
+          <select name="product_type" class="form-control" id="product_type" required>
+            <option value="Raw Material">Raw Material</option>
+            <option value="Finished Goods" selected>Finished Goods</option>
+            <option value="Service">Service</option>
+          </select>
         </div>
 
-        <form action="{% url 'products:products_add' %}" method="post" id="product_form">
-          {% csrf_token %}
-          <div class="form-row">
-            <div class="form-group col-md-12">
-              <label for="product_type">Product Type</label>
-              <select name="product_type" class="form-control" id="product_type" required>
-                <option value="Raw Material">Raw Material</option>
-                <option value="Finished Goods" selected>Finished Goods</option>
-                <option value="Service">Service</option>
-              </select>
-            </div>
-
-          </div>
-          <div class="form-row">
-            <div class="form-group col-md-8">
-
-
-              <label for="inputDescription">Name</label>
-              <input type="text" class="form-control" name="name" placeholder="Chicken Breasts..." required
-                id="inputDescription" />
-            </div>
-            <div class="form-group col-md-4">
-              <label for="state">State</label>
-              <select name="state" class="form-control" required id="state">
-                {% for status in product_status %}
-                <option value="{{status.0}}">{{status.1}}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group col-md-8">
-              <label for="inputDescriptions">Description</label>
-              <input type="text" name="description" class="form-control"
-                placeholder="Freshness Guaranteed Chicken Breast, 2.25 - 3.2 lb..." required id="inputDescriptions" />
-            </div>
-            <div class="form-group col-md-4">
-              <label for="category">Category</label>
-              <select name="category" class="form-control" required id="category">
-                <option value="" selected disabled hidden>
-                  Select the category
-                </option>
-                {% for category in categories %}
-                <option value="{{category.id}}">{{category.name}}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group col-md-8">
-              <label for="inputPrice">Price</label>
-              <input type="number" name="price" step="any" class="form-control" placeholder="10.99" required
-                id="inputPrice" />
-            </div>
-            <div class="form-check form- ml-3 mt-4 pt-1">
-              <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                name="track_inventory" />
-              <label class="form-check-label" for="flexSwitchCheckChecked">Track in Inventory</label>
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-success font-weight-bold" id="submit">
-            Create product
-          </button>
-        </form>
       </div>
-    </div>
-  </div>
+      <div class="form-row">
+        <div class="form-group col-md-8">
 
-  <!-- Taxes tab -->
-  <div class="tab-pane fade" id="taxes" role="tabpanel" aria-labelledby="taxes-tab">
-    <div class="card col-md-8">
-      <div class="card-body">
-        <form action="" method="post">
-          {% csrf_token %}
-          <div class="form-row">
-            <div class="form-group">
-              <label for="tax">Tax</label>
-              <input type="text" class="form-control" id="tax" name="tax" placeholder="VAT, GST, PST..." required />
 
-              <label for="inputPercentage">Percentage</label>
-              <input type="number" name="percentage" step="any" class="form-control" id="inputPercentage"
-                placeholder="10.99" required />
-
-              <button type="submit" class="btn btn-success font-weight-bold">
-                Add tax
-              </button>
-            </div>
-          </div>
-        </form>
+          <label for="inputDescription">Name</label>
+          <input type="text" class="form-control" name="name" placeholder="Chicken Breasts..." required
+            id="inputDescription" />
+        </div>
+        <div class="form-group col-md-4">
+          <label for="state">State</label>
+          <select name="state" class="form-control" required id="state">
+            {% for status in product_status %}
+            <option value="{{status.0}}">{{status.1}}</option>
+            {% endfor %}
+          </select>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Expiry tab -->
-  <div class="tab-pane fade" id="expiry" role="tabpanel" aria-labelledby="expiry-tab">
-    <div class="card col-md-8">
-      <div class="card-body">
-        <form action="" method="post">
-          {% csrf_token %}
-          <div class="form-row">
-            <div class="form-group col-md-8">
-              <label for="inputExpiry">Expiry</label>
-              <input type="date" class="form-control" name="expiry" required id="inputExpiry" />
-
-              <button type="submit" class="btn btn-success font-weight-bold">
-                Add expiry
-              </button>
-            </div>
-          </div>
-        </form>
+      <div class="form-row">
+        <div class="form-group col-md-8">
+          <label for="inputDescriptions">Description</label>
+          <input type="text" name="description" class="form-control"
+            placeholder="Freshness Guaranteed Chicken Breast, 2.25 - 3.2 lb..." required id="inputDescriptions" />
+        </div>
+        <div class="form-group col-md-4">
+          <label for="category">Category</label>
+          <select name="category" class="form-control" required id="category">
+            <option value="" selected disabled hidden>
+              Select the category
+            </option>
+            {% for category in categories %}
+            <option value="{{category.id}}">{{category.name}}</option>
+            {% endfor %}
+          </select>
+        </div>
       </div>
-    </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-8">
+          <label for="inputPrice">Price</label>
+          <input type="number" name="price" step="any" class="form-control" placeholder="10.99" required
+            id="inputPrice" />
+        </div>
+        <div class="form-check form- ml-3 mt-4 pt-1">
+          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+            name="track_inventory" />
+          <label class="form-check-label" for="flexSwitchCheckChecked">Track in Inventory</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-success font-weight-bold" id="submit">
+        Create product
+      </button>
+    </form>
   </div>
-
-
-  <!-- Images tab -->
-  <div class="tab-pane fade" id="images" role="tabpanel" aria-labelledby="images-tab">
-    <div class="card col-md-8">
-      <div class="card-body">
-        <form action="" method="post">
-          {% csrf_token %}
-          <div class="form-row">
-            <div class="form-group col-md-8">
-              <label for="inputImage">Image</label>
-              <input type="file" class="form-control" name="image" required />
-
-              <button type="submit" class="btn btn-success font-weight-bold">
-                Add image
-              </button>
-            </div>
-          </div>
-        </form>
+</div>
+<div class="error_toast mt-3" style="display: none;">
+  <div class="toast-container position-fixed bottom-0 start-50 translate-middle end-0 p-3 ">
+    <div id="liveToast" class="toast" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <i class="ti ti-exclamation-mark"></i>
+        <strong class="me-auto">Ultimate POS</strong>
+        <small>Now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body" id="toast_body">
+        Hello, world! This is a toast message.
       </div>
     </div>
   </div>
 </div>
+
 <script>
 
   $(document).ready(function () {
@@ -207,29 +130,47 @@
         data: formData,
         success: function (response) {
           if (response.status == 'success') {
-            // show success message, clear form
-            $('#status').html('<div class="alert alert-success" role="alert">' + response.message + '</div>');
+
             $('#product_form').trigger('reset');
+            $('.error_toast').css('display', 'block')
+            // change toast body
+            $('#toast_body').html(response.message);
+            var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
+              autohide: true,
+              delay: 5000,
+            });
+            toast.show();
 
           }
           else {
+            $('.error_toast').css('display', 'block')
+
             // show error message
-            $('#status').html('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
+            $('#toast_body').html(response.message);
+            var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
+              autohide: true,
+              delay: 5000,
+            });
+            toast.show();
+
           }
 
         },
         error: function (error) {
-          // show error message
-          $('#status').html('<div class="alert alert-danger" role="alert">An error occurred. Please try again later.</div>');
+          $('.error_toast').css('display', 'block')
+          // change toast body
+          $('#toast_body').html('<i class="ti ti-exclamation-mark"></i> An error occurred. Try again');
+          var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
+            autohide: true,
+            delay: 5000,
+          });
+          toast.show();
         },
         cache: false,
         contentType: false,
         processData: false
       }).done(function () {
-        // clear the status message after 5 seconds
-        setTimeout(function () {
-          $('#status').html('');
-        }, 5000);
+
         // remove spinner
         $('#submit').html('Create product');
       });

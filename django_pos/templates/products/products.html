@@ -5,27 +5,23 @@
 {% endblock stylesheets %}
 {% block heading %}Products{% endblock heading %}
 {% block content %}
-<div class="ml-3 mb-3">
-    <a href="{% url 'products:categories_list' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-list"></i>
-            Product Categories
-        </button>
-    </a>
+<div class="ml-2 mb-3">
     <a href="{% url 'products:products_add' %}">
         <button type="button" class="btn btn-success font-weight-bold">
             <i class="ti ti-plus"></i>
             Create new product
         </button>
     </a>
+    <a href="{% url 'products:categories_list' %}">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="ti ti-list"></i>
+            Product Categories
+        </button>
+    </a>
 </div>
 
 
-<!-- DataTable -->
-<div class="card shadow mb-12 ml-3">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Products</h6>
-    </div>
+<div class="card shadow ml-2">
     <div class="card-body justify-content-center">
         <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" style="width: 100%;">

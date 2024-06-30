@@ -6,9 +6,6 @@
 {% block heading %}Customers{% endblock heading %}
 {% block content %}
 
-<link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
-
-<!--Create new customer-->
 <div class="ml-2 mb-3">
     <a href="{% url 'customers:customers_add' %}">
         <button type="button" class="btn btn-success font-weight-bold">
@@ -19,19 +16,10 @@
 </div>
 
 
-<!-- DataTable -->
-<div class="card shadow mb-12 ml-2">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Customers</h6>
-    </div>
+<div class="card shadow ml-2">
     <div class="card-body">
-        <!--Outcome after delete operation-->
-        <div>
-            <div class="text-center" id="result">
-
-            </div>
+        <div class="text-center" id="result">
         </div>
-
         <div class="table-responsive">
             <table class="table table-bordered table-hover" id="dataTable" style="width: 100%;">
                 <thead>
