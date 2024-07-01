@@ -24,12 +24,12 @@ Sales
                 <thead>
                     <tr>
 
-                        <th>ID</th>
-                        <th>Date</th>
+                        <th>#</th>
                         <th>Customer</th>
-                        <th class="text-center">Total</th>
-                        <th class="text-center">Items</th>
-                        <th class="text-center">Actions</th>
+                        <th>Total</th>
+                        <th>Items</th>
+                        <th>Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,12 +41,12 @@ Sales
                                 {{s.sale.id}}
                             </a>
                         </td>
-                        <td>{{s.sale.date_added}}</td>
-                        <td>{{s.sale.customer.get_full_name}}</td>
-                        <td class="text-right">{{s.get_grand_total}}</td>
-                        <td class="text-center">{{s.get_products_count}}</td>
-                        <td class="text-center">
 
+                        <td>{{s.sale.customer.get_full_name}}</td>
+                        <td>{{s.get_grand_total}}</td>
+                        <td>{{s.get_products_count}}</td>
+                        <td>{{s.sale.date_added}}</td>
+                        <td>
                             <!--Print receipt-->
                             <a href="{% url 'sales:sales_receipt_pdf' s.sale.id %}" class="text-decoration-none">
                                 <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
@@ -65,97 +65,7 @@ Sales
 <script>
     $(document).ready(function () {
         let tblCategories = $('#dataTable').DataTable({
-            dom: 'Bfrtip', // Buttons are draw at this element
-            buttons: [
-                {
-                    extend: 'print',
-                    text: 'Print <i class="fas fa-file ml-2"></i>',
-                    titleAttr: 'Print',
-                    className: 'btn btn-info',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5]
-                    }
-                },
-                {
-                    extend: 'excelHtml5',
-                    text: 'Download Excel <i class="fas fa-file-excel ml-2"></i>',
-                    titleAttr: 'Download Excel',
-                    className: 'btn btn-success ml-2',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5]
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    text: 'Download PDF <i class="fas fa-file-pdf ml-2"></i>',
-                    titleAttr: 'Download PDF',
-                    className: 'btn btn-danger ml-2',
-                    download: 'open',
-                    orientation: 'vertical',
-                    pageSize: 'A4',
-                    title: '*',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5]
-                    },
-                    customize: function (doc) {
-                        doc.styles = {
-                            header: {
-                                fontSize: 18,
-                                bold: true,
-                                alignment: 'center'
-                            },
-                            subheader: {
-                                fontSize: 13,
-                                bold: true
-                            },
-                            quote: {
-                                italics: true
-                            },
-                            small: {
-                                fontSize: 8
-                            },
-                            tableHeader: {
-                                bold: true,
-                                fontSize: 11,
-                                color: 'white',
-                                fillColor: '#2d4154',
-                                alignment: 'center'
-                            }
-                        };
-                        doc.content[1].table.widths = ['10%', '10%', '30%', '20%', '20%', '10%'];
-                        doc.content[1].margin = [0, 35, 0, 0];
-                        doc.content[1].layout = {};
-                        doc['footer'] = (function (page, pages) {
-                            return {
-                                columns: [
-                                    {
-                                        alignment: 'left',
-                                        text: ['Creation date: ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
-                                    },
-                                    {
-                                        alignment: 'right',
-                                        text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
-                                    }
-                                ],
-                                margin: 20
-                            }
-                        });
 
-                    }
-                }
-            ],
-            deferRender: true,
-            columnDefs: [
-                {
-                    targets: [0],
-                    visible: false,
-                    searchable: false,
-                },
-                {
-                    targets: [-1], // column index (start from 0)
-                    orderable: false, // set order able false for selected columns
-                }
-            ],
         });
     });
 </script>
