@@ -10,7 +10,7 @@
 
 
 {% block content %}
-<div class="ml-4">
+<div class="ml-2 mb-3">
     <a href="{% url 'sales:sales_list' %}">
         <button type="button" class="btn btn-success font-weight-bold">
             <i class="ti ti-arrow-left"></i>
@@ -27,7 +27,7 @@
         Share
     </button>
     <a href="{%url 'sales:sales_receipt_pdf' sale.id %}">
-        <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
+        <button type="button" class="btn btn-secondary font-weight-bold" id="share_btn">
             <i class="ti ti-printer"></i>
             Print
         </button>
@@ -40,8 +40,6 @@
     </a>
 </div>
 
-<!--Go back-->
-
 
 <!-- Modal -->
 <div class="modal fade" id="myModel" tabindex="-1" aria-labelledby="myModelLabel" aria-hidden="true">
@@ -49,7 +47,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <p class="modal-title" id="myModelLabel">
-                    <i class="fas fa-share-alt"></i>
+                    <i class="ti share"></i>
                     Share sale details
                 </p>
 
@@ -61,30 +59,30 @@
                         <div class="row">
                             <a href="#"
                                 class="btn btn-primary d-flex align-items-center justify-content-center col-sm mx-2">
-                                <span class="fab fa-facebook-f"></span>
+                                <span class="ti ti-brand-facebook"></span>
                             </a>
                             <a href="#"
                                 class="btn btn-dark d-flex align-items-center justify-content-center col-sm mx-2">
-                                <span class="fab fa-x"></span>
+                                <span class="ti ti-brand-twitter"></span>
                             </a>
                             <a href="#"
                                 class="btn btn-success d-flex align-items-center justify-content-center col-sm mx-2">
-                                <span class="fab fa-whatsapp"></span>
+                                <span class="ti ti-brand-whatsapp"></span>
                             </a>
                             <a href="#"
                                 class="btn btn-primary d-flex align-items-center justify-content-center col-sm mx-2">
-                                <span class="fab fa-telegram-plane"></span>
+                                <span class="ti ti-brand-telegram"></span>
                             </a>
                         </div>
                     </div>
                 </div>
                 <p>Or copy link</p>
                 <div class="field d-flex align-items-center justify-content-between">
-                    <span class="fas fa-link text-center"></span>
+                    <span class="ti ti-link text-center"></span>
                     <input type="text" value="some.com/share"
                         class="form-control d-flex align-items-center justify-content-center mr-2 ml-2" readonly>
                     <button class="btn btn-primary font-weight-bold d-flex align-items-center justify-content-center">
-                        <span class="fas fa-copy"></span>
+                        <span class="ti ti-clipboard-copy"></span>
                         <span>Copy</span>
                     </button>
                 </div>
@@ -102,111 +100,107 @@
 
 
 
-<!--Sale products and details-->
-<form action="{% url 'sales:sales_add' %}" class="saleForm ml-2" method="post">
-    <div class="row mt-3 ml-3 mb-5">
-        <div class="card col-md-12">
-            <div class="card-body ml-0">
-                <div class="row">
-                    <!--Left column-->
-                    <div class="col-md-9 pl-0">
-                        <div class="card card-secondary">
-                            <div class="card-header">Sale products</div>
 
-                            <div class="card-body">
-                                <!--Products table-->
-                                <div class="card-body table-responsive p-0">
-                                    <table class="table table-hover text-nowrap" id="table_products">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Name</th>
-                                                <th>Price</th>
-                                                <th>Quantity</th>
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for detail in details.items.all %}
-                                            <tr>
-                                                <td>{{forloop.counter}}</td>
-                                                <td>{{detail.product.name}}</td>
-                                                <td>{{detail.product.price}}</td>
-                                                <td class="text-center">{{detail.quantity}}</td>
-                                                <td>{{detail.total}}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!--End Products table-->
-                            </div>
+<div class="card ml-2">
+    <div class="card-body">
+        <div class="row">
+            <!--Left column-->
+            <div class="col-md-9 pl-0">
+                <div class="card card-secondary">
+                    <div class="card-header">Sale products</div>
+
+                    <div class="card-body">
+                        <!--Products table-->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap" id="table_products">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detail in details.items.all %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{detail.product.name}}</td>
+                                        <td>{{detail.product.price}}</td>
+                                        <td class="text-center">{{detail.quantity}}</td>
+                                        <td>{{detail.total}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
+                        <!--End Products table-->
                     </div>
-                    <!--End Left column-->
-
-                    <!--Righ column-->
-                    <div class="col-md-3 pr-0">
-                        <div class="card card-secondary">
-                            <div class="card-header">Sale details</div>
-                            <div class="card-body">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="searchbox_customers">Customer</label>
-                                    <select name="customer" class="form-control" id="searchbox_customers" disabled
-                                        readonly>
-                                        <option value="{{sale.customer.id}}">{{sale.customer.get_full_name}}</option>
-                                    </select>
-                                    <div class="form-group mt-4">
-                                        <label for="subtotal">Subtotal</label>
-                                        <div class="input-group">
-                                            <input name="sub_total" class="form-control" value="{{sale.sub_total}}"
-                                                readonly id="subtotal">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="tax_inclusive">Tax Inclusive (%)</label>
-                                        <div class="input-group">
-                                            <input name="tax_percentage" class="form-control"
-                                                value="{{sale.tax_percentage}}" readonly id="tax_inclusive">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="tax">Tax Amount</label>
-                                        <div class="input-group">
-                                            <input name="tax_amount" class="form-control" value="{{sale.tax_amount}}"
-                                                readonly id="tax">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="grand_total">Grand Total</label>
-                                        <div class="input-group">
-                                            <input name="grand_total" class="form-control" value="{{sale.grand_total}}"
-                                                readonly id="grand_total">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="amount_paid">Amount paid</label>
-                                        <div class="input-group">
-                                            <input name="amount_payed" class="form-control"
-                                                value="{{sale.amount_payed}}" readonly id="amount_paid">
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <!--End card-body-->
-                            </div>
-                            <!--End Right column-->
-                        </div>
-                        <!--End row-->
-                    </div>
-                    <!--End card-body-->
                 </div>
-
             </div>
+            <!--End Left column-->
+
+            <!--Righ column-->
+            <div class="col-md-3 pr-0">
+                <div class="card card-secondary">
+                    <div class="card-header">Sale details</div>
+                    <div class="card-body">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="searchbox_customers">Customer</label>
+                            <select name="customer" class="form-control" id="searchbox_customers" disabled readonly>
+                                <option value="{{sale.customer.id}}">{{sale.customer.get_full_name}}</option>
+                            </select>
+                            <div class="form-group mt-4">
+                                <label for="subtotal">Subtotal</label>
+                                <div class="input-group">
+                                    <input name="sub_total" class="form-control" value="{{sale.sub_total}}" readonly
+                                        id="subtotal">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tax_inclusive">Tax Inclusive (%)</label>
+                                <div class="input-group">
+                                    <input name="tax_percentage" class="form-control" value="{{sale.tax_percentage}}"
+                                        readonly id="tax_inclusive">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tax">Tax Amount</label>
+                                <div class="input-group">
+                                    <input name="tax_amount" class="form-control" value="{{sale.tax_amount}}" readonly
+                                        id="tax">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="grand_total">Grand Total</label>
+                                <div class="input-group">
+                                    <input name="grand_total" class="form-control" value="{{sale.grand_total}}" readonly
+                                        id="grand_total">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="amount_paid">Amount paid</label>
+                                <div class="input-group">
+                                    <input name="amount_payed" class="form-control" value="{{sale.amount_payed}}"
+                                        readonly id="amount_paid">
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--End card-body-->
+                    </div>
+                    <!--End Right column-->
+                </div>
+                <!--End row-->
+            </div>
+            <!--End card-body-->
         </div>
+
     </div>
-</form>
+</div>
+
 <script>
 
 
