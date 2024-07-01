@@ -1,13 +1,13 @@
 {% extends "pos/base.html" %} {% load static %}
-{% block title %}Inventory{% endblock title %}
-{% block heading %}Inventory{%endblock heading %}
+{% block title %}Stock{% endblock title %}
+{% block heading %}Stock{%endblock heading %}
 {% block content %}
 
 <div class="ml-2 mb-3">
     <a href="{% url 'inventory:inventory_add' %}">
         <button type="button" class="btn btn-success font-weight-bold">
             <i class="ti ti-plus"></i>
-            Add Inventory
+            Add Stock
         </button>
     </a>
     <a href="{% url 'inventory:inventory_add' %}">
@@ -25,7 +25,7 @@
             <table class="table table-hover table-bordered table-striped" id="dataTable">
                 <thead>
                     <tr>
-                        <th>Inventory ID</th>
+                        <th>Stock ID</th>
                         <th>Product</th>
                         <th>Quantity</th>
                         <th>Actions</th>
@@ -41,13 +41,13 @@
                             <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}"
                                 class="text-decoration-none">
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
-                                    title="Update Inventory">
+                                    title="Update Stock">
                                     <i class="ti ti-pencil"></i>
                                 </button>
                             </a>
                             <a class="text-decoration-none">
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
-                                    title="Delete Inventory">
+                                    title="Delete Stock">
                                     <i class="ti ti-trash"></i>
                                 </button>
                             </a>
