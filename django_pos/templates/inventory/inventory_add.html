@@ -3,8 +3,6 @@
 
 {% block title %}Add Inventory{% endblock title %}
 
-{% block stylesheets %}{% endblock stylesheets %}
-
 {% block heading %}Add Inventory{% endblock heading %}
 
 {% block content %}
@@ -47,17 +45,17 @@
 
 
 
-            <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">Create Inventory</button>
+            <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">Create Stock</button>
 
         </form>
         {%else%}
         <div id="contact_admin">
             <div class="alert alert-danger" role="alert">
                 <h4 class="alert-heading">Oops!</h4>
-                <p>Looks like all your products have been added to the inventory.</p>
+                <p>Looks like all your products have been added to the stock sheet.</p>
                 <hr>
                 <p class="mb-0">
-                    You can add new products and then track them in the inventory.
+                    You can add new products and then track them in the stock sheet.
                 </p>
                 <a href="{% url 'products:products_add' %}" class="btn btn-success mt-3">
                     <i class="ti ti-plus"></i>
@@ -110,7 +108,7 @@
                 success: function (response) {
                     $('#status_msg').html(
                         '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-                        '<strong>Success!</strong> Inventory added successfully' +
+                        '<strong>Success!</strong> Stock added successfully' +
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                         '<span aria-hidden="true">&times;</span>' +
                         '</button>' +
