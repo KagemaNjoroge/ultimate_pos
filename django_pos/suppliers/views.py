@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Supplier
+from company.models import Branch
 
 
 def index(request):
@@ -8,7 +9,7 @@ def index(request):
 
 
 def add_supllier_template(request):
+    branches = Branch.objects.all()
     return render(
-        request,
-        "suppliers/add_supplier.html",
+        request, "suppliers/add_supplier.html", context={"branches": branches}
     )
