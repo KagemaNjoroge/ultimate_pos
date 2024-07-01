@@ -19,6 +19,7 @@ class Purchase(models.Model):
     branch = models.ForeignKey(
         to=Branch, blank=True, null=True, on_delete=models.CASCADE
     )
+    quantity = models.FloatField(default=1.0)
 
     def __str__(self) -> str:
         return str(self.id)
