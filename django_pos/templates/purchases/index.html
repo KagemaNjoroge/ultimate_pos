@@ -7,4 +7,62 @@ Purchases
 Purchases
 {%endblock%}
 {% block content %}
+<div class="ml-2 mb-3">
+    <a href="{% url 'purchases:add' %}">
+        <button type="button" class="btn btn-success font-weight-bold">
+            <i class="ti ti-plus"></i>
+            New Purchase Order
+        </button>
+    </a>
+</div>
+
+<div class="card ml-2">
+    <div class="card-body">
+        {%if purchases%}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Supplier</th>
+                        <th>Date</th>
+                        <th>Status</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in purchases %}
+                    <tr>
+                        <td>{{purchase.id}}</td>
+                        <td><a href="{%url 'purchases:purchase_details' purchase.id%}">
+                                {{purchase.product}}
+                            </a></td>
+                        <td>{{purchase.supplier}}</td>
+                        <td>{{purchase.date_created}}</td>
+                        <td>{{purchase.status}}</td>
+
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {%else%}
+        <div class="alert alert-info">
+            No purchases found
+            <br>
+            <a href="{% url 'purchases:add' %}" class="mt-2 btn btn-success">
+                <i class="ti ti-plus"></i>
+                New purchase
+            </a>
+        </div>
+        {%endif%}
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        let tblCategories = $('#dataTable').DataTable()
+    })
+</script>
 {%endblock content%}
