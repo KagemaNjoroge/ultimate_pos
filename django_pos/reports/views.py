@@ -8,8 +8,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-
-
 @login_required(login_url="/users/login/")
 @check_subscription
 def index(request: HttpRequest) -> HttpResponse:
@@ -91,8 +89,8 @@ def sales_this_week(request) -> Response:
 def best_selling_product(request) -> Response:
     sales = Sale.objects.filter(
         date_added__range=[
-            datetime.now().replace(day=1),
-            datetime.now().replace(day=30),
+            datetime.now() - timedelta(days=28),
+            datetime.now(),
         ]
     )
     tops = {}
@@ -106,8 +104,7 @@ def best_selling_product(request) -> Response:
                 tops[z.product.name] += z.quantity
             else:
                 tops[z.product.name] = z.quantity
-        # get the top selling product
-    # product with the highest quantity
+
     tops = sorted(tops.items(), key=lambda x: x[1], reverse=True)[0]
 
     return Response(
