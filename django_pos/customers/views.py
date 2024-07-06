@@ -10,13 +10,11 @@ from rest_framework.response import Response
 from .serializers import CustomerSerializer
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
-# TODO: Remove duplicate code
-
 
 @login_required(login_url="/users/login/")
 @check_subscription
 def customers_list_view(request: HttpRequest) -> HttpResponse:
-    context = {"active_icon": "customers", "customers": Customer.objects.all()}
+    context = {"customers": Customer.objects.all()}
     return render(request, "customers/customers.html", context=context)
 
 
@@ -25,9 +23,6 @@ def customers_list_view(request: HttpRequest) -> HttpResponse:
 @api_view(["GET", "POST"])
 @renderer_classes([TemplateHTMLRenderer, JSONRenderer])
 def customers_add_view(request) -> Response:
-    context = {
-        "active_icon": "customers",
-    }
 
     if request.method == "POST":
         serializer = CustomerSerializer(data=request.data)
@@ -45,7 +40,6 @@ def customers_add_view(request) -> Response:
             return render(
                 request,
                 template_name="customers/customers_add.html",
-                context=context,
                 status=200,
             )
         else:
@@ -67,7 +61,6 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
         customer = get_object_or_404(Customer, id=customer_id)
 
         context = {
-            "active_icon": "customers",
             "customer": customer,
         }
         return render(
@@ -158,7 +151,7 @@ def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
     # TODO: Add customers most purchased product
 
     context = {
-        "active_icon": "customers",
+     
         "customer": customer,
         "sales": sales,
         "purchases_this_month": purchases_this_month.count(),
