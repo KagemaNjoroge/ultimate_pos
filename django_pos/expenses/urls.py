@@ -1,4 +1,3 @@
-from django.db import router
 from django.urls import path
 from .views import expense_categories, expenses
 
