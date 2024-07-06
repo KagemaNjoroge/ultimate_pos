@@ -1,0 +1,29 @@
+{%extends 'pos/base.html'%}
+{% load static %}
+{% block title %}Create new expense{% endblock %}
+{%block heading%}New Expense{%endblock%}
+{% block content %}
+<div class="ml-2 mb-3">
+    <a href="{%url 'expenses:index'%}">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="ti ti-arrow-left"></i>
+            Back
+        </button>
+    </a>
+
+    <a>
+        <button type="button" class="btn btn-success font-weight-bold" id="add_expense">
+            <i class="ti ti-plus"></i>
+            Add Expense Category
+        </button>
+    </a>
+</div>
+
+<div class="card ml-2">
+    <div class="card-body">
+
+
+    </div>
+</div>
+
+{%endblock content%}
