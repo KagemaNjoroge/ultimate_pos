@@ -21,9 +21,89 @@
 
 <div class="card ml-2">
     <div class="card-body">
+        <form action="/api/expenses/" id="expense_form">
+            <!--expense_name, expense_description, category, amount-->
+            {%csrf_token%}
+            <div class="form-group">
+                <label for="expense_name">Expense Name</label>
+                <input type="text" class="form-control" id="expense_name" name="expense_name" required>
+            </div>
+            <div class="form-group">
+                <label for="expense_description">Expense Description</label>
+                <textarea class="form-control" id="expense_description" name="expense_description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select class="form-control" id="category" name="category" required>
+                    <option value="">Select Category</option>
+                    {%for category in categories%}
+                    <option value="{{category.id}}">{{category.category_name}}</option>
+                    {%endfor%}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" class="form-control" id="amount" name="amount" required>
+            </div>
+            <button type="submit" class="btn btn-success mt-3" id="save">Save</button>
+
+        </form>
 
 
     </div>
 </div>
+<div class="error_toast mt-3" style="display: none;">
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle end-0 p-3 ">
+        <div id="liveToast" class="toast" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="ti ti-exclamation-mark"></i>
+                <strong class="me-auto">Ultimate POS</strong>
+                <small>Now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast_body">
+                Hello, world! This is a toast message.
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#expense_form").submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            $('#save').html('<i class="fa fa-spinner fa-spin"></i> Saving...').attr('disabled', true);
+            $.ajax({
+                type: "POST",
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function (response) {
+                    // reset form
+                    form[0].reset();
+                    $('#save').html('Save').attr('disabled', false);
 
+                    $('.error_toast').css('display', 'block')
+                    $("#toast_body").html("Expense created successfully");
+                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
+                        autohide: true,
+                        delay: 5000,
+                    });
+                    toast.show();
+                },
+                error: function (error) {
+
+                    $('#save').html('Save').attr('disabled', false);
+                    $('.error_toast').css('display', 'block')
+                    $("#toast_body").html("An error occurred");
+                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
+                        autohide: true,
+                        delay: 5000,
+                    });
+                    toast.show();
+                }
+            });
+        });
+    });
+
+</script>
 {%endblock content%}
