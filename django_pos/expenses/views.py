@@ -53,3 +53,26 @@ def expense_categories(request: HttpRequest) -> HttpResponse:
         "expenses/expense_category.html",
         context={"categories": expense_categs},
     )
+
+
+@login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
+def edit_expense(request: HttpRequest, id: int) -> HttpResponse:
+    expense = get_object_or_404(Expense, pk=id)
+    categories = ExpenseCategory.objects.all()
+    return render(
+        request,
+        "expenses/edit_expense.html",
+        context={"expense": expense, "categories": categories},
+    )
+
+
+@login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
+def edit_category(request: HttpRequest, id: int) -> HttpResponse:
+    category = get_object_or_404(ExpenseCategory, pk=id)
+    return render(
+        request,
+        "expenses/edit_category.html",
+        context={"category": category},
+    )
