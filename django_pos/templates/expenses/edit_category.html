@@ -1,0 +1,89 @@
+{%extends 'pos/base.html'%}
+{% load static %}
+{% block title %}{{category.category_name}}{% endblock %}
+{%block heading%}{{category.category_name}}{%endblock%}
+{% block content %}
+<div class="ml-2 mb-3">
+    <a href="{%url 'expenses:index'%}">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="ti ti-arrow-left"></i>
+            Back
+        </button>
+    </a>
+    <a href="{%url 'expenses:add_expense_category'%}">
+        <button type="button" class="btn btn-success font-weight-bold" id="add_expense">
+            <i class="ti ti-plus"></i>
+            Add Expense Category
+        </button>
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form action="/api/expense-category/{{category.id}}/" id="category_form">
+            <!--category_name, category_description, is_recurring-->
+            {%csrf_token%}
+            <div id="alerts" class="text-center"></div>
+            <div class="form-group mt-3">
+                <label for="category_name">Category Name</label>
+                <input type="text" class="form-control" id="category_name" name="category_name"
+                    value="{{category.category_name}}" required>
+            </div>
+            <div class="form-group">
+                <label for="category_description">Category Description</label>
+                <textarea class="form-control" id="category_description" name="category_description"
+                    required>{{category.category_description}}</textarea>
+            </div>
+            <div class="form-check form-switch ml-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="is_recurring" name="is_recurring"
+                    {% if category.is_recurring %} checked {% endif %}>
+                <label class="form-check-label" for="is_recurring">
+                    Is Recurring?
+                </label>
+            </div>
+            <button type="submit" class="btn btn-success mt-3" id="save">Save</button>
+        </form>
+
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#category_form').submit(function (e) {
+            e.preventDefault();
+            $('#save').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...')
+            var form = $(this);
+            var url = form.attr('action');
+            var data = form.serialize();
+            $.ajax({
+                type: 'PATCH',
+                headers: {
+                    'X-CSRFToken': '{{csrf_token}}'
+                },
+                url: url,
+                data: data,
+                success: function (response) {
+                    $('#alerts').html(
+                        '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                        '<strong>Success!</strong> Category updated successfully' +
+                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                        '</div>'
+                    );
+                    setTimeout(() => {
+                        window.location.href = "{% url 'expenses:category' %}";
+                    }, 1000);
+                },
+                error: function (response) {
+                    $('#save').html('Save');
+                    $('#alerts').html(
+                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                        '<strong>Error!</strong> Something went wrong' +
+                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                        '</div>'
+                    );
+                }
+            });
+        });
+    });
+</script>
+{%endblock content%}
