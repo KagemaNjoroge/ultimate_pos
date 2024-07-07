@@ -51,21 +51,17 @@
                         </td>
 
                         <td>
-                            <a class="btn btn-primary btn-sm edit" data-id="{{category.id}}"
-                                data-category_name="{{category.category_name}}"
-                                data-category_description="{{category.category_description}}"
-                                {%if category.is_recurring%} data-is_recurring="1" {%else%} data-is_recurring="0"
-                                {%endif%}>
-                                <i class="ti ti-pencil" data-id="{{category.id}}"
-                                    data-category_name="{{category.category_name}}"
-                                    data-category_description="{{category.category_description}}"
-                                    {%if category.is_recurring%} data-is_recurring="1" {%else%} data-is_recurring="0"
-                                    {%endif%}></i>
-                            </a>
-                            <a class="btn btn-danger btn-sm delete" data-id="{{category.id}}"
-                                data-category_name="{{category.category_name}}">
-                                <i class="ti ti-trash"></i>
-                            </a>
+                            <div class="btn-group">
+                                <a class="btn btn-primary btn-sm edit"
+                                    href="{%url 'expenses:edit_category' category.id%}">
+                                    <i class="ti ti-pencil"></i>
+                                </a>
+                                <a class="btn btn-danger btn-sm delete" data-id="{{category.id}}"
+                                    onclick="deleteCategory('{{category.id}}')"
+                                    data-category_name="{{category.category_name}}">
+                                    <i class="ti ti-trash"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
@@ -82,213 +78,37 @@
     </div>
 </div>
 <script>
-    $(document).ready(function () {
-        $('#delete_category').click(function () {
-            var id = $('#category_id_').val();
-            // loading spinner
-            $('#delete_category').html('<i class="fa fa-spinner fa-spin"></i> Deleting...');
-            $.ajax({
-                type: 'DELETE',
-                url: `?id=${id}`,
-                headers: {
-                    'X-CSRFToken': '{{csrf_token}}'
-                },
-                success: function (response) {
-                    if (response.status == "success") {
-                        $('#alerts').html(
-                            '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-                            '<strong>Success!</strong> Expense category deleted successfully.' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true">&times;</span>' +
-                            '</button>' +
-                            '</div>'
-                        );
-                        // 2 seconds after
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2000);
-                    } else {
-                        $('#alerts').html(
-                            '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                            '<strong>Error!</strong> ' + response.error +
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true">&times;</span>' +
-                            '</button>' +
-                            '</div>'
-                        );
-                    }
-                    $('#deleteExpenseCategoryModal').modal('hide');
-                },
-                error: function (response) {
-                    $('#alerts').html(
-                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                        '<strong>Error!</strong> ' + response +
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                        '<span aria-hidden="true">&times;</span>' +
-                        '</button>' +
-                        '</div>'
-                    );
-                }
-            });
-        });
-        $('#dataTable').DataTable();
-        $('.close_edit').click(function () {
-            $('#editExpenseCategoryModal').modal('hide');
-        });
-        $('#edit_expense_form').submit(function (e) {
-            e.preventDefault();
-            $('#save_category_').html('<i class="fa fa-spinner fa-spin"></i> Updating...');
-            var category_name = $('#_category_name').val();
-            var category_description = $('#_category_description').val();
-            var is_recurring = $('#_is_recurring').val();
-            var id = $('#_category_id').val();
-            var data = {
-                'category_name': category_name,
-                'category_description': category_description,
-                'is_recurring': is_recurring,
-                'id': id
-            };
-            $.ajax({
-                type: 'PUT',
-                url: `?id=${id}`,
-                headers: {
-                    'X-CSRFToken': '{{csrf_token}}'
-                },
-                data: JSON.stringify(data),
-                contentType: 'application/json',
-                success: function (response) {
-                    if (response.status == "success") {
-                        $('#alerts').html(
-                            '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-                            '<strong>Success!</strong> ' + response.category.category_name + ' updated successfully.' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true">&times;</span>' +
-                            '</button>' +
-                            '</div>'
-                        );
-                        // 2 seconds after
-                        setTimeout(function () {
-                            location.reload();
-                        }, 2000);
-                    } else {
-                        $('#alerts').html(
-                            '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                            '<strong>Error!</strong> ' + response.error +
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true">&times;</span>' +
-                            '</button>' +
-                            '</div>'
-                        );
-                    }
-                    $('#editExpenseCategoryModal').modal('hide');
-                },
-                error: function (response) {
-                    $('#alerts').html(
-                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                        '<strong>Error!</strong> ' + response +
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                        '<span aria-hidden="true">&times;</span>' +
-                        '</button>' +
-                        '</div>'
-                    );
-                }
-
-            }).done(function () {
-                $('#save_category_').html('<i class="fa fa-save"></i> Save');
-
-                ;
-            });
-        })
-
-    })
-    $('.edit').click(function () {
-        $('#editExpenseCategoryModal').modal('show');
-        $('#_category_name').val($(this).data('category_name'));
-        $('#_category_description').val($(this).data('category_description'));
-        $('#_is_recurring').val($(this).data('is_recurring'));
-        $('#_category_id').val($(this).data('id'));
-
-
-    })
-    $('.delete').click(function () {
-        $('#deleteExpenseCategoryModal').modal('show');
-        $('#category_name_').html($(this).data('category_name'));
-        $('#category_id_').val($(this).data('id'));
-    });
-    $('.close_delete').click(function () {
-        $('#deleteExpenseCategoryModal').modal('hide');
-    });
-
-    $('.close_add').click(function () {
-        $('#addExpenseCategoryModal').modal('hide');
-    });
-    $('#add_expense').click(function () {
-        $('#addExpenseCategoryModal').modal('show');
-    });
-    $('#add_expense_form').submit(function (e) {
-        e.preventDefault();
-        $('#save_category').html('<i class="fa fa-spinner fa-spin"></i> Saving...');
-
-        var form = $(this);
-        var url = form.attr('action');
-
+    function deleteCategory(id) {
         $.ajax({
-            type: 'POST',
+            url: `/api/expense-category/${id}/`,
+            type: 'DELETE',
             headers: {
                 'X-CSRFToken': '{{csrf_token}}'
             },
-            url: '',
-            data: JSON.stringify({
-                'category_name': $('#category_name').val(),
-                'category_description': $('#category_description').val(),
-                'is_recurring': $('#is_recurring').val()
-
-            }),
-            contentType: 'application/json',
             success: function (response) {
-                if (response.status == "success") {
-                    $('#alerts').html(
-                        '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-                        '<strong>Success!</strong> ' + response.category.category_name + ' added successfully.' +
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                        '<span aria-hidden="true">&times;</span>' +
-                        '</button>' +
-                        '</div>'
-                    );
-                    // 2 seconds after
-                    setTimeout(function () {
-                        location.reload();
-                    }, 2000);
-                } else {
-                    $('#alerts').html(
-                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                        '<strong>Error!</strong> ' + response.error +
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                        '<span aria-hidden="true">&times;</span>' +
-                        '</button>' +
-                        '</div>'
-                    );
-                }
-
-                $('#addExpenseCategoryModal').modal('hide');
-
+                $('#alerts').html(`
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                   Expense category deleted successfully.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
             },
-            error: function (response) {
-                $('#alerts').html(
-                    '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                    '<strong>Error!</strong> ' + response +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span>' +
-                    '</button>' +
-                    '</div>'
-                );
-
-
+            error: function (error) {
+                $('#alerts').html(`
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    An error occurred. Please try again.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
             }
-
-        }).done(function () {
-            $('#save_category').html('<i class="fa fa-save"></i> Save');
         });
+    }
+    $(document).ready(function () {
+        $('#dataTable').DataTable();
+
 
     });
 
