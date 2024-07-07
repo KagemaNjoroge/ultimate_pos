@@ -45,17 +45,17 @@
                         <td>{{expense.category}}</td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn btn-primary edit btn-sm" data-id="{{expense.id}}"
+                                <a class="btn btn-primary edit btn-sm" data-id="{{expense.id}}"
+                                    href="{%url 'expenses:edit_expense' expense.id%}"
                                     data-name="{{expense.expense_name}}" data-amount="{{expense.amount}}"
                                     data-category="{{expense.category}}"
                                     data-description="{{expense.expense_description}}">
                                     <i class="ti ti-pencil"></i>
-                                </button>
-                                <button class="btn btn-danger delete btn-sm" data-id="{{expense.id}}"
+                                </a>
+                                <a class="btn btn-danger delete btn-sm" data-id="{{expense.id}}"
                                     data-name="{{expense.expense_name}}">
-
-                                    <i class="ti ti-trash"></i>
-                                </button>
+                                    <i class="ti ti-trash" onclick="deleteExpense('{{expense.id}}')"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -71,8 +71,38 @@
     </div>
 </div>
 <script>
+    function deleteExpense(id) {
+        $.ajax({
+            url: `/api/expenses/${id}/`,
+            type: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{csrf_token}}'
+            },
+            success: function (response) {
+                $('#alerts').html(`
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                   Expense deleted successfully
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            },
+            error: function (error) {
+                $('#alerts').html(`
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    ${error}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                `);
+            }
+        });
+    }
+
     $(document).ready(function () {
         $('#dataTable').DataTable();
+
     });
 </script>
 {%endblock content%}
