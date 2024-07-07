@@ -1,0 +1,109 @@
+{%extends 'pos/base.html'%}
+{% load static %}
+{% block title %}{{expense.expense_name}}{% endblock %}
+{%block heading%}{{expense.expense_name}}{%endblock%}
+{% block content %}
+<div class="ml-2 mb-3">
+    <a href="{%url 'expenses:index'%}">
+        <button type="button" class="btn btn-primary font-weight-bold">
+            <i class="ti ti-arrow-left"></i>
+            Back
+        </button>
+    </a>
+</div>
+<div class="card ml-2">
+    <div class="card-body">
+        <form action="/api/expenses/{{expense.id}}/" id="expense_form">
+            <!--expense_name, expense_description, category, amount-->
+            {%csrf_token%}
+            <div class="form-group">
+                <label for="expense_name">Expense Name</label>
+                <input type="text" class="form-control" id="expense_name" name="expense_name"
+                    value="{{expense.expense_name}}" required>
+            </div>
+            <div class="form-group">
+                <label for="expense_description">Expense Description</label>
+                <textarea class="form-control" id="expense_description" name="expense_description"
+                    required>{{expense.expense_description}}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select class="form-control" id="category" name="category" required>
+                    <option value="">Select Category</option>
+                    {%for category in categories%}
+                    <option value="{{category.id}}" {% if category.id == expense.category.id %} selected {% endif %}>
+                        {{category.category_name}}</option>
+                    {%endfor%}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" class="form-control" id="amount" name="amount" value="{{expense.amount}}" required>
+            </div>
+            <button type="submit" class="btn btn-success mt-3" id="save">Save</button>
+
+
+        </form>
+    </div>
+</div>
+<div class="error_toast mt-3" style="display: none;">
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle end-0 p-3 ">
+        <div id="liveToast" class="toast" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="ti ti-exclamation-mark"></i>
+                <strong class="me-auto">Ultimate POS</strong>
+                <small>Now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast_body">
+                Hello, world! This is a toast message.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#expense_form').submit(function (e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            var data = form.serialize();
+
+            $.ajax({
+                type: 'PATCH',
+                url: url,
+                data: data,
+                headers: {
+                    'X-CSRFToken': '{{csrf_token}}'
+                },
+                success: function (response) {
+                    $('#save').html('Save').attr('disabled', false);
+
+                    $('.error_toast').css('display', 'block')
+                    $("#toast_body").html("Expense updated successfully.");
+                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
+                        autohide: true,
+                        delay: 5000,
+                    });
+                    toast.show();
+                    // redirect to index page
+                    setTimeout(() => {
+                        window.location.href = '/expenses/';
+                    }, 2000);
+                },
+                error: function (response) {
+                    $('#save').html('Save').attr('disabled', false);
+                    $('.error_toast').css('display', 'block')
+                    $("#toast_body").html("An error occurred. Please try again.");
+                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
+                        autohide: true,
+                        delay: 5000,
+                    });
+                    toast.show();
+                }
+            });
+        });
+    });
+</script>
+{%endblock content%}
