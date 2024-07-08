@@ -14,7 +14,6 @@ class Category(models.Model):
     )
 
     class Meta:
-        # Table's name
         db_table = "Category"
         verbose_name_plural = "Categories"
         verbose_name = "Category"
@@ -41,7 +40,7 @@ class Product(models.Model):
             "Service without stock",
         ),
     )
-    supllier = models.ForeignKey(
+    supplier = models.ForeignKey(
         to=Supplier,
         on_delete=models.CASCADE,
         verbose_name="supplier",
@@ -82,7 +81,6 @@ class Product(models.Model):
     barcode = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
-        # Table's name
         db_table = "Product"
         verbose_name_plural = "Products"
         verbose_name = "Product"
@@ -91,21 +89,18 @@ class Product(models.Model):
         return self.name
 
     def to_json(self):
-        item = {}
-        item["id"] = self.id
-        item["name"] = self.name
-        item["category"] = self.category.to_json()
-        item["quantity"] = 1
-        item["total_product"] = 0
-        item["image"] = self.image.url if self.image else None
-        item["track_inventory"] = self.track_inventory
-        item["product_type"] = (self.product_type,)
-        item["packaging_unit"] = (self.packaging_unit,)
-        item["quantity_unit"] = (self.quantity_unit,)
-        item["country_of_origin"] = self.country_of_origin
-        item["supplier"] = self.supllier.id
-        item["barcode"] = self.barcode
-        return item
-
-    def get_product_code(self) -> str:
-        return f"{self.country_of_origin}{self.product_type}{self.packaging_unit}{self.quantity_unit}"
+        return {
+            "name": self.name,
+            "description": self.description,
+            "track_inventory": self.track_inventory,
+            "image": self.image.url,
+            "status": self.status,
+            "category": self.category.name,
+            "price": self.price,
+            "id": self.id,
+            "country_of_origin": self.country_of_origin,
+            "product_type": self.product_type,
+            "packaging_unit": self.packaging_unit,
+            "quantity_unit": self.quantity_unit,
+            "barcode": self.barcode,
+        }
