@@ -8,7 +8,6 @@ from pos.views import check_subscription
 from products.models import Product
 
 
-# Create your views here.
 @check_subscription
 @login_required(login_url="/users/login/")
 def index(request):
