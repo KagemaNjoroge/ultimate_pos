@@ -79,6 +79,7 @@ class Product(models.Model):
     )
     packaging_unit = models.CharField(max_length=20, blank=True, null=True)
     quantity_unit = models.CharField(max_length=20, blank=True, null=True)
+    barcode = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
         # Table's name
@@ -103,6 +104,7 @@ class Product(models.Model):
         item["quantity_unit"] = (self.quantity_unit,)
         item["country_of_origin"] = self.country_of_origin
         item["supplier"] = self.supllier.id
+        item["barcode"] = self.barcode
         return item
 
     def get_product_code(self) -> str:
