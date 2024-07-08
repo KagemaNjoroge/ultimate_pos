@@ -1,12 +1,8 @@
 from django.db import models
-from django.utils.html import escape
 
 
-# Create your models here.
 class Company(models.Model):
-    phone_number = models.CharField(
-        max_length=20, blank=True, null=True
-    )  # Updated field type
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
