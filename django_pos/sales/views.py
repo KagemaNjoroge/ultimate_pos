@@ -19,7 +19,7 @@ import base64
 from PIL import Image
 from inventory.models import Inventory
 
-# TODO separate `is_ajax` function to a separate file to avoid repetition
+
 
 
 def is_ajax(request: HttpRequest) -> bool:
