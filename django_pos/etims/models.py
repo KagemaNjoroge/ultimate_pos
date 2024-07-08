@@ -1,7 +1,6 @@
 from django.db import models
 
 
-# Create your views here.
 class Country(models.Model):
     countryId = models.AutoField(primary_key=True)
     countryCode = models.CharField(max_length=10, unique=True)
