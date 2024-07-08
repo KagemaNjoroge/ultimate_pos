@@ -1,8 +1,6 @@
 from django.db import models
 from company.models import Branch
 
-# Create your models here.
-
 
 class Supplier(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False)
