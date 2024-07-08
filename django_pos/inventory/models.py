@@ -3,7 +3,6 @@ from products.models import Product
 from company.models import Branch
 
 
-# Create your models here.
 class Inventory(models.Model):
     product = models.OneToOneField(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
