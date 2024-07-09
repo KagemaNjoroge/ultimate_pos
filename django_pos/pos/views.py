@@ -141,7 +141,6 @@ def index(request: HttpRequest) -> HttpResponse:
         top_products_quantity.append(product["quantity"])
 
     context = {
-   
         "products": Product.objects.all().count(),
         "categories": Category.objects.all().count(),
         "annual_earnings": annual_earnings,
@@ -170,7 +169,7 @@ def pos(request: HttpRequest) -> HttpResponse:
         customers = Customer.objects.all()
         return render(
             request,
-            "pos/pos2.html",
+            "pos/pos.html",
             {"products": products, "categories": categories, "customers": customers},
         )
     elif request.method == "POST":
