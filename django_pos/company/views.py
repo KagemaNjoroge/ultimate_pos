@@ -1,6 +1,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 from .models import Branch, Company
 from .serializers import CompanySerializer
 from rest_framework.views import APIView
@@ -46,6 +47,7 @@ class CompanyView(APIView):
 
 
 @login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
 def index(request: HttpRequest) -> HttpResponse:
     company = Company.objects.first()
 
@@ -60,6 +62,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
 def branches(request: HttpRequest) -> HttpResponse:
     all_branches = Branch.objects.all()
     return render(request, "company/branches.html", {"branches": all_branches})
@@ -68,3 +71,15 @@ def branches(request: HttpRequest) -> HttpResponse:
 @login_required(login_url="/users/login/")
 def invoice_design(request: HttpRequest) -> HttpResponse:
     return render(request, "company/invoice_design.html")
+
+
+@login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
+def add_branch(request):
+    company = Company.objects.first()
+
+    return render(
+        request,
+        "company/add_branch.html",
+        context={"company": company},
+    )
