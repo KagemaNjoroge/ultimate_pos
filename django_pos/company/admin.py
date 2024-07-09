@@ -19,7 +19,6 @@ class BranchAdmin(admin.ModelAdmin):
         "company",
         "branch_name",
         "phone_number",
-        "city",
         "is_headquarter",
         "logo",
     )
@@ -27,7 +26,6 @@ class BranchAdmin(admin.ModelAdmin):
     list_display = (
         "branch_name",
         "phone_number",
-        "city",
         "is_headquarter",
     )
 
