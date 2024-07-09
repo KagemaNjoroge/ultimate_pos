@@ -8,22 +8,23 @@ Profile
 {%endblock heading%}
 {%block content%}
 
-<div class="card ml-3">
+<div class="card ml-2">
     <div class="card-body">
         <div class="container rounded bg-white mt-5 mb-5">
             <div class="row">
-                <div class="col-md-3 border-right">
+                <div class="col-md-5">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img
                             class="rounded-circle mt-5" width="150px" src="{{request.user.profile_pic.url}}"
                             alt="{{request.user.username}}"><span
                             class="font-weight-bold">{{request.user.username}}</span><span class="text-black-50">
                         </span><small>
                             {{request.user.email}}
-                        </small></div>
+                        </small>
+                    </div>
                 </div>
 
 
-                <div class="col-md-9">
+                <div class="col-md-7">
                     <div class="messages"></div>
 
 
@@ -70,8 +71,6 @@ Profile
 <script>
     $(document).ready(function () {
         $('#update_profile').submit(function (e) {
-
-
             e.preventDefault();
             // save btn loading
             $('#save').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...').attr('disabled', true);
@@ -90,15 +89,11 @@ Profile
                 },
                 success: function (data) {
 
-                    $('.messages').append('<div class="alert alert-success d-flex align-items-center" role="alert" id="message_1"><div class="row"><div class="col-md-10">' + "Profile updated!" + '</div><div class="col-md-2"><button onclick="hideMessage(1)" class="btn btn-success"><i class="ti ti-x"></i></button></div></div></div>');
+                    $('.messages').append('<div class="alert alert-success d-flex align-items-center" role="alert">' + "Profile updated!" + '</div>');
 
-                    // remove message after 5 seconds
-                    setTimeout(function () {
-                        $('#message_1').remove();
-                    }, 5000);
                 },
                 error: function (data) {
-                    $('.messages').append('<div class="alert alert-danger d-flex align-items-center" role="alert" id="message_1"><div class="row"><div class="col-md-10">' + "An error occurred" + '</div><div class="col-md-2"><button onclick="hideMessage(1)" class="btn btn-danger"><i class="ti ti-x"></i></button></div></div></div>');
+                    $('.messages').append('<div class="alert alert-danger d-flex align-items-center" role="alert">' + "An error occurred" + '</div>');
                 }
             }).done(function () {
                 // save btn reset
