@@ -11,6 +11,7 @@ from .vie.expenses import ExpensesViewSet, ExpenseCategoryViewSet
 from .vie.company import CompanyViewSet, BranchViewSet, SubscriptionViewSet
 from .vie.suppliers import SupplierViewset
 from .vie.purchases import PurchaseViewset
+from .vie.notifications import NotificationsViewset
 
 app_name = "api"
 router = DefaultRouter()
@@ -30,5 +31,6 @@ router.register("branch", BranchViewSet, basename="branch")
 router.register("subscription", SubscriptionViewSet, basename="subscription")
 router.register("purchases", PurchaseViewset, basename="purchases")
 router.register("suppliers", SupplierViewset, basename="suppliers")
+router.register("notifications", NotificationsViewset, basename="notifications")
 
 urlpatterns = router.urls
