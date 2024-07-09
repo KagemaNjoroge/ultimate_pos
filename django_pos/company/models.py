@@ -40,9 +40,8 @@ class Branch(models.Model):
     branch_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True)
-    city = models.CharField(max_length=100, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
-    branch_id = models.CharField(max_length=10, blank=True, null=True, unique=True)
+    branch_id = models.CharField(max_length=10, blank=True, null=True)
     is_headquarter = models.BooleanField(default=False)
 
     logo = models.ImageField(blank=True, null=True, default="static/default.png")
@@ -57,7 +56,6 @@ class Branch(models.Model):
             "branch_name": self.branch_name,
             "phone": self.phone_number,
             "email": self.email,
-            "city": self.city,
             "address": self.address,
             "branch_id": self.branch_id,
             "is_headquarter": self.is_headquarter,
