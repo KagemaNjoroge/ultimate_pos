@@ -3,18 +3,14 @@
 {% block title %}Branches{% endblock %}
 {%block heading%}Branches{%endblock%}
 {% block content %}
-<div class="ml-2 mb-3">
-    <a href="{% url 'company:company' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Back
-        </button>
+<div class="ml-2 mb-3 btn-group">
+    <a href="{% url 'company:company' %}" class="btn btn-primary font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Back
     </a>
-    <a href="">
-        <button type="button" class="btn btn-success font-weight-bold">
-            <i class="ti ti-plus"></i>
-            Create New Branch
-        </button>
+    <a href="{%url 'company:add_branch'%}" class="btn btn-success font-weight-bold">
+        <i class="ti ti-plus"></i>
+        Create New Branch
     </a>
 </div>
 
@@ -23,7 +19,7 @@
     <div class="card-body">
 
         <div class="table-responsive">
-            <table id="branch_table" class="table table-striped table-bordered no-wrap">
+            <table id="branch_table" class="table table-striped">
                 <thead>
                     <tr>
                         <th>Branch Name</th>
@@ -36,8 +32,12 @@
                 <tbody>
                     {% for branch in branches %}
                     <tr>
-                        <td>{{branch.branch_name}}</td>
-                        <td>{{branch.city}}</td>
+                        <td>{{branch.branch_name}}
+                            {%if branch.is_headquarter%}
+                            <i class="ti ti-pin text-success"></i>
+                            {%endif%}
+                        </td>
+                        <td>{{branch.address}}</td>
                         <td>{{branch.phone_number}}</td>
                         <td>{{branch.email}}</td>
 
@@ -48,5 +48,10 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $('#branch_table').DataTable({})
+    })
+</script>
 
 {%endblock content%}
