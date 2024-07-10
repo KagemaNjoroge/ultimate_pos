@@ -4,18 +4,14 @@
 {% block stylesheets %}{% endblock stylesheets %}
 {% block heading %}{{customer.first_name}} {{customer.last_name}}{% endblock heading %}
 {% block content %}
-<div class="ml-2 mb-3">
-    <a href="{% url 'customers:customers_list' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Go back
-        </button>
+<div class="ml-2 mb-3 btn-group">
+    <a href="{% url 'customers:customers_list' %}" class="btn btn-primary font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Go back
     </a>
-    <a href="{% url 'customers:customers_update' customer_id=customer.id%}">
-        <button type="button" class="btn btn-success font-weight-bold">
-            <i class="ti ti-edit"></i>
-            Edit
-        </button>
+    <a href="{% url 'customers:customers_update' customer_id=customer.id%}" class="btn btn-success font-weight-bold">
+        <i class="ti ti-edit"></i>
+        Edit
     </a>
 </div>
 <div class="card ml-2">
