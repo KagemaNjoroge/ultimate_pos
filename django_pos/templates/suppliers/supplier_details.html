@@ -1,0 +1,36 @@
+{%extends 'pos/base.html'%}
+{% load static %}
+{% block title %}{{supplier.name}}{% endblock %}
+{%block heading%}{{supplier.name}}{%endblock%}
+{% block content %}
+
+<div class="ml-2 mb-3">
+    <div class="btn-group">
+        <a href="{% url 'suppliers:index' %}" class="btn btn-primary font-weight-bold">
+            <i class="ti ti-arrow-left"></i>
+            Suppliers
+        </a>
+        <a href="" class="btn btn-warning font-weight-bold">
+            <i class="ti ti-pencil"></i>
+            Edit
+        </a>
+    </div>
+</div>
+<div class="card ml-2">
+    <div class="card-body">
+        <!--name, address, phone, logo, website, email, branch, additional_notes-->
+        <div class="row">
+
+            <div class="col-md-9">
+                <h3>{{supplier.name}}</h3>
+                <p><strong>Address:</strong> {{supplier.address}}</p>
+                <p><strong>Phone:</strong> {{supplier.phone}}</p>
+                <p><strong>Email:</strong> {{supplier.email}}</p>
+                <p><strong>Website:</strong> {{supplier.website}}</p>
+                <p><strong>Branch:</strong> {{supplier.branch}}</p>
+                <p><strong>Additional Notes:</strong> {{supplier.additional_notes}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock content%}

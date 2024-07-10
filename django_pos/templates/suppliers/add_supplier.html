@@ -4,22 +4,15 @@
 {%block heading%}Add Supplier{%endblock%}
 {% block content %}
 
-<div class="ml-2 mb-3">
-
-    <a href="{% url 'suppliers:index' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Go back
-        </button>
+<div class="ml-2 mb-3 btn-group">
+    <a href="{% url 'suppliers:index' %}" class="btn btn-primary font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Go back
     </a>
-
-    <a href="{% url 'customers:customers_list' %}">
-        <button type="button" class="btn btn-success font-weight-bold ml-2">
-            <i class="ti ti-file-upload"></i>
-            Import Suppliers
-        </button>
+    <a href="{% url 'customers:customers_list' %}" class="btn btn-success font-weight-bold">
+        <i class="ti ti-file-upload"></i>
+        Import Suppliers
     </a>
-
 </div>
 
 <div class="card ml-2">
@@ -124,7 +117,7 @@
                 address: $('#address').val(),
                 website: $('#website').val(),
                 additional_notes: $('#additional_notes').val(),
-            }          
+            }
             let action = form.attr("action");
             $.ajax({
                 method: 'POST',

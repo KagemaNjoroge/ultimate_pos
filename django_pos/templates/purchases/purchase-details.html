@@ -9,16 +9,18 @@ Purchases - {{purchase.id}}
 {% block content %}
 
 <div class="mb-3">
-    <a href="{%url 'purchases:index'%}" class="btn btn-primary">
+    <div class="btn-group">
+        <a href="{%url 'purchases:index'%}" class="btn btn-primary">
 
-        <i class="ti ti-arrow-left"></i>
-        Back
-    </a>
-    <a href="{%url 'purchases:index'%}" class="btn btn-secondary">
+            <i class="ti ti-arrow-left"></i>
+            Back
+        </a>
+        <a href="{%url 'purchases:index'%}" class="btn btn-secondary">
 
-        <i class="ti ti-pencil"></i>
-        Edit
-    </a>
+            <i class="ti ti-pencil"></i>
+            Edit
+        </a>
+    </div>
 </div>
 
 <div class="card">

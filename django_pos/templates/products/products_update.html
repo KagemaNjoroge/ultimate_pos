@@ -1,33 +1,21 @@
 {% extends "pos/base.html" %}
 {%load static%}
 {% block title %}Update product{% endblock title %}
-
-{% block stylesheets %}{% endblock stylesheets %}
-
 {% block heading %}Update product{% endblock heading %}
 
 {% block content %}
-<!--Go back-->
-<div class="ml-3 mb-3">
-    <a href="{% url 'products:products_list' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Go back
-        </button>
+<div class="ml-2 mb-3">
+    <a href="{% url 'products:products_list' %}" class="btn btn-primary font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Go back
     </a>
 
 </div>
-<div class="row text-center">
-    <div class="col-md-4"></div>
 
-    <div class="update_msg col-md-4"></div>
-    <div class="col-md-4"></div>
-
-</div>
-
-
-<div class="card col-md-11 ml-3">
+<div class="card ml-2">
     <div class="card-body">
+        <div class="update_msg text-center"></div>
+
         <form id="product_update" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-row">
@@ -45,7 +33,6 @@
                     <label for="image">Select new image</label>
                     <input type="file" name="image" class="form-control-file" id="image" accept="image/*" />
                 </div>
-
 
             </div>
             <div class="form-row">

@@ -4,17 +4,9 @@
 {%block heading%}Suppliers{%endblock%}
 {% block content %}
 <div class="mb-3">
-    <a href="{%url 'pos:index'%}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Back
-        </button>
-    </a>
-    <a href="{%url 'suppliers:new'%}">
-        <button type="button" class="btn btn-success font-weight-bold" id="open_add_supplier_modal">
-            <i class="ti ti-plus mr-2"></i>
-            Add Supplier
-        </button>
+    <a href="{%url 'suppliers:new'%}" class="btn btn-success font-weight-bold">
+        <i class="ti ti-plus mr-2"></i>
+        Add Supplier
     </a>
 </div>
 
@@ -22,15 +14,12 @@
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover" id="dataTable">
+            <table class="table table-striped table-hover" id="dataTable">
                 <thead>
                     <tr>
                         <th>Supplier Name</th>
                         <th>Phone</th>
-                        <th>Email</th>
                         <th>KRA PIN</th>
-                        <th>Branch</th>
-
                     </tr>
                 </thead>
                 <tbody>
@@ -38,9 +27,7 @@
                     <tr>
                         <td>{{supplier.name}}</td>
                         <td>{{supplier.phone}}</td>
-                        <td>{{supplier.email}}</td>
                         <td>{{supplier.kra_pin}}</td>
-                        <td>{{supplier.branch}}</td>
 
                     </tr>
                     {% endfor %}

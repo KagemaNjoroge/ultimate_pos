@@ -4,19 +4,17 @@
 {%block heading%}New Expense{%endblock%}
 {% block content %}
 <div class="ml-2 mb-3">
-    <a href="{%url 'expenses:index'%}">
-        <button type="button" class="btn btn-primary font-weight-bold">
+    <div class="btn-group">
+        <a href="{%url 'expenses:index'%}" class="btn btn-primary font-weight-bold">
             <i class="ti ti-arrow-left"></i>
             Back
-        </button>
-    </a>
+        </a>
 
-    <a>
-        <button type="button" class="btn btn-success font-weight-bold" id="add_expense">
+        <a class="btn btn-success font-weight-bold" href="{%url 'expenses:add_expense_category'%}">
             <i class="ti ti-plus"></i>
             Add Expense Category
-        </button>
-    </a>
+        </a>
+    </div>
 </div>
 
 <div class="card ml-2">

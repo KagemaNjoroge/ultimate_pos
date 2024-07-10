@@ -8,18 +8,16 @@ Add new purchase order
 {%endblock%}
 {% block content %}
 <div class="ml-2 mb-3">
-    <a href="{% url 'purchases:index' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
+    <div class="btn-group">
+        <a href="{% url 'purchases:index' %}" class="btn btn-primary font-weight-bold">
             <i class="ti ti-arrow-left"></i>
             Back
-        </button>
-    </a>
-    <a href="{% url 'purchases:index' %}">
-        <button type="button" class="btn btn-success font-weight-bold">
+        </a>
+        <a href="{% url 'purchases:index' %}" class="btn btn-success font-weight-bold">
             <i class="ti ti-settings"></i>
             Advanced
-        </button>
-    </a>
+        </a>
+    </div>
 </div>
 <div class="card ml-2 shadow">
     <div class="card-body">

@@ -27,7 +27,7 @@ Sales
                         <th>#</th>
                         <th>Customer</th>
                         <th>Total</th>
-                        <th>Items</th>
+
                         <th>Date</th>
                         <th>Actions</th>
                     </tr>
@@ -44,15 +44,13 @@ Sales
 
                         <td>{{s.sale.customer.get_full_name}}</td>
                         <td>{{s.get_grand_total}}</td>
-                        <td>{{s.get_products_count}}</td>
+
                         <td>{{s.sale.date_added}}</td>
                         <td>
-                            <!--Print receipt-->
-                            <a href="{% url 'sales:sales_receipt_pdf' s.sale.id %}" class="text-decoration-none">
-                                <button type="button" class="btn btn-dark btn-sm" data-bs-toggle="tooltip"
-                                    title="View Receipt">
-                                    <i class="ti ti-receipt"></i>
-                                </button>
+                            <a href="{% url 'sales:sales_receipt_pdf' s.sale.id %}"
+                                class="text-decoration-none btn btn-success btn-sm" data-bs-toggle="tooltip"
+                                title="View Receipt">
+                                <i class="ti ti-receipt"></i>
                             </a>
                         </td>
                     </tr>
@@ -65,7 +63,112 @@ Sales
 <script>
     $(document).ready(function () {
         let tblCategories = $('#dataTable').DataTable({
+            dom: 'Bfrtip', // Buttons are draw at this element
+            buttons: [
+                {
+                    extend: 'print',
+                    text: 'Print <i class="ti ti-file ml-2"></i>',
+                    titleAttr: 'Print',
+                    className: 'btn btn-info',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3]
+                    }
+                },
+                {
+                    extend: 'excelHtml5',
+                    text: 'Download Excel <i class="ti ti-file-excel ml-2"></i>',
+                    titleAttr: 'Download Excel',
+                    className: 'btn btn-success ml-2',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: 'Download PDF <i class="ti ti-file-pdf ml-2"></i>',
+                    titleAttr: 'Download PDF',
+                    className: 'btn btn-danger ml-2',
+                    download: 'open',
+                    orientation: 'vertical',
+                    pageSize: 'A4',
+                    title: '*',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3]
+                    },
+                    customize: function (doc) {
+                        doc.styles = {
+                            header: {
+                                fontSize: 18,
+                                bold: true,
+                                alignment: 'center'
+                            },
+                            subheader: {
+                                fontSize: 13,
+                                bold: true
+                            },
+                            quote: {
+                                italics: true
+                            },
+                            small: {
+                                fontSize: 8
+                            },
+                            tableHeader: {
+                                bold: true,
+                                fontSize: 11,
+                                color: 'white',
+                                fillColor: '#2d4154',
+                                alignment: 'center'
+                            }
+                        };
+                        doc.content[1].table.widths = ['10%', '40%', '20%', '30%'];
+                        doc.content[1].margin = [0, 35, 0, 0];
+                        doc.content[1].layout = {};
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns: [
+                                    {
+                                        alignment: 'left',
+                                        text: ['UltimatePOS ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
+                                    },
+                                    {
+                                        alignment: 'right',
+                                        text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                    }
+                                ],
+                                margin: 20
+                            }
+                        });
+                        doc['header'] = (function (page, pages) {
+                            return {
+                                columns: [
+                                    {
+                                        alignment: 'left',
+                                        text: ['UltimatePOS ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
+                                    },
+                                    {
+                                        alignment: 'right',
+                                        text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                    }
+                                ],
+                                margin: 20
+                            }
+                        });
 
+                    }
+                }
+            ],
+            deferRender: true,
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: false,
+                    searchable: false,
+                },
+                {
+                    targets: [-1], // column index (start from 0)
+                    orderable: false, // set order able false for selected columns
+                }
+            ],
         });
     });
 </script>

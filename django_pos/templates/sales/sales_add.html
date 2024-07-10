@@ -1,15 +1,6 @@
 {% extends "pos/base.html" %}
 {% load static %}
-
 {% block title %}Add sale{% endblock title %}
-
-
-{% block stylesheets %}
-
-
-{% endblock stylesheets %}
-
-
 {% block heading %}Add sale{% endblock heading %}
 
 
@@ -160,7 +151,7 @@
                 + "<td>" + cartArray[i].id + "</td>"
                 + "<td>" + cartArray[i].name + "</td>"
                 + "<td>" + cartArray[i].price + "</td>"
-                + "<td><input type='number' class='item-count' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "'></td>"
+                + "<td><input type='number' class='item-count form-control' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "'></td>"
                 + "<td>" + cartArray[i].total + "</td>"
                 + "<td><button class='delete-item btn btn-danger btn-sm' data-name='" + cartArray[i].name + "'><i class='ti ti-trash'></i></button></td>"
                 + "</tr>";

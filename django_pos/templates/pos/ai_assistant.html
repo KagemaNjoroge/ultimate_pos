@@ -4,7 +4,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-right">
         <div class="modal-content-notify modal-content">
             <div class="modal-header">
-                <p class="modal-title mr-2">
+                <p class="modal-title">
                     <small>
                         Chat with Zoe
                     </small>
@@ -45,21 +45,26 @@
                             <div id="loader" class="col-12 text-center mb-2"></div>
 
                             <div class="col mt-3">
-                                <div class="input-group flex-nowrap">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="addon-wrapping">
-                                            <i class="ti ti-dots"></i>
-                                        </span>
-                                    </div>
+                                <form id="zoe_form">
+                                    <div class="input-group flex-nowrap">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text text-sm" id="addon-wrapping">
+                                                <i class="ti ti-dots"></i>
+                                            </span>
+                                        </div>
 
-                                    <input type="text" class="form-control text-sm"
-                                        value="What is the best selling product?" aria-label="Chat input" id="input">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-success" type="button" id="send_msg">
-                                            <i class="ti ti-send"></i>
-                                        </button>
+
+                                        <input type="text" class="form-control text-sm required"
+                                            value="What is the best selling product?" aria-label="Chat input"
+                                            id="input">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success btn-sm" type="submit" id="send_msg">
+                                                <i class="ti ti-send"></i>
+                                            </button>
+                                        </div>
+
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -74,24 +79,21 @@
 
 <script>
     $(document).ready(function () {
-        var chats = document.getElementById('zoe_response');
-        var input = document.getElementById('input');
-        var send_msg = document.getElementById('send_msg');
-
-        var loader = document.getElementById('loader');
-
-        let action = "{%url 'copilot:chat'%}";
-
         $('#close_zoe').click(function () {
             $('#aiAssistantModal').modal('hide');
         });
-        send_msg.addEventListener('click', function () {
+        $('#zoe_form').submit(function (e) {
+            e.preventDefault()
+            var chats = document.getElementById('zoe_response');
+            var input = document.getElementById('input');
+            var send_msg = document.getElementById('send_msg');
+            var loader = document.getElementById('loader');
+            let action = "{%url 'copilot:chat'%}";
             $('#zoe_default').remove();
             var msg = input.value;
             if (msg != '') {
                 chats.innerHTML += '<div class="row mt-2 justify-content-end"><div class="col-12"><small>' + msg + '</small></div></div>';
-                loader.innerHTML = '<div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>'
-
+                loader.innerHTML = '<div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>';
                 chats.scrollTop = chats.scrollHeight;
                 $.ajax({
                     headers: {
@@ -103,33 +105,23 @@
                         'query': msg
                     },
                     success: function (response) {
-
                         $('#loader').html('');
-                        // check if html in response is not "none"        
                         if (response.html != 'none') {
-
                             chats.innerHTML += '<div class="row mt-2 justify-content-start"><div class="col-12">' + response.html + '</div></div>';
-
-
                         } else {
-
                             chats.innerHTML += '<div class="row mt-2 justify-content-start"><div class="col-12"><div class="alert alert-danger" role="alert">Sorry, I could not understand your query. Please try again.</div></div></div>';
                         }
-
                     },
                     error: function (response) {
                         $('#loader').html('');
                         chats.innerHTML += '<div class="row mt-2 justify-content-start"><div class="col-12"><div class="alert alert-danger" role="alert">A network issue occurred. Are you connected to the internet?</div></div></div>';
                     },
                     complete: function () {
-
                         chats.scrollTop = chats.scrollHeight;
                     }
-
-
                 });
             }
-        });
+        })
     });
 
 </script>

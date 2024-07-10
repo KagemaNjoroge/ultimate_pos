@@ -1,5 +1,5 @@
 {%load static%}
-<div class="navbar-collapse justify-content-end px-0" id="navbarNav">
+<div class="navbar-collapse justify-content-end px-0" id="navbarNav" data-bs-theme="auto">
     <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
         <a class="nav-link btn" data-bs-toggle="modal" data-bs-target="#aiAssistantModal">
             <img src="{%static 'img/logos/ai_sparkles.svg'%}" alt="Ask AI"
@@ -19,7 +19,7 @@
                     </a>
 
                     <a href="{%url 'authentication:logout'%}" class="d-flex align-items-center gap-2 dropdown-item">
-                        <!--logout-->
+                        
                         <i class="ti ti-power-off fs-6"></i>
                         <p class="mb-0 fs-3">Logout</p>
                     </a>

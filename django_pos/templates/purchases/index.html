@@ -8,11 +8,9 @@ Purchases
 {%endblock%}
 {% block content %}
 <div class="ml-2 mb-3">
-    <a href="{% url 'purchases:add' %}">
-        <button type="button" class="btn btn-success font-weight-bold">
-            <i class="ti ti-plus"></i>
-            New Purchase Order
-        </button>
+    <a href="{% url 'purchases:add' %}" class="btn btn-success font-weight-bold">
+        <i class="ti ti-plus"></i>
+        New Purchase Order
     </a>
 </div>
 
@@ -35,9 +33,11 @@ Purchases
                     {% for purchase in purchases %}
                     <tr>
                         <td>{{purchase.id}}</td>
-                        <td><a href="{%url 'purchases:purchase_details' purchase.id%}">
+                        <td>
+                            <a href="{%url 'purchases:purchase_details' purchase.id%}">
                                 {{purchase.product}}
-                            </a></td>
+                            </a>
+                        </td>
                         <td>{{purchase.supplier}}</td>
                         <td>{{purchase.date_created}}</td>
                         <td>{{purchase.status}}</td>

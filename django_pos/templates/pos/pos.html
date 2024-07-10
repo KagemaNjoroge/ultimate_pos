@@ -3,18 +3,11 @@
 <html lang="en">
 
 <head>
-  <style>
-
-  </style>
   <title>POS</title>
   <link rel="icon" type="image/png" href="{% static 'favicon.png' %}" />
-
-  <!--Styles-->
   <link href="{% static 'css/pos.css' %}" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma/bulma.css" rel="stylesheet">
+  <link href="{%static 'css/bulma.css'%}" rel="stylesheet">
   <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
-
-
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -26,18 +19,18 @@
     body {
       margin-left: 10px;
     }
+
+    .prd {
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
   </style>
-  <div class="pace pace-inactive pace-inactive">
-    <div class="pace-progress" data-progress-text="100%" data-progress="99"
-      style="transform: translate3d(100%, 0px, 0px)">
-      <div class="pace-progress-inner"></div>
-    </div>
-    <div class="pace-activity"></div>
-  </div>
+
 
   <div class="wrapper thetop" style="height: auto">
     <div class="col-md-12 no-print pos-header">
-      <input type="hidden" id="pos_redirect_url" />
+
       <div class="row">
         <div class="col-md-6">
           <div class="m-6 mt-5 hidden-xs">
@@ -59,261 +52,225 @@
           <!--Switch to toggle beep sound on receipt  -->
           <div class="m-6 mt-5 hidden-xs">
             <p>
-              <button class="btn btn-success" id="sound_btn"><i class="ti ti-volume hover-q text-muted"
-                  title=""></i></button>
+              <button class="btn btn-success" id="sound_btn">
+                <i class="ti ti-volume hover-q text-muted" title="">
+                </i>
+              </button>
             </p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Content Wrapper. Contains page content -->
-    <div class="">
-      <section class="content no-print">
-        <input type="hidden" id="amount_rounding_method" value="" />
 
-        <div class="row mb-12">
-          <div class="col-md-12">
-            <div class="row">
-              <div class="col-md-7 no-padding pr-12">
-                <div class="box box-solid mb-12">
-                  <div class="box-body pb-0">
+    <section class="content no-print">
+      <input type="hidden" id="amount_rounding_method" value="" />
 
-                    <div class="row">
-                      <div class="col-md-4">
-                        <div class="form-group" style="width: 100% !important">
-                          <div class="input-group">
-                            <span class="input-group-addon">
-                              <i class="ti ti-user"></i>
-                            </span>
+      <div class="row mb-12">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-7 no-padding pr-12">
+              <div class="box box-solid mb-12">
+                <div class="box-body pb-0">
 
-
-                            <span
-                              class="select2 select2-container select2-container--default select2-container--below select2-container--focus"
-                              dir="ltr" style="width: 100%"><span class="selection"><span
-                                  class="select2-selection select2-selection--single" role="combobox"><span
-                                    class="select2-selection__rendered" id="select2-customer_id-container"
-                                    title="cashload.pk">
-                                    <select id="customer_selected">
-                                      {% for customer in customers %}
-                                      <option value="{{ customer.id }}">{{ customer.get_full_name }}</option>
-                                      {% endfor %}
-                                    </select></span><span class="select2-selection__arrow" role="presentation"><b
-                                      role="presentation"></b></span></span></span><span class="dropdown-wrapper"
-                                aria-hidden="true"></span></span>
-                            <span class="input-group-btn">
-
-
-
-                              <button type="button" class="btn btn-default bg-white btn-flat add_new_customer"
-                                onclick="window.location=`{% url 'customers:customers_add' %}`">
-                                <i href="{% url 'customers:customers_add' %}" class="ti ti-plus text-primary"></i>
-                              </button>
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-8">
-                        <div class="form-group">
-                          <div class="input-group">
-                            <div class="input-group-btn">
-                              <button type="button" class="btn btn-default bg-white btn-flat"
-                                title="Configure product search">
-                                <i class="ti ti-barcode"></i>
-                              </button>
-                            </div>
-                            <input class="form-control mousetrap ui-autocomplete-input" id="search_product"
-                              placeholder="Enter Product name / SKU / Scan bar code" autofocus="" name="search_product"
-                              type="text" autocomplete="off" />
-                            <span class="input-group-btn">
-
-
-                              <button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product">
-                                <i class="ti ti-plus text-primary"></i>
-                              </button>
-                            </span>
-                          </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <div class="input-group">
+                          <select id="customer_selected" class="form-control">
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.get_full_name }}</option>
+                            {% endfor %}
+                          </select>
+                          <span class="input-group-btn">
+                            <button type="button" class="btn btn-default bg-white btn-flat add_new_customer"
+                              onclick="window.location=`{% url 'customers:customers_add' %}`">
+                              <i href="{% url 'customers:customers_add' %}" class="ti ti-plus text-primary"></i>
+                            </button>
+                          </span>
                         </div>
                       </div>
                     </div>
-                    <div id="searched_products"></div>
 
-                    <div class="row">
-                      <div class="col-sm-12 pos_product_div" style="min-height: 333px; max-height: 333px">
+                    <div class="col-md-8">
+                      <div class="form-group">
+                        <div class="input-group">
+                          <input class="form-control mousetrap ui-autocomplete-input" id="search_product"
+                            placeholder="Enter Product name / SKU / Scan bar code" autofocus="" name="search_product"
+                            type="text" autocomplete="off" />
+                          <span class="input-group-btn">
 
-                        <input type="hidden" id="product_row_count" value="16" />
-                        <table class="table table-condensed table-bordered table-striped table-responsive"
-                          id="pos_table">
-                          <thead>
-                            <tr>
-                              <th class="tex-center col-md-4">
-                                Product
-                                <i class="ti ti-info-circle text-info hover-q no-print" aria-hidden="true"
-                                  data-trigger="hover"></i>
-                              </th>
-                              <th class="text-center col-md-3">
-                                Quantity
-                              </th>
-                              <th class="text-center col-md-2">
-                                Price inc. tax
-                              </th>
-                              <th class="text-center col-md-2">
-                                Subtotal
-                              </th>
-                              <th class="text-center">
-                                <i class="ti ti-x" aria-hidden="true"></i>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody class="show-cart">
-                          </tbody>
-                        </table>
+
+                            <button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product">
+                              <i class="ti ti-plus text-primary"></i>
+                            </button>
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-12">
-                        <table class="table table-condensed">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <b>Items:</b>&nbsp;
-                                <span class="total_quantity total-count"></span>
-                              </td>
-                              <td>
-                                <b>Total:</b> &nbsp;
-                                <span class="price_total total-cart"></span>
-                              </td>
-                            </tr>
-
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-
-
-                    <div>
-
                     </div>
                   </div>
+                  <div id="searched_products"></div>
+
+                  <div class="row">
+                    <div class="col-sm-12 pos_product_div" style="min-height: 333px; max-height: 333px">
+
+
+                      <table class="table table-condensed table-bordered table-striped table-responsive" id="pos_table">
+                        <thead>
+                          <tr>
+                            <th class="tex-center col-md-4">
+                              Product
+                              <i class="ti ti-info-circle text-info hover-q no-print" aria-hidden="true"
+                                data-trigger="hover"></i>
+                            </th>
+                            <th class="text-center col-md-3">
+                              Quantity
+                            </th>
+                            <th class="text-center col-md-2">
+                              Price inc. tax
+                            </th>
+                            <th class="text-center col-md-2">
+                              Subtotal
+                            </th>
+                            <th class="text-center">
+                              <i class="ti ti-x" aria-hidden="true"></i>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="show-cart">
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <table class="table table-condensed">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <b>Items:</b>&nbsp;
+                              <span class="total_quantity total-count"></span>
+                            </td>
+                            <td>
+                              <b>Total:</b> &nbsp;
+                              <span class="price_total total-cart"></span>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
                 </div>
               </div>
-              <div class="col-md-5 no-padding">
-                <div class="row">
-                  <div class="col-md-6">
-                    <span class="select2 select2-container select2-container--default select2-container--below"
-                      dir="ltr" style="width: 100%"><span class="selection"><span
-                          class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true"
-                          aria-expanded="false" tabindex="0"
-                          aria-labelledby="select2-product_category-container"><select
-                            style="width: 100%; height: 100%;" class="selection form-select" id="selected_category">
-                            <option value="Product">Product</option>
-                            {% for category in categories %}
-                            <option value="{{ category.id }}">{{ category.name }}</option>
-                            {% endfor %}
+            </div>
+            <div class="col-md-5 no-padding">
+              <div class="row">
+                <div class="col-md-12 mr-3">
 
-                          </select></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
-                  </div>
+                  <select class="selection form-select form-control" id="selected_category">
+                    <option value="Product">Product</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+
+                  </select>
+
+
+
                 </div>
-                <br />
-                <div class="row">
-                  <input type="hidden" id="suggestion_page" value="4" />
-                  <div class="col-md-12">
-                    <div class="eq-height-row" id="product_list_body">
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="eq-height-row" id="product_list_body">
 
-                      {% for prod in products %}
-                      <div data-name="{{ prod.name }}" data-price="{{ prod.price }}" data-id="{{ prod.id }}"
-                        data-category="{{prod.category.id}}"
-                        class="col-md-3 col-xs-4 product_list no-print add-to-cart product">
-                        <div class="product_box" data-original-title="{{ prod.name }}">
-                          <div class="image-container" style="background-image: url(
-                                                                      {% if prod.image %}
-                                                                      {{ prod.image.url }}
-                                                                      {% else %}
-                                                                      {% static 'default.png' %}
-                                                                      {% endif %}
-                                                                      );
-                                                                      background-repeat: no-repeat; background-position: center;
-                                                                      background-size: contain;"></div>
+                    {% for prod in products %}
+                    <div data-name="{{ prod.name }}" data-price="{{ prod.price }}" data-id="{{ prod.id }}"
+                      data-category="{{prod.category.id}}"
+                      class="col-md-3 col-xs-4 product_list no-print add-to-cart product">
+                      <div class="product_box" data-original-title="{{ prod.name }}">
+                        {% if prod.image %}
+                        <div class="image-container prd" style="background-image: url({{ prod.image.url }});">
+                        </div>
+                        {% else %}
+                        <div class="image-container prd" style="background-image: url({%static 'default.png'%});">
+                        </div>
+                        {% endif %}
 
-                          <div class="text_div">
-                            <small class="text text-muted">{{ prod.name }}
-                            </small>
+                        <div class="text_div">
+                          <small class="text text-muted">{{ prod.name }}
+                          </small>
 
-                            <small class="text-muted">
-                              <strong>{{ prod.price }}</strong>
-                            </small>
-                          </div>
+                          <small class="text-muted">
+                            <strong>{{ prod.price }}</strong>
+                          </small>
                         </div>
                       </div>
-                      {% endfor %}
-
                     </div>
-                  </div>
-                  <div class="col-md-12 text-center" id="suggestion_page_loader" style="display: none">
-                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                    {% endfor %}
+
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="pos-form-actions">
-            <div class="col-md-12">
-              <button type="button" class="btn bg-red btn-default btn-flat no-print pos-express-finalize"
-                id="suspend_sale" data-pay_method="suspend" title="Suspend Sales (pause)">
-                <i class="ti ti-player-pause" aria-hidden="true"></i>
-                Suspend
-              </button>
+      </div>
+      <div class="row">
+        <div class="pos-form-actions">
+          <div class="col-md-12 btn-group">
+            <button type="button" class="btn bg-red btn-default btn-flat no-print pos-express-finalize"
+              id="suspend_sale" data-pay_method="suspend" title="Suspend Sales (pause)">
+              <i class="ti ti-player-pause" aria-hidden="true"></i>
+              Suspend
+            </button>
 
-              <button type="button" class="btn bg-maroon btn-default btn-flat no-print pos-express-finalize"
-                data-pay_method="card" title="Express checkout using card">
-                <i class="ti ti-brand-mastercard" aria-hidden="true"></i> Card
-              </button>
+            <button type="button" class="btn bg-maroon btn-default btn-flat no-print pos-express-finalize"
+              data-pay_method="card" title="Express checkout using card">
+              <i class="ti ti-brand-mastercard" aria-hidden="true"></i> Card
+            </button>
 
-              <button type="button" class="btn bg-navy btn-default btn-flat no-print" id="pos-finalize"
-                title="Checkout using multiple payment methods">
-                <i class="ti ti-moneybag" aria-hidden="true"></i>
-                Multiple Pay
-              </button>
+            <button type="button" class="btn bg-navy btn-default btn-flat no-print" id="pos-finalize"
+              title="Checkout using multiple payment methods">
+              <i class="ti ti-moneybag" aria-hidden="true"></i>
+              Multiple Pay
+            </button>
 
-              <button type="button" class="btn btn-success btn-flat no-print pos-express-finalize"
-                data-pay_method="cash" id="complete_payment" title="Mark complete paid &amp; checkout">
-                <i class="ti ti-cash" aria-hidden="true"></i>
-                Cash
-              </button>
+            <button type="button" class="btn btn-success btn-flat no-print pos-express-finalize" data-pay_method="cash"
+              id="complete_payment" title="Mark complete paid &amp; checkout">
+              <i class="ti ti-cash" aria-hidden="true"></i>
+              Cash
+            </button>
+            <button type="button" class="btn btn-danger btn-flat clear-cart">
+              <i class="ti ti-home-cancel"></i> Cancel
+            </button>
+            <button type="button" class="btn btn-primary btn-flat" id="recent-transactions">
+              <i class="ti ti-clock"></i> Recent Transactions
+            </button>
+            <div class="pull-right">
               &nbsp;&nbsp;
               <b>Total Payable:</b>
-              <input type="hidden" name="final_total" id="final_total_input" value="3,920.63" />
-              <span id="total_payable" class="text-success lead text-bold total-cart"></span>
 
-              &nbsp;<button type="button" class="btn btn-danger btn-flat clear-cart">
-                <i class="ti ti-home-cancel"></i> Cancel
-              </button>
-              <button style="margin-right: 10px" type="button" class="btn btn-primary btn-flat pull-right"
-                id="recent-transactions">
-                <i class="ti ti-clock"></i> Recent Transactions
-              </button>
+              <span id="total_payable" class="text-primary lead text-bold total-cart"></span>
+
+              &nbsp;
             </div>
           </div>
         </div>
+      </div>
 
 
-      </section>
+    </section>
 
-    </div>
 
   </div>
-
-  <div>
-
-  </div>
-
-
 
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
   <script src="{% static 'utils/cart.js' %}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  <script src="{%static 'js/sweetalert2.all.min.js'%}"></script>
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
 
@@ -352,17 +309,16 @@
         }
         Swal.fire({
           title: 'Suspended Sales',
-          width: '55em',
           html: `<table class="table table-dark table-hover">
-          <thead>
-          <tr>
-          <th scope="col">Sale ID</th>
-          <th scope="col">Total</th>
-          <th scope="col">Action</th>
-          </tr>
-          </thead>
-          <tbody>` + html + `</tbody>
-          </table>`,
+            <thead>
+            <tr>
+            <th scope="col">Sale ID</th>
+            <th scope="col">Total</th>
+            <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>` + html + `</tbody>
+            </table>`,
           showLoaderOnConfirm: true,
           allowOutsideClick: true,
           confirmButtonText: 'Close'
@@ -403,7 +359,7 @@
           "<td>" +
           cartArray[i].name +
           "</td>" +
-          "<td><div class='input-group'><button style=' margin-right: 2px' class='minus-item input-group-addon btn btn-primary' data-name='" +
+          "<td><div class='input-group'><button style=' margin-right: 2px' class='minus-item btn btn-default' data-name='" +
           cartArray[i].name +
           "'>-</button>" +
           "<input type='number' style='width: 50%; margin-right: 4px' class='item-count form-control' data-name='" +
@@ -411,7 +367,7 @@
           "' value='" +
           cartArray[i].count +
           "'>" +
-          "<button class='plus-item btn btn-primary input-group-addon' data-name='" +
+          "<button class='plus-item btn btn-default' data-name='" +
           cartArray[i].name +
           "'>+</button></div></td>" +
           "<td>" +
@@ -420,7 +376,7 @@
 
           "<td>" +
           cartArray[i].total +
-          "</td>" + "<td><button class='delete-item btn btn-danger' data-name='" +
+          "</td>" + "<td><button class='delete-item btn btn-danger btn-sm' data-name='" +
           cartArray[i].name +
           "'><i class='ti ti-trash'></i></button></td>" +
 
@@ -483,59 +439,43 @@
 
       let html = ''
       for (let i = 0; i < items.length; i++) {
-        html += `<tr><th>` + i + `</th><td>` + items[i]['name'] + `</td><td>` + items[i]['count'] + `</td><td>` + items[i]['price'] + `</td></tr>`
+        html += `<tr class="text-center"><td>` + items[i]['name'] + `</td><td>` + items[i]['count'] + `</td><td>` + items[i]['price'] + `</td></tr>`
       }
 
 
       Swal.fire({
-        title: 'Cart Summary',
-        width: '55em',
-
-        confirmButtonText: "Create Bill",
-        html: `
-            <div class="container"><div><table class="table table-dark table-hover">
-            <thead>
-            <tr>
-            <th scope="col">#</th>
-            <th scope="col">Product</th>
-            <th scope="col">Quantity</th>
-            <th scope="col">Total</th>
-            </tr>
-            </thead>
-            <tbody>`+ html + `
-            
-            </tbody>
-            </table>` + `
-            <br>
-            <br>
-            <br>
-            <table class="table">
-            <thead>
-            
-            </thead>
-            <tbody>
-            <tr>
-            
-            <td><strong>Total</strong></td>
-            <td>${shoppingCart.totalCart()}</td>
-            
-            </tr>
-            <tr>
-            
-            <td><strong>Cash</strong></td>
-            <td><input class="text-center" value="${shoppingCart.totalCart()}" type="number" id="amount_paid_" onkeyup="let ch = document.getElementById('change');if(this.value - shoppingCart.totalCart() > 0){ch.innerText=roundTo(this.value-shoppingCart.totalCart(), 2)} paid=this.value" ></td>
-            
-            </tr>
-            <tr>
-            
-            <td><strong>Change</strong></td>
-            <td id="change">0.00</td>
-            
-            </tr>
-            
-            </tbody>
-            </table>
-            </div>`,
+        title: 'In cart',
+        confirmButtonText: "Complete",
+        html: `<table class="table table-dark table-hover table-striped">
+              <thead>
+              <tr>           
+              <th scope="col">Product</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+              </tr>
+              </thead>
+              <tbody>`+ html + `
+              
+              </tbody>
+              </table>` + `
+  
+             <div class="row">
+               <strong class="col-md-6">Total</strong>
+               <div class="col-md-6">
+              ${shoppingCart.totalCart()}
+              </div>
+             </div>
+              <div class="row">
+              <strong class="col-md-6">Change</strong>
+              <div id="change" class="col-md-6">0.00</div>
+              </div>
+  
+            <div class="row">            
+              <strong class="col-md-6">Cash</strong>
+              <input class="text-center form-control col-md-6" value="${shoppingCart.totalCart()}" type="number" id="amount_paid_" onkeyup="let ch = document.getElementById('change');if(this.value - shoppingCart.totalCart() > 0){ch.innerText=roundTo(this.value-shoppingCart.totalCart(), 2)} paid=this.value" >
+            </div>
+      
+  `,
         showLoaderOnConfirm: true,
 
         allowOutsideClick: true,
@@ -622,12 +562,7 @@
             headers: {
               "X-CSRFToken": getCookie('csrftoken')
             },
-
             success: function (data) {
-
-
-
-
               var htm = '';
               for (let i in data) {
 
@@ -635,12 +570,12 @@
 
                 // render the data for each product
                 htm += `<div class="col-md-6 mt-2"><div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="${data[i]['image']}" alt="Card image cap" height="100" width="100">
-                        <div class="card-body">
-                        <h5 class="card-title">${data[i]['name']}</h5>    
-                        <button class="btn btn-secondary" onclick="shoppingCart.addItemToCart('${data[i]['name']}', ${data[i]['price']}, 1, ${data[i]['id']}); displayCart(); $('#searched_products').html('');">Add</button>
-                        </div>
-                        </div></div>`;
+                          <img class="card-img-top" src="${data[i]['image']}" alt="Card image cap" height="100" width="100">
+                          <div class="card-body">
+                          <h5 class="card-title">${data[i]['name']}</h5>    
+                          <button class="btn btn-secondary" onclick="shoppingCart.addItemToCart('${data[i]['name']}', ${data[i]['price']}, 1, ${data[i]['id']}); displayCart(); $('#searched_products').html('');">Add</button>
+                          </div>
+                          </div></div>`;
               }
               $('#searched_products').html(`<div class='row'>${htm}</div>`)
 
@@ -672,8 +607,6 @@
 
 
   </script>
-
-
 </body>
 
 </html>

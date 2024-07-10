@@ -1,21 +1,14 @@
 {% extends "pos/base.html" %}
 {% load static %}
 {% block title %}Sale details{% endblock title %}
-
-{% block stylesheets %}
-
-{% endblock stylesheets %}
-
 {% block heading %}Sale ID: {{sale.id}}{% endblock heading %}
 
 
 {% block content %}
-<div class="ml-2 mb-3">
-    <a href="{% url 'sales:sales_list' %}">
-        <button type="button" class="btn btn-success font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Go back
-        </button>
+<div class="ml-2 mb-3 btn-group">
+    <a href="{% url 'sales:sales_list' %}" class="btn btn-success font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Go back
     </a>
     <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill"
@@ -26,17 +19,13 @@
         </svg>
         Share
     </button>
-    <a href="{%url 'sales:sales_receipt_pdf' sale.id %}">
-        <button type="button" class="btn btn-secondary font-weight-bold" id="share_btn">
-            <i class="ti ti-printer"></i>
-            Print
-        </button>
+    <a href="{%url 'sales:sales_receipt_pdf' sale.id %}" class="btn btn-secondary font-weight-bold">
+        <i class="ti ti-printer"></i>
+        Print
     </a>
-    <a href="{% url 'sales:sales_list' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-edit mr-2"></i>
-            Edit
-        </button>
+    <a href="{% url 'sales:sales_list' %}" class="btn btn-danger font-weight-bold">
+        <i class="ti ti-edit mr-2"></i>
+        Edit
     </a>
 </div>
 
@@ -55,25 +44,21 @@
             <div class="modal-body">
                 <p>Share this link via</p>
                 <div class="d-flex align-items-center icons">
-                    <div class="container">
-                        <div class="row">
-                            <a href="#"
-                                class="btn btn-primary d-flex align-items-center justify-content-center col-sm mx-2">
-                                <span class="ti ti-brand-facebook"></span>
-                            </a>
-                            <a href="#"
-                                class="btn btn-dark d-flex align-items-center justify-content-center col-sm mx-2">
-                                <span class="ti ti-brand-twitter"></span>
-                            </a>
-                            <a href="#"
-                                class="btn btn-success d-flex align-items-center justify-content-center col-sm mx-2">
-                                <span class="ti ti-brand-whatsapp"></span>
-                            </a>
-                            <a href="#"
-                                class="btn btn-primary d-flex align-items-center justify-content-center col-sm mx-2">
-                                <span class="ti ti-brand-telegram"></span>
-                            </a>
-                        </div>
+                    <div class="container btn-group">
+
+                        <a href="#" class="btn btn-primary">
+                            <span class="ti ti-brand-facebook"></span>
+                        </a>
+                        <a href="#" class="btn btn-dark">
+                            <span class="ti ti-brand-twitter"></span>
+                        </a>
+                        <a href="#" class="btn btn-success">
+                            <span class="ti ti-brand-whatsapp"></span>
+                        </a>
+                        <a href="#" class="btn btn-primary">
+                            <span class="ti ti-brand-telegram"></span>
+                        </a>
+
                     </div>
                 </div>
                 <p>Or copy link</p>

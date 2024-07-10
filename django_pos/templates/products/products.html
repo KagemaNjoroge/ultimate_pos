@@ -64,19 +64,20 @@
                             <span class="badge badge-danger" style="font-size:0.8em;">{{p.status}}</span>
                         </td>
                         {% endif %}
-                        <td class="text-center">
+                        <td>
                             <div class="btn-group">
-                                <a href="{% url 'products:products_update' p.id %}" class="text-decoration-none">
-                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
-                                        title="Update product">
-                                        <i class="ti ti-pencil"></i>
-                                    </button>
+                                <a href="{% url 'products:products_update' p.id %}"
+                                    class="text-decoration-none btn btn-warning btn-sm" data-bs-toggle="tooltip"
+                                    title="Update product">
+
+                                    <i class="ti ti-pencil"></i>
+
                                 </a>
 
-                                <button rel="delete" type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                    data-target="#exampleModal">
-                                    <i class="ti ti-trash"></i>
-                                </button>
+                                <a class="btn btn-danger btn-sm text-decoration-none " data-toggle="modal"
+                                    data-target="#exampleModal"">
+                                    <i class=" ti ti-trash"></i>
+
                                 </a>
 
                             </div>

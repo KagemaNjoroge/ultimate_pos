@@ -4,25 +4,23 @@
 {% block content %}
 
 <div class="ml-2 mb-3">
-    <a href="{% url 'inventory:inventory_add' %}">
-        <button type="button" class="btn btn-success font-weight-bold">
+    <div class="btn-group">
+        <a href="{% url 'inventory:inventory_add' %}" class="btn btn-success font-weight-bold">
             <i class="ti ti-plus"></i>
             Add Stock
-        </button>
-    </a>
-    <a href="{% url 'inventory:inventory_add' %}">
-        <button type="button" class="btn btn-secondary font-weight-bold">
+        </a>
+        <a href="{% url 'inventory:inventory_add' %}" class="btn btn-secondary font-weight-bold">
             <i class="ti ti-transfer-out"></i>
             Stock Transfer
-        </button>
-    </a>
+        </a>
+    </div>
 </div>
 
 
 <div class="card shadow ml-2">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-hover table-bordered table-striped" id="dataTable">
+            <table class="table table-hover" id="dataTable">
                 <thead>
                     <tr>
                         <th>Stock ID</th>
@@ -37,20 +35,22 @@
                         <th>{{ invent.id }}</th>
                         <td>{{ invent.product.name }}</td>
                         <td>{{ invent.quantity }}</td>
-                        <td> <!--Update-->
-                            <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}"
-                                class="text-decoration-none">
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
+                        <td>
+                            <div class="btn-group">
+                                <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}"
+                                    class="text-decoration-none btn btn-warning btn-sm" data-bs-toggle="tooltip"
                                     title="Update Stock">
+
                                     <i class="ti ti-pencil"></i>
-                                </button>
-                            </a>
-                            <a class="text-decoration-none">
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
+
+                                </a>
+                                <a class="text-decoration-none btn btn-danger btn-sm" data-bs-toggle="tooltip"
                                     title="Delete Stock">
+
                                     <i class="ti ti-trash"></i>
-                                </button>
-                            </a>
+
+                                </a>
+                            </div>
                         </td>
 
                     </tr>

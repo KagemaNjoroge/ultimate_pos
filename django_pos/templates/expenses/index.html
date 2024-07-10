@@ -5,19 +5,17 @@
 {% block content %}
 
 <div class="mb-3 ml-2">
-    <a href="{%url 'expenses:add_expense'%}">
-        <button type="button" class="btn btn-success font-weight-bold" id="show_add_expense_modal">
+    <div class="btn-group">
+        <a href="{%url 'expenses:add_expense'%}" class="btn btn-success font-weight-bold">
             <i class="ti ti-plus"></i>
             Add Expense
-        </button>
-    </a>
+        </a>
 
-    <a href="{%url 'expenses:category'%}">
-        <button type="button" class="btn btn-secondary font-weight-bold">
+        <a href="{%url 'expenses:category'%}" class="btn btn-secondary font-weight-bold">
             <i class="ti ti-list"></i>
             Expense Categories
-        </button>
-    </a>
+        </a>
+    </div>
 </div>
 
 
@@ -32,7 +30,6 @@
                         <th>Expense</th>
                         <th>Amount</th>
                         <th>Date</th>
-                        <th>Category</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -42,7 +39,7 @@
                         <td>{{expense.expense_name}}</td>
                         <td>{{expense.amount}}</td>
                         <td>{{expense.date_added}}</td>
-                        <td>{{expense.category}}</td>
+
                         <td>
                             <div class="btn-group">
                                 <a class="btn btn-primary edit btn-sm" data-id="{{expense.id}}"

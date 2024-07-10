@@ -8,12 +8,9 @@
 {% block content %}
 
 <div class="ml-2 mb-3">
-    <a href="{% url 'inventory:inventory_index' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Go back
-        </button>
-
+    <a href="{% url 'inventory:inventory_index' %}" class="btn btn-primary font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Go back
     </a>
 </div>
 
@@ -42,9 +39,6 @@
                 </div>
 
             </div>
-
-
-
             <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">Create Stock</button>
 
         </form>

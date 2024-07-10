@@ -2,25 +2,21 @@
 {% block title %}Add product{% endblock title %}
 {% block heading %}Add product{% endblock heading %}
 {% block content %}
-<div class="ml-3 mb-3">
-  <a href="{% url 'products:products_list' %}">
-    <button type="button" class="btn btn-primary font-weight-bold">
-      <i class="ti ti-arrow-left"></i>
-      Go back
-    </button>
+<div class="ml-2 mb-3 btn-group">
+  <a href="{% url 'products:products_list' %}" class="btn btn-primary font-weight-bold">
+    <i class="ti ti-arrow-left"></i>
+    Go back
   </a>
 
-  <a href="{% url 'products:upload_excel' %}">
-    <button type="button" class="btn btn-success font-weight-bold">
-      <i class="ti ti-upload"></i>
-      Upoad CSV / Excel
-    </button>
+  <a href="{% url 'products:upload_excel' %}" class="btn btn-success font-weight-bold">
+    <i class="ti ti-upload"></i>
+    Upoad CSV / Excel
   </a>
 </div>
 
 
 
-<div class="card ml-3">
+<div class="card ml-2">
   <div class="card-body">
 
     <div class="alert alert-info" role="alert">

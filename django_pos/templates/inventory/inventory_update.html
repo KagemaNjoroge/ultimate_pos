@@ -7,16 +7,14 @@
 
 {% block content %}
 
-<div class="ml-3 mb-3">
-    <a href="{% url 'inventory:inventory_index' %}">
-        <button type="button" class="btn btn-success font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Go back
-        </button>
+<div class="ml-2 mb-3">
+    <a href="{% url 'inventory:inventory_index' %}" class="btn btn-primary font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Go back
     </a>
 </div>
 
-<div class="card col-md-11 ml-3">
+<div class="card ml-2">
     <div class="card-body">
         <div class="text-center" id="status_msg"></div>
 
