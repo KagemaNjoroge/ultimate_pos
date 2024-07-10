@@ -13,25 +13,21 @@
     <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
     <link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{%static 'img/logos/favicon.png'%}" />
-    <link rel="stylesheet" href="{%static 'css/styles.min.css'%}" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{%static 'libs/simplebar/dist/simplebar.css'%}">
     <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
-    <!--Manifest-->
     <link rel="manifest" href="{%static 'manifest.json'%}">
+    <link rel="stylesheet" href="{%static 'css/styles.min.css'%}" />
 </head>
 
 <body>
 
-    <!--  Body Wrapper -->
+
     <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed">
-        <!-- Sidebar Start -->
+
         <aside class="left-sidebar">
-            <!-- Sidebar scroll-->
+
             <div>
                 <div class="brand-logo d-flex align-items-center justify-content-between">
                     <a href="{% url 'pos:index' %}" class="text-nowrap logo-img">
@@ -41,16 +37,16 @@
                         <i class="ti ti-x fs-8"></i>
                     </div>
                 </div>
-                <!-- Sidebar navigation-->
+
                 {%include 'pos/sidenav.html'%}
 
             </div>
 
         </aside>
 
-        <!--  Main wrapper -->
+
         <div class="body-wrapper">
-            <!--  Header Start -->
+
             <header class="app-header">
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <ul class="navbar-nav">
@@ -78,9 +74,9 @@
                     {%include 'pos/top_bar.html'%}
                 </nav>
             </header>
-            <!--  Header End -->
+
             <div class="container-fluid">
-                <!--  Row 1 -->
+
 
                 {% block content %}{% endblock content %}
                 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -155,11 +151,12 @@
     </div>
 
     <footer>
-        <div class="py-6 px-6 text-center">
-            <p class="mb-0 fs-4">Brought to you by the good folks at
-                <a href="https://tomorrow.co.ke" target="_blank" data class="pe-1 copyright">
-                    TomorrowAI<sup>&reg;</sup>
+        <div class="text-center">
+            <p class="text-sm">Brought to you by the good folks at
+                <a href="https://tomorrow.co.ke" target="_blank">
+                    TomorrowAI
                 </a>
+                <sup>&reg;</sup>
             </p>
         </div>
 
@@ -172,24 +169,19 @@
     <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.3/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.colVis.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.3/js/buttons.print.min.js"></script>
-    <!--Moment JS-->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
-    <!--Bootstrap Touchspin-->
+    <script src="{%static 'js/jszip.min.js'%}"></script>
+    <script src="{%static 'js/pdfmake.min.js'%}""></script>
+    <script src=" {%static 'js/vfs_fonts.js'%}""></script>
+    <script src="{%static 'js/jquery.dataTables.min.js'%}""></script>
+    <script src=" {%static 'js/dataTables.buttons.min.js'%}""></script>
+    <script src="{%static 'js/buttons.colVis.min.js'%}""></script>
+    <script src=" {%static 'js/buttons.html5.min.js'%}""></script>
+    <script src="{%static 'js/buttons.print.min.js'%}"></script>
+    <script src="{%static 'js/moment.min.js'%}"></script>
+    <script src="{%static 'js/select2.min.js'%}" defer></script>
     <script src="{% static 'assets/bootstrap-touchspin-master/src/jquery.bootstrap-touchspin.js' %}"></script>
-    <!--Sweet Alert-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.15/dist/sweetalert2.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
+    <script src="{%static 'js/sweetalert2.all.min.js'%}"></script>
+    <script src="{%static 'js/popper.min.js'%}"></script>
     <script src="{%static 'libs/bootstrap/dist/js/bootstrap.bundle.min.js'%}"></script>
     <script src="{% static 'js/color-modes.js' %}"></script>
 
