@@ -3,18 +3,14 @@
 {% block title %}{{category.category_name}}{% endblock %}
 {%block heading%}{{category.category_name}}{%endblock%}
 {% block content %}
-<div class="ml-2 mb-3">
-    <a href="{%url 'expenses:index'%}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Back
-        </button>
+<div class="ml-2 mb-3 btn-group">
+    <a href="{%url 'expenses:index'%}" class="btn btn-primary font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Back
     </a>
-    <a href="{%url 'expenses:add_expense_category'%}">
-        <button type="button" class="btn btn-success font-weight-bold" id="add_expense">
-            <i class="ti ti-plus"></i>
-            Add Expense Category
-        </button>
+    <a href="{%url 'expenses:add_expense_category'%}" class="btn btn-success font-weight-bold">
+        <i class="ti ti-plus"></i>
+        Add Expense Category
     </a>
 </div>
 
