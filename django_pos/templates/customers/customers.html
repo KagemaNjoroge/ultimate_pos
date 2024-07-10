@@ -59,23 +59,24 @@
                         <td>-</td>
                         {%endif%}
 
-                        <td class="text-center">
-                            <!--Update-->
-                            <a href="{% url 'customers:customers_update' c.id %}" class="text-decoration-none">
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="tooltip"
+                        <td>
+
+                            <div class="btn-group">
+                                <a href="{% url 'customers:customers_update' c.id %}"
+                                    class="text-decoration-none btn btn-warning btn-sm" data-bs-toggle="tooltip"
                                     title="Update customer">
+
                                     <i class="ti ti-pencil"></i>
-                                </button>
-                            </a>
-                            <!--Delete modal-->
-                            <!-- Button trigger modal -->
-                            <a class="text-decoration-none">
-                                <button rel="delete" type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                    data-target="#exampleModal" data-bs-toggle="tooltip" title="Delete customer"
-                                    onclick="setModalid({{c.id}})">
+
+                                </a>
+
+                                <a class="text-decoration-none btn btn-danger btn-sm" data-bs-toggle="tooltip"
+                                    title="Delete customer">
+
                                     <i class="ti ti-trash"></i>
-                                </button>
-                            </a>
+
+                                </a>
+                            </div>
 
                         </td>
                     </tr>
