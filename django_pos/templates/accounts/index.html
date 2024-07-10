@@ -4,16 +4,15 @@
 {%block heading%}Accounts{%endblock%}
 {% block content %}
 <div class="ml-2 mb-3 btn-group">
-    <div class="btn-group">
-        <a href="{%url 'pos:index'%}" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Back
-        </a>
-        <a class="btn btn-success font-weight-bold">
-            <i class="ti ti-plus"></i>
-            Add User
-        </a>
-    </div>
+    <a href="{%url 'pos:index'%}" class="btn btn-primary font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Back
+    </a>
+    <a class="btn btn-success font-weight-bold" href="{%url 'authentication:register'%}">
+        <i class="ti ti-plus"></i>
+        Add User
+    </a>
+
 </div>
 <div class="card ml-2">
     <div class="card-body">
