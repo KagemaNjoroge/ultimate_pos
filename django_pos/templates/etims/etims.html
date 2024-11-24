@@ -107,7 +107,7 @@ eTIMS
             url: "{% url 'etims:server-status' %}",
             type: 'GET',
             success: function (data) {
-                if (data['status'] == 'success') {
+                if (data['status'] === 'success') {
                     $('#status').addClass('text-success');
                     $('#status').text('Online');
                 }
