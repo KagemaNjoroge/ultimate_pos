@@ -17,7 +17,7 @@
 
 <div class="card  ml-2">
     <div class="card-body">
-        <div class="update_msg text-center"></div>
+
         <form action="{% url 'products:categories_update' category.id %}" method="post" id="update_form">
             {% csrf_token %}
             <div class="form-row">
@@ -70,6 +70,8 @@
                 status: state
             };
 
+            
+
             e.preventDefault();
             const form = $(this);
             const url = form.attr('action');
@@ -87,44 +89,22 @@
                 data: JSON.stringify(data),
                 success: function (data) {
                     if (data.status === 'success') {
-                        // add success msg
-                        $('.update_msg').html(
-                            '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-                            '<strong>Success!</strong> ' + data.message +
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true">&times;</span>' +
-                            '</button>' +
-                            '</div>'
-                        )
+                        // toastr success
+                        toastr.success(data.message);
 
 
                     } else if (data.status === "error") {
                         // add error msg
-                        $('.update_msg').html(
-                            '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                            '<strong>Error!</strong> ' + data.message +
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true">&times;</span>' +
-                            '</button>' +
-                            '</div>'
-                        )
-
+                        toastr.error(data.message);
                     }
                     else {
                         // unknown error
-                        $('.update_msg').html(
-                            '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                            '<strong>Error!</strong> Unknown error occurred' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true">&times;</span>' +
-                            '</button>' +
-                            '</div>'
-                        )
+                        toastr.error('An error occurred');
                     }
                 },
                 error: function (data) {
                     // show an error message
-                    console.log(data);
+                    toastr.error('An error occurred');
                 }
                 // remove loader
             }).done(function () {
