@@ -20,9 +20,6 @@ Settings
         <div id="status">
 
         </div>
-        <div class="text-center mb-3 px-5">
-            <input type="text" class="form-control" id="searchSettings" placeholder="Search settings">
-        </div>
         <section id="company">
             <div class="ml-2 mb-3">
 
@@ -44,20 +41,22 @@ Settings
                                 Select Image
                             </button>
                         </div>
+                        <div class="mt-3 col-md-6 form-group">
+                            <div class="col-md-6">
+                                <label for="companyName">Company Name</label>
+                                <input type="text" class="form-control" id="companyName"
+                                    value="{{company.company_name}}" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="companyName">KRA PIN</label>
+                                <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}"
+                                    disabled>
+                            </div>
+                        </div>
 
                     </div>
                     {%csrf_token%}
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-6">
-                            <label for="companyName">Company Name</label>
-                            <input type="text" class="form-control" id="companyName" value="{{company.company_name}}"
-                                disabled>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="companyName">KRA PIN</label>
-                            <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}" disabled>
-                        </div>
-                    </div>
+
                     <div class="form-group">
                         <label for="companyEmail">Company Email</label>
                         <input type="email" class="form-control" id="companyEmail" name="companyEmail"
