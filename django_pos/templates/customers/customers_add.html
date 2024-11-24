@@ -74,12 +74,9 @@
                             placeholder="5340 Brett Dr #A Fort Knox, Kentucky(KY), 40121 ..." rows="2"></textarea>
                     </div>
                 </div>
-
-                <a class="btn btn-success font-weight-bold" id="vat-tab-btn">
-                    Next
-                    <i class="ti ti-arrow-right"></i>
-
-                </a>
+                <button type="submit" class="btn btn-success" id="submit_btn">
+                    Submit
+                </button>
 
 
             </div>
@@ -136,6 +133,7 @@
                 error: function (data) {
                     // unknown error
                     let error = '<div class="alert alert-danger alert-dismissible" role="alert">An error occurred. Please try again later.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                    console.log(data)
                     $('#status').html(error);
 
                 }
