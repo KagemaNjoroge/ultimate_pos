@@ -16,8 +16,6 @@
 
 <div class="card ml-2">
     <div class="card-body">
-        <div class="update_msg text-center"></div>
-
         <form action="{% url 'products:categories_add' %}" method="post" id="category_form">
             {% csrf_token %}
             <div class="form-row">
@@ -59,8 +57,6 @@
             let status = $("#status").val();
             let name = $("#name").val();
             let action = form.attr("action");
-
-
             $("#create_btn").html(
                 '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...'
             );
@@ -81,24 +77,19 @@
                 ),
                 success: function (data) {
                     if (data.status === "success") {
-                        $(".update_msg").html(
-                            `<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success!</strong> ${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
-                        );
-                    } else if ((data.status === "error")) {
-                        $(".update_msg").html(
-                            `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> ${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
-                        );
+                        // success toastr
+                        toastr.success(data.message, "Success");
+                        // clear form
+                        form[0].reset();
                     } else {
-                        $(".update_msg").html(
-                            `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong>An unknown error occurred, please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
-                        );
+                        // error toastr
+                        toastr.error(data.message, "Error");
                     }
+
                 },
                 error: function () {
-
-                    $(".update_msg").html(
-                        `<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong>An unknown error occurred, please try again.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
-                    );
+                    // error toastr
+                    toastr.error("An error occurred", "Error");
                 },
             }).done(function () {
                 $("#create_btn").html("Create category");
