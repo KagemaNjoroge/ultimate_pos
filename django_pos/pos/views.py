@@ -1,13 +1,15 @@
 import datetime
 import json
 from datetime import date, datetime
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from dotenv import load_dotenv
-from firebase_admin import firestore
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from company.models import Company, Subscription
 from customers.models import Customer
 from inventory.models import Inventory
@@ -15,30 +17,28 @@ from pos.models import Notifications
 from products.models import Product, Category
 from sales.models import Sale
 from sales.models import SaleDetail, SaleItem
-from firebase_admin import credentials
-import firebase_admin
-import os
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
-load_dotenv()
-cred = credentials.Certificate(os.getenv("FIREBASE_CONFIG"))
-app = firebase_admin.initialize_app(cred)
 
 
 @api_view(["GET"])
 def fetch_packages(request) -> Response:
-    db = firestore.client()
-    docs = db.collection("packages").stream()
-    packages = []
-    for doc in docs:
-
-        packages.append(
-            {
-                "name": doc.id,
-                "amount": doc.to_dict()["amount"],
-            }
-        )
+    packages = [
+        # hard coded packages
+        {
+            "id": 1,
+            "name": "Starter",
+            "amount": 1000,
+        },
+        {
+            "id": 2,
+            "name": "Standard",
+            "amount": 2000,
+        },
+        {
+            "id": 3,
+            "name": "Premium",
+            "amount": 3000,
+        },
+    ]
     return Response(packages)
 
 
