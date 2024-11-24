@@ -1,6 +1,10 @@
 from django.urls import path
-
+from rest_framework.routers import DefaultRouter
 from . import views
+from .api import CustomerViewSet
+
+router = DefaultRouter()
+router.register(r"api", CustomerViewSet, basename="customers_api")
 
 app_name = "customers"
 urlpatterns = [
@@ -23,3 +27,8 @@ urlpatterns = [
         name="customer_profile",
     ),
 ]
+
+
+# api urls
+
+# urlpatterns += router.urls
