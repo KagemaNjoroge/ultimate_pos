@@ -1,4 +1,3 @@
-from typing import Any
 from django.contrib import admin
 from django.http import HttpRequest
 from .models import Company, Subscription, Branch
@@ -35,13 +34,13 @@ class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ("start_date", "end_date", "is_active")
     actions = ["deactivate", "activate"]
 
-    def has_add_permission(self, request: HttpRequest) -> bool:
-        return False
+    # def has_add_permission(self, request: HttpRequest) -> bool:
+    #     return False
 
-    def has_change_permission(
-        self, request: HttpRequest, obj: Any | None = ...
-    ) -> bool:
-        return False
+    # def has_change_permission(
+    #     self, request: HttpRequest, obj: Any | None = ...
+    # ) -> bool:
+    #     return False
 
     @admin.action(description="Deactivate subscription")
     def deactivate(self, request, queryset):
