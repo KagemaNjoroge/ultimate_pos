@@ -9,18 +9,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
+LOCAL_DEVELOPMENT = True
+
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
-    "http://pos.tomorrow.co.ke",
     "https://pos.tomorrow.co.ke",
     "https://localhost",
 ]
 # new auth model
 AUTH_USER_MODEL = "authentication.CustomUser"
-# Application definition
+
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -29,10 +30,16 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "rest_framework",
-    # Third party apps
-    "drf_yasg",
+
 ]
+
+
+THIRD_PARTY_APPS = [
+    "rest_framework",
+    "drf_yasg"
+]
+
+
 
 LOCAL_APPS = [
     "customers",
@@ -55,7 +62,7 @@ LOCAL_APPS = [
     "SalesV2",
 ]
 
-INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
+INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -75,7 +82,6 @@ LOGIN_REDIRECT_URL = "authentication:home"
 # Route defined in authentication/urls.py
 LOGOUT_REDIRECT_URL = "authentication:login"
 
-# ROOT dir for templates
 
 
 TEMPLATES = [
@@ -98,16 +104,25 @@ WSGI_APPLICATION = "django_pos.wsgi.application"
 
 # Database
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DATABASE_NAME"),
-        "USER": os.getenv("DATABASE_USER"),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-        "HOST": os.getenv("DATABASE_HOST"),
-        "PORT": os.getenv("DATABASE_PORT"),
+if LOCAL_DEVELOPMENT:
+    # sqlite3
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("DATABASE_NAME"),
+            "USER": os.getenv("DATABASE_USER"),
+            "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+            "HOST": os.getenv("DATABASE_HOST"),
+            "PORT": os.getenv("DATABASE_PORT"),
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
