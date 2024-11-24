@@ -21,7 +21,6 @@ class Company(models.Model):
             "email": self.email,
             "city": self.city,
             "address": self.address,
-            "logo": self.logo.url,
             "company_name": self.company_name,
             "currency": self.currency_symbol,
             # if photo
