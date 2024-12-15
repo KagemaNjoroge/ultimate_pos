@@ -25,8 +25,8 @@
   <main class="form-signin w-100 m-auto">
     <form action="{%url 'authentication:login' %}" method="post" id="login_form">
       {% csrf_token %}
-      <img class="mb-4 text-center" src="{%static 'img/logos/UltimatePOS Logo(2).svg'%}" alt="UltimatePOS Logo"
-        width="150" height="150">
+      <img class="mb-4 text-center" src="{%static 'img/logos/favicon.png'%}" alt="UltimatePOS Logo" width="150"
+        height="150">
       <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
       {% if msg %}
       <div class="mb-3 text-danger text-center"> {{ msg | safe }} </div>
