@@ -4,11 +4,10 @@ from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from inventory.models import Inventory
-from pos.views import check_subscription
+
 from products.models import Product
 
 
-@check_subscription
 @login_required(login_url="/users/login/")
 def index(request):
     inventory = Inventory.objects.all()
@@ -16,7 +15,6 @@ def index(request):
     return render(request, "inventory/inventory.html", context)
 
 
-@check_subscription
 @login_required(login_url="/users/login/")
 def add_inventory(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
@@ -44,7 +42,6 @@ def add_inventory(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def update_inventory(request: HttpRequest, inventory_id: int) -> HttpResponse:
     inventory = get_object_or_404(Inventory, id=inventory_id)
     if request.method == "GET":
