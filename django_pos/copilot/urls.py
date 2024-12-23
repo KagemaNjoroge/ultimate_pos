@@ -1,4 +1,3 @@
-from re import A
 from django.urls import path
 from .views import chat
 
