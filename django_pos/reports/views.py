@@ -1,6 +1,6 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
-from pos.views import check_subscription
+
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from sales.models import Sale, SaleDetail
@@ -9,13 +9,11 @@ from rest_framework.response import Response
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def index(request: HttpRequest) -> HttpResponse:
     return render(request, "reports/index.html", context={"active_icon": "reports"})
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 @api_view(["GET"])
 def duration_sales_report(request):
     # get duration span
@@ -40,7 +38,6 @@ def duration_sales_report(request):
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 @api_view(["GET"])
 def sales_this_month(request) -> Response:
 
@@ -64,7 +61,6 @@ def sales_this_month(request) -> Response:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 @api_view(["GET"])
 def sales_this_week(request) -> Response:
     sales = Sale.objects.filter(
@@ -84,7 +80,6 @@ def sales_this_week(request) -> Response:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 @api_view(["GET"])
 def best_selling_product(request) -> Response:
     sales = Sale.objects.filter(
@@ -93,6 +88,12 @@ def best_selling_product(request) -> Response:
             datetime.now(),
         ]
     )
+    if not sales:
+        return Response(
+            data={"top_selling": "No sales made"},
+            status=200,
+        )
+
     tops = {}
     details = SaleDetail.objects.filter(sale__in=sales)
 
@@ -114,15 +115,16 @@ def best_selling_product(request) -> Response:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 @api_view(["GET"])
 def get_best_selling_category(request) -> Response:
+
     sales = Sale.objects.filter(
         date_added__range=[
             datetime.now().replace(day=1),
             datetime.now().replace(day=30),
         ]
     )
+
     tops = {}
     details = SaleDetail.objects.filter(sale__in=sales)
 
