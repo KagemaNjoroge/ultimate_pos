@@ -6,11 +6,17 @@ from .models import Branch, Company
 from .serializers import CompanySerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django_countries import countries
 
 
 @require_http_methods(["GET"])
 def set_up_company(request):
-    return render(request, template_name="company/setup.html")
+    company = Company.objects.first()
+    context = {
+        "company": company,
+        "countries": countries,
+    }
+    return render(request, "company/setup.html", context)
 
 
 class CompanyView(APIView):
