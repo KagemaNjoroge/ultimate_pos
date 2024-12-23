@@ -11,7 +11,7 @@ Reports
 <div class="row">
 
     <!-- Earnings (Monthly) Card  -->
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-4 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
@@ -29,7 +29,7 @@ Reports
     </div>
 
     <!-- Earnings (Annual) Card  -->
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-4 col-md-6 mb-4">
         <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
@@ -47,7 +47,7 @@ Reports
     </div>
 
 
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-4 col-md-6 mb-4">
         <div class="card border-left-danger shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
@@ -73,30 +73,7 @@ Reports
         </div>
     </div>
 
-    <!-- Categories Card -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Best selling
-                            category
-                        </div>
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                    Software
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="ti ti-tag text-gray-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
 </div>
 
@@ -165,7 +142,7 @@ Reports
             url: "{%url 'reports:best_selling_product'%}",
             type: "GET",
             success: function (data) {
-                $("#best_selling_product_name").html(data.top_selling[0])
+                $("#best_selling_product_name").html(data.top_selling)
 
 
 
