@@ -30,15 +30,10 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
 ]
 
 
-THIRD_PARTY_APPS = [
-    "rest_framework",
-    "drf_yasg"
-]
-
+THIRD_PARTY_APPS = ["rest_framework", "drf_yasg"]
 
 
 LOCAL_APPS = [
@@ -48,7 +43,6 @@ LOCAL_APPS = [
     "sales",
     "company",
     "inventory",
-    "etims",
     "reports",
     "suppliers",
     "accounting",
@@ -58,8 +52,6 @@ LOCAL_APPS = [
     "authentication",
     "onboarding",
     "api",
-    # another sales app to replace the existing one
-    "SalesV2",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -81,7 +73,6 @@ LOGIN_URL = "/users/login/"
 LOGIN_REDIRECT_URL = "authentication:home"
 # Route defined in authentication/urls.py
 LOGOUT_REDIRECT_URL = "authentication:login"
-
 
 
 TEMPLATES = [
