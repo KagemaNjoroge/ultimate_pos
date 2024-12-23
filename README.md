@@ -23,14 +23,6 @@ A modern POS/ERP/CRM system for businesses of the AI era. Powered by [Django.](h
   <img src="./django_pos//static/img/icons/icon512.png" alt="Ultimate POS Logo" >
 </p>
 
-## Demo
-
-You can access the demo [here](https://pos.tomorrow.co.ke/).
-The credentials are:
-
-- `username: demo`
-- `password: 12345678`
-
 ## Features
 
 - Dashboard Page with statistics and graphs
@@ -127,16 +119,13 @@ After restarting your computer
 cp .env.example .env
 ```
 
-5. Create a Firebase collection and add the pricing data as you wish your pricing to be.  
-   Example:
-   ![Example pricing configuration](image.png)
-6. Make database migrations:
+5. Make database migrations:
 
 ```bash
  python manage.py makemigrations && python manage.py migrate
 ```
 
-7.  Create superuser to access the admin panel:
+6.  Create superuser to access the admin panel:
 
 > [!IMPORTANT]
 > You will need a super user account in order to access the admin page. You can create one by running the following command:
