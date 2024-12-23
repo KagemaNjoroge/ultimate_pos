@@ -1,5 +1,5 @@
 <div align="center">
-<h1> Ultimate Point of Sale (POS)</h1>
+<h1> UltimatePOS</h1>
 </div>
 
 <div>
@@ -20,7 +20,7 @@
 A modern POS/ERP/CRM system for businesses of the AI era. Powered by [Django.](https://djangoproject.com)
 
 <p align="center">
-  <img src="https://github.com/KagemaNjoroge/ultimate_pos/blob/main/django_pos/static/img/logos/UltimatePOS%20Logo(2).svg">
+  <img src="./django_pos//static/img/icons/icon512.png" alt="Ultimate POS Logo" >
 </p>
 
 ## Demo
