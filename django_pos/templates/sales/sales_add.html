@@ -34,6 +34,11 @@
                                 <label for="customer">Customer</label>
                                 <select name="customer" class="form-control" id="searchbox_customers" required>
                                     <option value="" selected disabled hidden>Select the customer</option>
+                                    <option onclick="window.location='{%url 'customers:customers_add'%}'">
+
+                                        <i class="ti ti-plus"></i> Add Customer
+
+                                    </option>
                                     {% for customer in customers %}
                                     <option value="{{customer.value}}">{{customer.label}}</option>
                                     {% endfor %}
