@@ -1,11 +1,16 @@
 from django.http import HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from .models import Branch, Company
 from .serializers import CompanySerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+
+@require_http_methods(["GET"])
+def set_up_company(request):
+    return render(request, template_name="company/setup.html")
 
 
 class CompanyView(APIView):
@@ -51,13 +56,13 @@ class CompanyView(APIView):
 def index(request: HttpRequest) -> HttpResponse:
     company = Company.objects.first()
 
-    if company != None:
-        company = company.to_dict()
+    if not company:
+        return redirect("company:setup")
 
     return render(
         request,
         template_name="company/settings.html",
-        context={"active_icon": "settings", "company": company},
+        context={"company": company.to_dict()},
     )
 
 
@@ -66,11 +71,6 @@ def index(request: HttpRequest) -> HttpResponse:
 def branches(request: HttpRequest) -> HttpResponse:
     all_branches = Branch.objects.all()
     return render(request, "company/branches.html", {"branches": all_branches})
-
-
-@login_required(login_url="/users/login/")
-def invoice_design(request: HttpRequest) -> HttpResponse:
-    return render(request, "company/invoice_design.html")
 
 
 @login_required(login_url="/users/login/")
