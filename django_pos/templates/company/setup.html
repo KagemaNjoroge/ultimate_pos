@@ -1,0 +1,14 @@
+{%extends 'pos/base.html'%}
+{% load static %}
+{% block title %}Company Setup{% endblock %}
+{%block heading%}
+Company setup
+{%endblock heading%}
+{%block content%}
+<div class="ml-2 mb-3">
+    <a class="btn btn-primary" href="{%url 'company:branches'%}">
+        <i class="ti ti-arrow-left"></i>
+        Back
+    </a>
+</div>
+{%endblock content%}
