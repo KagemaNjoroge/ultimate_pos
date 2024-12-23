@@ -1,15 +1,17 @@
 from django.db import models
+from django_countries.fields import CountryField
 
 
 class Company(models.Model):
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    city = models.CharField(max_length=100, blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
     logo = models.ImageField(blank=True, null=True, default="static/default.png")
     company_name = models.CharField(max_length=100, blank=False, null=False)
     currency_symbol = models.CharField(max_length=5, default="Kes")
     kra_pin = models.CharField(max_length=11, blank=True, null=True)
+    # country
+    country = CountryField(blank=True, null=True)
 
     def __str__(self) -> str:
         return self.company_name
@@ -19,13 +21,12 @@ class Company(models.Model):
             "id": self.id,
             "phone": self.phone_number,
             "email": self.email,
-            "city": self.city,
             "address": self.address,
             "company_name": self.company_name,
             "currency": self.currency_symbol,
-            # if photo
             "logo": self.logo.url or None,
             "kra_pin": self.kra_pin,
+            "country": self.country,
         }
 
     class Meta:
