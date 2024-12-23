@@ -7,7 +7,7 @@ from django_pos import settings
 from django.template.loader import get_template
 from customers.models import Customer
 from pos.models import Notifications
-from pos.views import check_subscription
+
 from products.models import Product
 from weasyprint import HTML, CSS
 from .models import Sale, SaleDetail, SaleItem
@@ -20,14 +20,11 @@ from PIL import Image
 from inventory.models import Inventory
 
 
-
-
 def is_ajax(request: HttpRequest) -> bool:
     return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def sales_list_view(request: HttpRequest) -> HttpResponse:
     sale_details = SaleDetail.objects.all()
     context = {"active_icon": "sales", "sales": sale_details}
@@ -35,7 +32,6 @@ def sales_list_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def sales_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "sales",
@@ -126,7 +122,6 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     """
     Args:
@@ -154,7 +149,6 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     """
     Args:
@@ -231,7 +225,11 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     )
 
     # Create the pdf
-    pdf = HTML(string=html_template, ).write_pdf(stylesheets=[CSS(css_url)],)
+    pdf = HTML(
+        string=html_template,
+    ).write_pdf(
+        stylesheets=[CSS(css_url)],
+    )
 
     return HttpResponse(pdf, content_type="application/pdf")
 
