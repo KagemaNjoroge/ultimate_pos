@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from company.models import Company
 from rest_framework.decorators import api_view, renderer_classes
 from inventory.models import Inventory
-from pos.views import check_subscription
 from .models import Category, Product
 from rest_framework.response import Response
 from .serializers import CategorySerializer, ProductSerializer
@@ -18,7 +17,6 @@ from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def categories_list_view(request: HttpRequest) -> HttpResponse:
     context = {
         "active_icon": "products_categories",
@@ -28,7 +26,6 @@ def categories_list_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 @api_view(["POST", "GET"])
 @renderer_classes([JSONRenderer, TemplateHTMLRenderer])
 @parser_classes([JSONParser, FormParser, MultiPartParser])
@@ -67,7 +64,6 @@ def categories_add_view(request: Request) -> Response:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 @api_view(["POST", "GET"])
 def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
     if request.method == "GET":
@@ -102,7 +98,6 @@ def categories_update_view(request: HttpRequest, category_id: str) -> HttpRespon
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def categories_delete_view(request: HttpRequest, category_id: str) -> HttpResponse:
     """
     Args:
@@ -128,7 +123,6 @@ def categories_delete_view(request: HttpRequest, category_id: str) -> HttpRespon
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def products_list_view(request: HttpRequest) -> HttpResponse:
     context = {"active_icon": "products", "products": Product.objects.all()}
     company = Company.objects.first()
@@ -141,7 +135,6 @@ def products_list_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def products_add_view(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         # Save the POST arguments
@@ -194,7 +187,6 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 @api_view(["POST", "GET"])
 @renderer_classes([JSONRenderer, TemplateHTMLRenderer])
 def products_update_view(request, product_id: str):
@@ -233,7 +225,6 @@ def products_update_view(request, product_id: str):
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def products_delete_view(request: HttpRequest, product_id: str) -> HttpResponse:
     """
     Args:
@@ -263,7 +254,6 @@ def is_ajax(request: HttpRequest) -> bool:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 @api_view(["GET"])
 def get_products_ajax_view(request: Request) -> Response:
     query = request.query_params.dict().get("term", "")
@@ -273,7 +263,6 @@ def get_products_ajax_view(request: Request) -> Response:
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def upload_excel_view(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
 
@@ -362,7 +351,6 @@ def download_template(request: HttpRequest):
 
 
 @login_required(login_url="/users/login/")
-@check_subscription
 def product_detail_view(request: HttpRequest, product_id: str) -> HttpResponse:
     product = get_object_or_404(Product, id=product_id)
     context = {
