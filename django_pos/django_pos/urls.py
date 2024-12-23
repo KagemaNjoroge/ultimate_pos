@@ -8,7 +8,7 @@ from django_pos import settings
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Ultimate POS API",
+        title="UltimatePOS API",
         default_version="v1",
         description="Ultimate POS API Documentation",
         terms_of_service="https://www.google.com/policies/terms/",
@@ -32,8 +32,6 @@ urlpatterns = [
     path("sales/", include("sales.urls")),
     # Inventory
     path("inventory/", include("inventory.urls")),
-    # etims
-    path("etims/", include("etims.urls")),
     # reports
     path("reports/", include("reports.urls")),
     # company
@@ -52,13 +50,11 @@ urlpatterns = [
     path("purchases/", include("purchases.urls")),
     # Swagger
     path(
-        "swagger/",
+        "docs/",
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
     # api
     path("api/", include("api.urls")),
-    # sales v2
-    path("sales-v2/", include("SalesV2.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
