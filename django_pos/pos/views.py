@@ -1,16 +1,15 @@
-import datetime
 import json
-from datetime import date, datetime
+from datetime import date
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from company.models import Company, Subscription
+from company.models import Company
 from customers.models import Customer
 from inventory.models import Inventory
 from pos.models import Notifications
@@ -42,38 +41,9 @@ def fetch_packages(request) -> Response:
     return Response(packages)
 
 
-def check_subscription(view_func):
-    """
-    Special decorator for making sure that the company has a subscription
-    It is called before the view function
-    """
-
-    def _wrapped_view(request, *args, **kwargs):
-        company = Company.objects.first()
-        if not company:
-            return redirect(
-                "company:settings"
-            )  # Redirect to a page where a company can be registered
-
-        subscription = Subscription.objects.filter(
-            company=company, is_active=True
-        ).first()
-        if not subscription or subscription.end_date.date() < datetime.today().date():
-            return redirect("pos:subscription_page")
-        return view_func(request, *args, **kwargs)
-
-    return _wrapped_view
-
-
 @login_required(login_url="/users/login/")
 def register_company(request: HttpRequest) -> HttpResponse:
-    return render(
-        request, "pos/register_company.html", context={"active_icon": "settings"}
-    )
-
-
-def subscription_page(request: HttpRequest) -> HttpResponse:
-    return render(request, "pos/subscription.html", context={"active_icon": "settings"})
+    return render(request, "pos/register_company.html")
 
 
 @login_required(login_url="/users/login/")
@@ -160,7 +130,6 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "pos/index.html", context)
 
 
-@check_subscription
 @login_required(login_url="/users/login/")
 def pos(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
