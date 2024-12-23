@@ -33,7 +33,7 @@ DJANGO_APPS = [
 ]
 
 
-THIRD_PARTY_APPS = ["rest_framework", "drf_yasg"]
+THIRD_PARTY_APPS = ["rest_framework", "drf_yasg", "django-countries"]
 
 
 LOCAL_APPS = [
