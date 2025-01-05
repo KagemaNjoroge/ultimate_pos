@@ -42,7 +42,6 @@ def customers_add_view(request) -> Response:
 
 
 @login_required(login_url="/users/login/")
-
 def customers_update_view(request: HttpRequest, customer_id: str) -> HttpResponse:
     """
     Args:
@@ -150,3 +149,8 @@ def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
     return render(
         request, "customers/customer_profile.html", context=context, status=200
     )
+
+
+@login_required(login_url="/users/login/")
+def import_customers(request: HttpRequest) -> HttpResponse:
+    return render(request, template_name="customers/import_customers.html")

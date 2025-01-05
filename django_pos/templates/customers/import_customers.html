@@ -1,0 +1,18 @@
+{% extends "pos/base.html" %}
+{%load static%}
+{% block title %}Import customers{% endblock title %}
+{% block stylesheets %}{% endblock stylesheets %}
+{% block heading %}Import Customers Data{% endblock heading %}
+{% block content %}
+
+<div class="ml-2 mb-3 btn-group">
+    <a href="{% url 'customers:customers_list' %}" class="btn btn-primary font-weight-bold">
+        <i class="ti ti-arrow-left"></i>
+        Go back
+    </a>
+
+</div>
+
+
+
+{% endblock content %}
