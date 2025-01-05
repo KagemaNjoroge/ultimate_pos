@@ -47,10 +47,8 @@ LOCAL_APPS = [
     "suppliers",
     "accounting",
     "expenses",
-    "cloud",
     "purchases",
     "authentication",
-    "onboarding",
     "api",
 ]
 
