@@ -1,7 +1,7 @@
 import json
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
-from .serializers import ExpenseCategorySerializer, ExpenseSerializer
+from .serializers import ExpenseCategorySerializer
 from expenses.models import Expense, ExpenseCategory
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
