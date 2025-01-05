@@ -1,8 +1,6 @@
-[ ] Expenses  
-[ ] Suppliers  
-[ ] Customer  
-[ ] Auth roles and permissions  
-[ ] Theme toggle  
-[x] Migrate to Tabular icons  
-[ ] Migrate to bootstrap toasts  
-[ ] Fix inactive bootstrap tabs
+[ ] Suspend sales not working  
+[ ] Receipt/invoices not printing  
+
+## Long run
+
+[ ] Probably rebuild the UI using Svelte
