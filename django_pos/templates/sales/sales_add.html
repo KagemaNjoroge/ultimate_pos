@@ -25,9 +25,54 @@
 
             </div>
             <div class="row">
+                <div class="col-md-7">
+                    <div class="">
+
+
+
+
+                        <div class="form-group">
+                            <label>Search products</label>
+                            <div class="input-group">
+                                <div class="form-outline">
+                                    <input type="search" id="form1" class="form-control" placeholder="Product Name" />
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div id="search_results"></div>
+
+                        <button type="button" class="mb-4 btn btn-danger btn-sm deleteAll">
+                            Delete all products <i class="ml-1 ti ti-trash"></i>
+                        </button>
+
+
+
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap" id="table_products">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th class="text-center">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                </div>
                 <div class="col-md-5">
                     <div class="card card-secondary">
-                        <div class="card-header">Sale details</div>
+
                         <div class="card-body">
                             {% csrf_token %}
                             <div class="form-group">
@@ -84,52 +129,7 @@
                     </div>
 
                 </div>
-                <div class="col-md-7">
-                    <div class="card card-secondary">
-                        <div class="card-header">Sale products</div>
 
-                        <div class="card-body">
-
-                            <div class="form-group">
-                                <label>Search products</label>
-                                <div class="input-group">
-                                    <div class="form-outline">
-                                        <input type="search" id="form1" class="form-control"
-                                            placeholder="Product Name" />
-
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div id="search_results"></div>
-
-                            <button type="button" class="mb-4 btn btn-danger btn-sm deleteAll">
-                                Delete all products <i class="ml-1 ti ti-trash"></i>
-                            </button>
-
-
-
-                            <div class="card-body table-responsive p-0">
-                                <table class="table table-hover text-nowrap" id="table_products">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Price</th>
-                                            <th>Quantity</th>
-                                            <th>Total</th>
-                                            <th class="text-center">Delete</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
 
             </div>
 
