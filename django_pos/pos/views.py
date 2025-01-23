@@ -18,29 +18,6 @@ from sales.models import Sale
 from sales.models import SaleDetail, SaleItem
 
 
-@api_view(["GET"])
-def fetch_packages(request) -> Response:
-    packages = [
-        # hard coded packages
-        {
-            "id": 1,
-            "name": "Starter",
-            "amount": 1000,
-        },
-        {
-            "id": 2,
-            "name": "Standard",
-            "amount": 2000,
-        },
-        {
-            "id": 3,
-            "name": "Premium",
-            "amount": 3000,
-        },
-    ]
-    return Response(packages)
-
-
 @login_required(login_url="/users/login/")
 def register_company(request: HttpRequest) -> HttpResponse:
     return render(request, "pos/register_company.html")
@@ -259,7 +236,3 @@ def get_notifications(request, id: int = None) -> Response:
                 "date": notification.date.strftime("%Y-%m-%d %H:%M:%S"),
             }
         )
-
-
-def checkout(request: HttpRequest, amount) -> HttpResponse:
-    return render(request, "pos/checkout.html", context={"amount": amount})

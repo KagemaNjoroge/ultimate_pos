@@ -9,6 +9,6 @@ urlpatterns = [
     path("notifications/", views.get_notifications, name="notifications"),
     path("notifications/<int:id>/", views.get_notifications, name="notifications"),
     path("management/", view=views.register_company, name="register_company"),
-    path("checkout/<int:amount>/", view=views.checkout, name="checkout"),
-    path("packages/", views.fetch_packages, name="fetch_packages"),
+    
+
 ]
