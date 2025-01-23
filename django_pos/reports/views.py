@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 @login_required(login_url="/users/login/")
 def index(request: HttpRequest) -> HttpResponse:
-    return render(request, "reports/index.html", context={"active_icon": "reports"})
+    return render(request, "reports/index.html")
 
 
 @login_required(login_url="/users/login/")

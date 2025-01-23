@@ -27,14 +27,13 @@ def is_ajax(request: HttpRequest) -> bool:
 @login_required(login_url="/users/login/")
 def sales_list_view(request: HttpRequest) -> HttpResponse:
     sale_details = SaleDetail.objects.all()
-    context = {"active_icon": "sales", "sales": sale_details}
+    context = {"sales": sale_details}
     return render(request, "sales/sales.html", context=context)
 
 
 @login_required(login_url="/users/login/")
 def sales_add_view(request: HttpRequest) -> HttpResponse:
     context = {
-        "active_icon": "sales",
         "customers": [c.to_select2() for c in Customer.objects.all()],
     }
 
@@ -136,7 +135,6 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         details = SaleDetail.objects.filter(sale=sale).first()
 
         context = {
-            "active_icon": "sales",
             "sale": sale,
             "details": details,
         }

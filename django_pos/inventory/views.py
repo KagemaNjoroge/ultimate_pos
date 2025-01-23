@@ -11,7 +11,7 @@ from products.models import Product
 @login_required(login_url="/users/login/")
 def index(request):
     inventory = Inventory.objects.all()
-    context = {"inventory": inventory, "active_icon": "inventory"}
+    context = {"inventory": inventory}
     return render(request, "inventory/inventory.html", context)
 
 

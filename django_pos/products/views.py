@@ -19,7 +19,6 @@ from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 @login_required(login_url="/users/login/")
 def categories_list_view(request: HttpRequest) -> HttpResponse:
     context = {
-        "active_icon": "products_categories",
         "categories": Category.objects.all(),
     }
     return render(request, "products/categories.html", context=context)
@@ -33,7 +32,6 @@ def categories_add_view(request: Request) -> Response:
 
     if request.method == "GET":
         context = {
-            "active_icon": "products_categories",
             "category_status": Category.status.field.choices,
         }
         if request.accepted_renderer.format == "html":
@@ -124,7 +122,7 @@ def categories_delete_view(request: HttpRequest, category_id: str) -> HttpRespon
 
 @login_required(login_url="/users/login/")
 def products_list_view(request: HttpRequest) -> HttpResponse:
-    context = {"active_icon": "products", "products": Product.objects.all()}
+    context = {"products": Product.objects.all()}
     company = Company.objects.first()
     if company:
         context["currency_symbol"] = company.currency_symbol
@@ -176,7 +174,6 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
 
     elif request.method == "GET":
         context = {
-            "active_icon": "products_categories",
             "product_status": Product.status.field.choices,
             "categories": Category.objects.all().filter(status="ACTIVE"),
         }
@@ -194,7 +191,6 @@ def products_update_view(request, product_id: str):
 
     if request.method == "GET":
         context = {
-            "active_icon": "products",
             "product_status": Product.status.field.choices,
             "product": product,
             "categories": [
@@ -267,7 +263,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
 
         categories = Category.objects.all()
-        context = {"active_icon": "products", "categories": categories}
+        context = {"categories": categories}
         return render(request, "products/upload_csv_excel.html", context=context)
     elif request.method == "POST":
 
@@ -354,7 +350,6 @@ def download_template(request: HttpRequest):
 def product_detail_view(request: HttpRequest, product_id: str) -> HttpResponse:
     product = get_object_or_404(Product, id=product_id)
     context = {
-        "active_icon": "products",
         "product": product,
     }
     return render(request, "products/product_details.html", context=context)
