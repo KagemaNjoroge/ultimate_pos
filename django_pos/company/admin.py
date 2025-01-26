@@ -5,7 +5,7 @@ from .models import Company, Subscription, Branch
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ("company_name", "phone_number", "kra_pin", "city")
+    list_display = ("company_name", "phone_number", "kra_pin", "country")
 
     def has_add_permission(self, request: HttpRequest) -> bool:
         return Company.objects.all().count() < 1
