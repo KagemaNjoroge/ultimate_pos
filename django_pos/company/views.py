@@ -31,8 +31,9 @@ class CompanyView(APIView):
             company.delete()
             return Response({"message": "Company deleted successfully"})
         except Exception as e:
+            # Information exposure through an exception
             return Response(
-                {"message": f"Error deleting company: {str(e)}"}, status=400
+                {"message": "An error occurred while deleting the company"}, status=400
             )
 
     def put(self, request, id: int):
