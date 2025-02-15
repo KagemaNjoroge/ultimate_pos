@@ -92,7 +92,10 @@ def categories_update_view(request: HttpRequest, category_id: str) -> HttpRespon
             )
 
         except Exception as e:
-            return Response({"status": "error", "message": str(e)})
+            # Information exposure through an exception
+            return Response(
+                {"status": "error", "message": "An error occurred"}, status=400
+            )
 
 
 @login_required(login_url="/users/login/")
