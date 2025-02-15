@@ -92,7 +92,7 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
 
         except Exception as e:
 
-            return JsonResponse({"status": "error", "message": str(e)})
+            return JsonResponse({"status": "error", "message": "An error occurred!"})
 
 
 @login_required(login_url="/users/login/")
