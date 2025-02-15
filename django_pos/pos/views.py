@@ -201,7 +201,9 @@ def pos(request: HttpRequest) -> HttpResponse:
             return JsonResponse({"status": "success", "sale_id": sale.id})
         except Exception as e:
 
-            return JsonResponse({"status": "error", "error_message": str(e)})
+            return JsonResponse(
+                {"status": "error", "error_message": "An error occurred"}
+            )
     return HttpResponse("Invalid request", status=400)
 
 
