@@ -111,7 +111,7 @@ def customers_delete_view(request: HttpRequest, customer_id: str) -> HttpRespons
                 {"status": "success", "message": "Customer deleted successfully!"},
             )
         except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)})
+            return JsonResponse({"status": "error", "message": "An error occurred!"})
     else:
         # not allowed
         return JsonResponse(
