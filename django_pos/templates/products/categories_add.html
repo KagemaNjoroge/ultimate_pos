@@ -1,65 +1,132 @@
 {% extends "pos/base.html" %}
 {%load static%}
-{% block title %}Add category{% endblock title %}
+{% block title %}Add Category{% endblock title %}
 {% block stylesheets %}{% endblock stylesheets %}
-{% block heading %}Add category{% endblock heading %}
+{% block heading %}Add Category{% endblock heading %}
 {% block content %}
 
-<div class="mb-3 ml-2">
-    <a href="{% url 'products:categories_list' %}" class="btn btn-primary font-weight-bold">
-        <i class="ti ti-arrow-left"></i>
-        Go back
-    </a>
-</div>
+<div class="container-fluid py-3">
+    <div class="mb-4 d-flex justify-content-between">
+        <a href="{% url 'products:categories_list' %}" class="btn btn-primary">
+            <i class="ti ti-arrow-left me-1"></i>
+            Back to Categories
+        </a>
+    </div>
 
-
-
-<div class="card ml-2">
-    <div class="card-body">
-        <form action="{% url 'products:categories_add' %}" method="post" id="category_form">
-            {% csrf_token %}
-            <div class="form-row">
-                <div class="form-group col-md-8">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" name="name" placeholder="Drinks..." required id="name" />
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="status">State</label>
-                    <select name="state" class="form-control" required id="status">
-                        {% for status in category_status %}
-                        <option value="{{status.0}}">{{status.1}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">
+                <i class="ti ti-plus me-2"></i>Create New Category
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info" role="alert">
+                <i class="ti ti-info-circle me-2"></i>
+                Enter the details of the category you want to add to your product catalog.
             </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="description">Description</label>
-                    <input type="text" name="description" class="form-control" placeholder="Drinks and beverages.."
-                        required id="description" />
+            <form action="{% url 'products:categories_add' %}" method="post" id="category_form" class="needs-validation"
+                novalidate>
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="name" class="form-label fw-bold">Category Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="ti ti-tag"></i></span>
+                                <input type="text" class="form-control" name="name" placeholder="Enter category name"
+                                    required id="name" />
+                                <div class="invalid-feedback">
+                                    Please provide a category name.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="status" class="form-label fw-bold">Status</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="ti ti-toggle-right"></i></span>
+                                <select name="status" class="form-control form-select" required id="status">
+                                    <option value="" disabled>Select status</option>
+                                    {% for status in category_status %}
+                                    <option value="{{status.0}}" {% if status.0 == "ACTIVE" %}selected{% endif %}>
+                                        {{status.1}}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select a status.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <button type="submit" class="btn btn-success font-weight-bold" id="create_btn">
-                Create category
-            </button>
-        </form>
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="description" class="form-label fw-bold">Description</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="ti ti-notes"></i></span>
+                                <textarea name="description" class="form-control" rows="3"
+                                    placeholder="Enter a brief description of the category" required
+                                    id="description"></textarea>
+                                <div class="invalid-feedback">
+                                    Please provide a description.
+                                </div>
+                            </div>
+                            <div class="form-text text-muted">
+                                Add details about the types of products that will be included in this category.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="reset" class="btn btn-light me-md-2">
+                        <i class="ti ti-refresh me-1"></i>
+                        Reset
+                    </button>
+                    <button type="submit" class="btn btn-success" id="create_btn">
+                        <i class="ti ti-check me-1"></i>
+                        Create Category
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
+        // Form validation
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+
         $("#category_form").submit(function (e) {
             const form = $(this);
             e.preventDefault();
+            if (!form[0].checkValidity()) {
+                return false;
+            }
+
             let description = $("#description").val();
             let status = $("#status").val();
             let name = $("#name").val();
             let action = form.attr("action");
-            $("#create_btn").html(
-                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...'
-            );
+
+            $("#create_btn")
+                .prop("disabled", true)
+                .html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Creating...');
+
             $.ajax({
                 type: "POST",
                 url: action,
@@ -68,31 +135,46 @@
                     "X-CSRFToken": "{{ csrf_token }}",
                     "Content-Type": "application/json",
                 },
-                data: JSON.stringify(
-                    {
-                        "description": description,
-                        "status": status,
-                        "name": name,
-                    }
-                ),
-                success: function (data) {
+                data: JSON.stringify({
+                    "description": description,
+                    "status": status,
+                    "name": name,
+                }), success: function (data) {
                     if (data.status === "success") {
-                        // success toastr
+                        // Configure toastr options
+                        toastr.options = {
+                            "closeButton": true,
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "timeOut": "2000"
+                        };
                         toastr.success(data.message, "Success");
-                        // clear form
                         form[0].reset();
+                        form.removeClass('was-validated');
+                        setTimeout(() => {
+                            window.location.href = "{% url 'products:categories_list' %}";
+                        }, 1500);
                     } else {
-                        // error toastr
-                        toastr.error(data.message, "Error");
+                        toastr.options = {
+                            "closeButton": true,
+                            "progressBar": true,
+                            "positionClass": "toast-top-right",
+                            "timeOut": "5000"
+                        };
+                        toastr.error(data.message || "An error occurred", "Error");
                     }
-
                 },
-                error: function () {
-                    // error toastr
-                    toastr.error("An error occurred", "Error");
+                error: function (xhr) {
+                    let errorMsg = "An error occurred";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                    toastr.error(errorMsg, "Error");
                 },
-            }).done(function () {
-                $("#create_btn").html("Create category");
+            }).always(function () {
+                $("#create_btn")
+                    .prop("disabled", false)
+                    .html('<i class="ti ti-check me-1"></i> Create Category');
             });
         });
     });
