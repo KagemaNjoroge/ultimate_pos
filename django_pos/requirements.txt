@@ -1,13 +1,14 @@
 Django~=5.0.3
 openpyxl==3.1.2
-pillow==10.3.0
+#pillow==10.3.0
+pillow
 python-dotenv==1.0.1
 qrcode==7.4.2
 requests==2.32.2
-weasyprint==60.2
 djangorestframework
 whitenoise
 psycopg2-binary
 #psycopg2
 drf-yasg
 django-countries
+reportlab
