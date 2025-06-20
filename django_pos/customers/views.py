@@ -9,6 +9,17 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 from .serializers import CustomerSerializer
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+from rest_framework.viewsets import ModelViewSet
+
+
+class CustomerApiViewSet(ModelViewSet):
+    """
+    API ViewSet for Customer model.
+    Provides CRUD operations for customers.
+    """
+
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
 
 
 @login_required(login_url="/users/login/")
