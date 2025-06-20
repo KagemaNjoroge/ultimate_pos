@@ -36,8 +36,6 @@ urlpatterns = [
     path("reports/", include("reports.urls")),
     # company
     path("company/", include("company.urls")),
-    # copilot
-    path("copilot/", include("copilot.urls")),
     # suppliers
     path("suppliers/", include("suppliers.urls")),
     # accounting
@@ -52,7 +50,6 @@ urlpatterns = [
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
-    # api
-    path("api/", include("api.urls")),
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
