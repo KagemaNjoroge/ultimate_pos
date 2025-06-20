@@ -17,6 +17,7 @@ class Sale(models.Model):
     amount_change = models.FloatField(default=0)
     # if printed add a watermark to the receipt
     receipt_is_printed = models.BooleanField(default=False)
+    discount = models.FloatField(default=0)
 
     class Meta:
         db_table = "Sales"
