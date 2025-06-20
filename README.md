@@ -2,20 +2,6 @@
   <img src="./django_pos//static/img/icons/icon512.png" alt="Ultimate POS Logo" >
 </p>
 
-<div>
-   <a href="#features">Features</a>
-   <span> | </span>
-   <a href="#proposed-features">Proposed Features</a>
-   <span> | </span>
-   <a href="#installation">Installation</a>
-   <span> | </span>
-   <a href="#run-it-locally">Run it locally</a>
-   <span> | </span>
-   <a href="#contributing">Contributing</a>
-   <span> | </span>
-   <a href="#license">License</a>
-
-</div>
 A simple, powerful and easy to use Point of Sale (POS) system.
 
 ## Features
@@ -86,40 +72,25 @@ After restarting your computer
 
 6.  Create superuser to access the admin panel:
 
-> [!IMPORTANT]
-> You will need a super user account in order to access the admin page. You can create one by running the following command:
-
     ```bash
     python manage.py createsuperuser
     ```
 
-with the following data, or with the data you prefer:
+    Follow the prompts to create a superuser account.
 
-- `username: YOUR_PREFERRED_USERNAME`
-- `password: YOUR_PASSWORD`
-- `email: YOUR_EMAIL@EMAIL.COM`
+7.  Run the server:
 
-8. Run the server:
+    ```bash
+    python manage.py runserver
+    ```
 
-   ```bash
-   python manage.py runserver
-   ```
+8.  Open a browser and navigate : `http://127.0.0.1:8000/`
 
-9. Open a browser and navigate : `http://127.0.0.1:8000/`
-
-10. Log In with your superuser credentials.
+9.  Log In with your superuser credentials.
 
 ## Contributing
 
 Contributions are always welcome!
-
-- Fork this repository;
-
-- Create a branch with your feature: `git checkout -b my-feature`;
-
-- Commit your changes: `git commit -m "feat: my new feature"`;
-
-- Push to your branch: `git push origin my-feature`.
 
 ## License
 
