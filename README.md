@@ -41,8 +41,6 @@ pip install -r requirements.txt
 
 ## Run it locally
 
-After restarting your computer
-
 1.  Go to the project directory: `cd ultimate_pos`
 
 2.  Activate the virtual enviroment
