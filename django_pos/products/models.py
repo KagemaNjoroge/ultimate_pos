@@ -47,6 +47,7 @@ class Product(models.Model):
         blank=True,
         null=True,
     )
+
     name = models.CharField(max_length=256)
     description = models.TextField(max_length=256)
     track_inventory = models.BooleanField(default=False)
@@ -66,18 +67,6 @@ class Product(models.Model):
     )
     price = models.FloatField(default=0)
 
-    # etims related
-    country_of_origin = models.CharField(max_length=5, blank=True, null=True)
-    product_type = models.CharField(
-        max_length=30,
-        choices=PRODUCT_TYPES,
-        verbose_name="Product Type",
-        default="Finished Product",
-    )
-    packaging_unit = models.CharField(max_length=20, blank=True, null=True)
-    quantity_unit = models.CharField(max_length=20, blank=True, null=True)
-    barcode = models.CharField(max_length=20, blank=True, null=True)
-
     class Meta:
         db_table = "Product"
         verbose_name_plural = "Products"
@@ -85,6 +74,10 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def get_sku(self):
+        return f"{self.category.name[:3].upper()}-{self.id:05d}"
 
     def to_json(self):
         return {
@@ -96,9 +89,4 @@ class Product(models.Model):
             "category": self.category.name,
             "price": self.price,
             "id": self.id,
-            "country_of_origin": self.country_of_origin,
-            "product_type": self.product_type,
-            "packaging_unit": self.packaging_unit,
-            "quantity_unit": self.quantity_unit,
-            "barcode": self.barcode,
         }
