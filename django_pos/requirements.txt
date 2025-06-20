@@ -4,7 +4,7 @@ openpyxl==3.1.2
 pillow
 python-dotenv==1.0.1
 qrcode==7.4.2
-requests==2.32.2
+requests==2.32.4
 djangorestframework
 whitenoise
 psycopg2-binary
