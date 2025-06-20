@@ -1,23 +1,17 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpRequest, FileResponse, JsonResponse
+from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from django_pos.wsgi import *
-from django_pos import settings
-from django.template.loader import get_template
 from customers.models import Customer
 from pos.models import Notifications
-
+from datetime import datetime, timedelta
 from products.models import Product
-from weasyprint import HTML, CSS
 from .models import Sale, SaleDetail, SaleItem
 import json
 from company.models import Company
-import qrcode
-from io import BytesIO
-import base64
-from PIL import Image
 from inventory.models import Inventory
+from .invoice import create_invoice_pdf
 
 
 def is_ajax(request: HttpRequest) -> bool:
@@ -153,90 +147,102 @@ def receipt_pdf_view(request: HttpRequest, sale_id: str) -> HttpResponse:
         request: HttpRequest
         sale_id: ID of the sale to view the receipt
     """
-    logo_path = "static/img/kra_logo.png"
+    try:
+        # Get the sale
+        sale = Sale.objects.get(id=sale_id)
+        customer = sale.customer
+        # Get the company details
+        company = Company.objects.first()
 
-    logo_img = Image.open(open(logo_path, "rb"))
-    logo_img = logo_img.resize((50, 50))
-    logo_stream = BytesIO()
-    logo_img.save(logo_stream, format="PNG")
-    logo_value = logo_stream.getvalue()
-    logo_base64 = base64.b64encode(logo_value).decode("utf-8")
-
-    # Get the sale
-    sale = Sale.objects.get(id=sale_id)
-
-    # Get the company details
-    company = Company.objects.first()
-
-    if company:
-        company = company.to_dict()
-    else:
-        company = None
-
-    # Get the sale details
-    details = SaleDetail.objects.filter(sale=sale).first()
-    items = []
-
-    for item in details.items.all():
-        product = item.product
-        items.append(
-            {
-                "name": product.name,
-                "quantity": item.quantity,
-                "price": product.price,
-                "total": item.total(),
+        if company:
+            company_info = company.to_dict()
+        else:
+            company_info = {
+                "name": "TomorrowAI",
+                "address": "123 Business Street, Nairobi, Kenya",
+                "phone": "+1 (123) 456-7890",
+                "email": "info@ultimatepos.com",
+                "tax_id": "TAX-123456789",
+                "website": "www.ultimatepos.com",
+                "registration_number": "REG-987654321",
             }
-        )
 
-    template = get_template("sales/sales_receipt_pdf.html")
-    context = {
-        "sale": sale,
-        "company": company,
-        "logo": logo_base64,
-        "items": items,
-    }
-    # check if the sale has been printed
-    if not sale.receipt_is_printed:
-        context["printed"] = False
-        sale.receipt_is_printed = True
-        sale.save()
-    else:
-        context["printed"] = True
+        # Get the sale details
+        details = SaleDetail.objects.filter(sale=sale).first()
+        items = []
 
-    qrcode_details = sale.to_json()
+        for item in details.items.all():
+            product = item.product
+            items.append(
+                {
+                    "product_name": product.name,
+                    "quantity": item.quantity,
+                    "unit_price": product.price,
+                    "total": item.total(),
+                    "description": product.description or "",
+                    "sku": product.get_sku or "N/A",
+                }
+            )
 
-    qr = qrcode.make(qrcode_details, box_size=2.5)
-    qr_image = qr.get_image()
-    stream = BytesIO()
-    qr_image.save(stream, format="PNG")
-    qr_image_data = stream.getvalue()
+        # Determine payment status
+        if sale.amount_payed >= sale.grand_total:
+            payment_status = "Paid"
+        elif sale.amount_payed > 0:
+            payment_status = "Partial"
+        else:
+            payment_status = "Unpaid"
 
-    qr_image_base64 = base64.b64encode(qr_image_data).decode("utf-8")
+        invoice_data = {
+            "company_info": {
+                "name": company_info.get("name", "TomorrowAI"),
+                "address": company_info.get(
+                    "address", "123 Business Street, Nairobi, Kenya"
+                ),
+                "phone": company_info.get("phone", "+1 (123) 456-7890"),
+                "email": company_info.get("email", "info@ultimatepos.com"),
+                "tax_id": company_info.get("tax_id", "TAX-123456789"),
+                "website": company_info.get("website", "www.ultimatepos.com"),
+                "registration_number": company_info.get(
+                    "registration_number", "REG-987654321"
+                ),
+            },
+            "customer_info": {
+                "name": customer.get_full_name(),
+                "address": customer.address or "",
+                "phone": customer.phone or "",
+                "email": customer.email or "",
+                "customer_id": f"CUST-{customer.id}",
+                "tax_number": customer.tax_number or "",
+            },
+            "invoice_info": {
+                "invoice_number": f"INV-{datetime.now().strftime('%Y')}-{sale_id.zfill(4)}",
+                "date": f"{sale.date_added.strftime('%Y-%m-%d')}",
+                "due_date": f"{(sale.date_added + timedelta(days=30)).strftime('%Y-%m-%d')}",
+                "reference": f"SALE-{sale_id}",
+                "payment_method": "Cash/Card",
+            },
+            "items": items,
+            "totals": {
+                "subtotal": float(sale.sub_total),
+                "tax": float(sale.tax_amount),
+                "discount": float(sale.discount) if sale.discount else 0,
+                "total": float(sale.grand_total),
+                "paid_amount": float(sale.amount_payed),
+                "balance_due": float(sale.grand_total - sale.amount_payed),
+            },
+            "payment_status": payment_status,
+            "notes": "Thank you for your purchase. We appreciate your business.",
+            "payment_instructions": "For questions regarding this invoice, please contact our customer service.",
+            "qr_data": f"https://pay.ultimatepos.com/inv-{sale_id}",
+        }
 
-    context["qr_code"] = qr_image_base64
+        # Generate the PDF invoice using the create_invoice_pdf function
+        pdf_content = create_invoice_pdf(invoice_data)
 
-    html_template = template.render(context)
+        # Return the PDF as an HTTP response
+        return HttpResponse(pdf_content, content_type="application/pdf")
 
-    # CSS Boostrap
-    css_url = os.path.join(
-        settings.BASE_DIR, "static/css/receipt_pdf/bootstrap.min.css"
-    )
+    except Exception as e:
 
-    # Create the pdf
-    pdf = HTML(
-        string=html_template,
-    ).write_pdf(
-        stylesheets=[CSS(css_url)],
-    )
-
-    return HttpResponse(pdf, content_type="application/pdf")
-
-
-def kra_logo(request: HttpRequest) -> FileResponse:
-    logo = "static/img/kra_logo.png"
-    return FileResponse(open(logo, "rb"), content_type="image/png")
-
-
-def watermark(request: HttpRequest) -> FileResponse:
-    mark = "static/img/mark.png"
-    return FileResponse(open(mark, "rb"), content_type="image/png")
+        messages.error(request, f"Error generating invoice", extra_tags="danger")
+        return redirect("sales:sales_details", sale_id=sale_id)
