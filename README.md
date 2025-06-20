@@ -1,6 +1,6 @@
-<div align="center">
-<h1> UltimatePOS</h1>
-</div>
+<p align="center">
+  <img src="./django_pos//static/img/icons/icon512.png" alt="Ultimate POS Logo" >
+</p>
 
 <div>
    <a href="#features">Features</a>
@@ -16,12 +16,7 @@
    <a href="#license">License</a>
 
 </div>
-
-A modern POS/ERP/CRM system for businesses of the AI era. Powered by [Django.](https://djangoproject.com)
-
-<p align="center">
-  <img src="./django_pos//static/img/icons/icon512.png" alt="Ultimate POS Logo" >
-</p>
+A simple, powerful and easy to use Point of Sale (POS) system.
 
 ## Features
 
@@ -30,26 +25,7 @@ A modern POS/ERP/CRM system for businesses of the AI era. Powered by [Django.](h
 - Categories and Products Management
 - Clients Management
 - Sales Management
-- eTIMS(electronic Tax Invoice Management System)
-
-## Proposed Features
-
-- [ ] Migrating views from templates to restful API
-
-- [x] Business Level Inventory Management
-- [ ] Lipa-na-MPESA Gateway integration
-- [ ] KRA Tax Returns Auto-filing
-- [ ] Plugin system
-- [x] AI Assistant
-- [x] Suppliers Management
-- [x] Purchase Management
-- [x] CRM (Customer Relationship Management)
-
-## TODOS
-
-- [ ] Add feature to renew subscription
-- [ ] Add Lipa na Mpesa Support
-- [ ] Update the documentation to document management commands
+- Stripe, PayPal, Cash and M-Pesa payment methods
 
 ## Installation
 
@@ -77,23 +53,6 @@ python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-5. Install GTK to create the PDF files:  
-   [Official documentation](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#installation)
-
-6. Windows:  
-   After installing GTK, you need to add it to your system's Path environment variable. Follow these steps:
-
-   - Assuming you installed GTK at:
-     `C:\Program Files\GTK3-Runtime Win64\bin`  
-     This will be your new variable that you need to add to Path
-   - Refer to this tutorial for detailed instructions on adding to the Path environment variable:
-     [Adding variable to path](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/)
-
-   - If you encounter an error such as "cannot load library," refer to this documentation for troubleshooting:
-     [Missing Library Error](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#missing-library)
-
-7. Restart your computer: After completing the steps above, it is essential to restart your computer for the changes to take effect properly.
-
 ## Run it locally
 
 After restarting your computer
@@ -115,24 +74,24 @@ After restarting your computer
 4.  Copy the .env.example file to .env:
     Replace the values with your own values
 
-```bash
-cp .env.example .env
-```
+    ```bash
+    cp .env.example .env
+    ```
 
-5. Make database migrations:
+5.  Make database migrations:
 
-```bash
- python manage.py makemigrations && python manage.py migrate
-```
+    ```bash
+    python manage.py makemigrations && python manage.py migrate
+    ```
 
 6.  Create superuser to access the admin panel:
 
 > [!IMPORTANT]
 > You will need a super user account in order to access the admin page. You can create one by running the following command:
 
-```bash
-python manage.py createsuperuser
-```
+    ```bash
+    python manage.py createsuperuser
+    ```
 
 with the following data, or with the data you prefer:
 
@@ -165,8 +124,3 @@ Contributions are always welcome!
 ## License
 
 This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
-
-<div align="center">
-Brought to you by the good folks at 
-<a href="https://tomorrow.co.ke">TomorrowAI</a>
-</div>
