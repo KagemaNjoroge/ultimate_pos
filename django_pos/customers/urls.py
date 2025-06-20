@@ -1,5 +1,10 @@
+from django.db import router
 from django.urls import path
 from . import views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r"api", views.CustomerApiViewSet, basename="customers")
 
 app_name = "customers"
 urlpatterns = [
@@ -24,3 +29,6 @@ urlpatterns = [
     # import customers
     path("import/", views.import_customers, name="import_customers"),
 ]
+
+
+urlpatterns += router.urls
