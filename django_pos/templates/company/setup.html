@@ -2,13 +2,292 @@
 {% load static %}
 {% block title %}Company Setup{% endblock %}
 {%block heading%}
-Company setup
+Company Setup
 {%endblock heading%}
 {%block content%}
-<div class="ml-2 mb-3">
-    <a class="btn btn-primary" href="{%url 'company:branches'%}">
-        <i class="ti ti-arrow-left"></i>
-        Back
-    </a>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="ti ti-building"></i>
+                        Set Up Your Company
+                    </h4>
+                    <p class="card-subtitle mb-0 text-white-50">
+                        Complete your company profile to get started
+                    </p>
+                </div>
+                <div class="card-body">
+                    <!-- Display Messages -->
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data" id="companySetupForm">
+                        {% csrf_token %}
+
+                        <!-- Company Logo -->
+                        <div class="row mb-4">
+                            <div class="col-12 text-center">
+                                <div class="mb-3">
+                                    <label for="logo" class="form-label">Company Logo</label>
+                                    <div class="logo-upload-container">
+                                        <img id="logo-preview" src="{% static 'default.png' %}" alt="Company Logo"
+                                            class="img-thumbnail mb-2"
+                                            style="width: 150px; height: 150px; object-fit: cover;">
+                                        <div>
+                                            <input type="file" class="form-control" id="logo" name="logo"
+                                                accept="image/*" onchange="previewLogo(this)">
+                                            <small class="form-text text-muted">Upload your company logo (JPG, PNG,
+                                                GIF)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Company Basic Information -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="company_name" class="form-label">
+                                        <i class="ti ti-building"></i>
+                                        Company Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="company_name" name="company_name"
+                                        required placeholder="Enter your company name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="tax_registration_number" class="form-label">
+                                        <i class="ti ti-id"></i>
+                                        Tax Registration Number
+                                    </label>
+                                    <input type="text" class="form-control" id="tax_registration_number"
+                                        name="tax_registration_number" maxlength="11" placeholder="e.g., P051234567A">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="phone_number" class="form-label">
+                                        <i class="ti ti-phone"></i>
+                                        Phone Number
+                                    </label>
+                                    <input type="tel" class="form-control" id="phone_number" name="phone_number"
+                                        placeholder="e.g., +254 700 000 000">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="ti ti-mail"></i>
+                                        Email Address
+                                    </label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="company@example.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Information -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="city" class="form-label">
+                                        <i class="ti ti-map-pin"></i>
+                                        City
+                                    </label>
+                                    <input type="text" class="form-control" id="city" name="city"
+                                        placeholder="e.g., Nairobi">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">
+                                        <i class="ti ti-home"></i>
+                                        Address
+                                    </label>
+                                    <input type="text" class="form-control" id="address" name="address"
+                                        placeholder="Street address, P.O. Box, etc.">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Currency -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="currency_symbol" class="form-label">
+                                        <i class="ti ti-currency-dollar"></i>
+                                        Currency Symbol
+                                    </label>
+                                    <select class="form-control" id="currency_symbol" name="currency_symbol">
+                                        <option value="KES" selected>KES (Kenyan Shilling)</option>
+                                        <option value="USD">USD (US Dollar)</option>
+                                        <option value="EUR">EUR (Euro)</option>
+                                        <option value="GBP">GBP (British Pound)</option>
+                                        <option value="UGX">UGX (Ugandan Shilling)</option>
+                                        <option value="TZS">TZS (Tanzanian Shilling)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+                                        <i class="ti ti-arrow-left"></i>
+                                        Cancel
+                                    </button>
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="ti ti-check"></i>
+                                        Complete Setup
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    function previewLogo(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('logo-preview').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Form validation and AJAX submission
+    document.getElementById('companySetupForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const companyName = document.getElementById('company_name').value.trim();
+        const email = document.getElementById('email').value.trim();
+
+        if (!companyName) {
+            toastr.error('Company name is required');
+            document.getElementById('company_name').focus();
+            return false;
+        }
+
+        // Validate email format if provided
+        if (email && !validateEmail(email)) {
+            toastr.error('Please enter a valid email address');
+            document.getElementById('email').focus();
+            return false;
+        }
+
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="ti ti-loader-2 ti-spin"></i> Setting up...';
+        submitBtn.disabled = true;
+
+        // Prepare form data
+        const formData = new FormData(this);
+
+        // AJAX request
+        fetch(this.action || window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Optionally redirect or reload
+                window.location.reload();
+            } else {
+                return response.text().then(text => { throw new Error(text); });
+            }
+        })
+        .catch(error => {
+            toastr.error('An error occurred while submitting the form.');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+
+    // Email validation function
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+
+</script>
+
+<style>
+    .logo-upload-container {
+        text-align: center;
+    }
+
+    .card-header.bg-primary {
+        background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%) !important;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #525f7f;
+    }
+
+    .form-control:focus {
+        border-color: #5e72e4;
+        box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.25);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #4c63d2 0%, #7047d2 100%);
+        transform: translateY(-1px);
+    }
+
+    .card {
+        box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+        border: none;
+        border-radius: 15px;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+
+    .ti-spin {
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
 {%endblock content%}
