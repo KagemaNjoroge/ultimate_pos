@@ -11,6 +11,7 @@ class Category(models.Model):
         choices=STATUS_CHOICES,
         max_length=100,
         verbose_name="Status of the category",
+        default="ACTIVE",
     )
 
     class Meta:
