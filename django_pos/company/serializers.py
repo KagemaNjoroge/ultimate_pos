@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Company, Branch, Subscription
+from .models import Company, Branch
 
 
 class CompanySerializer(serializers.ModelSerializer):
@@ -11,10 +11,4 @@ class CompanySerializer(serializers.ModelSerializer):
 class BranchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Branch
-        fields = "__all__"
-
-
-class SubscriptionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Subscription
         fields = "__all__"

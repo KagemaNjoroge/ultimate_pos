@@ -4,7 +4,6 @@ from .views import CompanyView, index, branches, add_branch, set_up_company
 
 app_name = "company"
 urlpatterns = [
-    path("", CompanyView.as_view(), name="company"),
     path("<int:id>/", CompanyView.as_view(), name="company_id"),
     path("settings/", view=index, name="settings"),
     path("branches/", view=branches, name="branches"),
