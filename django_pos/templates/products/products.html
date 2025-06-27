@@ -2,105 +2,231 @@
 {% load static %}
 {% block title %}Products{% endblock title %}
 {% block stylesheets %}
+<style>
+    .actions-column {
+        min-width: 120px;
+    }
+
+    .btn-group .btn {
+        margin-right: 5px;
+    }
+
+    .badge {
+        font-size: 0.85rem !important;
+        padding: 0.5em 0.85em;
+    }
+
+    .dataTables_wrapper .dt-buttons {
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            margin-left: 0 !important;
+        }
+
+        .ml-2 {
+            margin-left: 0 !important;
+        }
+    }
+</style>
 {% endblock stylesheets %}
 {% block heading %}Products{% endblock heading %}
 {% block content %}
-<div class="ml-2 mb-3 btn-group">
-    <a href="{% url 'products:products_add' %}" class="btn btn-success font-weight-bold">
+<div class="container-fluid px-4">
+    <div class="mb-4 d-flex flex-wrap gap-2">
+        <a href="{% url 'products:products_add' %}" class="btn btn-success">
+            <i class="ti ti-plus me-1"></i>
+            Create new product
+        </a>
+        <a href="{% url 'products:categories_list' %}" class="btn btn-primary">
+            <i class="ti ti-list me-1"></i>
+            Product Categories
+        </a>
+    </div>
 
-        <i class="ti ti-plus"></i>
-        Create new product
-
-    </a>
-    <a href="{% url 'products:categories_list' %}" class="btn btn-primary font-weight-bold">
-
-        <i class="ti ti-list"></i>
-        Product Categories
-
-    </a>
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="dataTable" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center actions-column">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in products %}
+                        <tr>
+                            <td>{{p.id}}</td>
+                            <td>
+                                <a href="{% url 'products:product_details' p.id %}" data-bs-toggle="popover"
+                                    data-bs-trigger="hover" data-bs-placement="top"
+                                    data-bs-content="Click to view product details" data-bs-animation="true"
+                                    class="text-decoration-none fw-bold">
+                                    {{p.name}}
+                                </a>
+                            </td>
+                            <td>{{p.description|truncatechars:70}}</td>
+                            <td>{{p.category}}</td>
+                            <td class="text-end">{{p.price}}</td>
+                            {% if p.status == "ACTIVE" %}
+                            <td class="text-center">
+                                <span class="badge bg-success">{{p.status}}</span>
+                            </td>
+                            {% elif p.status == "INACTIVE" %}
+                            <td class="text-center">
+                                <span class="badge bg-danger">{{p.status}}</span>
+                            </td>
+                            {% else %}
+                            <td class="text-center">
+                                <span class="badge bg-secondary">{{p.status}}</span>
+                            </td>
+                            {% endif %}
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center">
+                                    <a href="{% url 'products:products_update' p.id %}"
+                                        class="btn btn-warning btn-sm me-2" data-bs-toggle="tooltip"
+                                        title="Update product">
+                                        <i class="ti ti-pencil"></i>
+                                    </a> <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip"
+                                        onclick="deleteProduct('{{p.id}}', '{{p.name}}')" title="Delete product">
+                                        <i class="ti ti-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 
-<div class="card shadow ml-2">
-    <div class="card-body justify-content-center">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover" id="dataTable" style="width: 100%;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Category</th>
-                        <th class="text-center">Price</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for p in products %}
-                    <tr>
-                        <td>{{p.id}}</td>
-                        <td>{{forloop.counter}}</td>
-                        <td>
-                            <!--Link with a popover saying click to view product details-->
-                            <a href="{% url 'products:product_details' p.id %}" data-bs-toggle="popover"
-                                data-bs-trigger="hover" data-bs-placement="top"
-                                data-bs-content="Click to view product details" data-bs-animation="true"
-                                data-bs-delay="0" data-bs-offset="0, 10" class="text-decoration-none">
-                                {{p.name}}
-                            </a>
-                        </td>
-                        <td>{{p.description}}</td>
-                        <td>{{p.category}}</td>
-                        <td class=" text-right">{{p.price}}
-                        </td>
-                        {% if p.status == "ACTIVE" %}
-                        <td class="text-center">
-                            <span class="badge badge-success" style="font-size:0.8em;">{{p.status}}</span>
-                        </td>
-                        {% elif p.status == "INACTIVE" %}
-                        <td class="text-center">
-                            <span class="badge badge-danger" style="font-size:0.8em;">{{p.status}}</span>
-                        </td>
-                        {% endif %}
-                        <td>
-                            <div class="btn-group">
-                                <a href="{% url 'products:products_update' p.id %}"
-                                    class="text-decoration-none btn btn-warning btn-sm" data-bs-toggle="tooltip"
-                                    title="Update product">
-
-                                    <i class="ti ti-pencil"></i>
-
-                                </a>
-
-                                <a class="btn btn-danger btn-sm text-decoration-none " data-toggle="modal"
-                                    data-target="#exampleModal"">
-                                    <i class=" ti ti-trash"></i>
-
-                                </a>
-
-                            </div>
-
-
-
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteProductModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="ti ti-alert-triangle text-danger" style="font-size: 3rem;"></i>
+                </div>
+                <p class="text-center fs-5">Are you sure you want to delete the product <strong
+                        id="categoryNameToDelete"></strong>?</p>
+                <p class="text-danger text-center">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmDeleteButton" class="btn btn-danger">
+                    <i class="ti ti-trash me-1"></i> Delete Product
+                </button>
+            </div>
         </div>
     </div>
 </div>
 <script>
-    // Call the dataTables jQuery plugin
+    // Handle product deletion 
+    function handleDelete(id) {
+        // Show loading state on button
+        const confirmButton = document.getElementById('confirmDeleteButton');
+        const originalButtonText = confirmButton.innerHTML;
+        confirmButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Deleting...';
+        confirmButton.disabled = true;
+
+        $.ajax({
+            url: `/products/products/api/${id}/`,
+            type: 'DELETE',
+            success: function (response) {
+                // Hide the modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteProductModal'));
+                modal.hide();
+
+                // Show success message
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "timeOut": "3000"
+                };
+                toastr.success('Product has been deleted successfully');
+
+                // Fade out the deleted row and reload the table after animation
+                const productId = id;
+                const row = $(`td:contains('${productId}')`).closest('tr');
+                row.fadeOut(400, function () {
+                    // Reload the page after fade animation completes
+                    location.reload();
+                });
+            },
+            error: function (xhr, status, error) {
+                // Reset the button
+                confirmButton.innerHTML = originalButtonText;
+                confirmButton.disabled = false;
+
+                // Show detailed error message
+                let errorMessage = 'Error deleting product';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                } else if (error) {
+                    errorMessage += ': ' + error;
+                }
+
+                toastr.options = {
+                    "closeButton": true,
+                    "timeOut": "5000",
+                    "extendedTimeOut": "2000"
+                };
+                toastr.error(errorMessage);
+            }
+        });
+    }
+
+    // Show delete product confirmation modal
+    function deleteProduct(id, name) {
+        // Set the product name in the modal
+        document.getElementById('categoryNameToDelete').innerText = name;
+
+        // Set up the confirm delete button
+        const confirmButton = document.getElementById('confirmDeleteButton');
+        confirmButton.onclick = function () {
+            handleDelete(id);
+        };
+
+        // Show the modal
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteProductModal'));
+        deleteModal.show();
+    }
+
+    // Initialize DataTable
     $(document).ready(function () {
+        // Initialize tooltips and popovers
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+
+        // Initialize DataTable with responsive design
         let tblProducts = $('#dataTable').DataTable({
-            dom: 'Bfrtip', // Buttons are draw at this element
+            responsive: true,
+            dom: '<"d-flex justify-content-between align-items-center mb-3"Bf>rt<"d-flex justify-content-between"lip>',
             buttons: [
                 {
                     extend: 'print',
-                    text: 'Print <i class="fas fa-file ml-2"></i>',
+                    text: '<i class="ti ti-printer me-1"></i> Print',
                     titleAttr: 'Print',
                     className: 'btn btn-info',
                     exportOptions: {
@@ -109,22 +235,22 @@
                 },
                 {
                     extend: 'excelHtml5',
-                    text: 'Download Excel <i class="fas fa-file-excel ml-2"></i>',
+                    text: '<i class="ti ti-file-spreadsheet me-1"></i> Excel',
                     titleAttr: 'Download Excel',
-                    className: 'btn btn-success ml-2',
+                    className: 'btn btn-success ms-2',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4]
                     }
                 },
                 {
                     extend: 'pdfHtml5',
-                    text: 'Download PDF <i class="fas fa-file-pdf ml-2"></i>',
+                    text: '<i class="ti ti-file-text me-1"></i> PDF',
                     titleAttr: 'Download PDF',
-                    className: 'btn btn-danger ml-2',
+                    className: 'btn btn-danger ms-2',
                     download: 'open',
                     orientation: 'vertical',
                     pageSize: 'A4',
-                    title: '*',
+                    title: 'Products List - ' + moment().format('YYYY-MM-DD'),
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4]
                     },
@@ -161,7 +287,7 @@
                                 columns: [
                                     {
                                         alignment: 'left',
-                                        text: ['Creation date: ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
+                                        text: ['Generated on: ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
                                     },
                                     {
                                         alignment: 'right',
@@ -171,11 +297,23 @@
                                 margin: 20
                             }
                         });
-
                     }
                 }
             ],
             deferRender: true,
+            language: {
+                search: '<span class="me-2"><i class="ti ti-search"></i></span> _INPUT_',
+                searchPlaceholder: 'Search products...',
+                lengthMenu: "Show _MENU_ products",
+                info: "Showing _START_ to _END_ of _TOTAL_ products",
+                infoEmpty: "Showing 0 to 0 of 0 products",
+                paginate: {
+                    first: '<i class="ti ti-chevrons-left"></i>',
+                    last: '<i class="ti ti-chevrons-right"></i>',
+                    next: '<i class="ti ti-chevron-right"></i>',
+                    previous: '<i class="ti ti-chevron-left"></i>'
+                }
+            },
             columnDefs: [
                 {
                     targets: [0],
@@ -183,14 +321,27 @@
                     searchable: false,
                 },
                 {
-                    targets: [-1], // column index (start from 0)
-                    orderable: false, // set order able false for selected columns
+                    targets: [-1], // Actions column
+                    orderable: false,
+                    className: 'text-center'
+                },
+                {
+                    targets: [4], // Price column
+                    className: 'text-end'
                 }
             ],
+            order: [[1, 'asc']] // Sort by name by default
+        });
+
+        // Add search functionality with debounce
+        let searchTimeout;
+        $('.dataTables_filter input').on('keyup', function () {
+            clearTimeout(searchTimeout);
+            const that = this;
+            searchTimeout = setTimeout(function () {
+                tblProducts.search($(that).val()).draw();
+            }, 300);
         });
     });
-
-
-
 </script>
 {% endblock content %}
