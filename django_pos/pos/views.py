@@ -19,11 +19,6 @@ from sales.models import SaleItem
 
 
 @login_required(login_url="/users/login/")
-def register_company(request: HttpRequest) -> HttpResponse:
-    return render(request, "pos/register_company.html")
-
-
-@login_required(login_url="/users/login/")
 def index(request: HttpRequest) -> HttpResponse:
     today = date.today()
 
