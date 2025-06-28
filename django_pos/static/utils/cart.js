@@ -60,11 +60,13 @@ let shoppingCart = (function () {
   let cart = [];
 
   // Constructor
-  function Item(name, price, count, id) {
-    this.name = name;
-    this.price = price;
-    this.count = count;
-    this.id = id;
+  class Item {
+    constructor(name, price, count, id) {
+      this.name = name;
+      this.price = price;
+      this.count = count;
+      this.id = id;
+    }
   }
 
   // Save cart
@@ -169,6 +171,23 @@ let shoppingCart = (function () {
       products.push(product);
     }
     return products;
+  };
+
+  // Suspend sale
+  obj.suspendSale = function () {
+    if (cart.length === 0) {
+      return;
+    }
+
+    let timestamp = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace(/[-:]/g, "")
+      .replace("T", "_");
+    let suspendedSaleKey = `suspended_sale_${timestamp}`;
+    sessionStorage.setItem(suspendedSaleKey, JSON.stringify(cart));
+    obj.clearCart();
+    return suspendedSaleKey;
   };
 
   return obj;
