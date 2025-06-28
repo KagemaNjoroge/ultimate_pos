@@ -33,6 +33,29 @@
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     }
 
+    /* Enhanced search bar styles */
+    #customerSearch {
+        border-left: none !important;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+    #customerSearch:focus {
+        background-color: white;
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1) !important;
+        border-color: #0d6efd !important;
+    }
+
+    .input-group-text {
+        border-right: none !important;
+        transition: all 0.3s ease;
+    }
+
+    .input-group.shadow-sm:focus-within {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
     @media (max-width: 768px) {
         .action-buttons {
             display: flex;
@@ -42,6 +65,11 @@
 
         .customer-stats-card {
             margin-bottom: 1rem;
+        }
+
+        #customerSearch {
+            font-size: 16px;
+            /* Prevent zoom on iOS */
         }
     }
 </style>
@@ -134,12 +162,13 @@
         </a>
     </div>
     <div class="col-md-6">
-        <div class="input-group">
-            <span class="input-group-text bg-light border-0">
+        <div class="input-group shadow-sm">
+            <span class="input-group-text bg-primary text-white border-0">
                 <i class="ti ti-search"></i>
             </span>
-            <input type="text" id="customerSearch" class="form-control border-0 bg-light"
-                placeholder="Search customers...">
+            <input type="text" id="customerSearch" class="form-control border-0"
+                placeholder="Search customers by name, email, or phone..."
+                style="box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);">
         </div>
     </div>
 </div>
@@ -152,9 +181,6 @@
     <div class="card-header bg-white py-3">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0 fw-bold">Customer List</h5>
-            <div class="btn-group" id="exportButtons">
-                <!-- DataTables buttons will be inserted here -->
-            </div>
         </div>
     </div>
     <div class="card-body">
@@ -285,88 +311,24 @@
             });
         });
 
-        // Initialize DataTable with improved features
+        // Initialize DataTable with simplified features
         let customerTable = $('#dataTable').DataTable({
-            dom: '<"row"<"col-md-6"l><"col-md-6"f>>rt<"row"<"col-md-6"i><"col-md-6"p>>B',
-            buttons: [
-                {
-                    extend: 'print',
-                    text: '<i class="ti ti-printer me-1"></i> Print',
-                    titleAttr: 'Print',
-                    className: 'btn btn-sm btn-outline-primary me-2',
-                    exportOptions: {
-                        columns: [1, 2, 3, 4, 5]
-                    }
-                },
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="ti ti-file-spreadsheet me-1"></i> Excel',
-                    titleAttr: 'Download Excel',
-                    className: 'btn btn-sm btn-outline-success me-2',
-                    exportOptions: {
-                        columns: [1, 2, 3, 4, 5]
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    text: '<i class="ti ti-file-text me-1"></i> PDF',
-                    titleAttr: 'Download PDF',
-                    className: 'btn btn-sm btn-outline-danger',
-                    download: 'open',
-                    orientation: 'portrait',
-                    pageSize: 'A4',
-                    title: 'Customer List - ' + moment().format('YYYY-MM-DD'),
-                    exportOptions: {
-                        columns: [1, 2, 3, 4, 5]
-                    },
-                    customize: function (doc) {
-                        doc.styles = {
-                            header: {
-                                fontSize: 18,
-                                bold: true,
-                                alignment: 'center'
-                            },
-                            subheader: {
-                                fontSize: 13,
-                                bold: true
-                            },
-                            tableHeader: {
-                                bold: true,
-                                fontSize: 11,
-                                color: 'white',
-                                fillColor: '#1a73e8',
-                                alignment: 'center'
-                            }
-                        };
-                        doc.content[1].table.widths = ['10%', '30%', '20%', '20%', '20%'];
-                        doc.content[1].margin = [0, 20, 0, 0];
-                        doc['footer'] = (function (page, pages) {
-                            return {
-                                columns: [
-                                    {
-                                        alignment: 'left',
-                                        text: ['Generated: ', { text: moment().format('YYYY-MM-DD HH:mm:ss') }]
-                                    },
-                                    {
-                                        alignment: 'right',
-                                        text: ['Page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
-                                    }
-                                ],
-                                margin: 20
-                            }
-                        });
-                    }
-                }
-            ],
+            dom: 'rt<"row"<"col-md-12"i><"col-md-12"p>>',
             responsive: true,
             deferRender: true,
+            searching: false,  // Disable built-in search
+            lengthChange: false,  // Disable records per page selector
+            pageLength: 25,  // Set default page length
             language: {
-                search: "",
-                searchPlaceholder: "Search customers...",
-                lengthMenu: "_MENU_ records per page",
                 info: "Showing _START_ to _END_ of _TOTAL_ customers",
                 infoEmpty: "Showing 0 to 0 of 0 customers",
                 infoFiltered: "(filtered from _MAX_ total customers)",
+                paginate: {
+                    first: "First",
+                    last: "Last",
+                    next: "Next",
+                    previous: "Previous"
+                },
                 emptyTable: `
                     <div class="table-empty-state">
                         <i class="ti ti-users fs-1 text-muted mb-3"></i>
@@ -397,12 +359,19 @@
             }
         });
 
-        // Move export buttons to designated container
-        customerTable.buttons().container().appendTo('#exportButtons');
-
-        // Custom search box functionality
+        // Custom search box functionality with improved styling feedback
         $('#customerSearch').on('keyup', function () {
-            customerTable.search($(this).val()).draw();
+            const searchValue = $(this).val();
+            customerTable.search(searchValue).draw();
+
+            // Add visual feedback for active search
+            if (searchValue.length > 0) {
+                $(this).addClass('border-primary');
+                $(this).prev('.input-group-text').addClass('bg-primary text-white');
+            } else {
+                $(this).removeClass('border-primary');
+                $(this).prev('.input-group-text').removeClass('bg-primary text-white').addClass('bg-primary text-white');
+            }
         });
 
         // Handle delete customer modal
