@@ -194,24 +194,6 @@
         font-weight: 500;
     }
 
-    .dt-buttons {
-        margin-bottom: 1rem;
-    }
-
-    .dt-button {
-        margin-right: 0.5rem !important;
-        border-radius: 0.5rem !important;
-        font-weight: 500 !important;
-        padding: 0.5rem 1rem !important;
-        transition: all 0.2s ease !important;
-    }
-
-    .dt-button:hover {
-        transform: translateY(-1px) !important;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-    }
-
-    .dataTables_wrapper .dataTables_length,
     .dataTables_wrapper .dataTables_filter {
         margin-bottom: 1rem;
     }
@@ -220,12 +202,6 @@
         border-radius: 0.5rem;
         border: 1px solid #e5e7eb;
         padding: 0.5rem 1rem;
-    }
-
-    .dataTables_wrapper .dataTables_length select {
-        border-radius: 0.5rem;
-        border: 1px solid #e5e7eb;
-        padding: 0.25rem 0.5rem;
     }
 </style>
 
@@ -255,21 +231,15 @@
 
         // Initialize DataTable with enhanced styling
         let tblProducts = $('#dataTable').DataTable({
-            dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-                '<"row"<"col-sm-12"B>>' +
+            dom: '<"row"<"col-sm-12"f>>' +
                 '<"row"<"col-sm-12"tr>>' +
                 '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
 
-            "lengthMenu": [
-                [5, 10, 25, 50, -1],
-                [5, 10, 25, 50, "All"]
-            ],
             "pageLength": 10,
             "responsive": true,
             "language": {
                 "search": "_INPUT_",
                 "searchPlaceholder": "Search stock items...",
-                "lengthMenu": "Show _MENU_ entries",
                 "info": "Showing _START_ to _END_ of _TOTAL_ entries",
                 "paginate": {
                     "previous": "<i class='ti ti-chevron-left'></i>",
@@ -277,99 +247,6 @@
                 }
             },
 
-            "buttons": [
-                {
-                    extend: 'print',
-                    text: '<i class="ti ti-printer me-1"></i>Print',
-                    titleAttr: 'Print Stock Report',
-                    className: 'btn btn-info',
-                    exportOptions: {
-                        columns: [0, 1, 2]
-                    }
-                },
-                {
-                    extend: 'excelHtml5',
-                    text: '<i class="ti ti-file-spreadsheet me-1"></i>Excel',
-                    titleAttr: 'Download Excel',
-                    className: 'btn btn-success',
-                    exportOptions: {
-                        columns: [0, 1, 2]
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    text: '<i class="ti ti-file-text me-1"></i>PDF',
-                    titleAttr: 'Download PDF',
-                    className: 'btn btn-danger',
-                    download: 'open',
-                    orientation: 'portrait',
-                    pageSize: 'A4',
-                    title: 'Stock Inventory Report',
-                    exportOptions: {
-                        columns: [0, 1, 2]
-                    },
-                    customize: function (doc) {
-                        // Enhanced PDF styling
-                        doc.styles = {
-                            header: {
-                                fontSize: 18,
-                                bold: true,
-                                alignment: 'center',
-                                color: '#6366f1'
-                            },
-                            subheader: {
-                                fontSize: 13,
-                                bold: true
-                            },
-                            quote: {
-                                italics: true
-                            },
-                            small: {
-                                fontSize: 8
-                            },
-                            tableHeader: {
-                                bold: true,
-                                fontSize: 11,
-                                color: 'white',
-                                fillColor: '#6366f1',
-                                alignment: 'center'
-                            }
-                        };
-
-                        // Add company info at the top
-                        doc.content.splice(0, 0, {
-                            text: 'Ultimate POS - Stock Inventory Report',
-                            style: 'header',
-                            margin: [0, 0, 0, 20]
-                        });
-
-                        doc.content[2].table.widths = ['15%', '45%', '25%', '15%'];
-                        doc.content[2].margin = [0, 20, 0, 0];
-                        doc.content[2].layout = {
-                            fillColor: function (rowIndex) {
-                                return (rowIndex % 2 === 0) ? '#f8fafc' : null;
-                            }
-                        };
-
-                        // Enhanced footer
-                        doc['footer'] = (function (page, pages) {
-                            return {
-                                columns: [
-                                    {
-                                        alignment: 'left',
-                                        text: ['Generated: ', { text: moment().format('MMM DD, YYYY (HH:mm)') }]
-                                    },
-                                    {
-                                        alignment: 'right',
-                                        text: ['Page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
-                                    }
-                                ],
-                                margin: [40, 0]
-                            }
-                        });
-                    }
-                }
-            ],
             "columnDefs": [{
                 "targets": 3,
                 "orderable": false
