@@ -3,161 +3,512 @@
 {% block title %}Dashboard{% endblock title %}
 {% block heading %}Dashboard{% endblock heading %}
 {% block content %}
-<div class="row">
 
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Avg Earning per Month</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <div id="avg_m">
-                                {{avg_month}}
-                            </div>
-                            <div id="currency">
-                                {{currency_symbol}}
-                            </div>
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-body text-white">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold mb-2">Welcome to Ultimate POS</h2>
+                        <p class="mb-3 opacity-75">Monitor your business performance and manage your point of sale
+                            operations efficiently.</p>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="{% url 'pos:pos' %}" class="btn btn-light btn-sm">
+                                <i class="ti ti-shopping-cart me-1"></i>Start Sale
+                            </a>
+                            <a href="/products/" class="btn btn-outline-light btn-sm">
+                                <i class="ti ti-package me-1"></i>Manage Products
+                            </a>
+                            <a href="/sales/" class="btn btn-outline-light btn-sm">
+                                <i class="ti ti-receipt me-1"></i>View Sales
+                            </a>
                         </div>
                     </div>
-                    <div class="col-auto">
-                        <i class="ti ti-calendar text-gray-600"></i>
+                    <div class="col-md-4 text-end d-none d-md-block">
+                        <i class="ti ti-chart-line" style="font-size: 4rem; opacity: 0.3;"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Earnings (Annual)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            <div id="avg_a">
-                                {{annual_earnings}}
-                            </div>
-                            <div id="currency">
-                                {{currency_symbol}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="ti ti-currency-dollar text-gray-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Registered Products
-                        </div>
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{products}}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="ti ti-tag fa-2x text-gray-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-danger shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Registered Categories
-                        </div>
-                        <div class="row no-gutters align-items-center">
-                            <div class="col-auto">
-                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{categories}}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="ti ti-tag text-gray-600"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
-<div class="row">
 
-
-    <div class="col-xl-7 col-lg-7">
-        <div class="card shadow mb-4">
-
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Year Earnings Overview</h6>
-            </div>
-
+<!-- Key Metrics Row -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100 hover-card">
             <div class="card-body">
-                <div class="chart-area">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                            <i class="ti ti-currency-dollar text-primary fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="text-muted small text-uppercase fw-bold">Today's Sales</div>
+                        <div class="h4 fw-bold text-dark mb-0">
+                            <span id="today_sales">{{today_sales}}</span>
+                            <small class="text-muted">{{currency_symbol}}</small>
+                        </div>
+                        <small class="text-success">
+                            <i class="ti ti-trending-up"></i>
+                            {{recent_sales_count}} transactions
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100 hover-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                            <i class="ti ti-calendar text-success fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="text-muted small text-uppercase fw-bold">Monthly Average</div>
+                        <div class="h4 fw-bold text-dark mb-0">
+                            <span id="avg_m">{{avg_month}}</span>
+                            <small class="text-muted">{{currency_symbol}}</small>
+                        </div>
+                        <small class="text-muted">
+                            <i class="ti ti-calendar-stats"></i>
+                            Per month earnings
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100 hover-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                            <i class="ti ti-chart-bar text-info fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="text-muted small text-uppercase fw-bold">Annual Earnings</div>
+                        <div class="h4 fw-bold text-dark mb-0">
+                            <span id="avg_a">{{annual_earnings}}</span>
+                            <small class="text-muted">{{currency_symbol}}</small>
+                        </div>
+                        <small class="text-info">
+                            <i class="ti ti-trending-up"></i>
+                            This year total
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100 hover-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                            <i class="ti ti-alert-triangle text-warning fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <div class="text-muted small text-uppercase fw-bold">Low Stock Alert</div>
+                        <div class="h4 fw-bold text-dark mb-0">{{low_stock_items}}</div>
+                        <small class="text-warning">
+                            <i class="ti ti-package"></i>
+                            Items need restock
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions & Statistics Row -->
+<div class="row mb-4">
+    <div class="col-xl-4 col-lg-6 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pb-0">
+                <h6 class="fw-bold text-dark mb-0">
+                    <i class="ti ti-zap text-primary me-2"></i>Quick Actions
+                </h6>
+            </div>
+            <div class="card-body pt-3">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'pos:pos' %}" class="btn btn-primary btn-lg">
+                        <i class="ti ti-shopping-cart me-2"></i>New Sale
+                    </a>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="/products/add/" class="btn btn-outline-primary w-100">
+                                <i class="ti ti-plus me-1"></i>Add Product
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="/customers/add/" class="btn btn-outline-primary w-100">
+                                <i class="ti ti-user-plus me-1"></i>Add Customer
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="/inventory/" class="btn btn-outline-secondary w-100">
+                                <i class="ti ti-package me-1"></i>Inventory
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="/reports/" class="btn btn-outline-secondary w-100">
+                                <i class="ti ti-chart-dots me-1"></i>Reports
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-6 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pb-0">
+                <h6 class="fw-bold text-dark mb-0">
+                    <i class="ti ti-database text-success me-2"></i>Business Overview
+                </h6>
+            </div>
+            <div class="card-body pt-3">
+                <div class="row g-3 text-center">
+                    <div class="col-6">
+                        <a href="/products/" class="text-decoration-none">
+                            <div class="bg-light rounded p-3 hover-card">
+                                <i class="ti ti-package fs-2 text-primary mb-2"></i>
+                                <div class="h4 fw-bold text-dark">{{products}}</div>
+                                <div class="small text-muted">Products</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/customers/" class="text-decoration-none">
+                            <div class="bg-light rounded p-3 hover-card">
+                                <i class="ti ti-users fs-2 text-success mb-2"></i>
+                                <div class="h4 fw-bold text-dark">{{total_customers}}</div>
+                                <div class="small text-muted">Customers</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/products/categories/" class="text-decoration-none">
+                            <div class="bg-light rounded p-3 hover-card">
+                                <i class="ti ti-category fs-2 text-info mb-2"></i>
+                                <div class="h4 fw-bold text-dark">{{categories}}</div>
+                                <div class="small text-muted">Categories</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/sales/" class="text-decoration-none">
+                            <div class="bg-light rounded p-3 hover-card">
+                                <i class="ti ti-receipt fs-2 text-warning mb-2"></i>
+                                <div class="h4 fw-bold text-dark">{{recent_sales_count}}</div>
+                                <div class="small text-muted">Today's Sales</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-12 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 pb-0">
+                <h6 class="fw-bold text-dark mb-0">
+                    <i class="ti ti-link text-purple me-2"></i>Quick Navigation
+                </h6>
+            </div>
+            <div class="card-body pt-3">
+                <div class="list-group list-group-flush">
+                    <a href="/sales/" class="list-group-item list-group-item-action border-0 px-0 py-2">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-receipt text-primary me-3"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold">Sales Management</div>
+                                <small class="text-muted">View and manage all sales</small>
+                            </div>
+                            <i class="ti ti-chevron-right text-muted"></i>
+                        </div>
+                    </a>
+                    <a href="/inventory/" class="list-group-item list-group-item-action border-0 px-0 py-2">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-package text-success me-3"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold">Inventory Control</div>
+                                <small class="text-muted">Track stock and inventory</small>
+                            </div>
+                            <i class="ti ti-chevron-right text-muted"></i>
+                        </div>
+                    </a>
+                    <a href="/suppliers/" class="list-group-item list-group-item-action border-0 px-0 py-2">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-truck text-info me-3"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold">Suppliers</div>
+                                <small class="text-muted">Manage supplier relationships</small>
+                            </div>
+                            <i class="ti ti-chevron-right text-muted"></i>
+                        </div>
+                    </a>
+                    <a href="/expenses/" class="list-group-item list-group-item-action border-0 px-0 py-2">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-credit-card text-warning me-3"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold">Expenses</div>
+                                <small class="text-muted">Track business expenses</small>
+                            </div>
+                            <i class="ti ti-chevron-right text-muted"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Charts Row -->
+<div class="row">
+    <div class="col-xl-8 col-lg-7 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold text-dark mb-0">
+                    <i class="ti ti-chart-line text-primary me-2"></i>Year Earnings Overview
+                </h6>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown">
+                        <i class="ti ti-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/reports/"><i class="ti ti-eye me-2"></i>View Details</a>
+                        </li>
+                        <li><a class="dropdown-item" href="/sales/"><i class="ti ti-receipt me-2"></i>All Sales</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-area position-relative" style="height: 350px;">
                     <canvas id="myAreaChart"></canvas>
+                    <!-- Chart overlay for additional info -->
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <div class="badge bg-primary bg-opacity-10 text-primary px-3 py-2">
+                            <i class="ti ti-trending-up me-1"></i>
+                            <span class="fw-semibold">Yearly Trend</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <div class="col-xl-5 col-lg-5">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Best-selling products</h6>
+    <div class="col-xl-4 col-lg-5 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold text-dark mb-0">
+                    <i class="ti ti-chart-pie text-success me-2"></i>Top Products
+                </h6>
+                <a href="/products/" class="btn btn-sm btn-outline-primary">
+                    <i class="ti ti-external-link"></i>
+                </a>
             </div>
             <div class="card-body">
-                <div class="chart-pie pt-4 pb-4">
+                <div class="chart-pie position-relative" style="height: 280px;">
                     <canvas id="myPieChart"></canvas>
+                    <!-- Center label for doughnut chart -->
+                    <div class="position-absolute top-50 start-50 translate-middle text-center">
+                        <div class="h5 fw-bold text-primary mb-0">Top</div>
+                        <div class="small text-muted">Products</div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h6 class="fw-semibold text-dark mb-3">Product Rankings</h6>
+                    {% for product_name in top_products_names_list %}
+                    <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 rounded-circle me-3" style="width: 8px; height: 8px;">
+                            </div>
+                            <span class="text-dark fw-medium">{{ product_name }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-primary bg-opacity-10 text-primary me-2">#{{ forloop.counter }}</span>
+                            <small class="text-muted">Best Seller</small>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Additional CSS for enhanced styling -->
+<style>
+    .hover-card {
+        transition: all 0.3s ease;
+    }
 
+    .hover-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .text-purple {
+        color: #6f42c1 !important;
+    }
+
+    /* Enhanced Chart Styling */
+    .chart-area,
+    .chart-pie {
+        position: relative;
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .chart-area::before,
+    .chart-pie::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(59, 130, 246, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%);
+        border-radius: 12px;
+        pointer-events: none;
+    }
+
+    /* Chart animations */
+    @keyframes chartFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .chart-area canvas,
+    .chart-pie canvas {
+        animation: chartFadeIn 0.8s ease-out;
+    }
+
+    /* Custom scrollbar for chart tooltips */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+</style>
 
 <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
 
 <input type="hidden" id="monthly_earnings" value="{{monthly_earnings|safe}}">
-
 <input type="hidden" id="top_products_names" value="{{top_products_names}}">
-
 <input type="hidden" id="top_products_quantity" value="{{top_products_quantity|safe}}">
 
 <script src="{% static 'js/chart-area.js' %}"></script>
-
 <script src="{% static 'js/chart-pie.js' %}"></script>
 <script>
     function formatNumberWithCommas(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
+
     $(document).ready(function () {
-        // format #avg_m, avg_a
+        // Format numbers with commas
+        var today_sales = document.getElementById('today_sales').innerHTML;
         var avg_m = document.getElementById('avg_m').innerHTML;
         var avg_a = document.getElementById('avg_a').innerHTML;
+
+        document.getElementById('today_sales').innerHTML = formatNumberWithCommas(today_sales);
         document.getElementById('avg_m').innerHTML = formatNumberWithCommas(avg_m);
         document.getElementById('avg_a').innerHTML = formatNumberWithCommas(avg_a);
 
-    })
+        // Add smooth scrolling
+        $('a[href*="#"]').on('click', function (e) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: $($(this).attr('href')).offset().top
+            }, 500, 'linear');
+        });
+
+        // Chart loading animation
+        setTimeout(function () {
+            $('.chart-area, .chart-pie').addClass('animate__animated animate__fadeInUp');
+        }, 300);
+
+        // Add chart interaction feedback
+        const chartCards = document.querySelectorAll('.card:has(canvas)');
+        chartCards.forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-4px)';
+                this.style.transition = 'all 0.3s ease';
+            });
+
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add pulse animation to chart badges
+        setInterval(function () {
+            $('.badge').addClass('animate__animated animate__pulse');
+            setTimeout(function () {
+                $('.badge').removeClass('animate__animated animate__pulse');
+            }, 1000);
+        }, 5000);
+    });
+
+    // Add chart data refresh functionality
+    function refreshChartData() {
+        // This would typically fetch new data from the server
+        console.log('Refreshing chart data...');
+
+        // Add visual feedback
+        $('.chart-area, .chart-pie').css('opacity', '0.7');
+        setTimeout(function () {
+            $('.chart-area, .chart-pie').css('opacity', '1');
+        }, 1000);
+    }
+
+    // Auto-refresh charts every 5 minutes
+    setInterval(refreshChartData, 300000);
 </script>
 
 {% endblock content %}

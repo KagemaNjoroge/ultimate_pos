@@ -1,9 +1,10 @@
-// Set new default font family and font color to mimic Bootstrap's default styling
-(Chart.defaults.global.defaultFontFamily = "Nunito"),
-  '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = "#858796";
+// Set modern default font family and styling
+Chart.defaults.font.family =
+  "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+Chart.defaults.color = "#64748b";
+Chart.defaults.font.size = 12;
 
-// Pie Chart Example
+// Modern Doughnut Chart Configuration
 var ctx = document.getElementById("myPieChart");
 var myPieChart = new Chart(ctx, {
   type: "doughnut",
@@ -14,27 +15,116 @@ var myPieChart = new Chart(ctx, {
         data: JSON.parse(
           document.getElementById("top_products_quantity").value
         ),
-        backgroundColor: ["#4e73df", "#1cc88a", "#36b9cc"],
-        hoverBackgroundColor: ["#2e59d9", "#17a673", "#2c9faf"],
-        hoverBorderColor: "rgba(234, 236, 244, 1)",
+        backgroundColor: [
+          "rgba(59, 130, 246, 0.9)", // Blue
+          "rgba(34, 197, 94, 0.9)", // Green
+          "rgba(168, 85, 247, 0.9)", // Purple
+          "rgba(251, 146, 60, 0.9)", // Orange
+          "rgba(236, 72, 153, 0.9)", // Pink
+          "rgba(14, 165, 233, 0.9)", // Sky
+        ],
+        borderColor: [
+          "rgba(59, 130, 246, 1)",
+          "rgba(34, 197, 94, 1)",
+          "rgba(168, 85, 247, 1)",
+          "rgba(251, 146, 60, 1)",
+          "rgba(236, 72, 153, 1)",
+          "rgba(14, 165, 233, 1)",
+        ],
+        borderWidth: 3,
+        hoverBackgroundColor: [
+          "rgba(59, 130, 246, 1)",
+          "rgba(34, 197, 94, 1)",
+          "rgba(168, 85, 247, 1)",
+          "rgba(251, 146, 60, 1)",
+          "rgba(236, 72, 153, 1)",
+          "rgba(14, 165, 233, 1)",
+        ],
+        hoverBorderColor: "#ffffff",
+        hoverBorderWidth: 4,
+        hoverOffset: 8,
       },
     ],
   },
   options: {
+    responsive: true,
     maintainAspectRatio: false,
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      borderColor: "#dddfeb",
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      caretPadding: 10,
+    cutout: "65%",
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          usePointStyle: true,
+          pointStyle: "circle",
+          padding: 20,
+          font: {
+            size: 12,
+            weight: "500",
+          },
+          generateLabels: function (chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              const dataset = data.datasets[0];
+              const total = dataset.data.reduce((sum, value) => sum + value, 0);
+
+              return data.labels.map((label, i) => {
+                const value = dataset.data[i];
+                const percentage = ((value / total) * 100).toFixed(1);
+
+                return {
+                  text: `${label} (${percentage}%)`,
+                  fillStyle: dataset.backgroundColor[i],
+                  strokeStyle: dataset.borderColor[i],
+                  lineWidth: dataset.borderWidth,
+                  index: i,
+                };
+              });
+            }
+            return [];
+          },
+        },
+      },
+      tooltip: {
+        backgroundColor: "rgba(255, 255, 255, 0.95)",
+        titleColor: "#1f2937",
+        bodyColor: "#4b5563",
+        borderColor: "rgba(229, 231, 235, 1)",
+        borderWidth: 1,
+        cornerRadius: 12,
+        displayColors: true,
+        padding: 16,
+        titleFont: {
+          size: 14,
+          weight: "600",
+        },
+        bodyFont: {
+          size: 13,
+          weight: "500",
+        },
+        callbacks: {
+          title: function (tooltipItems) {
+            return tooltipItems[0].label;
+          },
+          label: function (context) {
+            const total = context.dataset.data.reduce(
+              (sum, value) => sum + value,
+              0
+            );
+            const percentage = ((context.parsed / total) * 100).toFixed(1);
+            return `Sales: ${context.parsed} units (${percentage}%)`;
+          },
+        },
+      },
     },
-    legend: {
-      display: true,
+    animation: {
+      animateRotate: true,
+      animateScale: true,
+      duration: 1000,
+      easing: "easeOutQuart",
     },
-    cutoutPercentage: 90,
+    interaction: {
+      intersect: false,
+    },
   },
 });
