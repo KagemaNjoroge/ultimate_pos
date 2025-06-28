@@ -22,8 +22,7 @@
             <i class="ti ti-info-circle"></i>
             Fill in the details of the customer you want to add.
         </div>
-        <form action="{% url 'customers:customers_add' %}" method="post" enctype="multipart/form-data"
-            id="customer_form">
+        <form action="/customers/api/" method="post" enctype="multipart/form-data" id="customer_form">
             <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
                 {% csrf_token %}
                 <div class="form-row items-start">
@@ -111,30 +110,23 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                accepts: "*",
                 success: function (data) {
-                    // check if status is error or success
-                    if (data.status == 'error') {
-                        // display error message with a close button to close the alert
-                        let error = '<div class="alert alert-danger alert-dismissible" role="alert">' + data.message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                        $('#status').html(error);
 
-                    } else {
-                        // display success message  with a close button to close the alert
-                        let success = '<div class="alert alert-success alert-dismissible" role="alert">' + data.message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                        $('#status').html(success);
+                    // display success message  with a close button to close the alert
+                    let success = '<div class="alert alert-success alert-dismissible" role="alert">' + 'Customer created!' + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                    $('#status').html(success);
 
-                        // reset form
-                        form[0].reset();
-                        // reset photo
-                        $('#customer_photo').attr('src', '{% static "img/undraw_profile.svg" %}');
-                    }
+                    // reset form
+                    form[0].reset();
+                    // reset photo
+                    $('#customer_photo').attr('src', '{% static "img/undraw_profile.svg" %}');
+
 
                 },
                 error: function (data) {
                     // unknown error
                     let error = '<div class="alert alert-danger alert-dismissible" role="alert">An error occurred. Please try again later.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                    console.log(data)
+
                     $('#status').html(error);
 
                 }

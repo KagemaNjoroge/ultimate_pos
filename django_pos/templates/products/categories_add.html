@@ -25,7 +25,7 @@
                 Enter the details of the category you want to add to your product catalog.
             </div>
 
-            <form action="{% url 'products:categories_add' %}" method="post" id="category_form" class="needs-validation"
+            <form action="/products/categories/api/" method="post" id="category_form" class="needs-validation"
                 novalidate>
                 {% csrf_token %}
                 <div class="row mb-3">
@@ -140,29 +140,19 @@
                     "status": status,
                     "name": name,
                 }), success: function (data) {
-                    if (data.status === "success") {
-                        // Configure toastr options
-                        toastr.options = {
-                            "closeButton": true,
-                            "progressBar": true,
-                            "positionClass": "toast-top-right",
-                            "timeOut": "2000"
-                        };
-                        toastr.success(data.message, "Success");
-                        form[0].reset();
-                        form.removeClass('was-validated');
-                        setTimeout(() => {
-                            window.location.href = "{% url 'products:categories_list' %}";
-                        }, 1500);
-                    } else {
-                        toastr.options = {
-                            "closeButton": true,
-                            "progressBar": true,
-                            "positionClass": "toast-top-right",
-                            "timeOut": "5000"
-                        };
-                        toastr.error(data.message || "An error occurred", "Error");
-                    }
+                    // Configure toastr options
+                    toastr.options = {
+                        "closeButton": true,
+                        "progressBar": true,
+                        "positionClass": "toast-top-right",
+                        "timeOut": "2000"
+                    };
+                    toastr.success("Category created", "Success");
+                    form[0].reset();
+                    form.removeClass('was-validated');
+                    setTimeout(() => {
+                        window.location.href = "{% url 'products:categories_list' %}";
+                    }, 1500);
                 },
                 error: function (xhr) {
                     let errorMsg = "An error occurred";

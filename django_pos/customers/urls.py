@@ -18,12 +18,7 @@ urlpatterns = [
         views.customers_update_view,
         name="customers_update",
     ),
-    # Delete customer
-    path(
-        "delete/<str:customer_id>/",
-        views.customers_delete_view,
-        name="customers_delete",
-    ),
+
     # Customer profile
     path("profile/<str:id>/", views.customer_profile, name="customer_profile"),
     # import customers

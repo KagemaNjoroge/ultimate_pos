@@ -1,10 +1,21 @@
 import json
 from django.http import HttpRequest, HttpResponse, JsonResponse
+from rest_framework.viewsets import ModelViewSet
 from django.shortcuts import get_object_or_404, render
-from .serializers import ExpenseCategorySerializer
+from .serializers import ExpenseCategorySerializer, ExpenseSerializer
 from expenses.models import Expense, ExpenseCategory
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+
+
+class ExpenseCategoryViewSet(ModelViewSet):
+    queryset = ExpenseCategory.objects.all()
+    serializer_class = ExpenseCategorySerializer
+
+
+class ExpenseViewSet(ModelViewSet):
+    queryset = Expense.objects.all()
+    serializer_class = ExpenseSerializer
 
 
 @login_required(login_url="/users/login/")

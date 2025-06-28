@@ -1,10 +1,8 @@
 {% extends "pos/base.html" %}
+{% load static %}
 
-<!-- Page title  -->
 {% block title %}Update customer{% endblock title %}
 
-<!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
 
 <!-- Page Heading -->
 {% block heading %}Update customer{% endblock heading %}
@@ -25,26 +23,28 @@
 
 <div class="card col-md-11 ml-2">
     <div class="card-body">
-        <div class="text-center">
-            <div class="update_msg"></div>
-        </div>
+
         <!--Form as multipart-->
-        <form action="{% url 'customers:customers_update' customer.id %}" method="post" id="form"
-            enctype="multipart/form-data">
+        <form action="/customers/api/{{customer.id}}/" method="post" id="form" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="kra_pin">KRA PIN</label>
-                    <input type="text" class="form-control" name="kra_pin" value="{{customer.kra_pin}}" required
-                        id="kra_pin">
+                    <label for="tax_number">TAX Number</label>
+                    <input type="text" class="form-control" name="tax_number" value="{{customer.tax_number}}"
+                        id="tax_number">
                 </div>
                 <!--Image with an initial customer photo-->
                 <div class="form-group com-md-6">
                     <div class="form-row">
                         <div class="form-group col-md-6">
 
-                            <img src="{{customer.photo.url}}" alt="Customer photo" class="img-thumbnail ml-2"
-                                width="100" height="100" id="customer_photo">
+                            {% if customer.photo %}
+                            <img src="{{customer.photo.url}}" alt="Customer photo" class="img-thumbnail"
+                                id="customer_photo" width="100" height="100">
+                            {% else %}
+                            <img src="{% static 'img/undraw_profile.svg' %}" alt="Customer photo" class="img-thumbnail"
+                                id="customer_photo" width="100" height="100">
+                            {% endif %}
 
                         </div>
                         <div class="form-group col-md-6">
@@ -117,31 +117,36 @@
             $('#update_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...').prop('disabled', true);
 
             $.ajax({
-                type: 'POST',
+                type: 'PATCH',
                 url: url,
                 data: formData,
-                success: function (response) {
-                    // show success message
-                    if (response.status === 'success') {
-                        $('.update_msg').html('<div class="alert alert-success alert-dismissible fade show" role="alert">' + response.message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-                    }
-                    // show error message
-                    else if (response.status === 'error') {
-                        $('.update_msg').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">' + response.message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-                    }
-                    else {
-                        // unknown error
-                        $('.update_msg').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">Unknown error occurred<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-                    }
-
-                },
-                error: function (error) {
-                    // show error message
-                    console.log(error);
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
                 },
                 cache: false,
                 contentType: false,
-                processData: false
+                processData: false,
+                success: function (response) {
+
+                    toastr.success('Customer updated successfully!', 'Success', {
+                        timeOut: 5000,
+                        closeButton: true,
+                        progressBar: true
+                    });
+                    // reload current page
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 2000);
+
+                },
+                error: function (error) {
+                    // show error toast
+                    toastr.error('Error updating customer: ' + error.responseJSON.detail, 'Error', {
+                        timeOut: 5000,
+                        closeButton: true,
+                        progressBar: true
+                    });
+                }
             }).done(function () {
                 // remove bootstrap spinner
                 $('#update_btn').html('Update customer').prop('disabled', false);

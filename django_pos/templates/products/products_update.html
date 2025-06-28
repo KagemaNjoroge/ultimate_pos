@@ -16,7 +16,7 @@
     <div class="card-body">
         <div class="update_msg text-center"></div>
 
-        <form id="product_update" enctype="multipart/form-data">
+        <form id="product_update" enctype="multipart/form-data" action="/products/products/api/{{product.id}}/">
             {% csrf_token %}
             <div class="form-row">
                 <div class="form-group col-md-6">
@@ -125,36 +125,36 @@
         $("#product_update").submit(function (e) {
             e.preventDefault();
 
-            const url = "{% url 'products:products_update' product.id %}";
+            const url = $(this).attr('action');
             // add spinner to the button
             $('#update_btn').html(
                 '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...'
             );
             $.ajax({
-                type: 'POST',
+                type: 'PATCH',
                 url: url,
-                contentType: false,  // Fix the content type
-                processData: false,  // Prevent jQuery from processing the data
+                contentType: false,  
+                processData: false,  
                 headers: {
-                    "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
+                    "X-CSRFToken": '{{ csrf_token }}'
                 },
                 data: new FormData($('#product_update')[0]),
 
                 success: function (response) {
-                    if (response['status'] === "success") {
-                        $('.update_msg').html(
-                            '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Success!</strong> Product updated successfully<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
-                        );
-                    } else {
-                        $('.update_msg').html(
-                            '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> Product not updated<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
-                        );
-                    }
+                    toastr.success('Product updated successfully!', 'Success', {
+                        timeOut: 3000,
+                        closeButton: true,
+                        progressBar: true
+                    });
                 },
-                error: function () {
-                    $('.update_msg').html(
-                        '<div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Error!</strong> Product not updated<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>'
-                    );
+                error: function (
+                    xhr, status, error
+                ) {
+                    toastr.error('Error updating product: ' + xhr.responseJSON.error, 'Error', {
+                        timeOut: 3000,
+                        closeButton: true,
+                        progressBar: true
+                    });
                 }
             }).done(function () {
                 // remove spinner from the button

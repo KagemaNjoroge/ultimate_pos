@@ -1,10 +1,8 @@
 from django.db import models
+from utils.models import TimestampedModel
 
 
-class Customer(models.Model):
-    """
-    Represents a customer in the system.
-    """
+class Customer(TimestampedModel):
 
     first_name = models.CharField(max_length=256)
     last_name = models.CharField(max_length=256, blank=True, null=True)

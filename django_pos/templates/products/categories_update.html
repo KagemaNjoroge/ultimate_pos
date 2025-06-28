@@ -18,7 +18,7 @@
 <div class="card  ml-2">
     <div class="card-body">
 
-        <form action="{% url 'products:categories_update' category.id %}" method="post" id="update_form">
+        <form action="/products/categories/api/{{category.id}}/" method="post" id="update_form">
             {% csrf_token %}
             <div class="form-row">
 
@@ -70,7 +70,7 @@
                 status: state
             };
 
-            
+
 
             e.preventDefault();
             const form = $(this);
@@ -80,27 +80,20 @@
             )
 
             $.ajax({
-                type: "POST",
+                type: "PATCH",
                 url: url,
                 // add csrf token to the header
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
                 data: JSON.stringify(data),
+                contentType: 'application/json',
                 success: function (data) {
-                    if (data.status === 'success') {
-                        // toastr success
-                        toastr.success(data.message);
+                    // show a success message
+                    toastr.success('Category updated successfully');
+                    // refresh the page
 
 
-                    } else if (data.status === "error") {
-                        // add error msg
-                        toastr.error(data.message);
-                    }
-                    else {
-                        // unknown error
-                        toastr.error('An error occurred');
-                    }
                 },
                 error: function (data) {
                     // show an error message

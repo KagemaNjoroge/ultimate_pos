@@ -1,207 +1,521 @@
 {% extends "pos/base.html" %}
 {% load static %}
-{% block title %}Sale details{% endblock title %}
-{% block heading %}Sale ID: {{sale.id}}{% endblock heading %}
-
+{% block title %}Sale Details - {{sale.id}}{% endblock title %}
+{% block heading %}Sale Details{% endblock heading %}
 
 {% block content %}
-<div class="ml-2 mb-3 btn-group">
-    <a href="{% url 'sales:sales_list' %}" class="btn btn-success font-weight-bold">
-        <i class="ti ti-arrow-left"></i>
-        Go back
-    </a>
-    <button type="button" class="btn btn-info font-weight-bold" id="share_btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share-fill"
-            viewBox="0 0 16 16">
-            <path
-                d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5">
-            </path>
-        </svg>
-        Share
-    </button>
-    <a href="{%url 'sales:sales_receipt_pdf' sale.id %}" class="btn btn-secondary font-weight-bold">
-        <i class="ti ti-printer"></i>
-        Print
-    </a>
-    <a href="{% url 'sales:sales_list' %}" class="btn btn-danger font-weight-bold">
-        <i class="ti ti-edit mr-2"></i>
-        Edit
-    </a>
-</div>
+<!-- Sale Header with Status Badge -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="d-flex align-items-center mb-2 mb-md-0">
+                        <div class="me-3">
+                            <i class="ti ti-receipt-2 fs-6 text-primary"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 fw-bold">Sale #{{sale.id}}</h4>
+                            <p class="text-muted mb-0">
+                                <i class="ti ti-calendar me-1"></i>
+                                {{sale.date_added|date:"F d, Y g:i A"}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <!-- Payment Status Badge -->
+                        {% if sale.amount_payed >= sale.grand_total %}
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+                            <i class="ti ti-check-circle me-1"></i>Paid
+                        </span>
+                        {% elif sale.amount_payed > 0 %}
+                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3 py-2">
+                            <i class="ti ti-clock me-1"></i>Partial
+                        </span>
+                        {% else %}
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">
+                            <i class="ti ti-x-circle me-1"></i>Unpaid
+                        </span>
+                        {% endif %}
 
-
-<!-- Modal -->
-<div class="modal fade" id="myModel" tabindex="-1" aria-labelledby="myModelLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <p class="modal-title" id="myModelLabel">
-                    <i class="ti share"></i>
-                    Share sale details
-                </p>
-
-            </div>
-            <div class="modal-body">
-                <p>Share this link via</p>
-                <div class="d-flex align-items-center icons">
-                    <div class="container btn-group">
-
-                        <a href="#" class="btn btn-primary">
-                            <span class="ti ti-brand-facebook"></span>
-                        </a>
-                        <a href="#" class="btn btn-dark">
-                            <span class="ti ti-brand-twitter"></span>
-                        </a>
-                        <a href="#" class="btn btn-success">
-                            <span class="ti ti-brand-whatsapp"></span>
-                        </a>
-                        <a href="#" class="btn btn-primary">
-                            <span class="ti ti-brand-telegram"></span>
-                        </a>
-
+                        <!-- Action Buttons -->
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'sales:sales_list' %}" class="btn btn-outline-secondary">
+                                <i class="ti ti-arrow-left me-1"></i>
+                                Back
+                            </a>
+                            <a href="{%url 'sales:sales_receipt_pdf' sale.id %}" class="btn btn-primary">
+                                <i class="ti ti-printer me-1"></i>
+                                Print Receipt
+                            </a>
+                            <a href="{% url 'sales:sales_list' %}" class="btn btn-outline-primary">
+                                <i class="ti ti-edit me-1"></i>
+                                Edit
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <p>Or copy link</p>
-                <div class="field d-flex align-items-center justify-content-between">
-                    <span class="ti ti-link text-center"></span>
-                    <input type="text" value="some.com/share"
-                        class="form-control d-flex align-items-center justify-content-center mr-2 ml-2" readonly>
-                    <button class="btn btn-primary font-weight-bold d-flex align-items-center justify-content-center">
-                        <span class="ti ti-clipboard-copy"></span>
-                        <span>Copy</span>
-                    </button>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" data-bs-dismiss="modal" aria-label="Close"
-                    class="btn btn-secondary font-weight-bold">
-                    <span aria-hidden="true">Close</span>
-                </button>
             </div>
         </div>
-
     </div>
 </div>
 
 
 
-
-<div class="card ml-2">
-    <div class="card-body">
-        <div class="row">
-            <!--Left column-->
-            <div class="col-md-9 pl-0">
-                <div class="card card-secondary">
-                    <div class="card-header">Sale products</div>
-
-                    <div class="card-body">
-                        <!--Products table-->
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap" id="table_products">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for detail in details.items.all %}
-                                    <tr>
-                                        <td>{{forloop.counter}}</td>
-                                        <td>{{detail.product.name}}</td>
-                                        <td>{{detail.product.price}}</td>
-                                        <td class="text-center">{{detail.quantity}}</td>
-                                        <td>{{detail.total}}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+<!-- Customer Information Card -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light border-0 py-3">
+                <h5 class="mb-0 d-flex align-items-center">
+                    <i class="ti ti-user me-2 text-primary"></i>
+                    Customer Information
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-semibold">Customer Name</label>
+                            <p class="fs-5 fw-bold text-dark mb-0">{{sale.customer.get_full_name}}</p>
                         </div>
-                        <!--End Products table-->
                     </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-semibold">Customer ID</label>
+                            <p class="fs-6 text-dark mb-0">#{{sale.customer.id}}</p>
+                        </div>
+                    </div>
+                    {% if sale.customer.email %}
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-semibold">Email</label>
+                            <p class="fs-6 text-dark mb-0">
+                                <i class="ti ti-mail me-1"></i>{{sale.customer.email}}
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if sale.customer.phone %}
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-semibold">Phone</label>
+                            <p class="fs-6 text-dark mb-0">
+                                <i class="ti ti-phone me-1"></i>{{sale.customer.phone}}
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
-            <!--End Left column-->
-
-            <!--Righ column-->
-            <div class="col-md-3 pr-0">
-                <div class="card card-secondary">
-                    <div class="card-header">Sale details</div>
-                    <div class="card-body">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="searchbox_customers">Customer</label>
-                            <select name="customer" class="form-control" id="searchbox_customers" disabled readonly>
-                                <option value="{{sale.customer.id}}">{{sale.customer.get_full_name}}</option>
-                            </select>
-                            <div class="form-group mt-4">
-                                <label for="subtotal">Subtotal</label>
-                                <div class="input-group">
-                                    <input name="sub_total" class="form-control" value="{{sale.sub_total}}" readonly
-                                        id="subtotal">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tax_inclusive">Tax Inclusive (%)</label>
-                                <div class="input-group">
-                                    <input name="tax_percentage" class="form-control" value="{{sale.tax_percentage}}"
-                                        readonly id="tax_inclusive">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="tax">Tax Amount</label>
-                                <div class="input-group">
-                                    <input name="tax_amount" class="form-control" value="{{sale.tax_amount}}" readonly
-                                        id="tax">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="grand_total">Grand Total</label>
-                                <div class="input-group">
-                                    <input name="grand_total" class="form-control" value="{{sale.grand_total}}" readonly
-                                        id="grand_total">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="amount_paid">Amount paid</label>
-                                <div class="input-group">
-                                    <input name="amount_payed" class="form-control" value="{{sale.amount_payed}}"
-                                        readonly id="amount_paid">
-                                </div>
-                            </div>
-
-                        </div>
-                        <!--End card-body-->
-                    </div>
-                    <!--End Right column-->
-                </div>
-                <!--End row-->
-            </div>
-            <!--End card-body-->
         </div>
-
     </div>
 </div>
+
+<!-- Main Content Row -->
+<div class="row">
+    <!-- Products Table - Left Column -->
+    <div class="col-lg-8 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-light border-0 py-3">
+                <h5 class="mb-0 d-flex align-items-center">
+                    <i class="ti ti-shopping-cart me-2 text-primary"></i>
+                    Sale Items
+                    <span class="badge bg-primary-subtle text-primary ms-2">{{details.items.count}}
+                        item{{details.items.count|pluralize}}</span>
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="table_products">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 ps-4">#</th>
+                                <th class="border-0">Product Name</th>
+                                <th class="border-0 text-end">Unit Price</th>
+                                <th class="border-0 text-center">Quantity</th>
+                                <th class="border-0 text-end pe-4">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detail in items %}
+                            <tr>
+                                <td class="ps-4 align-middle">
+                                    <span class="text-muted">{{forloop.counter}}</span>
+                                </td>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary-subtle rounded-circle p-2 me-3">
+                                            <i class="ti ti-package text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-semibold">{{detail.product.name}}</h6>
+                                            {% if detail.product.sku %}
+                                            <small class="text-muted">SKU: {{detail.product.sku}}</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-end align-middle">
+                                    <span class="fw-semibold">${{detail.product.price|floatformat:2}}</span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <span
+                                        class="badge bg-secondary-subtle text-secondary px-3 py-2">{{detail.quantity}}</span>
+                                </td>
+                                <td class="text-end pe-4 align-middle">
+                                    <span class="fw-bold text-success">${{detail.total|floatformat:2}}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sale Summary - Right Column -->
+    <div class="col-lg-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-light border-0 py-3">
+                <h5 class="mb-0 d-flex align-items-center">
+                    <i class="ti ti-calculator me-2 text-primary"></i>
+                    Sale Summary
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <!-- Subtotal -->
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <span class="text-muted">Subtotal</span>
+                    <span class="fw-semibold fs-6">${{sale.sub_total|floatformat:2}}</span>
+                </div>
+
+                <!-- Tax -->
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <span class="text-muted">
+                        Tax ({{sale.tax_percentage}}%)
+                        <i class="ti ti-info-circle ms-1" data-bs-toggle="tooltip" title="Tax Rate Applied"></i>
+                    </span>
+                    <span class="fw-semibold fs-6">${{sale.tax_amount|floatformat:2}}</span>
+                </div>
+
+                <!-- Discount (if applicable) -->
+                {% if sale.discount > 0 %}
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <span class="text-success">
+                        <i class="ti ti-discount me-1"></i>Discount
+                    </span>
+                    <span class="fw-semibold fs-6 text-success">-${{sale.discount|floatformat:2}}</span>
+                </div>
+                {% endif %}
+
+                <!-- Grand Total -->
+                <div class="d-flex justify-content-between align-items-center py-3 bg-primary-subtle rounded mt-3 px-3">
+                    <span class="fw-bold text-primary fs-5">Grand Total</span>
+                    <span class="fw-bold text-primary fs-4">${{sale.grand_total|floatformat:2}}</span>
+                </div>
+
+                <!-- Payment Information -->
+                <div class="mt-4 pt-3 border-top">
+                    <h6 class="mb-3 fw-semibold text-dark">Payment Details</h6>
+
+                    <div class="d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted">Amount Paid</span>
+                        <span class="fw-semibold fs-6 text-success">${{sale.amount_payed|floatformat:2}}</span>
+                    </div>
+
+                    {% if sale.amount_change > 0 %}
+                    <div class="d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted">Change Given</span>
+                        <span class="fw-semibold fs-6">${{sale.amount_change|floatformat:2}}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if sale.grand_total > sale.amount_payed %}
+                    {% with balance_due=sale.grand_total|add:0 %}
+                    <div class="d-flex justify-content-between align-items-center py-2">
+                        <span class="text-danger fw-semibold">Balance Due</span>
+                        <span class="fw-bold fs-6 text-danger balance-amount" data-total="{{sale.grand_total}}"
+                            data-paid="{{sale.amount_payed}}">${{sale.grand_total|floatformat:2}}</span>
+                    </div>
+                    {% endwith %}
+                    {% endif %}
+                </div>
+
+                <!-- Receipt Status -->
+                <div class="mt-4 pt-3 border-top">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="text-muted small">Receipt Status</span>
+                        {% if sale.receipt_is_printed %}
+                        <span class="badge bg-success-subtle text-success">
+                            <i class="ti ti-check me-1"></i>Printed
+                        </span>
+                        {% else %}
+                        <span class="badge bg-warning-subtle text-warning">
+                            <i class="ti ti-clock me-1"></i>Not Printed
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Sale Information -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light border-0 py-3">
+                <h5 class="mb-0 d-flex align-items-center">
+                    <i class="ti ti-info-circle me-2 text-primary"></i>
+                    Additional Information
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="bg-primary-subtle rounded-circle p-3 mx-auto mb-2"
+                                style="width: 60px; height: 60px;">
+                                <i class="ti ti-package fs-4 text-primary"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1">{{items_count}}</h6>
+                            <small class="text-muted">Total Items</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="bg-success-subtle rounded-circle p-3 mx-auto mb-2"
+                                style="width: 60px; height: 60px;">
+                                <i class="ti ti-coin fs-4 text-success"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1">${{sale.grand_total|floatformat:2}}</h6>
+                            <small class="text-muted">Total Value</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="bg-info-subtle rounded-circle p-3 mx-auto mb-2"
+                                style="width: 60px; height: 60px;">
+                                <i class="ti ti-percentage fs-4 text-info"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1">{{sale.tax_percentage}}%</h6>
+                            <small class="text-muted">Tax Rate</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <div class="bg-warning-subtle rounded-circle p-3 mx-auto mb-2"
+                                style="width: 60px; height: 60px;">
+                                <i class="ti ti-calendar fs-4 text-warning"></i>
+                            </div>
+                            <h6 class="fw-bold mb-1">{{sale.date_added|date:"M d"}}</h6>
+                            <small class="text-muted">Sale Date</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom styles for enhanced visual appeal */
+    .card {
+        transition: all 0.3s ease;
+        border-radius: 12px;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    .table th {
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+    }
+
+    .badge {
+        border-radius: 6px;
+        font-weight: 500;
+    }
+
+    .btn {
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .bg-primary-subtle {
+        background-color: rgba(13, 110, 253, 0.1) !important;
+    }
+
+    .bg-success-subtle {
+        background-color: rgba(25, 135, 84, 0.1) !important;
+    }
+
+    .bg-warning-subtle {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+    }
+
+    .bg-danger-subtle {
+        background-color: rgba(220, 53, 69, 0.1) !important;
+    }
+
+    .bg-info-subtle {
+        background-color: rgba(13, 202, 240, 0.1) !important;
+    }
+
+    .bg-secondary-subtle {
+        background-color: rgba(108, 117, 125, 0.1) !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+    }
+
+    @media (max-width: 768px) {
+        .btn-group {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .btn-group .btn {
+            margin-bottom: 0.5rem;
+            border-radius: 8px !important;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+    }
+
+    /* Enhanced table styling */
+    .table tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.04);
+    }
+
+    /* Tooltip customization */
+    .tooltip {
+        font-size: 0.875rem;
+    }
+
+    /* Animation for statistics cards */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Print styles */
+    @media print {
+
+        .btn-group,
+        .card-header {
+            display: none !important;
+        }
+
+        .card {
+            border: 1px solid #dee2e6 !important;
+            box-shadow: none !important;
+        }
+    }
+</style>
 
 <script>
-
-
-
     $(document).ready(function () {
-        $("#share_btn").click(function () {
-            $("#myModel").modal("show");
-        });
+        // Initialize DataTable with enhanced options
         let tblProducts = $('#table_products').DataTable({
+            "searching": false,
+            "lengthChange": false,
+            "info": false,
+            "paging": false,
+            "responsive": true,
+            "language": {
+                "emptyTable": "No items found in this sale"
+            },
+            "columnDefs": [
+                { "orderable": false, "targets": [0] },
+                { "className": "text-center", "targets": [3] },
+                { "className": "text-end", "targets": [2, 4] }
+            ]
         });
-        $(document).ready(function () {
-            $('#share_btn').click(function () {
-                $('#myModel').modal('show');
-            });
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Add smooth scrolling for any anchor links
+        $('a[href^="#"]').on('click', function (event) {
+            var target = $(this.getAttribute('href'));
+            if (target.length) {
+                event.preventDefault();
+                $('html, body').stop().animate({
+                    scrollTop: target.offset().top - 100
+                }, 1000);
+            }
+        });
+
+        // Add loading state for print button
+        $('a[href*="receipt_pdf"]').on('click', function () {
+            var $btn = $(this);
+            var originalText = $btn.html();
+            $btn.html('<i class="ti ti-loader me-1"></i>Generating...');
+            $btn.addClass('disabled');
+
+            setTimeout(function () {
+                $btn.html(originalText);
+                $btn.removeClass('disabled');
+            }, 3000);
+        });
+
+        // Add currency formatting
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        }
+
+        // Format all currency displays and calculate balance
+        $('.currency').each(function () {
+            var amount = parseFloat($(this).text().replace('$', ''));
+            if (!isNaN(amount)) {
+                $(this).text(formatCurrency(amount));
+            }
+        });
+
+        // Calculate and display balance due
+        $('.balance-amount').each(function () {
+            var $this = $(this);
+            var total = parseFloat($this.data('total'));
+            var paid = parseFloat($this.data('paid'));
+            var balance = total - paid;
+            if (!isNaN(balance) && balance > 0) {
+                $this.text(formatCurrency(balance));
+            }
         });
     });
-
 </script>
 {% endblock content %}

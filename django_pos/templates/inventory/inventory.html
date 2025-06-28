@@ -1,83 +1,287 @@
 {% extends "pos/base.html" %} {% load static %}
-{% block title %}Stock{% endblock title %}
-{% block heading %}Stock{%endblock heading %}
+{% block title %}Stock Management{% endblock title %}
+{% block heading %}
+<div class="d-flex align-items-center">
+    <i class="ti ti-package me-2 text-primary"></i>
+    <span>Stock Management</span>
+</div>
+{%endblock heading %}
 {% block content %}
 
-<div class="ml-2 mb-3">
-    <div class="btn-group">
-        <a href="{% url 'inventory:inventory_add' %}" class="btn btn-success font-weight-bold">
-            <i class="ti ti-plus"></i>
-            Add Stock
-        </a>
-        <a href="{% url 'inventory:inventory_add' %}" class="btn btn-secondary font-weight-bold">
-            <i class="ti ti-transfer-out"></i>
-            Stock Transfer
-        </a>
-    </div>
-</div>
-
-
-<div class="card shadow ml-2">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-hover" id="dataTable">
-                <thead>
-                    <tr>
-                        <th>Stock ID</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for invent in inventory %}
-                    <tr>
-                        <th>{{ invent.id }}</th>
-                        <td>{{ invent.product.name }}</td>
-                        <td>{{ invent.quantity }}</td>
-                        <td>
-                            <div class="btn-group">
-                                <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}"
-                                    class="text-decoration-none btn btn-warning btn-sm" data-bs-toggle="tooltip"
-                                    title="Update Stock">
-
-                                    <i class="ti ti-pencil"></i>
-
-                                </a>
-                                <a class="text-decoration-none btn btn-danger btn-sm" data-bs-toggle="tooltip"
-                                    title="Delete Stock">
-
-                                    <i class="ti ti-trash"></i>
-
-                                </a>
-                            </div>
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-                </tbody>
-            </table>
+<!-- Header Section with Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm bg-gradient-primary text-white">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title text-white mb-1">
+                            <i class="ti ti-package me-2"></i>
+                            Inventory Overview
+                        </h4>
+                        <p class="card-text text-white-50 mb-0">Manage your stock levels and transfers</p>
+                    </div>
+                    <div class="btn-group">
+                        <a href="{% url 'inventory:inventory_add' %}" class="btn btn-light btn-lg shadow-sm">
+                            <i class="ti ti-plus me-1"></i>
+                            Add Stock
+                        </a>
+                        <a href="{% url 'inventory:inventory_add' %}" class="btn btn-outline-light btn-lg">
+                            <i class="ti ti-transfer-out me-1"></i>
+                            Stock Transfer
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
+<!-- Main Data Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="ti ti-list me-2 text-primary"></i>
+                        Stock Items
+                    </h5>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary-subtle text-primary px-3 py-2">
+                            <i class="ti ti-database me-1"></i>
+                            Total Items: {{ inventory|length }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="dataTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 px-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ti ti-hash me-2 text-muted"></i>
+                                        Stock ID
+                                    </div>
+                                </th>
+                                <th class="border-0 px-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ti ti-package me-2 text-muted"></i>
+                                        Product
+                                    </div>
+                                </th>
+                                <th class="border-0 px-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ti ti-stack me-2 text-muted"></i>
+                                        Quantity
+                                    </div>
+                                </th>
+                                <th class="border-0 px-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="ti ti-settings me-2 text-muted"></i>
+                                        Actions
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invent in inventory %}
+                            <tr class="border-bottom">
+                                <td class="px-4 py-3">
+                                    <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                                        #{{ invent.id }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary-subtle rounded-circle p-2 me-3">
+                                            <i class="ti ti-package text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 text-dark">{{ invent.product.name }}</h6>
+                                            <small class="text-muted">Product Item</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    {% if invent.quantity > 10 %}
+                                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">
+                                        <i class="ti ti-check me-1"></i>
+                                        {{ invent.quantity }} units
+                                    </span>
+                                    {% elif invent.quantity > 5 %}
+                                    <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">
+                                        <i class="ti ti-alert-triangle me-1"></i>
+                                        {{ invent.quantity }} units
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill">
+                                        <i class="ti ti-alert-circle me-1"></i>
+                                        {{ invent.quantity }} units
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="btn-group" role="group">
+                                        <a href="{% url 'inventory:update_inventory' inventory_id=invent.id %}"
+                                            class="btn btn-outline-warning btn-sm rounded-start"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Update Stock">
+                                            <i class="ti ti-pencil"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-outline-danger btn-sm rounded-end"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Stock"
+                                            data-inventory-id="{{ invent.id }}" onclick="confirmDelete(this)">
+                                            <i class="ti ti-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="ti ti-package-off fs-1 mb-3 d-block"></i>
+                                        <h5>No stock items found</h5>
+                                        <p>Start by adding your first stock item</p>
+                                        <a href="{% url 'inventory:inventory_add' %}" class="btn btn-primary">
+                                            <i class="ti ti-plus me-1"></i>
+                                            Add Stock
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    }
+
+    .table thead th {
+        font-weight: 600;
+        letter-spacing: 0.025em;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f8fafc;
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+
+    .btn-group .btn {
+        transition: all 0.2s ease;
+    }
+
+    .btn-group .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
+
+    .dt-buttons {
+        margin-bottom: 1rem;
+    }
+
+    .dt-button {
+        margin-right: 0.5rem !important;
+        border-radius: 0.5rem !important;
+        font-weight: 500 !important;
+        padding: 0.5rem 1rem !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .dt-button:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        border-radius: 0.5rem;
+        border: 1px solid #e5e7eb;
+        padding: 0.5rem 1rem;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        border-radius: 0.5rem;
+        border: 1px solid #e5e7eb;
+        padding: 0.25rem 0.5rem;
+    }
+</style>
+
 <script>
+    // Confirm delete function
+    function confirmDelete(element) {
+        const inventoryId = element.getAttribute('data-inventory-id');
+        const result = confirm('Are you sure you want to delete this stock item?');
+        if (result) {
+            // Here you would typically make an AJAX call to delete the item
+            // For now, we'll just show an alert
+            alert('Delete functionality would be implemented here for ID: ' + inventoryId);
+        }
+    }
+
+    // Initialize tooltips
+    function initializeTooltips() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    }
 
     $(document).ready(function () {
+        // Initialize tooltips
+        initializeTooltips();
+
+        // Initialize DataTable with enhanced styling
         let tblProducts = $('#dataTable').DataTable({
-            dom: 'Bfrtip',
+            dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                '<"row"<"col-sm-12"B>>' +
+                '<"row"<"col-sm-12"tr>>' +
+                '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
 
             "lengthMenu": [
                 [5, 10, 25, 50, -1],
                 [5, 10, 25, 50, "All"]
             ],
             "pageLength": 10,
+            "responsive": true,
+            "language": {
+                "search": "_INPUT_",
+                "searchPlaceholder": "Search stock items...",
+                "lengthMenu": "Show _MENU_ entries",
+                "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                "paginate": {
+                    "previous": "<i class='ti ti-chevron-left'></i>",
+                    "next": "<i class='ti ti-chevron-right'></i>"
+                }
+            },
 
             "buttons": [
                 {
                     extend: 'print',
-                    text: 'Print <i class="fas fa-file ml-2"></i>',
-                    titleAttr: 'Print',
+                    text: '<i class="ti ti-printer me-1"></i>Print',
+                    titleAttr: 'Print Stock Report',
                     className: 'btn btn-info',
                     exportOptions: {
                         columns: [0, 1, 2]
@@ -85,31 +289,33 @@
                 },
                 {
                     extend: 'excelHtml5',
-                    text: 'Download Excel <i class="fas fa-file-excel ml-2"></i>',
+                    text: '<i class="ti ti-file-spreadsheet me-1"></i>Excel',
                     titleAttr: 'Download Excel',
-                    className: 'btn btn-success ml-2',
+                    className: 'btn btn-success',
                     exportOptions: {
                         columns: [0, 1, 2]
                     }
                 },
                 {
                     extend: 'pdfHtml5',
-                    text: 'Download PDF <i class="fas fa-file-pdf ml-2"></i>',
+                    text: '<i class="ti ti-file-text me-1"></i>PDF',
                     titleAttr: 'Download PDF',
-                    className: 'btn btn-danger ml-2',
+                    className: 'btn btn-danger',
                     download: 'open',
-                    orientation: 'vertical',
+                    orientation: 'portrait',
                     pageSize: 'A4',
-                    title: '*',
+                    title: 'Stock Inventory Report',
                     exportOptions: {
                         columns: [0, 1, 2]
                     },
                     customize: function (doc) {
+                        // Enhanced PDF styling
                         doc.styles = {
                             header: {
                                 fontSize: 18,
                                 bold: true,
-                                alignment: 'center'
+                                alignment: 'center',
+                                color: '#6366f1'
                             },
                             subheader: {
                                 fontSize: 13,
@@ -125,29 +331,42 @@
                                 bold: true,
                                 fontSize: 11,
                                 color: 'white',
-                                fillColor: '#2d4154',
+                                fillColor: '#6366f1',
                                 alignment: 'center'
                             }
                         };
-                        doc.content[1].table.widths = ['10%', '10%', '30%', '30%', '20%'];
-                        doc.content[1].margin = [0, 35, 0, 0];
-                        doc.content[1].layout = {};
+
+                        // Add company info at the top
+                        doc.content.splice(0, 0, {
+                            text: 'Ultimate POS - Stock Inventory Report',
+                            style: 'header',
+                            margin: [0, 0, 0, 20]
+                        });
+
+                        doc.content[2].table.widths = ['15%', '45%', '25%', '15%'];
+                        doc.content[2].margin = [0, 20, 0, 0];
+                        doc.content[2].layout = {
+                            fillColor: function (rowIndex) {
+                                return (rowIndex % 2 === 0) ? '#f8fafc' : null;
+                            }
+                        };
+
+                        // Enhanced footer
                         doc['footer'] = (function (page, pages) {
                             return {
                                 columns: [
                                     {
                                         alignment: 'left',
-                                        text: ['Creation date: ', { text: moment().format('MM-DD-YYYY (HH:mm:ss)') }]
+                                        text: ['Generated: ', { text: moment().format('MMM DD, YYYY (HH:mm)') }]
                                     },
                                     {
                                         alignment: 'right',
-                                        text: ['page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
+                                        text: ['Page ', { text: page.toString() }, ' of ', { text: pages.toString() }]
                                     }
                                 ],
-                                margin: 20
+                                margin: [40, 0]
                             }
                         });
-
                     }
                 }
             ],
@@ -156,9 +375,25 @@
                 "orderable": false
             }],
 
+            // Add row animation
+            "drawCallback": function (settings) {
+                // Re-initialize tooltips after table redraw
+                initializeTooltips();
+            }
         });
 
-    });
+        // Add some nice animations
+        $('.card').addClass('animate__animated animate__fadeInUp');
 
+        // Enhance button hover effects
+        $('.btn').hover(
+            function () {
+                $(this).addClass('shadow-sm');
+            },
+            function () {
+                $(this).removeClass('shadow-sm');
+            }
+        );
+    });
 </script>
 {%endblock content%}

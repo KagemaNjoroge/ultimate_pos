@@ -1,217 +1,610 @@
 {% extends "pos/base.html" %}
 {%load static%}
 {% block title %}{{customer.first_name}} {{customer.last_name}}{% endblock title %}
-{% block stylesheets %}{% endblock stylesheets %}
-{% block heading %}{{customer.first_name}} {{customer.last_name}}{% endblock heading %}
-{% block content %}
-<div class="ml-2 mb-3 btn-group">
-    <a href="{% url 'customers:customers_list' %}" class="btn btn-primary font-weight-bold">
-        <i class="ti ti-arrow-left"></i>
-        Go back
-    </a>
-    <a href="{% url 'customers:customers_update' customer_id=customer.id%}" class="btn btn-success font-weight-bold">
-        <i class="ti ti-edit"></i>
-        Edit
-    </a>
+{% block heading %}
+<div class="d-flex align-items-center">
+    <i class="ti ti-user-circle me-2 fs-6 text-primary"></i>
+    {{customer.first_name}} {{customer.last_name}}
 </div>
-<div class="card ml-2">
-    <div class="card-body">
-        <div class="container mb-4">
-            <div class="main-body">
-                <div class="row gutters-sm">
-                    <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex flex-column align-items-center text-center">
-                                    {% if customer.photo.url %}
-                                    <img src="{{customer.photo.url}}" alt="{{customer.first_name}}"
-                                        class="rounded-circle" width="150" id="customer_photo">
-                                    {% else %}
-                                    <img src="{% static 'img/undraw_profile.svg' %}" alt="{{customer.first_name}}"
-                                        class="rounded-circle" width="150">
-                                    {% endif %}
-                                    <div class="mt-3">
-                                        <h4>{{customer.first_name}} {{customer.last_name}}</h4>
-                                        <p class="text-muted font-size-sm">{{customer.address}}</p>
-                                        <button class="btn btn-outline-success">
-                                            <i class="ti ti-message"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card mt-3">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                    <i class="ti ti-phone"></i>
-                                    <span class="text-secondary">
-                                        {{customer.phone}}
-                                    </span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                    <i class="ti ti-mail"></i>
-                                    <span class="text-secondary">
-                                        {{customer.email}}
-                                    </span>
-                                </li>
+{% endblock heading %}
 
-                            </ul>
+{% block content %}
+<style>
+    .customer-profile-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 20px;
+        color: white;
+        transition: transform 0.3s ease;
+    }
+
+    .customer-profile-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        background: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        min-height: 120px;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card.primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .stat-card.success {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+    }
+
+    .stat-card.info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .stat-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .stat-icon {
+        font-size: 2.5rem;
+        opacity: 0.7;
+    }
+
+    .contact-info-card {
+        border: none;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        transition: transform 0.3s ease;
+        max-height: calc(100vh - 400px);
+        overflow-y: auto;
+    }
+
+    .contact-info-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .contact-info-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .transactions-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .transactions-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .profile-photo {
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        transition: transform 0.3s ease;
+    }
+
+    .profile-photo:hover {
+        transform: scale(1.05);
+    }
+
+    .action-btn {
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge-status {
+        border-radius: 20px;
+        padding: 5px 15px;
+        font-weight: 600;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .contact-item {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        transition: background 0.3s ease;
+    }
+
+    .contact-item:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .main-container {
+        min-height: calc(100vh - 200px);
+        padding-bottom: 2rem;
+    }
+
+    .left-column {
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+
+    .customer-summary-stats {
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    .stat-card-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .stat-text {
+        flex: 1;
+        text-align: left;
+    }
+
+    .stat-icon-container {
+        flex-shrink: 0;
+        margin-left: 1rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .left-column {
+            position: relative;
+            max-height: none;
+        }
+
+        .stat-card {
+            min-height: auto;
+        }
+
+        .stat-card-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .stat-icon-container {
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+
+        .customer-summary-stats .col-4 .border-end {
+            border-right: none !important;
+        }
+
+        .customer-summary-stats .col-4 {
+            padding-bottom: 1rem;
+        }
+
+        .contact-info-card {
+            max-height: none;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .action-btn {
+            font-size: 0.875rem;
+            padding: 8px 16px;
+        }
+
+        .profile-photo {
+            width: 100px !important;
+            height: 100px !important;
+        }
+
+        .customer-summary-stats h4 {
+            font-size: 1.2rem;
+        }
+    }
+
+    /* Ensure proper scrolling */
+    body {
+        overflow-x: hidden;
+    }
+
+    .table-responsive {
+        border-radius: 10px;
+    }
+</style>
+
+<div class="container-fluid fade-in main-container">
+    <!-- Action Buttons -->
+    <div class="mb-4">
+        <div class="d-flex flex-wrap gap-3">
+            <a href="{% url 'customers:customers_list' %}" class="btn btn-outline-primary action-btn">
+                <i class="ti ti-arrow-left me-2"></i>
+                Back to Customers
+            </a>
+            <a href="{% url 'customers:customers_update' customer_id=customer.id%}" class="btn btn-success action-btn">
+                <i class="ti ti-edit me-2"></i>
+                Edit Profile
+            </a>
+            <button class="btn btn-outline-info action-btn" onclick="window.print()">
+                <i class="ti ti-printer me-2"></i>
+                Print Profile
+            </button>
+        </div>
+    </div> <!-- Main Content -->
+    <div class="row g-4">
+        <!-- Customer Profile Card -->
+        <div class="col-lg-4 left-column">
+            <div class="card customer-profile-card">
+                <div class="card-body text-center">
+                    <div class="position-relative d-inline-block mb-4">
+                        {% if customer.photo.url %}
+                        <img src="{{customer.photo.url}}" alt="{{customer.first_name}}"
+                            class="rounded-circle profile-photo" width="120" height="120" id="customer_photo"
+                            style="object-fit: cover;">
+                        {% else %}
+                        <img src="{% static 'img/undraw_profile.svg' %}" alt="{{customer.first_name}}"
+                            class="rounded-circle profile-photo" width="120" height="120" style="object-fit: cover;">
+                        {% endif %}
+                        <div class="position-absolute bottom-0 end-0 bg-success rounded-circle p-2">
+                            <i class="ti ti-check text-white"></i>
                         </div>
                     </div>
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-xl-4 col-md-6 mb-4">
-                                <div class="card border-left-primary shadow h-100 w-100 py-2">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                    Interactions this month</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    {{purchases_this_month}}
 
-                                                </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="ti ti-calendar ti-2x text-gray-600"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <h3 class="mb-2 fw-bold">{{customer.first_name}} {{customer.last_name}}</h3>
+                    {% if customer.address %}
+                    <p class="mb-3 opacity-75">
+                        <i class="ti ti-map-pin me-2"></i>
+                        {{customer.address}}
+                    </p>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-center gap-2 mb-4">
+                        <button class="btn btn-light btn-sm rounded-pill">
+                            <i class="ti ti-message-circle me-1"></i>
+                            Message
+                        </button>
+                        <button class="btn btn-outline-light btn-sm rounded-pill">
+                            <i class="ti ti-phone me-1"></i>
+                            Call
+                        </button>
+                    </div>
+
+                    <!-- Customer Summary Stats -->
+                    <div class="customer-summary-stats">
+                        <div class="row text-center g-3">
+                            <div class="col-4">
+                                <div class="border-end border-white border-opacity-25 pe-2">
+                                    <h4 class="mb-0 fw-bold">{{total_purchases}}</h4>
+                                    <small class="opacity-75">Total Orders</small>
                                 </div>
                             </div>
-                            <!--Amount spent this month-->
-                            <div class="col-xl-4 col-md-6 mb-4">
-                                <div class="card border-left-success w-100 shadow h-100 py-2">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                    Amount spent this month</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    {{amount_spent_this_month}}
-                                                </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="ti ti-currency-dollar fa-2x text-gray-600"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-4">
+                                <div class="border-end border-white border-opacity-25 pe-2">
+                                    <h4 class="mb-0 fw-bold">${{total_amount_all_time|floatformat:0}}</h4>
+                                    <small class="opacity-75">Lifetime Value</small>
                                 </div>
                             </div>
-                            <!--Amount spent this year-->
-                            <div class="col-xl-4 col-md-6 mb-4">
-                                <div class="card border-left-info shadow h-100  w-100 py-2">
-                                    <div class="card-body">
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                    Amount spent this year</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                                    {{amount_spent_this_year}}
-                                                </div>
-                                            </div>
-                                            <div class="col-auto">
-                                                <i class="ti ti-currency-dollar text-gray-600"></i>
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="col-4">
+                                <div>
+                                    <h4 class="mb-0 fw-bold">${{average_purchase_amount|floatformat:0}}</h4>
+                                    <small class="opacity-75">Avg. Order</small>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="row gutters-sm">
-                            <div class="col-md-12">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <p class="d-flex align-items-center mb-3"><i class="ti ti-refresh"></i>
-                                            Recent transactions
-                                        </p>
-                                        <!-- first five -->
-                                        {%if sales%}
-                                        <!-- count five -->
+            <!-- Contact Information -->
+            <div class="card contact-info-card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="ti ti-address-book me-2"></i>
+                        Contact Information
+                    </h5>
 
-                                        <!--Recent transactions table-->
-                                        <div class="table-responsive">
-                                            <table class="table table-hover" id="dataTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">Date</th>
-                                                        <th scope="col">Amount</th>
-                                                        <th scope="col">Tax</th>
-                                                        <th scope="col">Invoice printed</th>
-                                                        <th scope="col"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for s in sales|slice:":10" %}
-                                                    <tr>
-                                                        <td>{{s.date_added}}</td>
-                                                        <td>{{s.grand_total}}</td>
-                                                        <td>{{s.tax_amount}}</td>
+                    {% if customer.phone %}
+                    <div class="contact-item">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-phone fs-5 me-3"></i>
+                            <div>
+                                <small class="opacity-75">Phone Number</small>
+                                <div class="fw-semibold">{{customer.phone}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
 
-                                                        <td>
-                                                            {% if s.receipt_is_printed %}
-                                                            <span class="badge badge-success">Yes</span>
-                                                            {% else %}
-                                                            <span class="badge badge-danger">No</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <a href="{% url 'sales:sales_details' s.id %}">
-                                                                <i class="ti ti-eye"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                    {%endfor%}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                    {% if customer.email %}
+                    <div class="contact-item">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-mail fs-5 me-3"></i>
+                            <div>
+                                <small class="opacity-75">Email Address</small>
+                                <div class="fw-semibold">{{customer.email}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
 
+                    {% if last_purchase_date %}
+                    <div class="contact-item">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-clock fs-5 me-3"></i>
+                            <div>
+                                <small class="opacity-75">Last Purchase</small>
+                                <div class="fw-semibold">{{last_purchase_date|date:"M d, Y"}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
 
-                                        {%else%}
-                                        <p>No transactions yet</p>
-                                        {%endif%}
-
-
-
-                                    </div>
+                    {% if customer_since %}
+                    <div class="contact-item">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-user-plus fs-5 me-3"></i>
+                            <div>
+                                <small class="opacity-75">Customer Since</small>
+                                <div class="fw-semibold">{{customer_since|date:"M Y"}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Statistics and Transactions -->
+        <div class="col-lg-8">
+            <!-- Statistics Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="card stat-card primary h-100">
+                        <div class="card-body">
+                            <div class="stat-card-content">
+                                <div class="stat-text">
+                                    <p class="mb-1 opacity-75 small text-uppercase fw-semibold">This Month</p>
+                                    <h3 class="mb-0 fw-bold">{{purchases_this_month}}</h3>
+                                    <small class="opacity-75">Transaction{{purchases_this_month|pluralize}}</small>
+                                </div>
+                                <div class="stat-icon-container">
+                                    <i class="ti ti-shopping-cart stat-icon"></i>
                                 </div>
                             </div>
-
                         </div>
-
-
-
                     </div>
                 </div>
 
+                <div class="col-md-4">
+                    <div class="card stat-card success h-100">
+                        <div class="card-body">
+                            <div class="stat-card-content">
+                                <div class="stat-text">
+                                    <p class="mb-1 opacity-75 small text-uppercase fw-semibold">Spent This Month</p>
+                                    <h3 class="mb-0 fw-bold">${{amount_spent_this_month|floatformat:2}}</h3>
+                                    <small class="opacity-75">Total Amount</small>
+                                </div>
+                                <div class="stat-icon-container">
+                                    <i class="ti ti-currency-dollar stat-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card stat-card info h-100">
+                        <div class="card-body">
+                            <div class="stat-card-content">
+                                <div class="stat-text">
+                                    <p class="mb-1 opacity-75 small text-uppercase fw-semibold">Annual Total</p>
+                                    <h3 class="mb-0 fw-bold">${{amount_spent_this_year|floatformat:2}}</h3>
+                                    <small class="opacity-75">This Year</small>
+                                </div>
+                                <div class="stat-icon-container">
+                                    <i class="ti ti-trending-up stat-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="card transactions-card">
+                <div class="card-header bg-transparent border-0 pb-0">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">
+                            <i class="ti ti-receipt me-2 text-primary"></i>
+                            Recent Transactions
+                        </h5>
+                        <span class="badge bg-primary rounded-pill">{{sales|length}}
+                            transaction{{sales|length|pluralize}}</span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    {% if sales %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle" id="dataTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="border-0 fw-semibold">
+                                        <i class="ti ti-calendar me-1"></i>Date
+                                    </th>
+                                    <th scope="col" class="border-0 fw-semibold">
+                                        <i class="ti ti-currency-dollar me-1"></i>Amount
+                                    </th>
+                                    <th scope="col" class="border-0 fw-semibold">
+                                        <i class="ti ti-receipt-tax me-1"></i>Tax
+                                    </th>
+                                    <th scope="col" class="border-0 fw-semibold">
+                                        <i class="ti ti-printer me-1"></i>Status
+                                    </th>
+                                    <th scope="col" class="border-0 fw-semibold text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for s in sales|slice:":10" %}
+                                <tr class="transaction-row">
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span class="fw-semibold">{{s.date_added|date:"M d, Y"}}</span>
+                                            <small class="text-muted">{{s.date_added|date:"H:i A"}}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-success">${{s.grand_total|floatformat:2}}</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">${{s.tax_amount|floatformat:2}}</span>
+                                    </td>
+                                    <td>
+                                        {% if s.receipt_is_printed %}
+                                        <span class="badge badge-status bg-success text-white">
+                                            <i class="ti ti-check me-1"></i>Printed
+                                        </span>
+                                        {% else %}
+                                        <span class="badge badge-status bg-warning text-dark">
+                                            <i class="ti ti-clock me-1"></i>Pending
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'sales:sales_details' s.id %}"
+                                            class="btn btn-outline-primary btn-sm rounded-pill" title="View Details">
+                                            <i class="ti ti-eye me-1"></i>View
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="ti ti-receipt-off display-1 text-muted mb-3"></i>
+                        <h5 class="text-muted mb-2">No Transactions Yet</h5>
+                        <p class="text-muted">This customer hasn't made any purchases yet.</p>
+                        <a href="#" class="btn btn-primary rounded-pill">
+                            <i class="ti ti-plus me-2"></i>Create New Sale
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script>
-
-
     function checkImage(url) {
         var http = new XMLHttpRequest();
         http.open('HEAD', url, false);
         http.send();
         return http.status != 404;
     }
-    $(document).ready(function () {
-        // dataTable
-        $('#dataTable').DataTable({});
 
-        // try fetching the customer photo, if 404, use the default photo
-        if (!checkImage($('#customer_photo').attr('src'))) {
+    $(document).ready(function () {
+        // Initialize DataTable with enhanced styling
+        $('#dataTable').DataTable({
+            "pageLength": 10,
+            "order": [[0, "desc"]], // Sort by date descending
+            "searching": false, // Disable search functionality
+            "lengthChange": false, // Disable show entries dropdown
+            "columnDefs": [
+                { "orderable": false, "targets": 4 } // Disable ordering on actions column
+            ],
+            "language": {
+                "info": "Showing _START_ to _END_ of _TOTAL_ transactions",
+                "paginate": {
+                    "previous": "<i class='ti ti-chevron-left'></i>",
+                    "next": "<i class='ti ti-chevron-right'></i>"
+                }
+            }
+        });
+
+        // Check customer photo and fallback to default if needed
+        if ($('#customer_photo').length && !checkImage($('#customer_photo').attr('src'))) {
             $('#customer_photo').attr('src', "{% static 'img/undraw_profile.svg' %}");
         }
 
+        // Add hover effects to transaction rows
+        $('.transaction-row').hover(
+            function () {
+                $(this).addClass('table-active');
+            },
+            function () {
+                $(this).removeClass('table-active');
+            }
+        );
+
+        // Add smooth scrolling to any anchor links
+        $('a[href^="#"]').on('click', function (event) {
+            var target = $(this.getAttribute('href'));
+            if (target.length) {
+                event.preventDefault();
+                $('html, body').stop().animate({
+                    scrollTop: target.offset().top - 100
+                }, 800);
+            }
+        });
+
+        // Add loading state to action buttons
+        $('.action-btn').on('click', function () {
+            const $btn = $(this);
+            const originalHtml = $btn.html();
+
+            if (!$btn.hasClass('loading')) {
+                $btn.addClass('loading').html('<i class="ti ti-loader-2 spin me-2"></i>Loading...');
+
+                // Reset button after 2 seconds (you can adjust this)
+                setTimeout(() => {
+                    $btn.removeClass('loading').html(originalHtml);
+                }, 2000);
+            }
+        });
     });
+
+    // Add CSS for spinner animation
+    const style = document.createElement('style');
+    style.textContent = `
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
 
-
-
-
-
-{%endblock content%}
+{% endblock content %}

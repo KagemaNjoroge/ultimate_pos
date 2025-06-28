@@ -8,178 +8,520 @@ Settings
 
 {%block content%}
 
+<style>
+    .settings-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .company-logo-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .company-logo-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+
+        0%,
+        100% {
+            transform: translateX(-100%) translateY(-100%) rotate(0deg);
+        }
+
+        50% {
+            transform: translateX(0%) translateY(0%) rotate(180deg);
+        }
+    }
+
+    .logo-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .company-logo {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .company-logo:hover {
+        transform: scale(1.05);
+        border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .upload-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .upload-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-section {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        color: #667eea;
+        font-size: 1.3rem;
+    }
+
+    .form-group-enhanced {
+        margin-bottom: 25px;
+    }
+
+    .form-label-enhanced {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+
+    .form-label-enhanced i {
+        color: #667eea;
+        width: 18px;
+    }
+
+    .form-control-enhanced {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-control-enhanced:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-control-enhanced:disabled {
+        background: #f1f5f9;
+        color: #64748b;
+        border-color: #cbd5e1;
+    }
+
+    .btn-update {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-update:disabled {
+        opacity: 0.7;
+        transform: none;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .company-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .info-card {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border-radius: 15px;
+        padding: 20px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+    }
+
+    .no-company-alert {
+        background: linear-gradient(135deg, #fef3cd 0%, #ffeaa7 100%);
+        border: none;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .no-company-alert .alert-heading {
+        color: #d69e2e;
+        font-weight: 700;
+    }
+
+    .add-company-btn {
+        background: linear-gradient(135deg, #38b2ac 0%, #319795 100%);
+        border: none;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(56, 178, 172, 0.3);
+    }
+
+    .add-company-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(56, 178, 172, 0.4);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .settings-container {
+            padding: 10px;
+        }
+
+        .company-logo-section {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .company-logo {
+            width: 120px;
+            height: 120px;
+        }
+
+        .form-section {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .company-info-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .btn-update {
+            width: 100%;
+            padding: 15px;
+        }
+    }
+</style>
 
 <!--hidden company id-->
 <input type="hidden" id="companyId" value="{{company.id}}">
 <!--Hidden company name-->
 <input type="hidden" id="companyName" value="{{company.company_name}}">
 
+<div class="settings-container">
+    <div id="status"></div>
 
-<div class="card">
-    <div class="card-body">
-        <div id="status">
+    <section id="company">
+        {%if company%}
 
-        </div>
-        <section id="company">
-            <div class="ml-2 mb-3">
-
-                {%if company%}
-                <form id="companyForm" method="post" enctype="multipart/form-data">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            {% if company.logo %}
-                            <img src="{{company.logo}}" alt="Company Logo" id="logo"
-                                style="width: 200px; height: 200px; object-fit: contain; border-radius: 10px;"
-                                class="img-fluid">
-
-                            {% else %}
-                            <img src="{% static 'default.png' %}" alt="Company Logo"
-                                style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);width: 200px; height: 200px; object-fit: contain; border-radius: 10px;"
-                                class="img-fluid" id="logo">
-                            {% endif %}
-                            <button type="button" id="uploadImageBtn" class="btn btn-success">
-                                Select Image
-                            </button>
-                        </div>
-                        <div class="mt-3 col-md-6 form-group">
-                            <div class="col-md-6">
-                                <label for="companyName">Company Name</label>
-                                <input type="text" class="form-control" id="companyName"
-                                    value="{{company.company_name}}" disabled>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="companyName">KRA PIN</label>
-                                <input type="text" class="form-control" id="kra_pin" value="{{company.kra_pin}}"
-                                    disabled>
-                            </div>
-                        </div>
-
-                    </div>
-                    {%csrf_token%}
-
-                    <div class="form-group">
-                        <label for="companyEmail">Company Email</label>
-                        <input type="email" class="form-control" id="companyEmail" name="companyEmail"
-                            value="{{company.email}}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="companyPhone">Company Phone</label>
-                        <input type="text" class="form-control" id="companyPhone" name="companyPhone"
-                            value="{{company.phone}}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="companyAddress">Company Address</label>
-                        <input type="text" class="form-control" id="companyAddress" name="companyAddress"
-                            value="{{company.address}}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="companyCity">Company City</label>
-                        <input type="text" class="form-control" id="companyCity" name="companyCity"
-                            value="{{company.city}}" required>
-                    </div>
-
-
-
-                    <button type="submit" class="btn btn-success" id="updateCompany">Update</button>
-
-                </form>
-                {%else%}
-                <div class="alert alert-warning" role="alert">
-                    <h4 class="alert-heading">No Company Found!</h4>
-                    <p>It seems you have not added your company details yet. Please add your company details to
-                        continue.</p>
-                    <!--Please note that the details can only be set once-->
-                    <i class="ti ti-exclamation"></i>
-                    Please note that the details can only be set once
-                    <hr>
-                    <!--open modal button-->
-                    <button type="button" class="btn btn-primary">Add
-                        Company</button>
-                </div>
-                {%endif%}
+        <!-- Company Logo Section -->
+        <div class="company-logo-section">
+            <div class="logo-container">
+                {% if company.logo %}
+                <img src="{{company.logo}}" alt="Company Logo" id="logo" class="company-logo">
+                {% else %}
+                <img src="{% static 'default.png' %}" alt="Company Logo" id="logo" class="company-logo">
+                {% endif %}
             </div>
-        </section>
-    </div>
+            <h3 class="mb-3">{{company.company_name}}</h3>
+            <button type="button" id="uploadImageBtn" class="btn upload-btn">
+                <i class="fas fa-camera me-2"></i>
+                Change Logo
+            </button>
+        </div>
+
+        <form id="companyForm" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {%csrf_token%}
+
+            <!-- Company Information Section -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="ti ti-building"></i>
+                    Company Information
+                </div>
+
+                <div class="company-info-grid">
+                    <div class="info-card">
+                        <label class="form-label-enhanced">
+                            <i class="ti ti-building"></i>
+                            Company Name
+                        </label>
+                        <input type="text" class="form-control form-control-enhanced" id="companyName"
+                            value="{{company.company_name}}" disabled>
+                    </div>
+
+                    <div class="info-card">
+                        <label class="form-label-enhanced">
+                            <i class="ti ti-id"></i>
+                            Tax Registration Number
+                        </label>
+                        <input type="text" class="form-control form-control-enhanced" id="tax_registration_number"
+                            value="{{company.tax_registration_number}}" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information Section -->
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="ti ti-address-book"></i>
+                    Contact Information
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group-enhanced">
+                            <label for="companyEmail" class="form-label-enhanced">
+                                <i class="ti ti-mail"></i>
+                                Company Email
+                            </label>
+                            <input type="email" class="form-control form-control-enhanced" id="companyEmail"
+                                name="companyEmail" value="{{company.email}}" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group-enhanced">
+                            <label for="companyPhone" class="form-label-enhanced">
+                                <i class="ti ti-phone"></i>
+                                Company Phone
+                            </label>
+                            <input type="text" class="form-control form-control-enhanced" id="companyPhone"
+                                name="companyPhone" value="{{company.phone}}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group-enhanced">
+                            <label for="companyAddress" class="form-label-enhanced">
+                                <i class="ti ti-map-pin"></i>
+                                Company Address
+                            </label>
+                            <input type="text" class="form-control form-control-enhanced" id="companyAddress"
+                                name="companyAddress" value="{{company.address}}" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group-enhanced">
+                            <label for="companyCity" class="form-label-enhanced">
+                                <i class="ti ti-building"></i>
+                                City
+                            </label>
+                            <input type="text" class="form-control form-control-enhanced" id="companyCity"
+                                name="companyCity" value="{{company.city}}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-update" id="updateCompany">
+                        <i class="fas fa-save me-2"></i>
+                        Update Company Details
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        {%else%}
+        <div class="no-company-alert alert" role="alert">
+            <div class="mb-4">
+                <i class="ti ti-building-exclamation" style="font-size: 4rem; color: #d69e2e;"></i>
+            </div>
+            <h4 class="alert-heading">No Company Found!</h4>
+            <p class="mb-3">It seems you have not added your company details yet. Please add your company details to
+                continue.</p>
+            <div class="d-flex align-items-center justify-content-center mb-3">
+                <i class="ti ti-info-circle me-2" style="color: #d69e2e;"></i>
+                <span>Please note that the details can only be set once</span>
+            </div>
+            <hr style="border-color: #d69e2e; opacity: 0.3;">
+            <button type="button" class="btn add-company-btn">
+                <i class="ti ti-plus me-2"></i>
+                Add Company
+            </button>
+        </div>
+        {%endif%}
+    </section>
 </div>
 
 
 
 <script>
-
     $(document).ready(function () {
+        // Enhanced form submission with better UX
         $('#companyForm').submit(function (e) {
             e.preventDefault();
+
+            // Validate form
+            if (!this.checkValidity()) {
+                $(this).addClass('was-validated');
+                return;
+            }
+
             let formData = new FormData();
-            // same url as the form
             formData.append('company_name', $('#companyName').val());
-            formData.append('kra_pin', $('#kra_pin').val());
+            formData.append('tax_registration_number', $('#tax_registration_number').val());
             formData.append('email', $('#companyEmail').val());
             formData.append('phone_number', $('#companyPhone').val());
             formData.append('address', $('#companyAddress').val());
             formData.append('city', $('#companyCity').val());
 
-            $('#updateCompany').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...').prop('disabled', true);
+            // Enhanced button loading state
+            const $updateBtn = $('#updateCompany');
+            const originalText = $updateBtn.html();
+            $updateBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Saving...').prop('disabled', true);
 
             let id = $('#companyId').val();
             let company_name = $('#companyName').val();
-
-            // add company name
             formData.append('company_name', company_name);
-
 
             $.ajax({
                 headers: {
                     'X-CSRFToken': '{{csrf_token}}'
                 },
                 method: 'PUT',
-                url: "{% url 'company:company' %}" + id + '/',
+                url: `/company/${id}/`,
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (data) {
-                    $('#status').html('<div class="alert alert-success" role="alert">Company details saved successfully</div>')
-                    //clear form
-                    $('#companyForm').trigger('reset');
-                    // reload in 3s
+                    // Success feedback with enhanced styling
+                    toastr.success('Company details saved successfully! 🎉', 'Success', {
+                        timeOut: 3000,
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right',
+
+                    });
+
+                    // Add success animation
+                    $updateBtn.html('<i class="fas fa-check me-2"></i>Saved!').removeClass('btn-update').addClass('btn-success');
+
                     setTimeout(() => {
                         location.reload();
-                    }, 3000);
+                    }, 2000);
                 },
                 error: function (data) {
-                    // unable to save company details
-                    $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
+                    toastr.error('An error occurred while saving company details', 'Error', {
+                        timeOut: 5000,
+                        closeButton: true,
+                        progressBar: true,
+                        positionClass: 'toast-top-right'
+                    });
+
+                    $updateBtn.html(originalText).prop('disabled', false);
                 }
-
-
-            }).done(function () {
-                $('#updateCompany').html('Update').prop('disabled', false);
             });
         });
-        // on image change, show image preview
-        $('#companyLogo').change(function (e) {
-            // change default logo to uploaded image
-            $('#defaultLogo').attr('src', URL.createObjectURL(e.target.files[0]));
-        });
-        // upload image button
+
+        // Enhanced image upload with better UX
         $('#uploadImageBtn').click(function () {
-            var input = document.createElement('input');
+            const input = document.createElement('input');
             input.type = 'file';
-            document.body.appendChild(input); // Append the input element to the document
-            input.style.display = 'none'; // Hide the input element
+            input.accept = 'image/*';
+            input.style.display = 'none';
+            document.body.appendChild(input);
+
             input.click();
+
             input.onchange = e => {
-                // change default logo to uploaded image
-                $('#logo').attr('src', URL.createObjectURL(e.target.files[0]));
-                // change icon to upload
-                $('#uploadImageBtn').html('<i class="fas fa-upload"></i>');
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    toastr.error('Please select a valid image file', 'Invalid File Type');
+                    return;
+                }
+
+                // Validate file size (5MB limit)
+                if (file.size > 5 * 1024 * 1024) {
+                    toastr.error('Image size should be less than 5MB', 'File Too Large');
+                    return;
+                }
+
+                // Preview image immediately
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#logo').attr('src', e.target.result);
+                    // Add a subtle animation
+                    $('#logo').css('transform', 'scale(0.9)').animate({}, 200, function () {
+                        $(this).css('transform', 'scale(1)');
+                    });
+                };
+                reader.readAsDataURL(file);
+
+                // Upload with enhanced feedback
+                const $uploadBtn = $('#uploadImageBtn');
+                const originalText = $uploadBtn.html();
+
                 setTimeout(() => {
-                    // loading upload button
-                    $('#uploadImageBtn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Uploading...');
+                    $uploadBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Uploading...').prop('disabled', true);
 
-                    $('#uploadImageBtn').prop('disabled', true);
-                    var data = new FormData();
-                    data.append('logo', e.target.files[0]);
-
+                    const data = new FormData();
+                    data.append('logo', file);
 
                     $.ajax({
                         processData: false,
@@ -192,38 +534,107 @@ Settings
                         type: 'PUT',
                         data: data,
                         success: function (data) {
+                            toastr.success('Company logo updated successfully! 🖼️', 'Success', {
+                                timeOut: 3000,
+                                closeButton: true,
+                                progressBar: true
+                            });
 
-                            $('#status').html('<div class="alert alert-success" role="alert">Company details saved successfully</div>')
-                            //clear form
-                            $('#companyForm').trigger('reset');
-                            // reload in 3s
+                            $uploadBtn.html('<i class="fas fa-check me-2"></i>Uploaded!').css('background', 'rgba(72, 187, 120, 0.3)');
+
                             setTimeout(() => {
                                 location.reload();
-                            }, 3000);
-
+                            }, 2000);
                         },
                         error: function (data) {
-                            // unable to save company details
-                            $('#status').html('<div class="alert alert-danger" role="alert">An error occurred while saving company details</div>')
+                            toastr.error('An error occurred while updating company logo', 'Upload Failed', {
+                                timeOut: 5000,
+                                closeButton: true,
+                                progressBar: true
+                            });
 
+                            $uploadBtn.html(originalText).prop('disabled', false);
                         }
-
-                    }).done(function () {
-                        // enable upload button
-                        $('#uploadImageBtn').prop('disabled', false);
-                        // change icon to select image
-                        $('#uploadImageBtn').html('Select Image');
                     });
-                }, 1000);
+                }, 500);
 
-            }
-
-
+                // Clean up
+                document.body.removeChild(input);
+            };
         });
 
-    })
+        // Add form field focus animations
+        $('.form-control-enhanced').on('focus', function () {
+            $(this).parent().addClass('focused');
+        }).on('blur', function () {
+            if (!$(this).val()) {
+                $(this).parent().removeClass('focused');
+            }
+        });
 
-
-
+        // Initialize focused state for fields with values
+        $('.form-control-enhanced').each(function () {
+            if ($(this).val()) {
+                $(this).parent().addClass('focused');
+            }
+        });
+    });
 </script>
+
+<style>
+    /* Custom toast styling */
+    .toast-success-custom {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    }
+
+    /* Form focus animations */
+    .form-group-enhanced.focused .form-label-enhanced {
+        color: #667eea;
+        transform: translateY(-2px);
+    }
+
+    .form-group-enhanced.focused .form-label-enhanced i {
+        transform: scale(1.1);
+    }
+
+    /* Loading states */
+    .btn:disabled {
+        cursor: not-allowed;
+    }
+
+    /* Hover effects for info cards */
+    .info-card {
+        transition: all 0.3s ease;
+    }
+
+    .info-card:hover .form-label-enhanced i {
+        transform: scale(1.2);
+        color: #5a67d8;
+    }
+
+    /* Mobile responsiveness enhancements */
+    @media (max-width: 576px) {
+        .company-logo {
+            width: 100px;
+            height: 100px;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            flex-direction: column;
+            text-align: center;
+            gap: 5px;
+        }
+
+        .upload-btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .btn-update {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+        }
+    }
+</style>
 {%endblock content%}

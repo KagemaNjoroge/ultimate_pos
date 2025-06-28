@@ -4,19 +4,31 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from company.models import Company
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view
 from inventory.models import Inventory
 from .models import Category, Product
 from rest_framework.response import Response
 from .serializers import CategorySerializer, ProductSerializer
-from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.decorators import api_view, parser_classes
-from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
+from rest_framework.decorators import api_view
+from rest_framework.viewsets import ModelViewSet
+from django.views.decorators.http import require_http_methods
+
+
+class CategoryApiViewSet(ModelViewSet):
+
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class ProductApiViewSet(ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 
 @login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
 def categories_list_view(request: HttpRequest) -> HttpResponse:
     context = {
         "categories": Category.objects.all(),
@@ -25,105 +37,35 @@ def categories_list_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
-@api_view(["POST", "GET"])
-@renderer_classes([JSONRenderer, TemplateHTMLRenderer])
-@parser_classes([JSONParser, FormParser, MultiPartParser])
+@require_http_methods(["GET"])
 def categories_add_view(request: Request) -> Response:
 
-    if request.method == "GET":
-        context = {
-            "category_status": Category.status.field.choices,
-        }
-        if request.accepted_renderer.format == "html":
-            return render(request, "products/categories_add.html", context=context)
-        else:
-            return Response(context, status=200)
+    context = {
+        "category_status": Category.status.field.choices,
+    }
 
-    if request.method == "POST":
-        # Save the POST arguments
-        data = request.data
-
-        attributes = {
-            "name": data.get("name", ""),
-            "status": data.get("status", ""),
-            "description": data.get("description", ""),
-        }
-
-        serializer = CategorySerializer(data=attributes)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {"status": "success", "message": "Category created successfully!"}
-            )
-        else:
-            return Response(
-                {"status": "error", "message": serializer.errors}, status=400
-            )
+    return render(request, "products/categories_add.html", context=context)
 
 
 @login_required(login_url="/users/login/")
-@api_view(["POST", "GET"])
+@require_http_methods(["GET"])
 def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
-    if request.method == "GET":
 
-        category = get_object_or_404(Category, id=category_id)
-        serializer = CategorySerializer(instance=category)
-        context = {
-            "category_status": Category.status.field.choices,
-            "category": serializer.data,
-        }
+    category = get_object_or_404(Category, id=category_id)
+    serializer = CategorySerializer(instance=category)
+    context = {
+        "category_status": Category.status.field.choices,
+        "category": serializer.data,
+    }
 
-        return render(request, "products/categories_update.html", context)
+    return render(request, "products/categories_update.html", context)
 
-    if request.method == "POST":
-        try:
 
-            data = request.data
 
-            attributes = {
-                "name": data.get("name", ""),
-                "status": data.get("status", ""),
-                "description": data.get("description", ""),
-            }
-            Category.objects.filter(id=category_id).update(**attributes)
-
-            return Response(
-                {"status": "success", "message": "Category updated successfully!"}
-            )
-
-        except Exception as e:
-            # Information exposure through an exception
-            return Response(
-                {"status": "error", "message": "An error occurred"}, status=400
-            )
 
 
 @login_required(login_url="/users/login/")
-def categories_delete_view(request: HttpRequest, category_id: str) -> HttpResponse:
-    """
-    Args:
-        request: HttpRequest
-        category_id : The category's ID that will be deleted
-    """
-    try:
-        # Get the category to delete
-        category = Category.objects.get(id=category_id)
-        category.delete()
-        messages.success(
-            request, "¡Category: " + category.name + " deleted!", extra_tags="success"
-        )
-        return redirect("products:categories_list")
-    except Exception as e:
-        messages.success(
-            request,
-            "That category cannot be deleted as some products are associated with it",
-            extra_tags="danger",
-        )
-
-        return redirect("products:categories_list")
-
-
-@login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
 def products_list_view(request: HttpRequest) -> HttpResponse:
     context = {"products": Product.objects.all()}
     company = Company.objects.first()
@@ -136,116 +78,34 @@ def products_list_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
 def products_add_view(request: HttpRequest) -> HttpResponse:
-    if request.method == "POST":
-        # Save the POST arguments
-        data = request.POST
 
-        try:
-            track_inventory = data["track_inventory"]
-        except:
-            track_inventory = "off"
-        if track_inventory == "on":
-            track_inventory = True
-        else:
-            track_inventory = False
-
-        attributes = {
-            "name": data["name"],
-            "status": data["state"],
-            "description": data["description"],
-            "category": data["category"],
-            "price": data["price"],
-            "track_inventory": track_inventory,
-        }
-
-        serializer = ProductSerializer(data=attributes)
-        if serializer.is_valid():
-            serializer.save()
-            if track_inventory:
-                inventory = Inventory.objects.create(
-                    product=serializer.instance, quantity=1
-                )
-                inventory.save()
-            return JsonResponse(
-                {"status": "success", "message": "Product created successfully!"}
-            )
-        else:
-            return JsonResponse(
-                {"status": "error", "message": serializer.errors}, status=400
-            )
-
-    elif request.method == "GET":
-        context = {
-            "product_status": Product.status.field.choices,
-            "categories": Category.objects.all().filter(status="ACTIVE"),
-        }
-        return render(request, "products/products_add.html", context=context)
-
-    else:
-        return JsonResponse({"message": "Method not allowed"}, status=405)
+    context = {
+        "product_status": Product.status.field.choices,
+        "categories": Category.objects.all().filter(status="ACTIVE"),
+    }
+    return render(request, "products/products_add.html", context=context)
 
 
 @login_required(login_url="/users/login/")
-@api_view(["POST", "GET"])
-@renderer_classes([JSONRenderer, TemplateHTMLRenderer])
+@require_http_methods(["GET"])
 def products_update_view(request, product_id: str):
     product = get_object_or_404(Product, id=product_id)
 
-    if request.method == "GET":
-        context = {
-            "product_status": Product.status.field.choices,
-            "product": product,
-            "categories": [
-                category.to_json()
-                for category in Category.objects.all().filter(status="ACTIVE")
-            ],
-        }
+    context = {
+        "product_status": Product.status.field.choices,
+        "product": product,
+        "categories": [
+            category.to_json()
+            for category in Category.objects.all().filter(status="ACTIVE")
+        ],
+    }
 
-        # Check if the request is for HTML or JSON
-        if request.accepted_renderer.format == "html":
-            return render(request, "products/products_update.html", context)
-        else:
-            return Response(context)
-
-    if request.method == "POST":
-        serializer = ProductSerializer(
-            data=request.data, instance=product, partial=True
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                data={"status": "success", "message": "Product updated successfully!"}
-            )
-        else:
-            return Response(
-                data={"status": "error", "message": serializer.errors}, status=400
-            )
+    return render(request, "products/products_update.html", context)
 
 
-@login_required(login_url="/users/login/")
-def products_delete_view(request: HttpRequest, product_id: str) -> HttpResponse:
-    """
-    Args:
-        request:HttpRequest
-        product_id : The product's ID that will be deleted
-    """
-    product = get_object_or_404(Product, id=product_id)
-    try:
-        # TODO: Migrate response to JsonResponse
-        product.delete()
-        messages.success(
-            request, "¡Product: " + product.name + " deleted!", extra_tags="success"
-        )
-        return redirect("products:products_list")
-    except Exception as e:
-        messages.success(
-            request,
-            "An error occurred while deleting that product. It is already associated with a sale record.",
-            extra_tags="danger",
-        )
 
-        return redirect("products:products_list")
 
 
 def is_ajax(request: HttpRequest) -> bool:
@@ -350,6 +210,7 @@ def download_template(request: HttpRequest):
 
 
 @login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
 def product_detail_view(request: HttpRequest, product_id: str) -> HttpResponse:
     product = get_object_or_404(Product, id=product_id)
     context = {

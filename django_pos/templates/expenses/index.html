@@ -70,7 +70,7 @@
 <script>
     function deleteExpense(id) {
         $.ajax({
-            url: `/api/expenses/${id}/`,
+            url: `expenses/api/expenses/${id}/`,
             type: 'DELETE',
             headers: {
                 'X-CSRFToken': '{{csrf_token}}'

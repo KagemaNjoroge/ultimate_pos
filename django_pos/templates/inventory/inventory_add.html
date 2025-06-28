@@ -18,8 +18,8 @@
 <div class="card ml-2">
     <div class="card-body">
         {%if products%}
-        <div class="text-center" id="status_msg"></div>
-        <form action="{% url 'inventory:inventory_add' %}" method="post" id="inventory">
+
+        <form action="/inventory/api/" method="post" id="inventory">
             {% csrf_token %}
             <div class="form-row">
                 <div class="form-group col-md-4">
@@ -63,22 +63,7 @@
 
 
 <script>
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
 
-        return cookieValue;
-    }
     $(document).ready(function () {
         $('#inventory').submit(function (e) {
             e.preventDefault();
@@ -89,8 +74,11 @@
             $('#submit_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...').attr('disabled', true);
             $.ajax({
                 type: 'POST',
+                contentType: 'application/json',
+                processData: false,
+
                 headers: {
-                    'X-CSRFToken': getCookie('csrftoken')
+                    "X-CSRFToken": '{{ csrf_token }}'
                 },
                 url: url,
                 data: JSON.stringify({
@@ -100,32 +88,25 @@
 
                 }),
                 success: function (response) {
-                    $('#status_msg').html(
-                        '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-                        '<strong>Success!</strong> Stock added successfully' +
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                        '<span aria-hidden="true">&times;</span>' +
-                        '</button>' +
-                        '</div>'
-                    );
+                    toastr.success('Stock updated successfully!', 'Success', {
+                        timeOut: 3000,
+                        closeButton: true,
+                        progressBar: true
+                    });
                     form[0].reset();
                 },
-                error: function (error) {
-                    $('#status_msg').html(
-                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                        '<strong>Error!</strong> Something went wrong' +
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                        '<span aria-hidden="true">&times;</span>' +
-                        '</button>' +
-                        '</div>'
-                    );
+                error: function (xhr, status, error) {
+
+                    toastr.error('Error updating product: ' + xhr.responseJSON.error, 'Error', {
+                        timeOut: 3000,
+                        closeButton: true,
+                        progressBar: true
+                    });
+
                 }
             }).done(function () {
                 $('#submit_btn').html('Create Inventory').attr('disabled', false);
-                // after 3 seconds, the alert will disappear
-                setTimeout(function () {
-                    $('#status_msg').html('');
-                }, 3000);
+
             })
         });
     });

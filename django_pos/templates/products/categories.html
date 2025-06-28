@@ -218,11 +218,34 @@
             const categoryName = $(this).data('name');
 
             $('#categoryNameToDelete').text(categoryName);
-            $('#confirmDeleteButton').attr('href', `/products/categories/delete/${categoryId}/`);
+           // set on click event for confirm delete button
+            $('#confirmDeleteButton').off('click').on('click', function () {
+                handleDelete(categoryId);
+            });
 
             const deleteModal = new bootstrap.Modal(document.getElementById('deleteCategoryModal'));
             deleteModal.show();
         });
+
+        // Handle delete confirmation button click
+        function handleDelete(id){
+            $.ajax({
+                url: `/products/categories/api/${id}/`,
+                type: 'DELETE',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    toastr.success('Category deleted successfully');
+                    $('#deleteCategoryModal').modal('hide');
+                    // Reload the page to reflect changes
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Error deleting category: ' + xhr.responseText);
+                }
+            });
+        }
 
         // Initialize DataTable with improved configuration
         let tblCategories = $('#dataTable').DataTable({

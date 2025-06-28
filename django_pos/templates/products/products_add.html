@@ -24,7 +24,7 @@
       Fill in the details of the product you want to add.
     </div>
 
-    <form action="{% url 'products:products_add' %}" method="post" id="product_form">
+    <form action="/products/products/api/" method="post" id="product_form">
       {% csrf_token %}
       <div class="form-row">
         <div class="form-group col-md-12">
@@ -93,20 +93,7 @@
     </form>
   </div>
 </div>
-<div class="error_toast mt-3" style="display: none;">
-  <div class="toast-container position-fixed bottom-0 start-50 translate-middle end-0 p-3 ">
-    <div id="liveToast" class="toast" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header">
-        <i class="ti ti-exclamation-mark"></i>
-        <strong class="me-auto">Ultimate POS</strong>
-        <small>Now</small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body" id="toast_body">
-        Hello, world! This is a toast message.
-      </div>
-    </div>
-  </div>
+
 </div>
 
 <script>
@@ -124,43 +111,25 @@
         type: 'POST',
         url: url,
         data: formData,
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
         success: function (response) {
-          if (response.status == 'success') {
-
-            $('#product_form').trigger('reset');
-            $('.error_toast').css('display', 'block')
-            // change toast body
-            $('#toast_body').html(response.message);
-            var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-              autohide: true,
-              delay: 5000,
-            });
-            toast.show();
-
-          }
-          else {
-            $('.error_toast').css('display', 'block')
-
-            // show error message
-            $('#toast_body').html(response.message);
-            var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-              autohide: true,
-              delay: 5000,
-            });
-            toast.show();
-
-          }
+          toastr.success('Product created successfully!', 'Success', {
+            timeOut: 5000,
+            closeButton: true,
+            progressBar: true,
+          });
+          // redirect to products list
+          window.location.href = "{% url 'products:products_list' %}";
 
         },
         error: function (error) {
-          $('.error_toast').css('display', 'block')
-          // change toast body
-          $('#toast_body').html('<i class="ti ti-exclamation-mark"></i> An error occurred. Try again');
-          var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-            autohide: true,
-            delay: 5000,
+          toastr.error('Error creating product: ' + error.responseJSON.error, 'Error', {
+            timeOut: 5000,
+            closeButton: true,
+            progressBar: true,
           });
-          toast.show();
         },
         cache: false,
         contentType: false,

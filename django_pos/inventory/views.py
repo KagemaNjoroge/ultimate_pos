@@ -1,11 +1,17 @@
-import json
 from .serializers import InventorySerializer
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from inventory.models import Inventory
-
+from django.views.decorators.http import require_http_methods
 from products.models import Product
+from rest_framework.viewsets import ModelViewSet
+
+
+class InventoryViewSet(ModelViewSet):
+
+    queryset = Inventory.objects.all()
+    serializer_class = InventorySerializer
 
 
 @login_required(login_url="/users/login/")
@@ -16,43 +22,14 @@ def index(request):
 
 
 @login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
 def add_inventory(request: HttpRequest) -> HttpResponse:
-    if request.method == "GET":
-        # only products that are not in the inventory
-        products = Product.objects.exclude(inventory__isnull=False)
-        return render(request, "inventory/inventory_add.html", {"products": products})
-    elif request.method == "POST":
-        data = json.loads(request.body)
-        serializer = InventorySerializer(data=data)
-
-        if serializer.is_valid():
-            serializer.save()
-
-            return JsonResponse(
-                {"status": "success", "message": "Inventory added"}, safe=True
-            )
-        return JsonResponse(
-            {
-                "status": "error",
-                "message": "Invalid data",
-                "errors": serializer.errors,
-            },
-            status=400,
-        )
+    products = Product.objects.exclude(inventory__isnull=False)
+    return render(request, "inventory/inventory_add.html", {"products": products})
 
 
 @login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
 def update_inventory(request: HttpRequest, inventory_id: int) -> HttpResponse:
     inventory = get_object_or_404(Inventory, id=inventory_id)
-    if request.method == "GET":
-        return render(
-            request, "inventory/inventory_update.html", {"inventory": inventory}
-        )
-    elif request.method == "POST":
-        data = json.loads(request.body)
-        serializer = InventorySerializer(inventory, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse({"status": "success"}, safe=True)
-        else:
-            return JsonResponse({"status": "error"}, safe=True)
+    return render(request, "inventory/inventory_update.html", {"inventory": inventory})

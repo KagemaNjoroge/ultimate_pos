@@ -1,210 +1,520 @@
 {% extends "pos/base.html" %}
 {% load static %}
-{% block title %}Add sale{% endblock title %}
-{% block heading %}Add sale{% endblock heading %}
-
+{% block title %}Create New Sale{% endblock title %}
+{% block heading %}
+<div class="d-flex align-items-center">
+    <i class="ti ti-shopping-cart-plus me-2 text-primary"></i>
+    <span>Create New Sale</span>
+</div>
+{% endblock heading %}
 
 {% block content %}
 
-<div class="ml-2 mb-3">
-    <a href="{% url 'sales:sales_list' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Go back
-        </button>
-    </a>
+<!-- Header Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm bg-gradient-primary text-white">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title text-white mb-1">
+                            <i class="ti ti-shopping-cart-plus me-2"></i>
+                            New Sale Transaction
+                        </h4>
+                        <p class="card-text text-white-50 mb-0">Create a new sale by adding products and customer
+                            information</p>
+                    </div>
+                    <a href="{% url 'sales:sales_list' %}" class="btn btn-light btn-lg shadow-sm">
+                        <i class="ti ti-arrow-left me-1"></i>
+                        Back to Sales
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
+<!-- Main Content -->
+<form action="{% url 'sales:sales_add' %}" class="saleForm" method="post">
+    <div class="row">
+        <!-- Products Section -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="card-title mb-0">
+                        <i class="ti ti-package me-2 text-primary"></i>
+                        Product Selection
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Alert Area -->
+                    <div id="result" class="mb-3"></div>
 
-<form action="{% url 'sales:sales_add' %}" class="saleForm ml-2" method="post">
-
-    <div class="card col-md-12">
-        <div class="card-body ml-0">
-            <div id="result">
-
-            </div>
-            <div class="row">
-                <div class="col-md-7">
-                    <div class="">
-
-
-
-
-                        <div class="form-group">
-                            <label>Search products</label>
-                            <div class="input-group">
-                                <div class="form-outline">
-                                    <input type="search" id="form1" class="form-control" placeholder="Product Name" />
-
-                                </div>
-
-                            </div>
+                    <!-- Product Search -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="ti ti-search me-1"></i>
+                            Search Products
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="ti ti-search text-muted"></i>
+                            </span>
+                            <input type="search" id="form1" class="form-control border-start-0 ps-0"
+                                placeholder="Type product name to search..." />
                         </div>
+                    </div>
 
-                        <div id="search_results"></div>
+                    <!-- Search Results -->
+                    <div id="search_results" class="mb-3"></div>
 
-                        <button type="button" class="mb-4 btn btn-danger btn-sm deleteAll">
-                            Delete all products <i class="ml-1 ti ti-trash"></i>
+                    <!-- Clear All Button -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="mb-0 text-muted">
+                            <i class="ti ti-shopping-cart me-1"></i>
+                            Selected Products
+                        </h6>
+                        <button type="button" class="btn btn-outline-danger btn-sm deleteAll">
+                            <i class="ti ti-trash me-1"></i>
+                            Clear All
                         </button>
+                    </div>
 
-
-
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap" id="table_products">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>Total</th>
-                                        <th class="text-center">Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-
-
+                    <!-- Products Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="table_products">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0">
+                                        <i class="ti ti-hash me-1 text-muted"></i>
+                                        ID
+                                    </th>
+                                    <th class="border-0">
+                                        <i class="ti ti-package me-1 text-muted"></i>
+                                        Product Name
+                                    </th>
+                                    <th class="border-0">
+                                        <i class="ti ti-currency-dollar me-1 text-muted"></i>
+                                        Price
+                                    </th>
+                                    <th class="border-0">
+                                        <i class="ti ti-stack me-1 text-muted"></i>
+                                        Quantity
+                                    </th>
+                                    <th class="border-0">
+                                        <i class="ti ti-calculator me-1 text-muted"></i>
+                                        Total
+                                    </th>
+                                    <th class="border-0 text-center">
+                                        <i class="ti ti-settings me-1 text-muted"></i>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Products will be added here dynamically -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="col-md-5">
-                    <div class="card card-secondary">
+            </div>
+        </div>
 
-                        <div class="card-body">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="customer">Customer</label>
-                                <select name="customer" class="form-control" id="searchbox_customers" required>
-                                    <option value="" selected disabled hidden>Select the customer</option>
-                                    <option onclick="window.location='{%url 'customers:customers_add'%}'">
+        <!-- Sale Summary Section -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top">
+                <div class="card-header bg-gradient-success text-white border-0 py-3">
+                    <h5 class="card-title mb-0 text-white">
+                        <i class="ti ti-receipt me-2"></i>
+                        Sale Summary
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% csrf_token %}
 
-                                        <i class="ti ti-plus"></i> Add Customer
+                    <!-- Customer Selection -->
+                    <div class="mb-4">
+                        <label for="customer" class="form-label fw-semibold">
+                            <i class="ti ti-user me-1 text-primary"></i>
+                            Customer
+                        </label>
+                        <select name="customer" class="form-select" id="searchbox_customers" required>
+                            <option value="" selected disabled>Select customer...</option>
+                            {% for customer in customers %}
+                            <option value="{{customer.value}}">{{customer.label}}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">
+                            <a href="{% url 'customers:customers_add' %}" class="text-decoration-none">
+                                <i class="ti ti-plus me-1"></i>Add new customer
+                            </a>
+                        </small>
+                    </div>
 
-                                    </option>
-                                    {% for customer in customers %}
-                                    <option value="{{customer.value}}">{{customer.label}}</option>
-                                    {% endfor %}
-                                </select>
-                                <div class="form-group mt-4">
-                                    <label>Subtotal</label>
-                                    <div class="input-group">
-                                        <input name="sub_total" class="form-control" required id="sub_total">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tax Inclusive (%)</label>
-                                    <div class="input-group">
-                                        <input name="tax_percentage" class="form-control" value=0 required
-                                            id="tax_percentage">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tax Amount</label>
-                                    <div class="input-group">
-                                        <input name="tax_amount" class="form-control" disabled>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Grand Total</label>
-                                    <div class="input-group">
-                                        <input name="grand_total" class="form-control" id="grand_total" disabled>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Amount paid</label>
-                                    <div class="input-group">
-                                        <input name="amount_payed" class="form-control" required id="amount_paid">
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">Create
-                                    sale</button>
+                    <!-- Financial Summary -->
+                    <div class="bg-light rounded p-3 mb-3">
+                        <div class="row g-3">
+                            <!-- Subtotal -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold mb-1">
+                                    <i class="ti ti-calculator me-1 text-info"></i>
+                                    Subtotal
+                                </label>
+                                <input name="sub_total" class="form-control" required id="sub_total" readonly>
                             </div>
 
-                        </div>
+                            <!-- Tax Percentage -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold mb-1">
+                                    <i class="ti ti-percentage me-1 text-warning"></i>
+                                    Tax Rate (%)
+                                </label>
+                                <input name="tax_percentage" class="form-control" value="0" required id="tax_percentage"
+                                    type="number" min="0" max="100" step="0.01">
+                            </div>
 
+                            <!-- Tax Amount -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold mb-1">
+                                    <i class="ti ti-receipt-tax me-1 text-warning"></i>
+                                    Tax Amount
+                                </label>
+                                <input name="tax_amount" class="form-control" readonly>
+                            </div>
+
+                            <!-- Grand Total -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold mb-1">
+                                    <i class="ti ti-currency-dollar me-1 text-success"></i>
+                                    Grand Total
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-success text-white">$</span>
+                                    <input name="grand_total" class="form-control fw-bold" id="grand_total" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Amount Paid -->
+                            <div class="col-12">
+                                <label class="form-label fw-semibold mb-1">
+                                    <i class="ti ti-cash me-1 text-primary"></i>
+                                    Amount Paid
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-primary text-white">$</span>
+                                    <input name="amount_payed" class="form-control" required id="amount_paid"
+                                        type="number" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg fw-semibold" id="submit_btn">
+                            <i class="ti ti-check me-2"></i>
+                            Create Sale
+                        </button>
+                    </div>
                 </div>
-
-
             </div>
-
         </div>
     </div>
-
 </form>
-<script src="{% static 'utils/cart.js' %}"></script>
+
+<!-- Bootstrap Modals -->
+<!-- Alert Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="alertModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertModalLabel">
+                    <i id="alertModalIcon" class="me-2"></i>
+                    <span id="alertModalTitle">Alert</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="alertModalText" class="mb-0"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">
+                    <i class="ti ti-alert-triangle me-2 text-warning"></i>
+                    Clear Cart?
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">This will remove all products from the cart.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmClearCart">Yes, clear cart!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .sticky-top {
+        position: sticky;
+        top: 20px;
+        z-index: 1020;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+    }
+
+    .table tbody tr:hover {
+        background-color: #f8fafc;
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+
+    .btn {
+        transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .search-result-card {
+        border-left: 4px solid #6366f1;
+        transition: all 0.2s ease;
+    }
+
+    .search-result-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .input-group-text {
+        border: 1px solid #d1d5db;
+    }
+
+    .alert {
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+    .product-quantity-input {
+        max-width: 80px;
+        text-align: center;
+    }
+
+    .financial-summary {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    /* Bootstrap Modal Styling */
+    .modal-content {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #e5e7eb;
+        border-radius: 1rem 1rem 0 0;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    }
+
+    .modal-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #e5e7eb;
+        border-radius: 0 0 1rem 1rem;
+        background: #f8fafc;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+</style>
+
 <script>
+    // Bootstrap Alert Modal function
+    const showAlert = (title, text, icon) => {
+        // Set icon based on type
+        let iconClass = '';
+        let titleColor = '';
+
+        switch (icon) {
+            case 'success':
+                iconClass = 'ti ti-check-circle text-success';
+                titleColor = 'text-success';
+                break;
+            case 'error':
+                iconClass = 'ti ti-alert-circle text-danger';
+                titleColor = 'text-danger';
+                break;
+            case 'warning':
+                iconClass = 'ti ti-alert-triangle text-warning';
+                titleColor = 'text-warning';
+                break;
+            case 'info':
+                iconClass = 'ti ti-info-circle text-info';
+                titleColor = 'text-info';
+                break;
+            default:
+                iconClass = 'ti ti-info-circle text-primary';
+                titleColor = 'text-primary';
+        }
+
+        // Update modal content
+        $('#alertModalIcon').attr('class', iconClass);
+        $('#alertModalTitle').text(title).attr('class', titleColor);
+        $('#alertModalText').text(text);
+
+        // Show modal
+        const alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+        alertModal.show();
+    };
+
     function updateTotal() {
         var total = shoppingCart.totalCart();
-        $('#grand_total').val(total);
-        $('[name="sub_total"]').val(total);
-        $('[name="tax_amount"]').val(total * $('[name="tax_percentage"]').val() / 100);
-        $('#amount_paid').val(total);
+        var taxPercentage = parseFloat($('[name="tax_percentage"]').val()) || 0;
+        var taxAmount = total * taxPercentage / 100;
+        var grandTotal = total + taxAmount;
+
+        $('#grand_total').val(grandTotal.toFixed(2));
+        $('[name="sub_total"]').val(total.toFixed(2));
+        $('[name="tax_amount"]').val(taxAmount.toFixed(2));
+        $('#amount_paid').val(grandTotal.toFixed(2));
     }
 
     function displayCart() {
         updateTotal();
         var cartArray = shoppingCart.listCart();
         var output = "";
+
         for (var i in cartArray) {
-            output += "<tr>"
-                + "<td>" + cartArray[i].id + "</td>"
-                + "<td>" + cartArray[i].name + "</td>"
-                + "<td>" + cartArray[i].price + "</td>"
-                + "<td><input type='number' class='item-count form-control' data-name='" + cartArray[i].name + "' value='" + cartArray[i].count + "'></td>"
-                + "<td>" + cartArray[i].total + "</td>"
-                + "<td><button class='delete-item btn btn-danger btn-sm' data-name='" + cartArray[i].name + "'><i class='ti ti-trash'></i></button></td>"
-                + "</tr>";
+            output += `
+                <tr class="align-middle">
+                    <td>
+                        <span class="badge bg-primary-subtle text-primary">#${cartArray[i].id}</span>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success-subtle rounded-circle p-2 me-2">
+                                <i class="ti ti-package text-success"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">${cartArray[i].name}</h6>
+                                <small class="text-muted">Product</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge bg-info-subtle text-info">$${parseFloat(cartArray[i].price).toFixed(2)}</span>
+                    </td>
+                    <td>
+                        <input type='number' class='item-count form-control product-quantity-input' 
+                               data-name='${cartArray[i].name}' value='${cartArray[i].count}' min="1">
+                    </td>
+                    <td>
+                        <span class="badge bg-success-subtle text-success">$${parseFloat(cartArray[i].total).toFixed(2)}</span>
+                    </td>
+                    <td class="text-center">
+                        <button class='delete-item btn btn-outline-danger btn-sm' data-name='${cartArray[i].name}'>
+                            <i class='ti ti-trash'></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
         }
+
+        if (cartArray.length === 0) {
+            output = `
+                <tr>
+                    <td colspan="6" class="text-center py-4">
+                        <div class="text-muted">
+                            <i class="ti ti-shopping-cart-off fs-1 mb-2 d-block"></i>
+                            <h6>No products selected</h6>
+                            <p class="mb-0">Search and add products to create a sale</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
         var body = $('#table_products tbody');
         body.html(output);
+
+        // Rebind events
         $('.item-count').on('change', function () {
             var name = $(this).attr("data-name");
             var count = Number($(this).val());
             if (count < 1) {
                 shoppingCart.removeItemFromCartAll(name);
                 displayCart();
+                return;
             }
-
             shoppingCart.setCountForItem(name, count);
             displayCart();
-
         });
+
         $('.delete-item').on('click', function () {
             var name = $(this).attr("data-name");
             shoppingCart.removeItemFromCartAll(name);
-
             displayCart();
         });
     }
+
     $(document).ready(function () {
-        $('#tax_percentage').on('change', function () {
+        // Initialize tooltips
+        $('[data-bs-toggle="tooltip"]').tooltip();
+
+        // Tax percentage change handler
+        $('#tax_percentage').on('input change', function () {
             updateTotal();
         });
 
-
-
-
-        var table = $('#table_products tbody');
-
-
-
-
+        // Initialize cart display
         displayCart();
 
+        // Enhanced product search
         $('#form1').on('keyup', function () {
+            var query = $(this).val().trim();
 
-
-            var query = $(this).val();
             if (query.length === 0) {
                 $('#search_results').html('');
+                return;
             }
-            if (query.length > 0) {
+
+            if (query.length > 2) {
                 $.ajax({
                     url: "{% url 'products:get_products' %}" + `?term=${query}`,
                     type: "GET",
@@ -212,42 +522,105 @@
                         "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
                     },
                     success: function (data) {
-                        // results card
                         if (data.length < 1) {
-                            $('#search_results').html('<div class="alert alert-warning">No products found</div>');
-                        }
-                        else {
-                            for (var i = 0; i < data.slice(0, 3).length; i++) {
-                                $('#search_results').html(
-                                    `<div class="card card-secondary mt-2 mb-2">
-                                <div class="card-body">
-                                    <h5 class="card-title">${data[i].name}</h5>
-                                    <p class="card-text">Price: ${data[i].price}</p>
-                                    <button type="button" class="btn btn-primary addProduct" data-id="${data[i].id}" data-name="${data[i].name}" data-price="${data[i].price}" onclick="shoppingCart.addItemToCart('${data[i].name}',${data[i].price}, ${1}, ${data[i].id});$('#search_results').html('');displayCart();">
-                                        Add product
-                                    </button>
+                            $('#search_results').html(`
+                                <div class="alert alert-warning d-flex align-items-center">
+                                    <i class="ti ti-search-off me-2"></i>
+                                    <span>No products found matching "${query}"</span>
                                 </div>
-                            </div>`
-                                );
-                            }
+                            `);
+                        } else {
+                            var resultsHtml = '';
+                            data.slice(0, 3).forEach(function (product) {
+                                resultsHtml += `
+                                    <div class="card search-result-card mb-2">
+                                        <div class="card-body py-3">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <h6 class="card-title mb-1">${product.name}</h6>
+                                                    <p class="card-text text-muted mb-0">
+                                                        <i class="ti ti-currency-dollar me-1"></i>
+                                                        $${parseFloat(product.price).toFixed(2)}
+                                                    </p>
+                                                </div>
+                                                <button type="button" class="btn btn-primary btn-sm addProduct" 
+                                                        data-id="${product.id}" 
+                                                        data-name="${product.name}" 
+                                                        data-price="${product.price}">
+                                                    <i class="ti ti-plus me-1"></i>
+                                                    Add
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            $('#search_results').html(resultsHtml);
+
+                            // Bind add product events
+                            $('.addProduct').on('click', function () {
+                                var id = $(this).data('id');
+                                var name = $(this).data('name');
+                                var price = $(this).data('price');
+
+                                shoppingCart.addItemToCart(name, price, 1, id);
+                                $('#search_results').html('');
+                                $('#form1').val('');
+                                displayCart();
+
+                                // Show success message
+                                toastr.success(`${name} added to cart!`);
+                            });
                         }
+                    },
+                    error: function () {
+                        $('#search_results').html(`
+                            <div class="alert alert-danger d-flex align-items-center">
+                                <i class="ti ti-alert-circle me-2"></i>
+                                <span>Error searching products. Please try again.</span>
+                            </div>
+                        `);
                     }
                 });
             }
         });
 
+        // Clear all products
         $('.deleteAll').on('click', function () {
+            if (shoppingCart.listCart().length > 0) {
+                const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+                confirmModal.show();
+            }
+        });
+
+        // Handle confirm clear cart
+        $('#confirmClearCart').on('click', function () {
             shoppingCart.clearCart();
             displayCart();
+            toastr.info('Cart cleared successfully');
+
+            // Hide modal
+            const confirmModal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+            confirmModal.hide();
         });
+
+        // Form submission
         $('.saleForm').on('submit', function (e) {
             e.preventDefault();
+
+            var cartItems = shoppingCart.listCart();
+            if (cartItems.length === 0) {
+                showAlert('No Products', 'Please add at least one product to create a sale.', 'warning');
+                return;
+            }
+
             var customer = $('[name="customer"]').val();
-            var sub_total = $('[name="sub_total"]').val();
-            var tax_percentage = $('[name="tax_percentage"]').val();
-            var tax_amount = $('[name="tax_amount"]').val();
-            var grand_total = $('[name="grand_total"]').val();
-            var amount_payed = $('[name="amount_payed"]').val();
+            var sub_total = parseFloat($('[name="sub_total"]').val());
+            var tax_percentage = parseFloat($('[name="tax_percentage"]').val());
+            var tax_amount = parseFloat($('[name="tax_amount"]').val());
+            var grand_total = parseFloat($('[name="grand_total"]').val());
+            var amount_payed = parseFloat($('[name="amount_payed"]').val());
+
             var products = shoppingCart.listCart();
             for (let x in products) {
                 products[x].id = parseInt(products[x].id);
@@ -259,15 +632,16 @@
 
             var amount_change = amount_payed - grand_total;
             if (amount_change < 0) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'The amount payed is less than the grand total',
-                    icon: 'error',
-                    confirmButtonText: 'Ok'
-                });
+                showAlert('Insufficient Payment', 'The amount paid is less than the grand total.', 'error');
                 return;
             }
-            $('#submit_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...')
+
+            // Show loading state
+            $('#submit_btn').html(`
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Creating Sale...
+            `).prop('disabled', true);
+
             $.ajax({
                 url: "{% url 'sales:sales_add' %}",
                 type: "POST",
@@ -280,44 +654,75 @@
                     'amount_payed': amount_payed,
                     'amount_change': amount_change,
                     'products': products,
-
                 }),
                 success: function (data) {
-                    // clear cart
-                    shoppingCart.clearCart()
+                    shoppingCart.clearCart();
+
                     if (data.status === "success") {
-                        // sale added successfully
-                        $('#result').html(
-                            `<div class="alert alert-success alert-dismissible fade show" role="alert">${data.message}<a href="/sales/pdf/${data.sale_id}"><button type="button" class="btn btn-link"><span aria-hidden="true"> Print Invoice</a></span></button><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
-                        )
-                    }
-                    else if (data.status === "error") {
-                        // error, such as less stock
-                        $('#result').html(
-                            `<div class="alert alert-danger alert-dismissible fade show" role="alert">${data.message}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`
-                        )
-                    }
-                    else {
-                        // unknown error, such as network error
-                        $('#result').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">Unknown error occurred<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+                        $('#result').html(`
+                            <div class="alert alert-success d-flex align-items-center" role="alert">
+                                <i class="ti ti-check-circle me-2"></i>
+                                <div class="flex-grow-1">
+                                    ${data.message}
+                                    <div class="mt-2">
+                                        <a href="/sales/pdf/${data.sale_id}" class="btn btn-sm btn-outline-success">
+                                            <i class="ti ti-printer me-1"></i>
+                                            Print Invoice
+                                        </a>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `);
+
+                        // Reset form
+                        $('[name="customer"]').val('');
+                        toastr.success('Sale created successfully!');
+                    } else if (data.status === "error") {
+                        $('#result').html(`
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <i class="ti ti-alert-circle me-2"></i>
+                                <div class="flex-grow-1">${data.message}</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `);
+                        toastr.error(data.message);
+                    } else {
+                        $('#result').html(`
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <i class="ti ti-alert-triangle me-2"></i>
+                                <div class="flex-grow-1">Unknown error occurred</div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `);
+                        toastr.error('Unknown error occurred');
                     }
 
-                    displayCart()
-
+                    displayCart();
                 },
                 headers: {
                     "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
-
                 },
                 error: function (data) {
-                    $('#result').html('<div class="alert alert-danger alert-dismissible fade show" role="alert">Unknown error occurred<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-
-
+                    $('#result').html(`
+                        <div class="alert alert-danger d-flex align-items-center" role="alert">
+                            <i class="ti ti-wifi-off me-2"></i>
+                            <div class="flex-grow-1">Network error occurred. Please try again.</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `);
+                    toastr.error('Network error occurred');
                 }
             }).done(function () {
-                $('#submit_btn').html("Create Sale")
+                $('#submit_btn').html(`
+                    <i class="ti ti-check me-2"></i>
+                    Create Sale
+                `).prop('disabled', false);
             });
         });
-    })
+
+        // Add animations
+        $('.card').addClass('animate__animated animate__fadeInUp');
+    });
 </script>
 {% endblock content %}

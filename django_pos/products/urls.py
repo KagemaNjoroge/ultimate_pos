@@ -1,4 +1,12 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+# api endpoints
+from .views import CategoryApiViewSet, ProductApiViewSet
+
+router.register(r"categories/api", CategoryApiViewSet, basename="category")
+router.register(r"products/api", ProductApiViewSet, basename="product")
 
 from . import views
 
@@ -14,12 +22,6 @@ urlpatterns = [
         views.categories_update_view,
         name="categories_update",
     ),
-    # Delete category
-    path(
-        "categories/delete/<str:category_id>/",
-        views.categories_delete_view,
-        name="categories_delete",
-    ),
     # List products
     path("", views.products_list_view, name="products_list"),
     # Add product
@@ -27,10 +29,6 @@ urlpatterns = [
     # Update product
     path(
         "update/<str:product_id>/", views.products_update_view, name="products_update"
-    ),
-    # Delete product
-    path(
-        "delete/<str:product_id>/", views.products_delete_view, name="products_delete"
     ),
     # Get products AJAX
     path("get/", views.get_products_ajax_view, name="get_products"),
@@ -43,3 +41,5 @@ urlpatterns = [
         "details/<str:product_id>/", views.product_detail_view, name="product_details"
     ),
 ]
+
+urlpatterns += router.urls

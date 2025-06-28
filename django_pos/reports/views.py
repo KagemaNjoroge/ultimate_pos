@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
-from sales.models import Sale, SaleDetail
+from sales.models import Sale, SaleItem
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -95,16 +95,19 @@ def best_selling_product(request) -> Response:
         )
 
     tops = {}
-    details = SaleDetail.objects.filter(sale__in=sales)
-
-    for t in details:
-        top = t.get_top_selling_products()
-        for z in top:
-
-            if z.product.name in tops:
-                tops[z.product.name] += z.quantity
-            else:
-                tops[z.product.name] = z.quantity
+    sale_items = SaleItem.objects.filter(sale__in=sales)
+    # count sale_item.product
+    if not sale_items:
+        # 404
+        return Response(
+            data={"top_selling": "No sales made"},
+            status=404,
+        )
+    for item in sale_items:
+        if item.product.name in tops:
+            tops[item.product.name] += item.quantity
+        else:
+            tops[item.product.name] = item.quantity
 
     tops = sorted(tops.items(), key=lambda x: x[1], reverse=True)[0]
 
@@ -125,20 +128,23 @@ def get_best_selling_category(request) -> Response:
         ]
     )
 
-    tops = {}
-    details = SaleDetail.objects.filter(sale__in=sales)
+    sale_items = SaleItem.objects.filter(sale__in=sales)
+    if not sale_items:
+        # 404
+        return Response(
+            data={"top_selling": "No sales made"},
+            status=404,
+        )
 
-    for t in details:
-        top = t.get_top_selling_products()
-        for z in top:
-
-            if z.product.category in tops:
-                tops[z.product.category] += z.quantity
+    else:
+        tops = {}
+        for item in sale_items:
+            if item.product.category.name in tops:
+                tops[item.product.category.name] += item.quantity
             else:
-                tops[z.product.category] = z.quantity
-    # get best-selling category
-    tops = sorted(tops.items(), key=lambda x: x[1], reverse=True)[0]
-    return Response(
-        data={"top_selling": tops},
-        status=200,
-    )
+                tops[item.product.category.name] = item.quantity
+        tops = sorted(tops.items(), key=lambda x: x[1], reverse=True)[0]
+        return Response(
+            data={"top_selling": tops},
+            status=200,
+        )

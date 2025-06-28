@@ -16,6 +16,14 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+def logout_view(request: HttpRequest) -> HttpResponse:
+    if request.user.is_authenticated:
+        logout(request)
+        return redirect("/login/")
+    else:
+        return redirect("/login/")
+
+
 @login_required(login_url="/users/login/")
 def index(request: HttpRequest) -> HttpResponse:
     # for users management
@@ -26,11 +34,11 @@ def index(request: HttpRequest) -> HttpResponse:
 @login_required(login_url="/users/login/")
 @api_view(["GET", "POST"])
 def logout_view(request) -> Response:
-    if request.method == "POST":
+    if request.user.is_authenticated:
         logout(request)
-        return Response({"message": "success"})
+        return redirect("/login/")
     else:
-        return render(request, "accounts/logout.html")
+        return redirect("/login/")
 
 
 @login_required(login_url="/users/login/")
@@ -74,7 +82,7 @@ def login_view(request: HttpRequest) -> HttpResponse:
         if request.method == "GET":
             return render(request, "accounts/signin.html")
         elif request.method == "POST":
-            
+
             data = json.loads(request.body)
             username = data.get("username")
             password = data.get("password")

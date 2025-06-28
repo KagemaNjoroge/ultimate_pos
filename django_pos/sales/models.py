@@ -27,10 +27,8 @@ class Sale(models.Model):
     def __str__(self) -> str:
         return str(self.id)
 
-    def sum_items(self):
-        details = SaleDetail.objects.filter(sale=self.id)
-        if details.exists():
-            return details.first().get_products_count()
+    def get_total(self) -> float:
+        return self.sub_total + self.tax_amount - self.discount
 
     def to_json(self) -> dict:
         return {
@@ -48,8 +46,12 @@ class Sale(models.Model):
 
 
 class SaleItem(models.Model):
+    sale = models.ForeignKey("Sale", models.CASCADE, db_column="sale")
     product = models.ForeignKey(Product, models.CASCADE, db_column="product")
     quantity = models.IntegerField(default=1)
+
+    def total(self):
+        return self.product.price * self.quantity
 
     class Meta:
         db_table = "SaleItems"
@@ -61,28 +63,3 @@ class SaleItem(models.Model):
 
     def total(self):
         return self.product.price * self.quantity
-
-
-class SaleDetail(models.Model):
-    sale = models.ForeignKey(Sale, models.CASCADE, db_column="sale")
-    items = models.ManyToManyField(SaleItem, db_column="items")
-
-    def __str__(self) -> str:
-        return f"{self.id}"
-
-    def get_products_count(self) -> int:
-        return self.items.count()
-
-    def get_specific_product_count(self, product_id: int) -> int:
-        return self.items.filter(product__id=product_id).count()
-
-    def get_grand_total(self) -> float:
-        return self.sale.grand_total
-
-    class Meta:
-        db_table = "SaleDetails"
-        verbose_name_plural = "SaleDetails"
-        verbose_name = "SaleDetail"
-
-    def get_top_selling_products(self):
-        return self.items.order_by("quantity")[:5]

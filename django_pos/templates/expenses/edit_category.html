@@ -16,10 +16,10 @@
 
 <div class="card">
     <div class="card-body">
-        <form action="/api/expense-category/{{category.id}}/" id="category_form">
+        <form action="/expenses/api/expense-categories/{{category.id}}/" id="category_form">
             <!--category_name, category_description, is_recurring-->
             {%csrf_token%}
-            <div id="alerts" class="text-center"></div>
+
             <div class="form-group mt-3">
                 <label for="category_name">Category Name</label>
                 <input type="text" class="form-control" id="category_name" name="category_name"
@@ -59,25 +59,22 @@
                 url: url,
                 data: data,
                 success: function (response) {
-                    $('#alerts').html(
-                        '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-                        '<strong>Success!</strong> Category updated successfully' +
-                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                        '</div>'
-                    );
-                    setTimeout(() => {
-                        window.location.href = "{% url 'expenses:category' %}";
-                    }, 1000);
+
+                    toastr.success('Category updated successfully!', 'Success', {
+                        "closeButton": true,
+                        "progressBar": true,
+                    });
+
                 },
                 error: function (response) {
-                    $('#save').html('Save');
-                    $('#alerts').html(
-                        '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-                        '<strong>Error!</strong> Something went wrong' +
-                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                        '</div>'
-                    );
+
+                    toastr.error('Error updating category!', 'Error', {
+                        "closeButton": true,
+                        "progressBar": true,
+                    });
                 }
+            }).done(function () {
+                $('#save').html('Save').removeAttr('disabled');
             });
         });
     });

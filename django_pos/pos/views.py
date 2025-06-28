@@ -15,7 +15,7 @@ from inventory.models import Inventory
 from pos.models import Notifications
 from products.models import Product, Category
 from sales.models import Sale
-from sales.models import SaleDetail, SaleItem
+from sales.models import SaleItem
 
 
 @login_required(login_url="/users/login/")
@@ -58,19 +58,19 @@ def index(request: HttpRequest) -> HttpResponse:
     # AVG per month
     avg_month = format(sum(monthly_earnings) / 12, ".2f")
 
-    f = SaleDetail.objects.all()
+    f = SaleItem.objects.all()
 
     # Get top products
     products = Product.objects.all()
     top = [{product.id: 0 for product in products}]
 
-    for sale_detail in f:
-        for item in sale_detail.items.all():
-            for x in top:
-                if item.product.id in x:
-                    x[item.product.id] += item.quantity
-                else:
-                    x[item.product.id] = item.quantity
+    for saleitem in f:
+        item = saleitem
+        for x in top:
+            if item.product.id in x:
+                x[item.product.id] += item.quantity
+            else:
+                x[item.product.id] = item.quantity
     x = []
     for i in top:
         for v, j in i.items():
@@ -190,13 +190,12 @@ def pos(request: HttpRequest) -> HttpResponse:
                         pass
                 # create sale items
                 sale_item = SaleItem.objects.create(
-                    product=product, quantity=attr["quantity"]
+                    product=product,
+                    quantity=attr["quantity"],
+                    sale=sale,
                 )
                 sale_item.save()
                 sale_items.append(sale_item)
-            sale_detail = SaleDetail.objects.create(sale=sale)
-            sale_detail.save()
-            sale_detail.items.set(sale_items)
 
             return JsonResponse({"status": "success", "sale_id": sale.id})
         except Exception as e:

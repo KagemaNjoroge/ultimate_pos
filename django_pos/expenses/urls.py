@@ -1,3 +1,4 @@
+from django.db import router
 from django.urls import path
 from .views import (
     expense_categories,
@@ -6,10 +7,21 @@ from .views import (
     add_expense_category,
     edit_expense,
     edit_category,
+    ExpenseCategoryViewSet,
+    ExpenseViewSet,
 )
+from rest_framework.routers import DefaultRouter
+
 
 app_name = "expenses"
 
+
+router = DefaultRouter()
+
+router.register(
+    "api/expense-categories", ExpenseCategoryViewSet, basename="expense-category"
+)
+router.register("api/expenses", ExpenseViewSet, basename="expense")
 
 urlpatterns = [
     path("", expenses, name="index"),
@@ -20,3 +32,5 @@ urlpatterns = [
     path("category/<int:id>/", expense_categories, name="category_operations"),
     path("add-category/", add_expense_category, name="add_expense_category"),
 ]
+
+urlpatterns += router.urls

@@ -76,7 +76,7 @@
 <script>
     function deleteCategory(id) {
         $.ajax({
-            url: `/api/expense-category/${id}/`,
+            url: `expenses/api/expense-category/${id}/`,
             type: 'DELETE',
             headers: {
                 'X-CSRFToken': '{{csrf_token}}'

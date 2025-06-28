@@ -15,7 +15,7 @@
 <div class="card ml-2">
     <div class="card-body">
 
-        <form action="/api/expense-category/" method="post" id="category_form">
+        <form action="/expenses/api/expense-categories/" method="post" id="category_form">
             {% csrf_token %}
             <!--category_name, category_description , is_recurring-->
             <div class="form-group">
@@ -28,7 +28,6 @@
                     required></textarea>
 
             </div>
-            <!--Switch-->
 
             <div class="form-check form-switch ml-3">
                 <input class="form-check-input" type="checkbox" role="switch" id="is_recurring" name="is_recurring">
@@ -43,21 +42,7 @@
 
     </div>
 </div>
-<div class="error_toast mt-3" style="display: none;">
-    <div class="toast-container position-fixed bottom-0 start-50 translate-middle end-0 p-3 ">
-        <div id="liveToast" class="toast" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <i class="ti ti-exclamation-mark"></i>
-                <strong class="me-auto">Ultimate POS</strong>
-                <small>Now</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body" id="toast_body">
-                Hello, world! This is a toast message.
-            </div>
-        </div>
-    </div>
-</div>
+
 <script>
     $(document).ready(function () {
         $("#category_form").submit(function (e) {
@@ -70,7 +55,7 @@
                 category_description: $('#category_description').val(),
                 is_recurring: $('#is_recurring').is(':checked')
             };
-            // post and show toast
+
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -79,28 +64,24 @@
                     'X-CSRFToken': '{{csrf_token}}'
                 },
                 success: function (response) {
-                    $('#save').html('Save').attr('disabled', false);
-                    $('#category_name').val('');
-                    $('#category_description').val('');
-                    $('#is_recurring').prop('checked', false);
-                    $('#toast_body').html('Category created successfully');
-                    $('.error_toast').css('display', 'block')
-                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-                        autohide: true,
-                        delay: 5000,
+
+                    toastr.success('Category created successfully!', 'Success', {
+                        timeOut: 5000,
+                        positionClass: 'toast-top-right',
                     });
-                    toast.show();
+
+                    form[0].reset();
+
                 },
-                error: function (response) {
-                    $('#save').html('Save').attr('disabled', false);
-                    $('#toast_body').html('Error creating category');
-                    $('.error_toast').css('display', 'block')
-                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-                        autohide: true,
-                        delay: 5000,
+                error: function (xhr, status, error) {
+                    toastr.error('Error: ' + xhr.responseJSON.error, 'Error', {
+                        timeOut: 5000,
+                        positionClass: 'toast-top-right',
                     });
-                    toast.show();
+
                 }
+            }).done(function () {
+                $('#save').html('Save').attr('disabled', false);
             });
 
         });

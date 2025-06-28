@@ -16,85 +16,77 @@
 
 <div class="card ml-2">
     <div class="card-body">
-        <div class="text-center" id="status_msg"></div>
 
-        {% csrf_token %}
-        <div class="form-row">
-            <div class="form-group col-12">
-                <label for="inputDescription">Product</label>
-                <select id="inputDescription" class="form-select" disabled>
-                    <option value="{{ inventory.id }}" class="">{{ inventory.product.name }}</option>
-                </select>
+        <form action="/inventory/api/{{ inventory.id }}/" method="post" id="update_form">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <label for="inputDescription">Product</label>
+                    <select id="inputDescription" class="form-select" disabled>
+                        <option value="{{ inventory.id }}" class="">{{ inventory.product.name }}</option>
+                    </select>
+                </div>
+                <div class="form-group col-12">
+                    <label for="inputr">Quantity</label>
+                    <input type="text" class="form-control" name="quantity" value="{{inventory.quantity}}" required
+                        id="inputr">
+                </div>
             </div>
-            <div class="form-group col-12">
-                <label for="inputr">Quantity</label>
-                <input type="text" class="form-control" name="quantity" value="{{inventory.quantity}}" required
-                    id="inputr">
-            </div>
-        </div>
-        <button id="update" class="btn btn-success font-weight-bold mb-3">Update stock</button>
+            <button id="update" class="btn btn-success font-weight-bold mb-3" type="submit">Update stock</button>
+        </form>
+
+
 
     </div>
 </div>
 
 
 <script>
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
+
+    let actionUrl = "/inventory/api/{{ inventory.id }}/";
+    let btn = $('#update');
+
+    $('#update_form').submit(function (e) {
+
+        e.preventDefault();
+        $.ajax({
+            type: 'PATCH',
+            url: actionUrl,
+            headers: {
+                "X-CSRFToken": '{{ csrf_token }}'
+
+            },
+            data: {
+                "quantity": $('#inputr').val()
+            },
+            beforeSend: function () {
+                btn.html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...`);
+            
+            },
+            success: function (resp) {
+                toastr.success('Inventory updated successfully!', 'Success', {
+                    timeOut: 3000,
+                    closeButton: true,
+                    progressBar: true
+                });
+
+            },
+            error: function (
+                xhr, status, error
+            ) {
+                toastr.error('Error updating product: ' + xhr.responseJSON.error, 'Error', {
+                    timeOut: 3000,
+                    closeButton: true,
+                    progressBar: true
+                });
+            },
 
 
-    }
-    let btn = document.getElementById('update');
-    let quantity = document.getElementById('inputr');
-    btn.addEventListener("click", async ev => {
-        // add loading spinner to update button
-        btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...`;
-        let response = await fetch("{% url 'inventory:update_inventory' inventory_id=inventory.id  %}",
-            {
-                method: "POST",
-                headers: {
-                    "X-CSRFToken": getCookie('csrftoken'),
-
-                },
-                body: JSON.stringify({ "quantity": quantity.value })
-            }
-        );
-        let body = await response.json();
-
-        if (body['status'] === 'fail') {
-            let msg_div = document.getElementById('status_msg');
-            msg_div.innerHTML = `<div class="mt-3 col"><div id="message_js" class="alert alert-danger alert-dismissible fade-show" role="alert">
-        An error occurred while updating that Inventory. Please try again
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div></div>`
-
-        }
-        else if (body['status'] === 'success') {
-            let msg_div = document.getElementById('status_msg');
-
-            msg_div.innerHTML = `<div class="mt-3col"><div id="message_js" class="alert alert-success alert-dismissible fade-show" role="alert">
-       Inventory updated successfully.
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div></div>`
-
-        }
-        // remove loading spinner from update button
-        btn.innerHTML = `Update stock`;
-
-
+        }).done(function () {
+            $('#update').html('Update Inventory');
+        })
     })
+
 </script>
 
 {% endblock content %}
