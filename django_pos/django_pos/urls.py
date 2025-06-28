@@ -50,6 +50,9 @@ urlpatterns = [
         schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",
     ),
+    # api authentication
     path("api-auth/", include("rest_framework.urls")),
+    # Utils
+    path("utils/", include("utils.urls")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

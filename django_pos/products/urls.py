@@ -18,9 +18,15 @@ urlpatterns = [
     path("categories/add/", views.categories_add_view, name="categories_add"),
     # Update category
     path(
-        "categories/update/<str:category_id>/",
+        "categories/update/<int:category_id>/",
         views.categories_update_view,
         name="categories_update",
+    ),
+    # Category details
+    path(
+        "categories/details/<int:category_id>/",
+        views.categories_detail_view,
+        name="categories_details",
     ),
     # List products
     path("", views.products_list_view, name="products_list"),

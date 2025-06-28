@@ -1,5 +1,6 @@
 from django.db import models
 from suppliers.models import Supplier
+from utils.models import Photo
 
 
 class Category(models.Model):
@@ -52,7 +53,16 @@ class Product(models.Model):
     name = models.CharField(max_length=256)
     description = models.TextField(max_length=256)
     track_inventory = models.BooleanField(default=False)
-    image = models.ImageField(upload_to="products", blank=True, null=True)
+    # a product can have multiple images
+    photos = models.ManyToManyField(
+        Photo,
+        related_name="product_photos",
+        blank=True,
+        verbose_name="Product Photos",
+    )
+    display_image = models.ImageField(
+        upload_to="products", blank=True, null=True
+    )  # this is the one displayed in the product list
     status = models.CharField(
         choices=STATUS_CHOICES,
         max_length=100,
@@ -85,7 +95,7 @@ class Product(models.Model):
             "name": self.name,
             "description": self.description,
             "track_inventory": self.track_inventory,
-            "image": self.image.url,
+            "display_image": self.display_image.url if self.display_image else None,
             "status": self.status,
             "category": self.category.name,
             "price": self.price,

@@ -14,6 +14,7 @@ from rest_framework.request import Request
 from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
 from django.views.decorators.http import require_http_methods
+from utils.models import Photo
 
 
 class CategoryApiViewSet(ModelViewSet):
@@ -49,7 +50,7 @@ def categories_add_view(request: Request) -> Response:
 
 @login_required(login_url="/users/login/")
 @require_http_methods(["GET"])
-def categories_update_view(request: HttpRequest, category_id: str) -> HttpResponse:
+def categories_update_view(request: HttpRequest, category_id: int) -> HttpResponse:
 
     category = get_object_or_404(Category, id=category_id)
     serializer = CategorySerializer(instance=category)
@@ -61,13 +62,57 @@ def categories_update_view(request: HttpRequest, category_id: str) -> HttpRespon
     return render(request, "products/categories_update.html", context)
 
 
+@login_required(login_url="/users/login/")
+@require_http_methods(["GET"])
+def categories_detail_view(request: HttpRequest, category_id: int) -> HttpResponse:
+    category = get_object_or_404(Category, id=category_id)
+    # products in this category
+    products = Product.objects.filter(category=category)
 
+    # Calculate statistics
+    total_products = products.count()
+    active_products_count = products.filter(status="ACTIVE").count()
+
+    # Calculate average price
+    if total_products > 0:
+        total_price = sum(product.price for product in products)
+        average_price = total_price / total_products
+    else:
+        average_price = 0
+
+    # Get company for currency symbol
+    company = Company.objects.first()
+    currency_symbol = company.currency_symbol if company else "Ksh"
+
+    context = {
+        "category": category,
+        "products": products,
+        "currency_symbol": currency_symbol,
+        "total_products": total_products,
+        "active_products_count": active_products_count,
+        "average_price": average_price,
+    }
+
+    return render(request, "products/category_details.html", context=context)
 
 
 @login_required(login_url="/users/login/")
 @require_http_methods(["GET"])
 def products_list_view(request: HttpRequest) -> HttpResponse:
-    context = {"products": Product.objects.all()}
+    products = Product.objects.all()
+
+    # Calculate stats
+    total_products = products.count()
+    active_products = products.filter(status="ACTIVE").count()
+    categories_count = products.values("category").distinct().count()
+
+    context = {
+        "products": products,
+        "total_products": total_products,
+        "active_products": active_products,
+        "categories_count": categories_count,
+    }
+
     company = Company.objects.first()
     if company:
         context["currency_symbol"] = company.currency_symbol
@@ -84,6 +129,7 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
     context = {
         "product_status": Product.status.field.choices,
         "categories": Category.objects.all().filter(status="ACTIVE"),
+        "photos": Photo.objects.all(),
     }
     return render(request, "products/products_add.html", context=context)
 
@@ -96,16 +142,11 @@ def products_update_view(request, product_id: str):
     context = {
         "product_status": Product.status.field.choices,
         "product": product,
-        "categories": [
-            category.to_json()
-            for category in Category.objects.all().filter(status="ACTIVE")
-        ],
+        "photos": Photo.objects.all(),
+        "categories": Category.objects.all().filter(status="ACTIVE"),
     }
 
     return render(request, "products/products_update.html", context)
-
-
-
 
 
 def is_ajax(request: HttpRequest) -> bool:
@@ -213,7 +254,20 @@ def download_template(request: HttpRequest):
 @require_http_methods(["GET"])
 def product_detail_view(request: HttpRequest, product_id: str) -> HttpResponse:
     product = get_object_or_404(Product, id=product_id)
+
+    # Get inventory information
+    try:
+        inventory = Inventory.objects.get(product=product)
+    except Inventory.DoesNotExist:
+        inventory = None
+
+    # Get company for currency symbol
+    company = Company.objects.first()
+    currency_symbol = company.currency_symbol if company else "Ksh"
+
     context = {
         "product": product,
+        "inventory": inventory,
+        "currency_symbol": currency_symbol,
     }
     return render(request, "products/product_details.html", context=context)

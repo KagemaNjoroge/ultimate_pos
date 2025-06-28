@@ -1,0 +1,735 @@
+{% extends "pos/base.html" %}
+{% load static %}
+{% block title %}Category - {{category.name}}{% endblock title %}
+
+{% block stylesheets %}
+<style>
+    /* Modern header styling */
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        border-radius: 12px;
+        color: white;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+    }
+
+    .page-header h1 {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        font-size: 2.5rem;
+    }
+
+    .page-header p {
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+
+    /* Category info card styling */
+    .category-info-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: none;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .category-info-card .card-body {
+        padding: 2rem;
+    }
+
+    .category-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .category-description {
+        font-size: 1.1rem;
+        color: #6c757d;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Enhanced status badges */
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        text-transform: capitalize;
+        letter-spacing: 0.3px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        color: white;
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    }
+
+    /* Stats cards styling */
+    .stats-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: none;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stats-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .stats-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+
+    .stats-card h4 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-card p {
+        color: #6c757d;
+        font-weight: 500;
+        margin-bottom: 0;
+    }
+
+    /* Action buttons styling */
+    .action-buttons {
+        margin-bottom: 2rem;
+        gap: 1rem;
+    }
+
+    .action-buttons .btn {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 0.5rem;
+        min-width: 160px;
+    }
+
+    .action-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Enhanced table styling */
+    .modern-table-card {
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: none;
+        overflow: hidden;
+        background: white;
+    }
+
+    .modern-table-card .card-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-bottom: 1px solid #dee2e6;
+        padding: 1.5rem;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .modern-table-card .card-body {
+        padding: 0;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-subtitle {
+        color: #6c757d;
+        margin-bottom: 0;
+    }
+
+    /* Product table enhancements */
+    #dataTable {
+        margin-bottom: 0;
+        table-layout: fixed;
+        width: 100% !important;
+    }
+
+    #dataTable thead th {
+        background: #f8f9fa;
+        border-top: none;
+        font-weight: 600;
+        color: #495057;
+        padding: 1rem 0.75rem;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    #dataTable tbody td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f3f4;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    #dataTable tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    #dataTable tbody tr:hover {
+        background-color: #f8f9ff;
+        transform: translateX(2px);
+    }
+
+    /* Product info styling */
+    .product-name {
+        font-weight: 600;
+        color: #2c3e50;
+        text-decoration: none;
+        font-size: 1rem;
+        transition: color 0.2s ease;
+    }
+
+    .product-name:hover {
+        color: #667eea;
+        text-decoration: none;
+    }
+
+    .product-sku {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    /* Price styling */
+    .product-price {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #28a745;
+    }
+
+    .currency-symbol {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    /* Action buttons in table */
+    .table-action-btn {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        margin: 0 0.125rem;
+        transition: all 0.3s ease;
+        border: none;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .table-action-btn:hover {
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .table-action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s;
+    }
+
+    .table-action-btn:hover::before {
+        left: 100%;
+    }
+
+    .btn-view {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+        box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+    }
+
+    .btn-view:hover {
+        background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+        color: white;
+        box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        color: white;
+        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    }
+
+    .btn-edit:hover {
+        background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+        color: white;
+        box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
+    }
+
+    /* Custom DataTables styling */
+    .dataTables_wrapper .dataTables_filter {
+        margin-bottom: 1rem;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        background-color: #f8f9fa;
+        margin-left: 0.5rem;
+        width: 250px;
+    }
+
+    .dataTables_wrapper .dataTables_filter input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        background-color: white;
+        outline: none;
+    }
+
+    .dataTables_wrapper .dataTables_filter label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .dataTables_wrapper .dataTables_filter label::before {
+        content: '\f002';
+        font-family: 'tabler-icons';
+        margin-right: 0.5rem;
+        color: #6c757d;
+    }
+
+    /* Hide pagination info and length selector */
+    .dataTables_wrapper .dataTables_length {
+        display: none;
+    }
+
+    .dataTables_wrapper .dataTables_info {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 1rem;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        margin-top: 1rem;
+    }
+
+    /* Empty state styling */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h4 {
+        margin-bottom: 1rem;
+        color: #495057;
+    }
+
+    .empty-state p {
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 1.5rem 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+        }
+
+        .stats-card {
+            margin-bottom: 1rem;
+        }
+
+        .action-buttons .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .table-responsive {
+            border-radius: 0;
+            margin: 0 -15px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .page-header {
+            margin-left: -1rem;
+            margin-right: -1rem;
+            border-radius: 0;
+        }
+
+        .container-fluid {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+    }
+</style>
+{% endblock stylesheets %}
+
+{%block heading%}Category - {{category.name}}{%endblock heading%}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Modern Page Header -->
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1><i class="ti ti-category me-3"></i>{{category.name}}</h1>
+                <p>Category details and associated products</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="d-flex align-items-center justify-content-md-end">
+                    <i class="ti ti-calendar me-2"></i>
+                    <span id="currentDate"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Information Card -->
+    <div class="category-info-card">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="category-title">
+                        <i class="ti ti-tag me-2"></i>{{category.name}}
+                    </h2>
+                    <p class="category-description">{{category.description}}</p>
+                    <div class="d-flex align-items-center">
+                        <span class="me-3"><strong>Status:</strong></span>
+                        <span
+                            class="status-badge {% if category.status == 'ACTIVE' %}status-active{% else %}status-inactive{% endif %}">
+                            {% if category.status == 'ACTIVE' %}
+                            <i class="ti ti-check-circle me-1"></i>Active
+                            {% else %}
+                            <i class="ti ti-x-circle me-1"></i>Inactive
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="d-flex flex-column align-items-md-end">
+                        <div class="mb-2">
+                            <span class="text-muted">Category ID:</span>
+                            <strong class="ms-2">#{{category.id}}</strong>
+                        </div>
+                        <div>
+                            <span class="text-muted">Products Count:</span>
+                            <strong class="ms-2">{{total_products}}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stats-card" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Total number of products in this category">
+                <div class="stats-icon bg-primary text-white">
+                    <i class="ti ti-package"></i>
+                </div>
+                <h4 class="mb-1">{{ total_products|default:0 }}</h4>
+                <p class="text-muted mb-0">Total Products</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stats-card" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Number of products currently active and available for sale">
+                <div class="stats-icon bg-success text-white">
+                    <i class="ti ti-check-circle"></i>
+                </div>
+                <h4 class="mb-1">
+                    {% if active_products_count %}{{ active_products_count }}{% else %}0{% endif %}
+                </h4>
+                <p class="text-muted mb-0">Active Products</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stats-card" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Average price of all products in this category">
+                <div class="stats-icon bg-info text-white">
+                    <i class="ti ti-currency-dollar"></i>
+                </div>
+                <h4 class="mb-1">
+                    {{ currency_symbol|default:"Ksh" }}{{ average_price|floatformat:0|default:"0" }}
+                </h4>
+                <p class="text-muted mb-0">Average Price</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stats-card" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Percentage of products that are currently active">
+                <div class="stats-icon bg-warning text-white">
+                    <i class="ti ti-percentage"></i>
+                </div>
+                <h4 class="mb-1">
+                    {% if total_products > 0 %}
+                    {% widthratio active_products_count total_products 100 %}%
+                    {% else %}
+                    0%
+                    {% endif %}
+                </h4>
+                <p class="text-muted mb-0">Active Rate</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons d-flex flex-wrap justify-content-start">
+        <a href="{% url 'products:products_add' %}" class="btn btn-success me-2 mb-2" data-bs-toggle="tooltip"
+            data-bs-placement="top" title="Create a new product in this category">
+            <i class="ti ti-plus me-2"></i>
+            Add New Product
+        </a>
+        <a href="{% url 'products:categories_update' category.id %}" class="btn btn-primary me-2 mb-2"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="Edit category information">
+            <i class="ti ti-edit me-2"></i>
+            Edit Category
+        </a>
+        <a href="{% url 'products:categories_list' %}" class="btn btn-outline-secondary me-2 mb-2"
+            data-bs-toggle="tooltip" data-bs-placement="top" title="Return to categories list">
+            <i class="ti ti-arrow-left me-2"></i>
+            Back to Categories
+        </a>
+        <a href="{% url 'products:products_list' %}" class="btn btn-outline-primary me-2 mb-2" data-bs-toggle="tooltip"
+            data-bs-placement="top" title="View all products across categories">
+            <i class="ti ti-list me-2"></i>
+            All Products
+        </a>
+    </div>
+
+    <!-- Products Table -->
+    <div class="modern-table-card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="card-title">
+                        <i class="ti ti-package me-2"></i>Products in {{category.name}}
+                    </h3>
+                    <p class="card-subtitle">Manage all products associated with this category</p>
+                </div>
+                <div class="col-auto">
+                    <span class="badge bg-primary fs-6">{{total_products}} Product{{total_products|pluralize}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if products %}
+            <div class="table-responsive">
+                <table class="table table-hover" id="dataTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Product Info</th>
+                            <th style="width: 35%;">Description</th>
+                            <th style="width: 15%;">Price</th>
+                            <th style="width: 10%;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        {% if product.display_image %}
+                                        <img src="{{ product.display_image.url }}" alt="{{ product.name }}"
+                                            class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                        {% else %}
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px;">
+                                            <i class="ti ti-package text-muted"></i>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <a href="{% url 'products:product_details' product.id %}" class="product-name">
+                                            {{ product.name }}
+                                        </a>
+                                        <div class="product-sku">SKU: {{ product.get_sku }}</div>
+                                        <div class="mt-1">
+                                            <span
+                                                class="status-badge {% if product.status == 'ACTIVE' %}status-active{% else %}status-inactive{% endif %}"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Product Status">
+                                                {{ product.status|title }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 250px;" title="{{ product.description }}"
+                                    data-bs-toggle="tooltip" data-bs-placement="top">
+                                    {{ product.description|truncatechars:60 }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="product-price" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="Product Price">
+                                    <span class="currency-symbol">{{ currency_symbol|default:"Ksh" }}</span>
+                                    {{ product.price|floatformat:0 }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <a href="{% url 'products:product_details' product.id %}"
+                                        class="table-action-btn btn-view" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="View Product Details">
+                                        <i class="ti ti-eye"></i>
+                                    </a>
+                                    <a href="{% url 'products:products_update' product.id %}"
+                                        class="table-action-btn btn-edit" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="Edit Product">
+                                        <i class="ti ti-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="ti ti-package-off"></i>
+                <h4>No Products Found</h4>
+                <p>This category doesn't have any products yet. Start by adding some products to this category.</p>
+                <a href="{% url 'products:products_add' %}" class="btn btn-primary" data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="Create the first product in this category">
+                    <i class="ti ti-plus me-2"></i>Add First Product
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set current date
+    document.addEventListener('DOMContentLoaded', function () {
+        const currentDate = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('currentDate').textContent = currentDate;
+
+        // Initialize Bootstrap tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl, {
+                delay: { show: 500, hide: 100 },
+                placement: 'top'
+            });
+        });
+    });
+
+    // Initialize DataTable if products exist
+    {% if products %}
+    $(document).ready(function () {
+        var table = $('#dataTable').DataTable({
+            "order": [[0, "asc"]],
+            "pageLength": 25,
+            "responsive": true,
+            "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                '<"row"<"col-sm-12"tr>>' +
+                '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            "language": {
+                "search": "Search products:",
+                "lengthMenu": "Show _MENU_ products per page",
+                "info": "Showing _START_ to _END_ of _TOTAL_ products",
+                "paginate": {
+                    "first": "First",
+                    "last": "Last",
+                    "next": "Next",
+                    "previous": "Previous"
+                },
+                "emptyTable": "No products found in this category",
+                "zeroRecords": "No matching products found"
+            },
+            "columnDefs": [
+                { "orderable": false, "targets": [3] },
+                { "className": "text-center", "targets": [3] }
+            ],
+            "drawCallback": function (settings) {
+                // Reinitialize tooltips after table redraw
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                    new bootstrap.Tooltip(tooltipTriggerEl, {
+                        delay: { show: 500, hide: 100 }
+                    });
+                });
+            }
+        });
+
+        // Style the search input
+        $('.dataTables_filter input').addClass('form-control').attr('placeholder', 'Search products...');
+    });
+    {% endif %}
+</script>
+{%endblock content %}

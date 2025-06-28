@@ -1,110 +1,796 @@
 {% extends "pos/base.html" %}
-{% block title %}Add product{% endblock title %}
-{% block heading %}Add product{% endblock heading %}
+{% block title %}Add Product{% endblock title %}
+{% block heading %}Add New Product{% endblock heading %}
 {% block content %}
-<div class="ml-2 mb-3 btn-group">
-  <a href="{% url 'products:products_list' %}" class="btn btn-primary font-weight-bold">
-    <i class="ti ti-arrow-left"></i>
-    Go back
-  </a>
 
-  <a href="{% url 'products:upload_excel' %}" class="btn btn-success font-weight-bold">
-    <i class="ti ti-upload"></i>
-    Upoad CSV / Excel
-  </a>
-</div>
-
-
-
-<div class="card ml-2">
-  <div class="card-body">
-
-    <div class="alert alert-info" role="alert">
-      <i class="ti ti-info-circle"></i>
-      Fill in the details of the product you want to add.
+<!-- Enhanced Header Section -->
+<div class="container-fluid px-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="page-header">
+          <h2 class="page-title mb-0">
+            <i class="ti ti-package text-primary me-2"></i>
+            Add New Product
+          </h2>
+          <p class="text-muted mb-0">Create a new product entry for your inventory</p>
+        </div>
+        <div class="btn-group shadow-sm">
+          <a href="{% url 'products:products_list' %}" class="btn btn-outline-primary">
+            <i class="ti ti-arrow-left me-1"></i>
+            Back to Products
+          </a>
+          <a href="{% url 'products:upload_excel' %}" class="btn btn-success">
+            <i class="ti ti-upload me-1"></i>
+            Import CSV/Excel
+          </a>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <form action="/products/products/api/" method="post" id="product_form">
-      {% csrf_token %}
-      <div class="form-row">
-        <div class="form-group col-md-12">
-          <label for="product_type">Product Type</label>
-          <select name="product_type" class="form-control" id="product_type" required>
-            <option value="Raw Material">Raw Material</option>
-            <option value="Finished Goods" selected>Finished Goods</option>
-            <option value="Service">Service</option>
-          </select>
+  <!-- Enhanced Form Card -->
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-10">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient-primary text-white py-3">
+          <div class="d-flex align-items-center">
+            <i class="ti ti-forms me-2 fs-5"></i>
+            <h5 class="mb-0">Product Information</h5>
+          </div>
         </div>
+        <div class="card-body p-4">
 
+          <!-- Enhanced Alert -->
+          <div class="alert alert-primary border-0 shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center">
+              <div class="alert-icon me-3">
+                <i class="ti ti-info-circle fs-4"></i>
+              </div>
+              <div>
+                <h6 class="alert-heading mb-1">Getting Started</h6>
+                <p class="mb-0">Fill in the product details below. All required fields are marked with an asterisk (*).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <form action="/products/products/api/" method="post" id="product_form" class="needs-validation" novalidate>
+            {% csrf_token %}
+
+            <!-- Basic Information Section -->
+            <div class="form-section mb-5">
+              <div class="section-header mb-3">
+                <h6 class="text-primary mb-1">
+                  <i class="ti ti-info-circle me-1"></i>
+                  Basic Information
+                </h6>
+                <small class="text-muted">Essential product details</small>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-md-8">
+                  <label for="inputDescription" class="form-label fw-bold">
+                    Product Name <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="ti ti-tag"></i>
+                    </span>
+                    <input type="text" class="form-control form-control-lg" name="name"
+                      placeholder="e.g., Premium Chicken Breasts" required id="inputDescription" />
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label for="status" class="form-label fw-bold">
+                    Status <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="ti ti-toggle-left"></i>
+                    </span>
+                    <select name="status" class="form-select form-select-lg" required id="status">
+                      {% for status in product_status %}
+                      <option value="{{status.0}}">{{status.1}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row g-3 mt-2">
+                <div class="col-md-8">
+                  <label for="inputDescriptions" class="form-label fw-bold">
+                    Description <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="ti ti-file-text"></i>
+                    </span>
+                    <textarea name="description" class="form-control" rows="3"
+                      placeholder="Detailed product description..." required id="inputDescriptions"></textarea>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label for="category" class="form-label fw-bold">
+                    Category <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light">
+                      <i class="ti ti-category"></i>
+                    </span>
+                    <select name="category" class="form-select form-select-lg" required id="category">
+                      <option value="" selected disabled hidden>
+                        Choose category...
+                      </option>
+                      {% for category in categories %}
+                      <option value="{{category.id}}">{{category.name}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pricing & Inventory Section -->
+            <div class="form-section mb-5">
+              <div class="section-header mb-3">
+                <h6 class="text-success mb-1">
+                  <i class="ti ti-currency-dollar me-1"></i>
+                  Pricing & Inventory
+                </h6>
+                <small class="text-muted">Set pricing and inventory tracking</small>
+              </div>
+
+              <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                  <label for="inputPrice" class="form-label fw-bold">
+                    Price <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-light">
+                      <i class="ti ti-currency-dollar"></i>
+                    </span>
+                    <input type="number" name="price" step="0.01" min="0" class="form-control" placeholder="0.00"
+                      required id="inputPrice" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check form-switch form-check-lg">
+                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
+                      name="track_inventory" />
+                    <label class="form-check-label fw-bold" for="flexSwitchCheckChecked">
+                      <i class="ti ti-package me-1"></i>
+                      Track in Inventory
+                    </label>
+                    <small class="d-block text-muted">Enable inventory tracking for this product</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Media Section -->
+            <div class="form-section mb-5">
+              <div class="section-header mb-3">
+                <h6 class="text-info mb-1">
+                  <i class="ti ti-photo me-1"></i>
+                  Product Media
+                </h6>
+                <small class="text-muted">Upload and manage product images</small>
+              </div>
+
+              <!-- Display Image Upload -->
+              <div class="row g-3 mb-4">
+                <div class="col-12">
+                  <label for="display_image" class="form-label fw-bold">
+                    <i class="ti ti-image me-1"></i>
+                    Main Display Image
+                  </label>
+                  <div class="upload-zone" id="upload-zone">
+                    <input type="file" name="display_image" class="form-control d-none" id="display_image"
+                      accept="image/*" />
+                    <div class="upload-content text-center p-4">
+                      <i class="ti ti-cloud-upload display-4 text-primary mb-3"></i>
+                      <h6 class="mb-2">Drop your image here or click to browse</h6>
+                      <small class="text-muted">Supports: JPG, PNG, GIF (Max: 5MB)</small>
+                    </div>
+                    <div class="upload-preview d-none">
+                      <img id="preview-image" src="" alt="Preview" class="img-fluid rounded">
+                      <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
+                        id="remove-preview">
+                        <i class="ti ti-x"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Photo Gallery Selection -->
+              <div class="row g-3">
+                <div class="col-12">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <label class="form-label fw-bold mb-0">
+                      <i class="ti ti-photo-scan me-1"></i>
+                      Additional Photos
+                    </label>
+                    <a href="/utils/photos/" target="_blank" class="btn btn-sm btn-outline-primary">
+                      <i class="ti ti-plus me-1"></i> Add New Photos
+                    </a>
+                  </div>
+                  <p class="text-muted mb-3">Select additional photos from your gallery:</p>
+
+                  <div class="photo-gallery-container">
+                    <div class="photo-grid" id="photo-grid">
+                      {% if photos %}
+                      {% for photo in photos %}
+                      <div class="photo-card" data-photo-id="{{ photo.id }}">
+                        <div class="photo-image">
+                          <img src="{{ photo.image.url }}" alt="Photo {{ photo.id }}" class="photo-thumbnail">
+                          <div class="photo-overlay">
+                            <i class="ti ti-check photo-check-icon"></i>
+                          </div>
+                        </div>
+                        <div class="photo-info">
+                          <small class="text-muted">Photo #{{ photo.id }}</small>
+                        </div>
+                      </div>
+                      {% endfor %}
+                      {% else %}
+                      <div class="empty-gallery">
+                        <div class="text-center p-5">
+                          <i class="ti ti-photo-off display-4 text-muted mb-3"></i>
+                          <h6 class="text-muted">No photos in gallery</h6>
+                          <p class="text-muted mb-3">Upload photos through the Utils section first</p>
+                          <a href="/utils/photos/" target="_blank" class="btn btn-primary">
+                            <i class="ti ti-plus me-1"></i>
+                            Upload Photos
+                          </a>
+                        </div>
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <input type="hidden" name="photos" id="selected_photos" value="">
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="form-section">
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="button" class="btn btn-light btn-lg me-md-2" onclick="window.history.back()">
+                  <i class="ti ti-arrow-left me-1"></i>
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-success btn-lg px-5" id="submit">
+                  <i class="ti ti-check me-1"></i>
+                  Create Product
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="form-row">
-        <div class="form-group col-md-8">
-
-
-          <label for="inputDescription">Name</label>
-          <input type="text" class="form-control" name="name" placeholder="Chicken Breasts..." required
-            id="inputDescription" />
-        </div>
-        <div class="form-group col-md-4">
-          <label for="state">State</label>
-          <select name="state" class="form-control" required id="state">
-            {% for status in product_status %}
-            <option value="{{status.0}}">{{status.1}}</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-8">
-          <label for="inputDescriptions">Description</label>
-          <input type="text" name="description" class="form-control"
-            placeholder="Freshness Guaranteed Chicken Breast, 2.25 - 3.2 lb..." required id="inputDescriptions" />
-        </div>
-        <div class="form-group col-md-4">
-          <label for="category">Category</label>
-          <select name="category" class="form-control" required id="category">
-            <option value="" selected disabled hidden>
-              Select the category
-            </option>
-            {% for category in categories %}
-            <option value="{{category.id}}">{{category.name}}</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-8">
-          <label for="inputPrice">Price</label>
-          <input type="number" name="price" step="any" class="form-control" placeholder="10.99" required
-            id="inputPrice" />
-        </div>
-        <div class="form-check form- ml-3 mt-4 pt-1">
-          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-            name="track_inventory" />
-          <label class="form-check-label" for="flexSwitchCheckChecked">Track in Inventory</label>
-        </div>
-      </div>
-
-      <button type="submit" class="btn btn-success font-weight-bold" id="submit">
-        Create product
-      </button>
-    </form>
+    </div>
   </div>
 </div>
 
-</div>
+<style>
+  /* Enhanced Page Styling */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .form-section {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: #fafbfc;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+  }
+
+  .form-section:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-color: #dee2e6;
+  }
+
+  .section-header {
+    border-bottom: 2px solid #f1f3f4;
+    padding-bottom: 0.75rem;
+  }
+
+  /* Enhanced Form Controls */
+  .form-control,
+  .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+  }
+
+  .input-group-text {
+    border-radius: 8px 0 0 8px;
+    border: 2px solid #e9ecef;
+    border-right: none;
+    color: #6c757d;
+  }
+
+  .form-label.fw-bold {
+    color: #495057;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Enhanced Upload Zone */
+  .upload-zone {
+    position: relative;
+    border: 3px dashed #dee2e6;
+    border-radius: 12px;
+    background: #fafbfc;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .upload-zone:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+  }
+
+  .upload-zone.dragover {
+    border-color: #28a745;
+    background: #f0fff4;
+  }
+
+  .upload-preview {
+    position: relative;
+    max-height: 200px;
+  }
+
+  .upload-preview img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+
+  /* Enhanced Photo Gallery */
+  .photo-gallery-container {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .photo-card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .photo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .photo-card.selected {
+    border-color: #28a745;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+  }
+
+  .photo-image {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo-thumbnail {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .photo-card:hover .photo-thumbnail {
+    transform: scale(1.1);
+  }
+
+  .photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.9), rgba(25, 135, 84, 0.9));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .photo-card.selected .photo-overlay {
+    opacity: 1;
+  }
+
+  .photo-check-icon {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .photo-info {
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+  }
+
+  .empty-gallery {
+    grid-column: 1 / -1;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #dee2e6;
+  }
+
+  /* Enhanced Buttons */
+  .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  }
+
+  .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+
+  /* Enhanced Alert */
+  .alert-primary {
+    background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+    border: none;
+    color: #1976d2;
+  }
+
+  .alert-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2196f3, #9c27b0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  /* Form Switch Enhancement */
+  .form-switch .form-check-input {
+    width: 3rem;
+    height: 1.5rem;
+    background-color: #dee2e6;
+    border: none;
+    border-radius: 1rem;
+  }
+
+  .form-switch .form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+
+  /* Loading State */
+  .btn.loading {
+    position: relative;
+    color: transparent;
+  }
+
+  .btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .form-section {
+      padding: 1rem;
+    }
+
+    .photo-grid {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.75rem;
+      padding: 1rem;
+    }
+
+    .photo-thumbnail {
+      height: 80px;
+    }
+
+    .btn-group {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+
+  /* Smooth scrolling for photo grid */
+  .photo-grid::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .photo-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .photo-grid::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+
+  .photo-grid::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+</style>
 
 <script>
-
   $(document).ready(function () {
+    // Enhanced file upload handling
+    const uploadZone = $('#upload-zone');
+    const fileInput = $('#display_image');
+    const uploadContent = $('.upload-content');
+    const uploadPreview = $('.upload-preview');
+    const previewImage = $('#preview-image');
+
+    // Click to upload - prevent recursion by checking if click is on file input
+    uploadZone.on('click', function (e) {
+      if (e.target !== fileInput[0]) {
+        fileInput.click();
+      }
+    });
+
+    // Drag and drop functionality
+    uploadZone.on('dragover dragenter', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).addClass('dragover');
+    });
+
+    uploadZone.on('dragleave dragend', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Only remove dragover class if we're actually leaving the upload zone
+      if (!uploadZone.is(e.relatedTarget) && !uploadZone.has(e.relatedTarget).length) {
+        $(this).removeClass('dragover');
+      }
+    });
+
+    uploadZone.on('drop', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).removeClass('dragover');
+
+      const files = e.originalEvent.dataTransfer.files;
+      if (files.length > 0) {
+        handleFileUpload(files[0]);
+      }
+    });
+
+    // File input change
+    fileInput.on('change', function () {
+      if (this.files && this.files[0]) {
+        handleFileUpload(this.files[0]);
+      }
+    });
+
+    // Handle file upload preview
+    function handleFileUpload(file) {
+      if (file && file.type.startsWith('image/')) {
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+          toastr.error('File size must be less than 5MB', 'File Too Large');
+          return;
+        }
+
+        // Create a DataTransfer object to properly set the files
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput[0].files = dt.files;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewImage.attr('src', e.target.result);
+          uploadContent.addClass('d-none');
+          uploadPreview.removeClass('d-none');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        toastr.error('Please select a valid image file', 'Invalid File');
+      }
+    }
+
+    // Remove preview
+    $('#remove-preview').on('click', function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      // Clear the file input properly
+      fileInput.val('');
+      if (fileInput[0].files) {
+        const dt = new DataTransfer();
+        fileInput[0].files = dt.files;
+      }
+
+      uploadContent.removeClass('d-none');
+      uploadPreview.addClass('d-none');
+      previewImage.attr('src', '');
+    });
+
+    // Enhanced photo selection with new class names
+    $('.photo-card').click(function () {
+      $(this).toggleClass('selected');
+      updateSelectedPhotos();
+
+      // Add subtle animation
+      $(this).addClass('pulse');
+      setTimeout(() => {
+        $(this).removeClass('pulse');
+      }, 300);
+    });
+
+    function updateSelectedPhotos() {
+      var selectedPhotos = [];
+      $('.photo-card.selected').each(function () {
+        selectedPhotos.push($(this).data('photo-id'));
+      });
+      $('#selected_photos').val(selectedPhotos.join(','));
+
+      // Update selected count
+      const count = selectedPhotos.length;
+      const countText = count > 0 ? ` (${count} selected)` : '';
+      $('.form-label:contains("Additional Photos")').first().html(
+        '<i class="ti ti-photo-scan me-1"></i>Additional Photos' + countText
+      );
+    }
+
+    // Enhanced form validation
+    function validateForm() {
+      let isValid = true;
+      const requiredFields = ['name', 'description', 'category', 'price'];
+
+      requiredFields.forEach(field => {
+        const element = $(`[name="${field}"]`);
+        const value = element.val().trim();
+
+        if (!value) {
+          element.addClass('is-invalid');
+          isValid = false;
+        } else {
+          element.removeClass('is-invalid');
+        }
+      });
+
+      // Price validation
+      const price = parseFloat($('[name="price"]').val());
+      if (isNaN(price) || price < 0) {
+        $('[name="price"]').addClass('is-invalid');
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    // Remove validation classes on input
+    $('input, select, textarea').on('input change', function () {
+      $(this).removeClass('is-invalid');
+    });
+
+    // Enhanced form submission
     $("#product_form").submit(function (e) {
       e.preventDefault();
-      // spinner #submit button
-      $('#submit').html('<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span> Creating product...');
+
+      // Validate form
+      if (!validateForm()) {
+        toastr.error('Please fill in all required fields correctly', 'Validation Error');
+        return;
+      }
+
+      // Enhanced loading state
+      const submitBtn = $('#submit');
+      const originalText = submitBtn.html();
+      submitBtn.addClass('loading').prop('disabled', true);
+      submitBtn.html('<span class="spinner-border spinner-border-sm me-2"></span>Creating Product...');
+
+      // Update selected photos
+      updateSelectedPhotos();
+
       // Get the form data
       var formData = new FormData(this);
+
+      // Debug: Log form data contents
+      console.log('FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(`${key}:`, value.name, value.size, value.type);
+        } else {
+          console.log(`${key}:`, value);
+        }
+      }
+
+      // Add selected photos individually
+      var selectedPhotos = [];
+      $('.photo-card.selected').each(function () {
+        selectedPhotos.push($(this).data('photo-id'));
+      });
+
+      // Remove existing photos field and add individual photo IDs
+      formData.delete('photos');
+      selectedPhotos.forEach(function (photoId) {
+        formData.append('photos', photoId);
+      });
+
       // Send the data to the server
       let url = $(this).attr('action');
       $.ajax({
@@ -116,31 +802,108 @@
         },
         success: function (response) {
           toastr.success('Product created successfully!', 'Success', {
-            timeOut: 5000,
+            timeOut: 3000,
             closeButton: true,
             progressBar: true,
+            onHidden: function () {
+              window.location.href = "{% url 'products:products_list' %}";
+            }
           });
-          // redirect to products list
-          window.location.href = "{% url 'products:products_list' %}";
-
         },
-        error: function (error) {
-          toastr.error('Error creating product: ' + error.responseJSON.error, 'Error', {
-            timeOut: 5000,
+        error: function (xhr, status, error) {
+          console.log('Error response:', xhr.responseText);
+
+          let errorMessage = 'Error creating product';
+          if (xhr.responseJSON && xhr.responseJSON.error) {
+            errorMessage += ': ' + xhr.responseJSON.error;
+          } else if (xhr.responseText) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              if (response.non_field_errors) {
+                errorMessage += ': ' + response.non_field_errors.join(', ');
+              } else if (typeof response === 'object') {
+                const errors = Object.entries(response).map(([field, msgs]) =>
+                  `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`
+                ).join('; ');
+                errorMessage += ': ' + errors;
+              }
+            } catch (e) {
+              errorMessage += ': ' + xhr.responseText;
+            }
+          }
+
+          toastr.error(errorMessage, 'Error', {
+            timeOut: 8000,
             closeButton: true,
             progressBar: true,
           });
         },
         cache: false,
         contentType: false,
-        processData: false
-      }).done(function () {
-
-        // remove spinner
-        $('#submit').html('Create product');
+        processData: false,
+      }).always(function () {
+        // Reset button state
+        submitBtn.removeClass('loading').prop('disabled', false);
+        submitBtn.html(originalText);
       });
-
     });
+
+    // Add smooth scroll to form sections
+    $('.section-header').on('click', function () {
+      $(this).closest('.form-section').toggleClass('collapsed');
+    });
+
+    // Initialize tooltips if Bootstrap is available
+    if (typeof bootstrap !== 'undefined') {
+      $('[data-bs-toggle="tooltip"]').tooltip();
+    }
+
+    // Form auto-save (optional - saves to localStorage)
+    function autoSave() {
+      const formData = {
+        name: $('[name="name"]').val(),
+        description: $('[name="description"]').val(),
+        price: $('[name="price"]').val(),
+        category: $('[name="category"]').val(),
+        status: $('[name="status"]').val(),
+        track_inventory: $('[name="track_inventory"]').is(':checked')
+      };
+      localStorage.setItem('product_form_draft', JSON.stringify(formData));
+    }
+
+    // Load auto-saved data
+    function loadDraft() {
+      const draft = localStorage.getItem('product_form_draft');
+      if (draft) {
+        try {
+          const data = JSON.parse(draft);
+          Object.keys(data).forEach(key => {
+            if (key === 'track_inventory') {
+              $(`[name="${key}"]`).prop('checked', data[key]);
+            } else {
+              $(`[name="${key}"]`).val(data[key]);
+            }
+          });
+        } catch (e) {
+          console.log('Error loading draft:', e);
+        }
+      }
+    }
+
+    // Auto-save on input change (debounced)
+    let saveTimeout;
+    $('input, select, textarea').on('input change', function () {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(autoSave, 1000);
+    });
+
+    // Clear draft on successful submission
+    $(document).on('product_created', function () {
+      localStorage.removeItem('product_form_draft');
+    });
+
+    // Load draft on page load
+    loadDraft();
   });
 </script>
 {% endblock content %}

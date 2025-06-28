@@ -17,7 +17,9 @@ def set_up_company(request):
         existing_company = Company.objects.first()
         if existing_company:
             messages.info(
-                request, "Company has already been set up. You can edit settings below."
+                request=request,
+                message="Company has already been set up. You can edit settings below.",
+                extra_tags="info",
             )
             return redirect("company:settings")
 
@@ -55,20 +57,6 @@ def set_up_company(request):
                     messages.error(request, "Please enter a valid email address.")
                     return render(request, template_name="company/setup.html")
 
-            # Validate KRA PIN format if provided
-            # if tax_registration_number:
-            #     if len(tax_registration_number) > 11:
-            #         messages.error(request, "KRA PIN cannot exceed 11 characters.")
-            #         return render(request, template_name="company/setup.html")
-
-            #     # Basic KRA PIN format validation (alphanumeric)
-            #     if not re.match(r"^[A-Z0-9]+$", tax_registration_number.upper()):
-            #         messages.error(
-            #             request, "KRA PIN should only contain letters and numbers."
-            #         )
-            #         return render(request, template_name="company/setup.html")
-
-            # Create company instance
             company = Company(
                 company_name=company_name,
                 phone_number=phone_number if phone_number else None,
@@ -98,9 +86,6 @@ def set_up_company(request):
                     return render(request, template_name="company/setup.html")
 
                 company.logo = logo
-
-            # Save the company
-            company.save()
 
             messages.success(
                 request, f'Company "{company_name}" has been set up successfully!'
