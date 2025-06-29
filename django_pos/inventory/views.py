@@ -6,6 +6,7 @@ from inventory.models import Inventory
 from django.views.decorators.http import require_http_methods
 from products.models import Product
 from rest_framework.viewsets import ModelViewSet
+from company.models import Branch
 
 
 class InventoryViewSet(ModelViewSet):
@@ -24,12 +25,24 @@ def index(request):
 @login_required(login_url="/users/login/")
 @require_http_methods(["GET"])
 def add_inventory(request: HttpRequest) -> HttpResponse:
+
     products = Product.objects.exclude(inventory__isnull=False)
-    return render(request, "inventory/inventory_add.html", {"products": products})
+    branches = Branch.objects.all()
+    return render(
+        request,
+        "inventory/inventory_add.html",
+        {"products": products, "branches": branches},
+    )
 
 
 @login_required(login_url="/users/login/")
 @require_http_methods(["GET"])
 def update_inventory(request: HttpRequest, inventory_id: int) -> HttpResponse:
     inventory = get_object_or_404(Inventory, id=inventory_id)
-    return render(request, "inventory/inventory_update.html", {"inventory": inventory})
+    branches = Branch.objects.all()
+
+    return render(
+        request,
+        "inventory/inventory_update.html",
+        {"inventory": inventory, "branches": branches},
+    )

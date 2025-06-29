@@ -1,152 +1,554 @@
 {% extends "pos/base.html" %}
 {%load static%}
-{% block title %}Add customer{% endblock title %}
-{% block stylesheets %}{% endblock stylesheets %}
-{% block heading %}Add customer{% endblock heading %}
+{% block title %}Add Customer{% endblock title %}
+
+
+{% block heading %}
+<i class="ti ti-user-plus"></i> Add New Customer
+{% endblock heading %}
 {% block content %}
-<div class="ml-2 mb-3 btn-group">
-    <a href="{% url 'customers:customers_list' %}" class="btn btn-primary font-weight-bold">
-        <i class="ti ti-arrow-left"></i>
-        Go back
-    </a>
-    <a href="{% url 'customers:import_customers' %}" class="btn btn-success font-weight-bold">
-        <i class="ti ti-file-upload"></i>
-        Import customers
-    </a>
-</div>
+<style>
+    .customer-form-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-<div class="card ml-2">
-    <div class="card-body">
-        <div class="text-center" id="status"></div>
-        <div class="alert alert-info" role="alert">
-            <i class="ti ti-info-circle"></i>
-            Fill in the details of the customer you want to add.
+    .photo-preview {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #e9ecef;
+        transition: all 0.3s ease;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .photo-preview:hover {
+        border-color: #007bff;
+        transform: scale(1.05);
+    }
+
+    .photo-upload-container {
+        text-align: center;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border: 1px solid #e9ecef;
+    }
+
+    .file-upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: #fff;
+        margin-top: 15px;
+    }
+
+    .file-upload-area:hover {
+        border-color: #007bff;
+        background: #e3f2fd;
+    }
+
+    .file-upload-area.drag-over {
+        border-color: #28a745;
+        background: #d4edda;
+    }
+
+    .form-section {
+        background: #fff;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+    }
+
+    .section-title {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e9ecef;
+        font-size: 1.1rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        height: auto;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .input-group-text {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        color: #6c757d;
+    }
+
+    .row .col-md-6 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .mb-3 {
+        margin-bottom: 20px !important;
+    }
+
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 20px 0;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-submit {
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        min-width: 160px;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    @media (max-width: 768px) {
+        .customer-form-container {
+            padding: 10px;
+        }
+
+        .form-section {
+            padding: 20px;
+        }
+
+        .photo-preview {
+            width: 150px;
+            height: 150px;
+        }
+
+        .header-actions {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .action-buttons {
+            justify-content: center;
+        }
+    }
+</style>
+<div class="customer-form-container">
+    <div class="header-actions">
+        <h4 class="mb-0 text-dark">Customer Information</h4>
+        <div class="action-buttons">
+            <a href="{% url 'customers:customers_list' %}" class="btn btn-outline-primary">
+                <i class="ti ti-arrow-left"></i>
+                Back to List
+            </a>
+            <a href="{% url 'customers:import_customers' %}" class="btn btn-outline-success">
+                <i class="ti ti-file-upload"></i>
+                Import Customers
+            </a>
         </div>
-        <form action="/customers/api/" method="post" enctype="multipart/form-data" id="customer_form">
-            <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
-                {% csrf_token %}
-                <div class="form-row items-start">
-                    <div class="form-group col-md-8">
-                        <div class="col-md-12">
-                            <label for="inputDescription">First Name</label>
-                            <input type="text" class="form-control" name="first_name" placeholder="John..." required>
-                        </div>
-                        <div class="col-md-12">
-                            <label for="inputDescription">Last Name</label>
-                            <input type="text" class="form-control" name="last_name" placeholder="Doe..." required>
-                        </div>
-                    </div>
-                    <!--Image-->
-                    <div class="form-group col-md-4 items-end">
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <img src="{% static 'img/undraw_profile.svg' %}" alt="Customer photo"
-                                    class="img-thumbnail ml-2" width="300" height="3000" id="customer_photo">
-                            </div>
-                            <div class="form-group col-md-6">
-
-                                <div class="mb-3 ml-3">
-                                    <label for="photo" class="form-label">Photo</label>
-                                    <input class="form-control form-control-lg btn" type="file" id="photo" name="photo">
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="form-row items-start">
-                    <div class="form-group col-md-6">
-                        <label for="inputDescription">Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="johndoe@gmail.com">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="inputDescription">Phone number</label>
-                        <input type="text" name="phone" class="form-control" placeholder="(412) 727-2736">
-                    </div>
-                </div>
-
-                <div class="form-row items-start">
-                    <div class="form-group col-md-12">
-                        <label for="inputDescription">Address</label>
-                        <textarea name="address" class="form-control"
-                            placeholder="5340 Brett Dr #A Fort Knox, Kentucky(KY), 40121 ..." rows="2"></textarea>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-success" id="submit_btn">
-                    Submit
-                </button>
-
-
-            </div>
-
-
-        </form>
     </div>
 
+    <form method="post" enctype="multipart/form-data" id="customer_form">
+        {% csrf_token %}
+
+        <!-- Customer Photo Section -->
+        <div class="form-section">
+            <h5 class="section-title">
+                <i class="ti ti-camera"></i> Customer Photo
+            </h5>
+            <div class="photo-upload-container">
+                <div class="mb-4">
+                    <img src="{% static 'img/undraw_profile.svg' %}" alt="Customer photo" class="photo-preview"
+                        id="customer_photo">
+                </div>
+                <div class="file-upload-area" id="upload_area">
+                    <input type="file" class="d-none" id="photo" name="photo" accept="image/*">
+                    <i class="ti ti-camera fs-2 text-muted mb-2"></i>
+                    <p class="mb-1 text-muted fw-bold">Click or drag to upload photo</p>
+                    <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personal Information Section -->
+        <div class="form-section">
+            <h5 class="section-title">
+                <i class="ti ti-user"></i> Personal Information
+            </h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="first_name" class="form-label">
+                        First Name <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control" id="first_name" name="first_name"
+                        placeholder="Enter first name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="last_name" class="form-label">
+                        Last Name <span class="text-danger">*</span>
+                    </label>
+                    <input type="text" class="form-control" id="last_name" name="last_name"
+                        placeholder="Enter last name" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information Section -->
+        <div class="form-section">
+            <h5 class="section-title">
+                <i class="ti ti-phone"></i> Contact Information
+            </h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="ti ti-mail"></i></span>
+                        <input type="email" class="form-control" id="email" name="email"
+                            placeholder="customer@example.com">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="ti ti-phone"></i></span>
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="+1 (555) 123-4567">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="ti ti-map-pin"></i></span>
+                        <textarea class="form-control" id="address" name="address" rows="3"
+                            placeholder="Enter complete address including street, city, state, and postal code"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-section">
+            <div class="d-flex justify-content-end gap-3">
+                <button type="reset" class="btn btn-outline-secondary">
+                    <i class="ti ti-refresh"></i>
+                    Reset Form
+                </button>
+                <button type="submit" class="btn btn-success btn-submit" id="submit_btn">
+                    <i class="ti ti-check"></i>
+                    Create Customer
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
 <script>
     $(document).ready(function () {
-        $('#vat-tab-btn').click(function () {
-            $('#vat-tab').tab('show');
-        });
-        // set tab active
-        $('#vat-tab-btn').click(function () {
+        // File upload area click handler - using event delegation
+        // This is now handled by event delegation above
 
-            $('#vat-tab').addClass('active');
+        // Prevent click events on the hidden file input from bubbling
+        $(document).on('click', '#photo', function (e) {
+            e.stopPropagation();
+        });
+
+        // Drag and drop functionality - using event delegation
+        $(document).on('dragenter', '#upload_area', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        $(document).on('dragover', '#upload_area', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).addClass('drag-over');
+        });
+
+        $(document).on('dragleave', '#upload_area', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Only remove class if we're actually leaving the upload area
+            if (!$(this).is(e.target) && !$(this).has(e.target).length) {
+                $(this).removeClass('drag-over');
+            }
+        });
+
+        $(document).on('drop', '#upload_area', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).removeClass('drag-over');
+
+            var files = e.originalEvent.dataTransfer.files;
+            if (files.length > 0) {
+                $('#photo')[0].files = files;
+                handleFileSelect(files[0]);
+            }
+        });
+
+        function handleFileSelect(file) {
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                toastr.error('Please select a valid image file.', 'Invalid File Type');
+                return;
+            }
+
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                toastr.error('File size must be less than 5MB.', 'File Too Large');
+                return;
+            }
+
+            // Preview image
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#customer_photo').attr('src', e.target.result);
+
+                // Update upload area while preserving the file input
+                var fileInput = $('#photo').detach();
+                $('#upload_area').html(`
+                    <i class="ti ti-check fs-2 text-success mb-2"></i>
+                    <p class="mb-1 text-success fw-bold">Photo selected: ${file.name}</p>
+                    <small class="text-muted">Click to change</small>
+                `).append(fileInput);
+            };
+            reader.readAsDataURL(file);
         }
-        );
-        // override #customer_form submit
+
+        // Form validation
+        function validateForm() {
+            var isValid = true;
+            var firstError = null;
+
+            // Clear previous error states
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+
+            // Required fields validation
+            $('#first_name, #last_name').each(function () {
+                if (!$(this).val().trim()) {
+                    $(this).addClass('is-invalid');
+                    $(this).after('<div class="invalid-feedback">This field is required.</div>');
+                    if (!firstError) firstError = $(this);
+                    isValid = false;
+                }
+            });
+
+            // Email validation
+            var email = $('#email').val().trim();
+            if (email && !isValidEmail(email)) {
+                $('#email').addClass('is-invalid');
+                $('#email').after('<div class="invalid-feedback">Please enter a valid email address.</div>');
+                if (!firstError) firstError = $('#email');
+                isValid = false;
+            }
+
+            // Phone validation
+            var phone = $('#phone').val().trim();
+            if (phone && !isValidPhone(phone)) {
+                $('#phone').addClass('is-invalid');
+                $('#phone').after('<div class="invalid-feedback">Please enter a valid phone number.</div>');
+                if (!firstError) firstError = $('#phone');
+                isValid = false;
+            }
+
+            // Focus on first error
+            if (firstError) {
+                firstError.focus();
+            }
+
+            return isValid;
+        }
+
+        function isValidEmail(email) {
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function isValidPhone(phone) {
+            var phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+            var cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+            return phoneRegex.test(cleanPhone);
+        }
+
+        // Form submission
         $('#customer_form').submit(function (e) {
             e.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
             var form = $(this);
-            var url = form.attr('action');
             var formData = new FormData(form[0]);
-            // button spinner
-            $('#submit_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating customer...');
+
+            // Update button state
+            var originalText = $('#submit_btn').html();
+            $('#submit_btn').prop('disabled', true).html(`
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            Creating Customer...
+        `);
+
             $.ajax({
                 type: 'POST',
-                url: url,
+                url: '/customers/api/',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (data) {
+                    toastr.success('Customer created successfully!', 'Success', {
+                        "closeButton": true,
+                        "progressBar": true,
+                        "timeOut": "3000",
+                        "positionClass": "toast-top-right"
+                    });
 
-                    // display success message  with a close button to close the alert
-                    let success = '<div class="alert alert-success alert-dismissible" role="alert">' + 'Customer created!' + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
-                    $('#status').html(success);
-
-                    // reset form
-                    form[0].reset();
-                    // reset photo
-                    $('#customer_photo').attr('src', '{% static "img/undraw_profile.svg" %}');
-
-
+                    // Reset form after short delay
+                    setTimeout(function () {
+                        resetForm();
+                    }, 1000);
                 },
-                error: function (data) {
-                    // unknown error
-                    let error = '<div class="alert alert-danger alert-dismissible" role="alert">An error occurred. Please try again later.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>';
+                error: function (xhr) {
+                    var errorMessage = 'An error occurred while creating the customer.';
 
-                    $('#status').html(error);
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        errorMessage = 'Please check the form for errors.';
 
+                        // Display field-specific errors
+                        $.each(xhr.responseJSON.errors, function (field, errors) {
+                            var fieldElement = $('[name="' + field + '"]');
+                            fieldElement.addClass('is-invalid');
+                            fieldElement.after('<div class="invalid-feedback">' + errors[0] + '</div>');
+                        });
+                    }
+
+                    toastr.error(errorMessage, 'Error', {
+                        "closeButton": true,
+                        "progressBar": true,
+                        "timeOut": "5000",
+                        "positionClass": "toast-top-right"
+                    });
+                },
+                complete: function () {
+                    // Reset button state
+                    $('#submit_btn').prop('disabled', false).html(originalText);
                 }
-            }).done(function () {
-                // reset button text
-                $('#submit_btn').html('Create customer');
-
             });
         });
-    });
-    // replace photo on file selection
-    $('#photo').change(function () {
-        var i = $(this).prev('label').clone();
-        var file = $('#photo')[0].files[0].name;
-        $(this).prev('label').text(file);
-        // set customer photo with a width of 100 and height of 100
-        $('#customer_photo').attr('src', URL.createObjectURL(this.files[0]));
-    });
 
+        // Reset form function
+        function resetForm() {
+            $('#customer_form')[0].reset();
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
 
+            // Reset photo
+            $('#customer_photo').attr('src', '{% static "img/undraw_profile.svg" %}');
+            $('#upload_area').html(`
+                <i class="ti ti-camera fs-2 text-muted mb-2"></i>
+                <p class="mb-1 text-muted fw-bold">Click or drag to upload photo</p>
+                <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
+            `);
+
+            // Re-attach the hidden file input
+            if ($('#photo').length === 0) {
+                $('#upload_area').append('<input type="file" class="d-none" id="photo" name="photo" accept="image/*">');
+            }
+        }
+
+        // Reset button handler
+        $('button[type="reset"]').on('click', function (e) {
+            e.preventDefault();
+            resetForm();
+            toastr.info('Form has been reset.', 'Info');
+        });
+
+        // Use event delegation for file upload area clicks since content may change
+        $(document).on('click', '#upload_area', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('#photo').trigger('click');
+        });
+
+        // Use event delegation for file input changes
+        $(document).on('change', '#photo', function (e) {
+            e.stopPropagation();
+            if (this.files && this.files[0]) {
+                handleFileSelect(this.files[0]);
+            }
+        });
+
+        // Real-time validation
+        $('.form-control').on('blur', function () {
+            var field = $(this);
+            field.removeClass('is-invalid');
+            field.next('.invalid-feedback').remove();
+
+            if (field.attr('required') && !field.val().trim()) {
+                field.addClass('is-invalid');
+                field.after('<div class="invalid-feedback">This field is required.</div>');
+            } else if (field.attr('type') === 'email' && field.val().trim() && !isValidEmail(field.val().trim())) {
+                field.addClass('is-invalid');
+                field.after('<div class="invalid-feedback">Please enter a valid email address.</div>');
+            } else if (field.attr('type') === 'tel' && field.val().trim() && !isValidPhone(field.val().trim())) {
+                field.addClass('is-invalid');
+                field.after('<div class="invalid-feedback">Please enter a valid phone number.</div>');
+            }
+        });
+    });
 </script>
 
 {% endblock content %}

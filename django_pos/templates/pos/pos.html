@@ -620,8 +620,8 @@
               {% for prod in products %}
               <div data-name="{{ prod.name }}" data-price="{{ prod.price }}" data-id="{{ prod.id }}"
                 data-category="{{ prod.category.id }}" class="product-card add-to-cart product" title="{{ prod.name }}">
-                {% if prod.image %}
-                <div class="product-image" style="background-image: url('{{ prod.image.url }}');"></div>
+                {% if prod.display_image %}
+                <div class="product-image" style="background-image: url('{{ prod.display_image.url }}');"></div>
                 {% else %}
                 <div class="product-image" style="background-image: url('{% static 'default.png' %}');"></div>
                 {% endif %}

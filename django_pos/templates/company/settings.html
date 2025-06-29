@@ -268,7 +268,17 @@ Settings
 <input type="hidden" id="companyName" value="{{company.company_name}}">
 
 <div class="settings-container">
-    <div id="status"></div>
+    <!--Messages if any-->
+    {% if messages %}
+    <div class="alert alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} mb-2" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
 
     <section id="company">
         {%if company%}

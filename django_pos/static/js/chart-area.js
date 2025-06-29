@@ -1,7 +1,21 @@
-// Set new default font family and font color to mimic Bootstrap's default styling
-(Chart.defaults.global.defaultFontFamily = "Nunito"),
-  '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = "#858796";
+// Set new default font family and font color for modern styling
+// Ensure compatibility with different Chart.js versions
+if (typeof Chart !== "undefined") {
+  // Initialize defaults if they don't exist
+  Chart.defaults = Chart.defaults || {};
+  Chart.defaults.font = Chart.defaults.font || {};
+
+  // Set font properties
+  Chart.defaults.font.family =
+    Chart.defaults.font.family ||
+    "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+  Chart.defaults.color = Chart.defaults.color || "#64748b";
+  Chart.defaults.font.size = Chart.defaults.font.size || 12;
+} else {
+  console.error(
+    "Chart.js is not loaded. Please ensure Chart.js is properly included."
+  );
+}
 
 function number_format(number, decimals, dec_point, thousands_sep) {
   // *     example: number_format(1234.56, 2, ',', ' ');
@@ -28,115 +42,151 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   return s.join(dec);
 }
 
-// Area Chart Example
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-  type: "line",
-  data: {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
-    datasets: [
-      {
-        label: "Earnings",
-        lineTension: 0.3,
-        backgroundColor: "rgba(78, 115, 223, 0.05)",
-        borderColor: "rgba(78, 115, 223, 1)",
-        pointRadius: 3,
-        pointBackgroundColor: "rgba(78, 115, 223, 1)",
-        pointBorderColor: "rgba(78, 115, 223, 1)",
-        pointHoverRadius: 3,
-        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-        pointHitRadius: 10,
-        pointBorderWidth: 2,
-        data: JSON.parse(document.getElementById("monthly_earnings").value),
-      },
-    ],
-  },
-  options: {
-    maintainAspectRatio: false,
-    layout: {
-      padding: {
-        left: 10,
-        right: 25,
-        top: 25,
-        bottom: 0,
-      },
-    },
-    scales: {
-      xAxes: [
+// Modern Area Chart Configuration
+function initializeAreaChart() {
+  if (typeof Chart === "undefined") {
+    console.error("Chart.js is not loaded. Cannot initialize area chart.");
+    return;
+  }
+
+  var ctx = document.getElementById("myAreaChart");
+  if (!ctx) {
+    console.error('Canvas element with id "myAreaChart" not found.');
+    return;
+  }
+
+  var myLineChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+      datasets: [
         {
-          time: {
-            unit: "date",
+          label: "Monthly Earnings",
+          data: JSON.parse(document.getElementById("monthly_earnings").value),
+          borderColor: "rgba(59, 130, 246, 1)",
+          backgroundColor: "rgba(59, 130, 246, 0.1)",
+          borderWidth: 3,
+          pointBackgroundColor: "#ffffff",
+          pointBorderColor: "rgba(59, 130, 246, 1)",
+          pointBorderWidth: 3,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointHoverBackgroundColor: "rgba(59, 130, 246, 1)",
+          pointHoverBorderColor: "#ffffff",
+          pointHoverBorderWidth: 3,
+          tension: 0.4,
+          fill: true,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: "index",
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: "top",
+          align: "end",
+          labels: {
+            usePointStyle: true,
+            pointStyle: "circle",
+            padding: 20,
+            font: {
+              size: 12,
+              weight: "500",
+            },
           },
-          gridLines: {
+        },
+        tooltip: {
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          titleColor: "#1f2937",
+          bodyColor: "#4b5563",
+          borderColor: "rgba(229, 231, 235, 1)",
+          borderWidth: 1,
+          cornerRadius: 12,
+          displayColors: false,
+          padding: 16,
+          titleFont: {
+            size: 14,
+            weight: "600",
+          },
+          bodyFont: {
+            size: 13,
+            weight: "500",
+          },
+          callbacks: {
+            title: function (tooltipItems) {
+              return tooltipItems[0].label + " Earnings";
+            },
+            label: function (context) {
+              return "Total: " + number_format(context.parsed.y);
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: {
             display: true,
+            color: "rgba(229, 231, 235, 0.5)",
             drawBorder: false,
           },
           ticks: {
-            maxTicksLimit: 7,
-          },
-          ticks: {
-            autoSkip: false,
+            color: "#6b7280",
+            font: {
+              size: 11,
+              weight: "500",
+            },
+            padding: 10,
           },
         },
-      ],
-      yAxes: [
-        {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: "rgba(229, 231, 235, 0.3)",
+            drawBorder: false,
+          },
           ticks: {
-            maxTicksLimit: 5,
-            padding: 10,
-
-            callback: function (value, _index, _values) {
+            color: "#6b7280",
+            font: {
+              size: 11,
+              weight: "500",
+            },
+            padding: 15,
+            maxTicksLimit: 6,
+            callback: function (value) {
               return number_format(value);
             },
           },
-          gridLines: {
-            color: "rgb(234, 236, 244)",
-            zeroLineColor: "rgb(234, 236, 244)",
-            drawBorder: false,
-            borderDash: [2],
-            zeroLineBorderDash: [2],
-          },
         },
-      ],
-    },
-    legend: {
-      display: true,
-    },
-    tooltips: {
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
-      titleMarginBottom: 10,
-      titleFontColor: "#6e707e",
-      titleFontSize: 14,
-      borderColor: "#dddfeb",
-      borderWidth: 1,
-      xPadding: 15,
-      yPadding: 15,
-      displayColors: false,
-      intersect: false,
-      mode: "index",
-      caretPadding: 10,
-      callbacks: {
-        label: function (tooltipItem, chart) {
-          var datasetLabel =
-            chart.datasets[tooltipItem.datasetIndex].label || "";
-          return datasetLabel + ": " + number_format(tooltipItem.yLabel);
+      },
+      elements: {
+        point: {
+          hoverRadius: 8,
         },
       },
     },
-  },
+  });
+}
+
+// Initialize the chart when the page loads
+document.addEventListener("DOMContentLoaded", function () {
+  initializeAreaChart();
 });

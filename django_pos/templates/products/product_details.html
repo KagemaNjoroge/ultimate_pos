@@ -1,63 +1,593 @@
 {% extends "pos/base.html" %}
 {%load static%}
 {% block title %}
-{{product.name}}
+{{product.name}} - Product Details
 {% endblock title %}
 {% block heading %}
-{{product.name}}
+Product Details
 {% endblock heading %}
 {% block content %}
 
+<style>
+    .product-card {
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        border: none;
+        overflow: hidden;
+    }
 
-<div class="ml-2 mb-2">
-    <a href="{% url 'products:products_list' %}" class="btn btn-primary font-weight-bold">
+    .product-image-gallery {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+    }
 
-        <i class="ti ti-arrow-left"></i>
-        Back
+    .main-product-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
 
-    </a>
-</div>
+    .main-product-image:hover {
+        transform: scale(1.05);
+    }
 
-<div class="card ml-2">
-    <div class="card-body">
-        <div class="row mb-5">
-            <div class="col-md-6">
+    .thumbnail-gallery {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+    }
 
-                <img {%if product.image%} src="{{product.image.url}}" {%else%} src="{%static 'default.png'%}" {%endif%}
-                    class="img-fluid" alt="{{product.name}}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-                ">
+    .thumbnail {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
 
-            </div>
-            <div class="col-md-6">
-                <h3>{{product.name}}</h3>
-                <p>{{product.description}}</p>
-                <p>Price: <strong>{{product.price}}</strong></p>
-                <p>Category: <a href="{%url 'products:categories_list'%}">{{product.category}}</a></p>
+    .thumbnail:hover,
+    .thumbnail.active {
+        border-color: #007bff;
+        transform: scale(1.1);
+    }
 
-                <div class="btn-group">
-                    <a href="{% url 'products:products_update' product.id %}" class="btn btn-primary">
+    .product-info {
+        padding: 30px;
+    }
 
-                        <i class="ti ti-edit mr-2"></i>
-                        Edit
+    .product-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
 
-                    </a>
+    .product-price {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #27ae60;
+        margin: 20px 0;
+    }
 
-                    <a class="btn btn-danger" data-toggle="modal" data-target="#delete_product_modal">
-                        <i class="ti ti-trash"></i>
-                        Delete
-                    </a>
+    .product-description {
+        font-size: 1.1rem;
+        color: #6c757d;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    .info-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 5px 5px 5px 0;
+    }
+
+    .status-active {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-inactive {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .inventory-low {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .inventory-good {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .product-meta {
+        background-color: #f8f9fa;
+        padding: 25px;
+        border-radius: 15px;
+        margin: 25px 0;
+    }
+
+    .meta-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .meta-item:last-child {
+        border-bottom: none;
+    }
+
+    .meta-label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .meta-value {
+        color: #6c757d;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .btn-custom {
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+    }
+
+    .btn-primary-custom:hover {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+    }
+
+    .btn-danger-custom:hover {
+        background: linear-gradient(135deg, #c82333, #a71e2a);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-secondary-custom {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary-custom:hover {
+        background: #545b62;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    }
+
+    /* Modal styles */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-content-image {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close-modal:hover {
+        color: #bbb;
+    }
+
+    .breadcrumb-custom {
+        background: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .breadcrumb-custom a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .breadcrumb-custom a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .product-title {
+            font-size: 1.8rem;
+        }
+
+        .product-price {
+            font-size: 1.6rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-custom {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .main-product-image {
+            height: 300px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="breadcrumb-custom">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'pos:index' %}">
+                    <i class="ti ti-home"></i> Dashboard
+                </a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'products:products_list' %}">Products</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{product.name}}</li>
+        </ol>
+    </nav>
+
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{% url 'products:products_list' %}" class="btn btn-secondary-custom btn-custom">
+            <i class="ti ti-arrow-left"></i>
+            Back to Products
+        </a>
+    </div>
+
+    <!-- Main Product Card -->
+    <div class="card product-card">
+        <div class="card-body p-0">
+            <div class="row g-0">
+                <!-- Image Gallery Section -->
+                <div class="col-lg-6">
+                    <div class="product-image-gallery p-4">
+                        <!-- Main Image -->
+                        <img id="mainImage"
+                            src="{% if product.display_image %}{{product.display_image.url}}{% else %}{%static 'default.png'%}{% endif %}"
+                            class="main-product-image" alt="{{product.name}}" onclick="openImageModal(this.src)">
+
+                        <!-- Thumbnail Gallery -->
+                        {% if product.photos.all %}
+                        <div class="thumbnail-gallery">
+                            <!-- Display Image as first thumbnail -->
+                            {% if product.display_image %}
+                            <img src="{{product.display_image.url}}" class="thumbnail active"
+                                onclick="changeMainImage('{{product.display_image.url}}')" alt="{{product.name}}">
+                            {% endif %}
+
+                            <!-- Additional Photos -->
+                            {% for photo in product.photos.all %}
+                            <img src="{{photo.image.url}}" class="thumbnail"
+                                onclick="changeMainImage('{{photo.image.url}}')" alt="{{product.name}} photo">
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
 
+                <!-- Product Information Section -->
+                <div class="col-lg-6">
+                    <div class="product-info">
+                        <!-- Product Title and Status -->
+                        <h1 class="product-title">{{product.name}}</h1>
+
+                        <!-- Status Badge -->
+                        <div class="mb-3">
+                            {% if product.status == 'ACTIVE' %}
+                            <span class="info-badge status-active">
+                                <i class="ti ti-check-circle"></i> Active
+                            </span>
+                            {% else %}
+                            <span class="info-badge status-inactive">
+                                <i class="ti ti-x-circle"></i> Inactive
+                            </span>
+                            {% endif %}
+
+                            {% if inventory %}
+                            {% if inventory.quantity <= inventory.alert_quantity %}
+                            <span class="info-badge inventory-low">
+                                <i class="ti ti-alert-triangle"></i> Low Stock
+                            </span>
+                            {% else %}
+                            <span class="info-badge inventory-good">
+                                <i class="ti ti-package"></i> In Stock
+                            </span>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Price -->
+                        <div class="product-price">
+                            <i class="ti ti-currency-dollar"></i>{{currency_symbol}} {{product.price|floatformat:2}}
+                        </div>
+
+                        <!-- Description -->
+                        {% if product.description %}
+                        <div class="product-description">
+                            {{product.description}}
+                        </div>
+                        {% endif %}
+
+                        <!-- Product Meta Information -->
+                        <div class="product-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="ti ti-tag"></i> SKU:
+                                </span>
+                                <span class="meta-value">{{product.get_sku}}</span>
+                            </div>
+
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="ti ti-category"></i> Category:
+                                </span>
+                                <span class="meta-value">
+                                    <a href="{% url 'products:categories_list' %}" class="text-primary">
+                                        {{product.category}}
+                                    </a>
+                                </span>
+                            </div>
+
+                            {% if inventory %}
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="ti ti-package"></i> Stock Quantity:
+                                </span>
+                                <span class="meta-value">{{inventory.quantity}} units</span>
+                            </div>
+
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="ti ti-alert-circle"></i> Alert Level:
+                                </span>
+                                <span class="meta-value">{{inventory.alert_quantity}} units</span>
+                            </div>
+                            {% endif %}
+
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="ti ti-chart-line"></i> Track Inventory:
+                                </span>
+                                <span class="meta-value">
+                                    {% if product.track_inventory %}
+                                    <i class="ti ti-check text-success"></i> Yes
+                                    {% else %}
+                                    <i class="ti ti-x text-danger"></i> No
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            {% if product.supplier %}
+                            <div class="meta-item">
+                                <span class="meta-label">
+                                    <i class="ti ti-truck"></i> Supplier:
+                                </span>
+                                <span class="meta-value">{{product.supplier}}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <a href="{% url 'products:products_update' product.id %}"
+                                class="btn-custom btn-primary-custom">
+                                <i class="ti ti-edit"></i>
+                                Edit Product
+                            </a>
+
+                            <a href="#" class="btn-custom btn-danger-custom" data-toggle="modal"
+                                data-target="#delete_product_modal">
+                                <i class="ti ti-trash"></i>
+                                Delete
+                            </a>
+
+                            {% if inventory %}
+                            <a href="#" class="btn-custom btn-secondary-custom" data-toggle="modal"
+                                data-target="#stock_modal">
+                                <i class="ti ti-package"></i>
+                                Manage Stock
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal">
+    <span class="close-modal" onclick="closeImageModal()">&times;</span>
+    <img class="modal-content-image" id="modalImage">
+</div>
+
+<!-- Delete Product Modal -->
+<div class="modal fade" id="delete_product_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Product</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong>{{product.name}}</strong>?</p>
+                <p class="text-danger">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger">Delete Product</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stock Management Modal -->
+{% if inventory %}
+<div class="modal fade" id="stock_modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manage Stock - {{product.name}}</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Current Stock:</strong> {{inventory.quantity}} units</p>
+                        <p><strong>Alert Level:</strong> {{inventory.alert_quantity}} units</p>
+                        <p><strong>Last Updated:</strong> {{inventory.date_modified}}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <form>
+                            <div class="form-group">
+                                <label>Adjust Stock:</label>
+                                <input type="number" class="form-control" placeholder="Enter quantity">
+                            </div>
+                            <div class="form-group">
+                                <label>Action:</label>
+                                <select class="form-control">
+                                    <option>Add Stock</option>
+                                    <option>Remove Stock</option>
+                                    <option>Set Stock</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Update Stock</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <script>
+    // Image gallery functionality
+    function changeMainImage(src) {
+        document.getElementById('mainImage').src = src;
 
+        // Update active thumbnail
+        document.querySelectorAll('.thumbnail').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    }
+
+    // Image modal functionality
+    function openImageModal(src) {
+        document.getElementById('imageModal').style.display = 'block';
+        document.getElementById('modalImage').src = src;
+    }
+
+    function closeImageModal() {
+        document.getElementById('imageModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside the image
+    document.getElementById('imageModal').onclick = function (event) {
+        if (event.target === this) {
+            closeImageModal();
+        }
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeImageModal();
+        }
+    });
+
+    // Add smooth transitions and animations
+    document.addEventListener('DOMContentLoaded', function () {
+        // Animate card on load
+        const card = document.querySelector('.product-card');
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+
+        // Add hover effects to buttons
+        document.querySelectorAll('.btn-custom').forEach(btn => {
+            btn.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-2px)';
+            });
+
+            btn.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
 </script>
-
-
 
 {%endblock content%}

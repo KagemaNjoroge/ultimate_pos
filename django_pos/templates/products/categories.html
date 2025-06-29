@@ -130,7 +130,13 @@
                         {% for c in categories %}
                         <tr>
                             <td>{{c.id}}</td>
-                            <td><strong>{{c.name}}</strong></td>
+                            <td><strong>
+                                    <a href="{% url 'products:categories_details' c.id %}"
+                                        class="text-decoration-none text-primary" data-bs-toggle="tooltip"
+                                        title="View Category Details" style="font-size: 1.1rem; font-weight: 500;">
+                                        {{c.name}}
+                                    </a>
+                                </strong></td>
                             <td>{{c.description|default:"No description"}}</td>
                             {% if c.status == "ACTIVE" %}
                             <td class="text-center">
@@ -218,7 +224,7 @@
             const categoryName = $(this).data('name');
 
             $('#categoryNameToDelete').text(categoryName);
-           // set on click event for confirm delete button
+            // set on click event for confirm delete button
             $('#confirmDeleteButton').off('click').on('click', function () {
                 handleDelete(categoryId);
             });
@@ -228,7 +234,7 @@
         });
 
         // Handle delete confirmation button click
-        function handleDelete(id){
+        function handleDelete(id) {
             $.ajax({
                 url: `/products/categories/api/${id}/`,
                 type: 'DELETE',

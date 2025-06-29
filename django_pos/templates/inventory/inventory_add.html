@@ -6,6 +6,75 @@
 {% block heading %}Add Inventory{% endblock heading %}
 
 {% block content %}
+<style>
+    .card-header.bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .section-divider {
+        margin: 2rem 0;
+    }
+
+    .form-label.fw-bold {
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .border-bottom {
+        border-bottom: 2px solid !important;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        border: none;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #4a9628 0%, #98d9bc 100%);
+        transform: translateY(-1px);
+        transition: all 0.3s ease;
+    }
+
+    .alert-warning {
+        background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+        border: none;
+        color: #2d3436;
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+
+    .form-check-input:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+
+    /* Ensure dropdowns work properly */
+    .form-select {
+        cursor: pointer !important;
+        pointer-events: auto !important;
+        z-index: 1;
+        position: relative;
+    }
+
+    .form-select option {
+        padding: 8px 12px;
+        background-color: white;
+        color: #495057;
+    }
+</style>
 
 <div class="ml-2 mb-3">
     <a href="{% url 'inventory:inventory_index' %}" class="btn btn-primary font-weight-bold">
@@ -14,100 +83,420 @@
     </a>
 </div>
 
-
-<div class="card ml-2">
+<div class="card ml-2 shadow">
+    <div class="card-header bg-gradient-primary text-white">
+        <h5 class="card-title mb-0">
+            <i class="ti ti-package me-2"></i>
+            Add New Inventory Item
+        </h5>
+    </div>
     <div class="card-body">
         {%if products%}
 
         <form action="/inventory/api/" method="post" id="inventory">
             {% csrf_token %}
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="product">
-                        Product
-                    </label>
-                    <select name="product" class="form-control" required id="product">
-                        {% for product in products %}
-                        <option value="{{product.id}}">{{ product.name }}</option>
-                        {% endfor %}
-                    </select>
 
+            <!-- Basic Information Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="text-primary border-bottom pb-2 mb-3">
+                        <i class="ti ti-info-circle me-2"></i>Basic Information
+                    </h6>
                 </div>
-                <div class="form-group col-md-8">
-                    <label for="quantity">Quantity</label>
-                    <input type="number" class="form-control" name="quantity" placeholder="0" required id="quantity">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="product" class="form-label fw-bold">
+                            <i class="ti ti-box me-1"></i>Product *
+                        </label>
+                        <select name="product" class="form-select" required id="product">
+                            <option value="">Select a product</option>
+                            {% for product in products %}
+                            <option value="{{product.id}}">{{ product.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="branch" class="form-label fw-bold">
+                            <i class="ti ti-building me-1"></i>Branch
+                        </label>
+                        <select name="branch" class="form-select" id="branch">
+                            <option value="">Select a branch</option>
+                            {% for branch in branches %}
+                            <option value="{{branch.id}}">{{ branch.branch_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-success font-weight-bold" id="submit_btn">Create Stock</button>
+
+            <!-- Stock Information Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="text-success border-bottom pb-2 mb-3">
+                        <i class="ti ti-stack me-2"></i>Stock Information
+                    </h6>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label for="quantity" class="form-label fw-bold">
+                            <i class="ti ti-number me-1"></i>Quantity *
+                        </label>
+                        <input type="number" class="form-control" name="quantity" placeholder="0" required id="quantity"
+                            min="0">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label for="alert_quantity" class="form-label fw-bold">
+                            <i class="ti ti-bell me-1"></i>Alert Quantity
+                        </label>
+                        <input type="number" class="form-control" name="alert_quantity" placeholder="1"
+                            id="alert_quantity" min="0" step="0.1">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label for="minimum_stock_level" class="form-label fw-bold">
+                            <i class="ti ti-alert-triangle me-1"></i>Minimum Stock Level
+                        </label>
+                        <input type="number" class="form-control" name="minimum_stock_level" placeholder="0"
+                            id="minimum_stock_level" min="0">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label for="maximum_stock_level" class="form-label fw-bold">
+                            <i class="ti ti-arrow-up me-1"></i>Maximum Stock Level
+                        </label>
+                        <input type="number" class="form-control" name="maximum_stock_level" placeholder="Optional"
+                            id="maximum_stock_level" min="0">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group mb-3">
+                        <label for="reserved_quantity" class="form-label fw-bold">
+                            <i class="ti ti-lock me-1"></i>Reserved Quantity
+                        </label>
+                        <input type="number" class="form-control" name="reserved_quantity" placeholder="0"
+                            id="reserved_quantity" min="0" value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Information Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="text-warning border-bottom pb-2 mb-3">
+                        <i class="ti ti-currency-dollar me-2"></i>Pricing Information
+                    </h6>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="cost_price" class="form-label fw-bold">
+                            <i class="ti ti-receipt me-1"></i>Cost Price
+                        </label>
+                        <input type="number" class="form-control" name="cost_price" placeholder="0.00" id="cost_price"
+                            min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="selling_price" class="form-label fw-bold">
+                            <i class="ti ti-tag me-1"></i>Selling Price
+                        </label>
+                        <input type="number" class="form-control" name="selling_price" placeholder="0.00"
+                            id="selling_price" min="0" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Information Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="text-info border-bottom pb-2 mb-3">
+                        <i class="ti ti-map-pin me-2"></i>Location Information
+                    </h6>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="warehouse" class="form-label fw-bold">
+                            <i class="ti ti-building-warehouse me-1"></i>Warehouse
+                        </label>
+                        <input type="text" class="form-control" name="warehouse" placeholder="e.g., Main Warehouse"
+                            id="warehouse">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="location" class="form-label fw-bold">
+                            <i class="ti ti-map-pin me-1"></i>Shelf/Bin Location
+                        </label>
+                        <input type="text" class="form-control" name="location" placeholder="e.g., Aisle-A-Shelf-01"
+                            id="location">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch/Serial Information Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="text-secondary border-bottom pb-2 mb-3">
+                        <i class="ti ti-barcode me-2"></i>Batch & Serial Information
+                    </h6>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="batch_number" class="form-label fw-bold">
+                            <i class="ti ti-package me-1"></i>Batch Number
+                        </label>
+                        <input type="text" class="form-control" name="batch_number" placeholder="e.g., BATCH-001"
+                            id="batch_number">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="serial_number" class="form-label fw-bold">
+                            <i class="ti ti-barcode me-1"></i>Serial Number
+                        </label>
+                        <input type="text" class="form-control" name="serial_number" placeholder="e.g., SN-12345"
+                            id="serial_number">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="manufacturing_date" class="form-label fw-bold">
+                            <i class="ti ti-calendar me-1"></i>Manufacturing Date
+                        </label>
+                        <input type="date" class="form-control" name="manufacturing_date" id="manufacturing_date">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="expiry_date" class="form-label fw-bold">
+                            <i class="ti ti-calendar-x me-1"></i>Expiry Date
+                        </label>
+                        <input type="date" class="form-control" name="expiry_date" id="expiry_date">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="text-dark border-bottom pb-2 mb-3">
+                        <i class="ti ti-notes me-2"></i>Additional Information
+                    </h6>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label for="supplier_sku" class="form-label fw-bold">
+                            <i class="ti ti-id me-1"></i>Supplier SKU
+                        </label>
+                        <input type="text" class="form-control" name="supplier_sku"
+                            placeholder="Supplier's product code" id="supplier_sku">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="ti ti-settings me-1"></i>Status Options
+                        </label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="is_active"
+                                    name="is_active" checked>
+                                <label class="form-check-label" for="is_active">
+                                    Active
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="is_damaged"
+                                    name="is_damaged">
+                                <label class="form-check-label" for="is_damaged">
+                                    Damaged
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1" id="is_expired"
+                                    name="is_expired">
+                                <label class="form-check-label" for="is_expired">
+                                    Expired
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group mb-3">
+                        <label for="notes" class="form-label fw-bold">
+                            <i class="ti ti-note me-1"></i>Notes
+                        </label>
+                        <textarea class="form-control" name="notes" rows="3"
+                            placeholder="Additional notes about this inventory item..." id="notes"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success font-weight-bold px-4" id="submit_btn">
+                    <i class="ti ti-plus me-2"></i>Create Inventory
+                </button>
+                <button type="reset" class="btn btn-outline-secondary font-weight-bold px-4">
+                    <i class="ti ti-refresh me-2"></i>Reset Form
+                </button>
+            </div>
 
         </form>
         {%else%}
         <div id="contact_admin">
-            <div class="alert alert-danger" role="alert">
-                <h4 class="alert-heading">Oops!</h4>
-                <p>Looks like all your products have been added to the stock sheet.</p>
+            <div class="alert alert-warning" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="ti ti-alert-triangle fs-4 me-3"></i>
+                    <div>
+                        <h4 class="alert-heading">No Products Available!</h4>
+                        <p class="mb-0">All your products have been added to the inventory. Add new products to continue
+                            tracking inventory.</p>
+                    </div>
+                </div>
                 <hr>
-                <p class="mb-0">
-                    You can add new products and then track them in the stock sheet.
-                </p>
-                <a href="{% url 'products:products_add' %}" class="btn btn-success mt-3">
-                    <i class="ti ti-plus"></i>
-                    Add product
-                </a>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'products:products_add' %}" class="btn btn-success">
+                        <i class="ti ti-plus me-2"></i>Add Product
+                    </a>
+                    <a href="{% url 'products:products_index' %}" class="btn btn-outline-primary">
+                        <i class="ti ti-list me-2"></i>View Products
+                    </a>
+                </div>
             </div>
         </div>
         {%endif%}
     </div>
 </div>
 
-
 <script>
-
     $(document).ready(function () {
+        console.log('DOM ready, initializing form...');
+
+        // Simple dropdown validation
+        $('#product, #branch').each(function () {
+            console.log('Initializing dropdown:', this.id, 'Options count:', this.options.length);
+        });
+
+        // Form submission
         $('#inventory').submit(function (e) {
             e.preventDefault();
             var form = $(this);
             var url = form.attr('action');
-            var data = form.serialize();
-            // add loading animation to the button
-            $('#submit_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...').attr('disabled', true);
+
+            // Collect all form data
+            var formData = {
+                product: $('#product').val(),
+                quantity: $('#quantity').val(),
+                alert_quantity: $('#alert_quantity').val() || 1.0,
+                branch: $('#branch').val() || null,
+                cost_price: $('#cost_price').val() || 0.00,
+                selling_price: $('#selling_price').val() || 0.00,
+                reserved_quantity: $('#reserved_quantity').val() || 0,
+                minimum_stock_level: $('#minimum_stock_level').val() || 0,
+                maximum_stock_level: $('#maximum_stock_level').val() || null,
+                location: $('#location').val() || null,
+                warehouse: $('#warehouse').val() || null,
+                batch_number: $('#batch_number').val() || null,
+                serial_number: $('#serial_number').val() || null,
+                expiry_date: $('#expiry_date').val() || null,
+                manufacturing_date: $('#manufacturing_date').val() || null,
+                supplier_sku: $('#supplier_sku').val() || null,
+                notes: $('#notes').val() || null,
+                is_active: $('#is_active').is(':checked'),
+                is_damaged: $('#is_damaged').is(':checked'),
+                is_expired: $('#is_expired').is(':checked')
+            };
+
+            console.log('Form data:', formData);
+
+            // Add loading animation to the button
+            $('#submit_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...').attr('disabled', true);
+
             $.ajax({
                 type: 'POST',
                 contentType: 'application/json',
                 processData: false,
-
                 headers: {
                     "X-CSRFToken": '{{ csrf_token }}'
                 },
                 url: url,
-                data: JSON.stringify({
-                    product: $('#product').val(),
-                    quantity: $('#quantity').val(),
-
-
-                }),
+                data: JSON.stringify(formData),
                 success: function (response) {
-                    toastr.success('Stock updated successfully!', 'Success', {
+                    toastr.success('Inventory item created successfully!', 'Success', {
                         timeOut: 3000,
                         closeButton: true,
                         progressBar: true
                     });
                     form[0].reset();
+                    // Reset checkboxes to default state
+                    $('#is_active').prop('checked', true);
+                    $('#is_damaged').prop('checked', false);
+                    $('#is_expired').prop('checked', false);
                 },
                 error: function (xhr, status, error) {
+                    let errorMessage = 'Error creating inventory item';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMessage = xhr.responseJSON.error;
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
 
-                    toastr.error('Error updating product: ' + xhr.responseJSON.error, 'Error', {
-                        timeOut: 3000,
+                    toastr.error(errorMessage, 'Error', {
+                        timeOut: 5000,
                         closeButton: true,
                         progressBar: true
                     });
-
                 }
             }).done(function () {
-                $('#submit_btn').html('Create Inventory').attr('disabled', false);
+                $('#submit_btn').html('<i class="ti ti-plus me-2"></i>Create Inventory').attr('disabled', false);
+            });
+        });
 
-            })
+        // Auto-calculate available quantity when quantity or reserved quantity changes
+        $('#quantity, #reserved_quantity').on('input', function () {
+            var quantity = parseInt($('#quantity').val()) || 0;
+            var reserved = parseInt($('#reserved_quantity').val()) || 0;
+            var available = Math.max(0, quantity - reserved);
+            console.log('Available quantity:', available);
+        });
+
+        // Validate expiry date is after manufacturing date
+        $('#manufacturing_date, #expiry_date').on('change', function () {
+            var mfgDate = $('#manufacturing_date').val();
+            var expDate = $('#expiry_date').val();
+
+            if (mfgDate && expDate && new Date(expDate) <= new Date(mfgDate)) {
+                toastr.warning('Expiry date should be after manufacturing date', 'Warning', {
+                    timeOut: 3000,
+                    closeButton: true
+                });
+            }
+        });
+
+        // Auto-check expired status if expiry date is in the past
+        $('#expiry_date').on('change', function () {
+            var expDate = $('#expiry_date').val();
+            if (expDate && new Date(expDate) < new Date()) {
+                $('#is_expired').prop('checked', true);
+                toastr.info('Item marked as expired based on expiry date', 'Info', {
+                    timeOut: 3000,
+                    closeButton: true
+                });
+            }
+        });
+
+        // Test dropdown functionality
+        $('#product, #branch').on('click focus', function () {
+            console.log('Dropdown interacted:', this.id);
+        }).on('change', function () {
+            console.log('Dropdown changed:', this.id, 'Value:', $(this).val());
         });
     });
 </script>

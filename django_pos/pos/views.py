@@ -19,11 +19,6 @@ from sales.models import SaleItem
 
 
 @login_required(login_url="/users/login/")
-def register_company(request: HttpRequest) -> HttpResponse:
-    return render(request, "pos/register_company.html")
-
-
-@login_required(login_url="/users/login/")
 def index(request: HttpRequest) -> HttpResponse:
     today = date.today()
 
@@ -57,6 +52,29 @@ def index(request: HttpRequest) -> HttpResponse:
 
     # AVG per month
     avg_month = format(sum(monthly_earnings) / 12, ".2f")
+
+    # Get today's sales
+    today_sales = (
+        Sale.objects.filter(date_added__date=today)
+        .aggregate(
+            total_variable=Coalesce(
+                Sum(F("grand_total")), 0.0, output_field=FloatField()
+            )
+        )
+        .get("total_variable")
+    )
+    today_sales = format(today_sales, ".2f")
+
+    # Get recent sales count
+    recent_sales_count = Sale.objects.filter(date_added__date=today).count()
+
+    # Get low stock items
+    low_stock_items = Inventory.objects.filter(
+        quantity__lte=F("alert_quantity")
+    ).count()
+
+    # Get total customers
+    total_customers = Customer.objects.count()
 
     f = SaleItem.objects.all()
 
@@ -93,6 +111,10 @@ def index(request: HttpRequest) -> HttpResponse:
         "annual_earnings": annual_earnings,
         "monthly_earnings": json.dumps(monthly_earnings),
         "avg_month": avg_month,
+        "today_sales": today_sales,
+        "recent_sales_count": recent_sales_count,
+        "low_stock_items": low_stock_items,
+        "total_customers": total_customers,
         "top_products_names": json.dumps(top_products_names),
         "top_products_names_list": top_products_names,
         "top_products_quantity": json.dumps(top_products_quantity),

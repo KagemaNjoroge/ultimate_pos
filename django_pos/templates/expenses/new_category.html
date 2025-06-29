@@ -1,90 +1,389 @@
 {%extends 'pos/base.html'%}
 {% load static %}
-{% block title %}Create new expense category{% endblock %}
-{%block heading%}New Expense category{%endblock%}
+{% block title %}Create New Expense Category{% endblock %}
+{%block heading%}
+<div class="d-flex align-items-center">
+    <i class="ti ti-plus-circle me-2 text-primary"></i>
+    New Expense Category
+</div>
+{%endblock%}
+
 {% block content %}
-<div class="ml-2 mb-3">
-    <a href="{%url 'expenses:index'%}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Back
-        </button>
-    </a>
-</div>
-
-<div class="card ml-2">
-    <div class="card-body">
-
-        <form action="/expenses/api/expense-categories/" method="post" id="category_form">
-            {% csrf_token %}
-            <!--category_name, category_description , is_recurring-->
-            <div class="form-group">
-                <label for="category_name">Category Name</label>
-                <input type="text" class="form-control" id="category_name" name="category_name" required>
+<div class="row">
+    <div class="col-12">
+        <!-- Header Section -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex align-items-center">
+                <a href="{%url 'expenses:index'%}" class="btn btn-outline-primary btn-sm me-3" data-bs-toggle="tooltip"
+                    data-bs-placement="top" title="Return to expenses list">
+                    <i class="ti ti-arrow-left me-1"></i>
+                    Back to Expenses
+                </a>
+                <div class="text-muted small">
+                    <i class="ti ti-info-circle me-1"></i>
+                    Create a new expense category for better organization
+                </div>
             </div>
-            <div class="form-group">
-                <label for="category_description">Category Description</label>
-                <textarea class="form-control" id="category_description" name="category_description"
-                    required></textarea>
+        </div>
 
+        <!-- Main Form Card -->
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <div class="d-flex align-items-center">
+                            <i class="ti ti-category-2 me-2 fs-5"></i>
+                            <h5 class="card-title mb-0">Category Information</h5>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <form action="/expenses/api/expense-categories/" method="post" id="category_form" novalidate>
+                            {% csrf_token %}
+
+                            <!-- Category Name -->
+                            <div class="mb-4">
+                                <label for="category_name" class="form-label fw-semibold">
+                                    <i class="ti ti-tag me-1 text-primary"></i>
+                                    Category Name
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light">
+                                        <i class="ti ti-category"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="category_name" name="category_name"
+                                        placeholder="e.g., Office Supplies, Travel Expenses" required
+                                        data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                        data-bs-content="Enter a unique and descriptive name for this expense category. This will help you organize and track different types of expenses."
+                                        maxlength="100">
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please provide a valid category name.
+                                </div>
+                                <div class="form-text">
+                                    <i class="ti ti-bulb me-1"></i>
+                                    Choose a clear, descriptive name that will help you identify this category later
+                                </div>
+                            </div>
+
+                            <!-- Category Description -->
+                            <div class="mb-4">
+                                <label for="category_description" class="form-label fw-semibold">
+                                    <i class="ti ti-file-text me-1 text-primary"></i>
+                                    Category Description
+                                </label>
+                                <div class="position-relative">
+                                    <textarea class="form-control" id="category_description" name="category_description"
+                                        rows="4"
+                                        placeholder="Provide a detailed description of what expenses belong to this category..."
+                                        data-bs-toggle="popover" data-bs-trigger="focus" data-bs-placement="top"
+                                        data-bs-content="Describe what types of expenses will be categorized under this category. This helps team members understand when to use this category."
+                                        maxlength="300"></textarea>
+                                    <div class="position-absolute top-0 end-0 p-2">
+                                        <span class="badge bg-light text-muted" id="char-count">0/300</span>
+                                    </div>
+                                </div>
+                                <div class="form-text">
+                                    <i class="ti ti-info-circle me-1"></i>
+                                    Optional but recommended for clarity and consistency
+                                </div>
+                            </div>
+
+                            <!-- Recurring Checkbox -->
+                            <div class="mb-4">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body p-3">
+                                        <div class="form-check form-switch d-flex align-items-center">
+                                            <input class="form-check-input me-3" type="checkbox" role="switch"
+                                                id="is_recurring" name="is_recurring" data-bs-toggle="tooltip"
+                                                data-bs-placement="right"
+                                                title="Mark this if expenses in this category typically occur on a regular basis">
+                                            <div class="flex-grow-1">
+                                                <label class="form-check-label fw-semibold" for="is_recurring">
+                                                    <i class="ti ti-repeat me-1 text-info"></i>
+                                                    Recurring Category
+                                                </label>
+                                                <div class="text-muted small mt-1">
+                                                    Check this if expenses in this category occur regularly (monthly,
+                                                    quarterly,
+                                                    etc.)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="d-flex gap-2 pt-3 border-top">
+                                <button type="submit" class="btn btn-success flex-fill" id="save">
+                                    <i class="ti ti-device-floppy me-1"></i>
+                                    Save Category
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="reset-form"
+                                    data-bs-toggle="tooltip" title="Clear all fields">
+                                    <i class="ti ti-refresh"></i>
+                                </button>
+                                <a href="{%url 'expenses:index'%}" class="btn btn-outline-danger"
+                                    data-bs-toggle="tooltip" title="Cancel and return">
+                                    <i class="ti ti-x"></i>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-check form-switch ml-3">
-                <input class="form-check-input" type="checkbox" role="switch" id="is_recurring" name="is_recurring">
-                <label class="form-check-label" for="is_recurring">
-                    Is Recurring?
-                </label>
+            <!-- Help Card -->
+            <div class="col-12 col-lg-4">
+                <div class="card mt-4 mt-lg-0 border-info">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <i class="ti ti-help-circle text-info fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-info mb-2">Quick Tips</h6>
+                                <ul class="list-unstyled mb-0 small text-muted">
+                                    <li><i class="ti ti-check me-1 text-success"></i> Use descriptive names like "Office
+                                        Supplies" instead of just "Supplies"</li>
+                                    <li><i class="ti ti-check me-1 text-success"></i> Mark categories as recurring if
+                                        they
+                                        typically happen regularly</li>
+                                    <li><i class="ti ti-check me-1 text-success"></i> Add detailed descriptions to help
+                                        team
+                                        members categorize expenses correctly</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-success mt-3" id="save">Save</button>
-
-        </form>
-
-
+        </div>
     </div>
-</div>
 
-<script>
-    $(document).ready(function () {
-        $("#category_form").submit(function (e) {
-            e.preventDefault();
-            var form = $(this);
-            $('#save').html('<i class="fa fa-spinner fa-spin"></i> Saving...').attr('disabled', true);
-            var url = form.attr('action');
-            var data = {
-                category_name: $('#category_name').val(),
-                category_description: $('#category_description').val(),
-                is_recurring: $('#is_recurring').is(':checked')
-            };
-
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: data,
-                headers: {
-                    'X-CSRFToken': '{{csrf_token}}'
-                },
-                success: function (response) {
-
-                    toastr.success('Category created successfully!', 'Success', {
-                        timeOut: 5000,
-                        positionClass: 'toast-top-right',
-                    });
-
-                    form[0].reset();
-
-                },
-                error: function (xhr, status, error) {
-                    toastr.error('Error: ' + xhr.responseJSON.error, 'Error', {
-                        timeOut: 5000,
-                        positionClass: 'toast-top-right',
-                    });
-
-                }
-            }).done(function () {
-                $('#save').html('Save').attr('disabled', false);
+    <script>
+        $(document).ready(function () {
+            // Initialize tooltips and popovers
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
             });
 
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl, {
+                    html: true,
+                    trigger: 'focus',
+                    container: 'body'
+                });
+            });
+
+            // Character counter for description
+            $('#category_description').on('input', function () {
+                const maxLength = 300;
+                const currentLength = $(this).val().length;
+                const remaining = maxLength - currentLength;
+
+                $('#char-count').text(`${currentLength}/${maxLength}`);
+
+                if (remaining < 50) {
+                    $('#char-count').removeClass('text-muted').addClass('text-warning');
+                } else if (remaining < 20) {
+                    $('#char-count').removeClass('text-warning').addClass('text-danger');
+                } else {
+                    $('#char-count').removeClass('text-warning text-danger').addClass('text-muted');
+                }
+            });
+
+            // Real-time validation
+            $('#category_name').on('input', function () {
+                const value = $(this).val().trim();
+                const isValid = value.length >= 2 && value.length <= 100;
+
+                if (isValid) {
+                    $(this).removeClass('is-invalid').addClass('is-valid');
+                } else if (value.length > 0) {
+                    $(this).removeClass('is-valid').addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-valid is-invalid');
+                }
+            });
+
+            // Reset form button
+            $('#reset-form').click(function () {
+                // Show confirmation dialog
+                if (confirm('Are you sure you want to clear all fields? This action cannot be undone.')) {
+                    $('#category_form')[0].reset();
+                    $('#char-count').text('0/300').removeClass('text-warning text-danger').addClass('text-muted');
+                    $('.form-control').removeClass('is-valid is-invalid');
+
+                    toastr.info('Form has been reset', 'Info', {
+                        timeOut: 3000,
+                        positionClass: 'toast-top-right',
+                    });
+                }
+            });
+
+            // Enhanced form submission with validation
+            $("#category_form").submit(function (e) {
+                e.preventDefault();
+
+                // Validate form
+                let isValid = true;
+                const categoryName = $('#category_name').val().trim();
+
+                if (!categoryName || categoryName.length < 2) {
+                    $('#category_name').addClass('is-invalid');
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    toastr.error('Please fix the validation errors before submitting', 'Validation Error', {
+                        timeOut: 5000,
+                        positionClass: 'toast-top-right',
+                    });
+                    return;
+                }
+
+                var form = $(this);
+                const saveButton = $('#save');
+                const originalText = saveButton.html();
+
+                // Disable form and show loading state
+                saveButton.html('<i class="ti ti-loader-2 fa-spin me-1"></i>Saving Category...').attr('disabled', true);
+                form.find('input, textarea, button').prop('disabled', true);
+
+                var url = form.attr('action');
+                var data = {
+                    category_name: categoryName,
+                    category_description: $('#category_description').val().trim(),
+                    is_recurring: $('#is_recurring').is(':checked')
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    headers: {
+                        'X-CSRFToken': '{{csrf_token}}'
+                    },
+                    timeout: 10000, // 10 second timeout
+                    success: function (response) {
+                        // Success animation
+                        saveButton.html('<i class="ti ti-check me-1"></i>Category Created!').removeClass('btn-success').addClass('btn-outline-success');
+
+                        toastr.success('Category created successfully! You can now use it for your expenses.', 'Success', {
+                            timeOut: 5000,
+                            positionClass: 'toast-top-right',
+                            progressBar: true,
+                            closeButton: true
+                        });
+
+                        // Reset form after a delay
+                        setTimeout(function () {
+                            form[0].reset();
+                            $('#char-count').text('0/300').removeClass('text-warning text-danger').addClass('text-muted');
+                            $('.form-control').removeClass('is-valid is-invalid');
+
+                            // Show options
+                            const createAnother = confirm('Category created successfully! Would you like to create another category?');
+                            if (!createAnother) {
+                                window.location.href = "{% url 'expenses:index' %}";
+                            }
+                        }, 2000);
+                    },
+                    error: function (xhr, status, error) {
+                        let errorMessage = 'An unexpected error occurred. Please try again.';
+
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMessage = xhr.responseJSON.error;
+                        } else if (xhr.status === 400) {
+                            errorMessage = 'Invalid data provided. Please check your inputs.';
+                        } else if (xhr.status === 500) {
+                            errorMessage = 'Server error. Please try again later.';
+                        } else if (status === 'timeout') {
+                            errorMessage = 'Request timeout. Please check your connection and try again.';
+                        }
+
+                        toastr.error(errorMessage, 'Error', {
+                            timeOut: 8000,
+                            positionClass: 'toast-top-right',
+                            progressBar: true,
+                            closeButton: true
+                        });
+
+                        console.error('Error details:', {
+                            status: xhr.status,
+                            statusText: xhr.statusText,
+                            responseText: xhr.responseText,
+                            error: error
+                        });
+                    }
+                }).always(function () {
+                    // Re-enable form
+                    form.find('input, textarea, button').prop('disabled', false);
+                    saveButton.html(originalText).removeClass('btn-outline-success').addClass('btn-success').attr('disabled', false);
+                });
+            });
+
+            // Auto-save draft functionality (optional enhancement)
+            let draftTimeout;
+            $('input, textarea').on('input', function () {
+                clearTimeout(draftTimeout);
+                draftTimeout = setTimeout(function () {
+                    const formData = {
+                        category_name: $('#category_name').val(),
+                        category_description: $('#category_description').val(),
+                        is_recurring: $('#is_recurring').is(':checked')
+                    };
+                    localStorage.setItem('expense_category_draft', JSON.stringify(formData));
+                }, 1000); // Save draft after 1 second of inactivity
+            });
+
+            // Load draft on page load
+            const savedDraft = localStorage.getItem('expense_category_draft');
+            if (savedDraft) {
+                const draftData = JSON.parse(savedDraft);
+                if (draftData.category_name || draftData.category_description) {
+                    const loadDraft = confirm('We found a saved draft of your category. Would you like to restore it?');
+                    if (loadDraft) {
+                        $('#category_name').val(draftData.category_name);
+                        $('#category_description').val(draftData.category_description).trigger('input');
+                        $('#is_recurring').prop('checked', draftData.is_recurring);
+
+                        toastr.info('Draft restored successfully', 'Draft Loaded', {
+                            timeOut: 3000,
+                            positionClass: 'toast-top-right',
+                        });
+                    }
+                }
+            }
+
+            // Clear draft when form is successfully submitted
+            $(document).on('ajaxSuccess', function () {
+                localStorage.removeItem('expense_category_draft');
+            });
+
+            // Keyboard shortcuts
+            $(document).keydown(function (e) {
+                // Ctrl+S to save
+                if (e.ctrlKey && e.which === 83) {
+                    e.preventDefault();
+                    $('#category_form').submit();
+                }
+                // Escape to go back
+                if (e.which === 27) {
+                    if (confirm('Are you sure you want to leave? Any unsaved changes will be lost.')) {
+                        window.location.href = "{% url 'expenses:index' %}";
+                    }
+                }
+            });
+
+            // Focus on first input
+            setTimeout(function () {
+                $('#category_name').focus();
+            }, 100);
         });
-    });
-</script>
-{%endblock content%}
+    </script>
+    {%endblock content%}

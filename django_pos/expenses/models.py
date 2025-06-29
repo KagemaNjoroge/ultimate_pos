@@ -1,8 +1,8 @@
 from django.db import models
+from utils.models import TimestampedModel
 
 
-# Create your models here.
-class ExpenseCategory(models.Model):
+class ExpenseCategory(TimestampedModel):
     category_name = models.CharField(
         max_length=100, blank=False, null=False, unique=True
     )
@@ -26,15 +26,13 @@ class ExpenseCategory(models.Model):
         }
 
 
-class Expense(models.Model):
+class Expense(TimestampedModel):
     expense_name = models.CharField(
         max_length=100, blank=False, null=False, unique=True
     )
     expense_description = models.CharField(max_length=300, blank=True, null=True)
     category = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE)
     amount = models.FloatField(default=0.00)
-    date_added = models.DateTimeField(auto_now_add=True)
-    date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return self.expense_name
@@ -45,8 +43,8 @@ class Expense(models.Model):
             "expense_description": self.expense_description,
             "category": self.category.category_name,
             "amount": self.amount,
-            "date_added": self.date_added,
-            "date_modified": self.date_modified,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
             "id": self.id,
         }
 

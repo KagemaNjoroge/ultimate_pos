@@ -3,11 +3,57 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
+from django.http import JsonResponse
+
+from company.utils.branch_utils import ensure_default_branch, set_current_branch
 from .models import Branch, Company
 from .serializers import CompanySerializer
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import CompanySerializer
+
+
+@require_http_methods(["GET", "POST"])
+@login_required(login_url="/users/login/")
+def select_current_branch(request: HttpRequest) -> HttpResponse:
+    """
+    View to select the current branch for the user.
+    """
+    # Ensure there's at least one branch available
+    ensure_default_branch()
+
+    branches = Branch.objects.all()
+
+    if request.method == "POST":
+        branch_id = request.POST.get("branch_id")
+        if branch_id:
+            try:
+                branch = Branch.objects.get(id=branch_id)
+
+                # Use utility function to set current branch
+                if set_current_branch(request, branch):
+                    messages.success(
+                        request,
+                        f"Successfully switched to branch: {branch.branch_name}",
+                    )
+
+                    # Redirect to POS dashboard or appropriate page
+                    return redirect("pos:index")
+                else:
+                    messages.error(request, "Failed to set current branch.")
+
+            except Branch.DoesNotExist:
+                messages.error(request, "Selected branch does not exist.")
+                return render(
+                    request, "company/select_branch.html", {"branches": branches}
+                )
+        else:
+            messages.error(request, "Please select a branch to continue.")
+            return render(request, "company/select_branch.html", {"branches": branches})
+
+    # GET request - show branch selection page
+    return render(request, "company/select_branch.html", {"branches": branches})
 
 
 @require_http_methods(["GET", "POST"])
@@ -17,7 +63,9 @@ def set_up_company(request):
         existing_company = Company.objects.first()
         if existing_company:
             messages.info(
-                request, "Company has already been set up. You can edit settings below."
+                request=request,
+                message="Company has already been set up. You can edit settings below.",
+                extra_tags="info",
             )
             return redirect("company:settings")
 
@@ -55,20 +103,6 @@ def set_up_company(request):
                     messages.error(request, "Please enter a valid email address.")
                     return render(request, template_name="company/setup.html")
 
-            # Validate KRA PIN format if provided
-            # if tax_registration_number:
-            #     if len(tax_registration_number) > 11:
-            #         messages.error(request, "KRA PIN cannot exceed 11 characters.")
-            #         return render(request, template_name="company/setup.html")
-
-            #     # Basic KRA PIN format validation (alphanumeric)
-            #     if not re.match(r"^[A-Z0-9]+$", tax_registration_number.upper()):
-            #         messages.error(
-            #             request, "KRA PIN should only contain letters and numbers."
-            #         )
-            #         return render(request, template_name="company/setup.html")
-
-            # Create company instance
             company = Company(
                 company_name=company_name,
                 phone_number=phone_number if phone_number else None,
@@ -98,9 +132,6 @@ def set_up_company(request):
                     return render(request, template_name="company/setup.html")
 
                 company.logo = logo
-
-            # Save the company
-            company.save()
 
             messages.success(
                 request, f'Company "{company_name}" has been set up successfully!'
@@ -161,3 +192,43 @@ def add_branch(request):
         "company/add_branch.html",
         context={"company": company},
     )
+
+
+@login_required(login_url="/users/login/")
+@require_http_methods(["POST"])
+def switch_branch(request: HttpRequest) -> HttpResponse:
+    """
+    API endpoint to quickly switch branches via AJAX.
+    """
+
+    try:
+        branch_id = request.POST.get("branch_id", None)
+        if not branch_id:
+            return JsonResponse({"success": False, "message": "Branch ID is required."})
+
+        branch = Branch.objects.get(id=branch_id)
+
+        if set_current_branch(request, branch):
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": f"Switched to {branch.branch_name}",
+                    "branch": {
+                        "id": branch.id,
+                        "name": branch.branch_name,
+                        "address": branch.address,
+                        "phone": branch.phone_number,
+                        "is_headquarter": branch.is_headquarter,
+                    },
+                }
+            )
+        else:
+            return JsonResponse(
+                {"success": False, "message": "Failed to switch branch."}
+            )
+
+    except Branch.DoesNotExist:
+        return JsonResponse({"success": False, "message": "Branch not found."})
+    except Exception as e:
+        # Prevent exposing sensitive error details
+        return JsonResponse({"success": False, "message": "Error"})
