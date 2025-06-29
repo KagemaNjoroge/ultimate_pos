@@ -65,10 +65,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "company.middleware.BranchSelectionMiddleware",
 ]
 
 ROOT_URLCONF = "django_pos.urls"
-LOGIN_URL = "/users/login/"
+LOGIN_URL = "authentication:login"
 # Route defined in authentication/urls.py
 LOGIN_REDIRECT_URL = "authentication:home"
 # Route defined in authentication/urls.py
@@ -86,6 +87,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "company.context_processors.current_branch_context",
             ],
         },
     },
