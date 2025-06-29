@@ -31,7 +31,7 @@
       {% if msg %}
       <div class="mb-3 text-danger text-center"> {{ msg | safe }} </div>
       {% endif %}
-      <div id="error" class="text-center"></div>
+
       <div id="loading" class="text-center"></div>
       <div class="form-floating">
         <input class="form-control" id="floatingInput" placeholder="your username" name="username" required>
@@ -60,20 +60,13 @@
   <script src="{%static 'libs/toastr/toastr.js'%}"></script>
 
   <script>
-    // setup ajax add csrf token
-    $.ajaxSetup({
-      beforeSend: function (xhr, settings) {
-        if (!this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", $('input[name="csrfmiddlewaretoken"]').val());
-        }
-      }
-    });
+
     $(document).ready(function () {
       $('#login_form').submit(function (e) {
         e.preventDefault();
         // remove error message
         var form = $(this);
-        $('#error').html('');
+
         $('#loading').html(`<div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
           </div>`);
@@ -81,7 +74,10 @@
         var url = form.attr('action');
         $.ajax({
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+
+
           },
           type: 'POST',
           url: url,
@@ -90,21 +86,47 @@
             'password': $('#floatingPassword').val()
           }),
           success: function (data) {
-            if (data['message'] == 'success') {
-              window.location.href = '/'
 
+
+            toastr.success(data.message, 'Success', {
+              "closeButton": true,
+              "progressBar": true
+            });
+            if (data.next) {
+              window.location.href = data.next;
             } else {
-              $('.error_toast').css('display', 'block')
-              // remove loading
-              $('#loading').html('');
-              // toastr error message
-              toastr.error(data['message'], 'Error', {
-                "positionClass": "toast-bottom-center",
-                "timeOut": "5000"
-              });
-
+              window.location.href = '/';
             }
+
           }
+          ,
+          error: function (xhr, status, error) {
+
+            // check if 401 -> wrong credentials
+            if (xhr.status === 401) {
+              toastr.error(xhr.responseJSON.message, 'Error', {
+                "closeButton": true,
+                "progressBar": true
+              });
+            } else {
+              toastr.error('An error occurred. Please try again.', 'Error', {
+                "closeButton": true,
+                "progressBar": true
+              });
+            }
+
+          }
+        }).done(function () {
+          $('#loading').html('');
+
+
+
+        }).fail(function () {
+          $('#loading').html('');
+          toastr.error('An error occurred. Please try again.', 'Error', {
+            "closeButton": true,
+            "progressBar": true
+          });
         });
       });
     });
