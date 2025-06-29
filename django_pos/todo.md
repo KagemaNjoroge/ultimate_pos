@@ -1,1 +1,1 @@
-[ ] Add support for using multiple product images
+[-] Add support for using multiple product images
