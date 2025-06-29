@@ -77,10 +77,16 @@ def profile(request: HttpRequest) -> HttpResponse:
 def login_view(request: HttpRequest) -> HttpResponse:
     next_url = request.GET.get("next", "/")
     # Ensure next_url is safe
-    if not url_has_allowed_host_and_scheme(
-        next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    if (
+        not url_has_allowed_host_and_scheme(
+            next_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure(),
+        )
+        or next_url.startswith("//")
+        or "\\" in next_url
     ):
-
+        # Default to home page if validation fails:
         next_url = "/"
     if request.user.is_authenticated:
         return redirect(next_url)
