@@ -231,4 +231,4 @@ def switch_branch(request: HttpRequest) -> HttpResponse:
         return JsonResponse({"success": False, "message": "Branch not found."})
     except Exception as e:
         # Prevent exposing sensitive error details
-        return JsonResponse({"success": False, "message": f"Error"})
+        return JsonResponse({"success": False, "message": "Error"})
