@@ -437,7 +437,8 @@
     }
 </style>
 
-<script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'js/chartjs4.js' %}"></script>
+
 
 <input type="hidden" id="monthly_earnings" value="{{monthly_earnings|safe}}">
 <input type="hidden" id="top_products_names" value="{{top_products_names}}">
@@ -451,14 +452,32 @@
     }
 
     $(document).ready(function () {
-        // Format numbers with commas
-        var today_sales = document.getElementById('today_sales').innerHTML;
-        var avg_m = document.getElementById('avg_m').innerHTML;
-        var avg_a = document.getElementById('avg_a').innerHTML;
+        // Check if Chart.js is loaded
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js is not loaded. Charts will not display.');
+        } else {
+            console.log('Chart.js loaded successfully, version:', Chart.version);
+        }
 
-        document.getElementById('today_sales').innerHTML = formatNumberWithCommas(today_sales);
-        document.getElementById('avg_m').innerHTML = formatNumberWithCommas(avg_m);
-        document.getElementById('avg_a').innerHTML = formatNumberWithCommas(avg_a);
+        // Format numbers with commas - check if elements exist first
+        var today_sales_elem = document.getElementById('today_sales');
+        var avg_m_elem = document.getElementById('avg_m');
+        var avg_a_elem = document.getElementById('avg_a');
+
+        if (today_sales_elem) {
+            var today_sales = today_sales_elem.innerHTML;
+            today_sales_elem.innerHTML = formatNumberWithCommas(today_sales);
+        }
+
+        if (avg_m_elem) {
+            var avg_m = avg_m_elem.innerHTML;
+            avg_m_elem.innerHTML = formatNumberWithCommas(avg_m);
+        }
+
+        if (avg_a_elem) {
+            var avg_a = avg_a_elem.innerHTML;
+            avg_a_elem.innerHTML = formatNumberWithCommas(avg_a);
+        }
 
         // Add smooth scrolling
         $('a[href*="#"]').on('click', function (e) {
