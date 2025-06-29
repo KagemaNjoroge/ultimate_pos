@@ -230,4 +230,5 @@ def switch_branch(request: HttpRequest) -> HttpResponse:
     except Branch.DoesNotExist:
         return JsonResponse({"success": False, "message": "Branch not found."})
     except Exception as e:
-        return JsonResponse({"success": False, "message": f"Error: {str(e)}"})
+        # Prevent exposing sensitive error details
+        return JsonResponse({"success": False, "message": f"Error"})
