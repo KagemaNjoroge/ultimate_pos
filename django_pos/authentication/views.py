@@ -23,14 +23,14 @@ def logout_view(request: HttpRequest) -> HttpResponse:
         return redirect("/login/")
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def index(request: HttpRequest) -> HttpResponse:
     # for users management
     users = User.objects.all()
     return render(request, "accounts/index.html", {"users": users})
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET", "POST"])
 def logout_view(request) -> Response:
     if request.user.is_authenticated:
@@ -40,7 +40,7 @@ def logout_view(request) -> Response:
         return redirect("/login/")
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET", "POST"])
 @renderer_classes([TemplateHTMLRenderer, JSONRenderer])
 def profile(request: HttpRequest) -> HttpResponse:

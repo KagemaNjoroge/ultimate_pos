@@ -10,7 +10,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def index(request: HttpRequest) -> HttpResponse:
     # get duration query params
     start_date = request.GET.get("start_date", None)
@@ -81,7 +81,7 @@ def index(request: HttpRequest) -> HttpResponse:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET"])
 def duration_sales_report(request):
     # get duration span
@@ -105,7 +105,7 @@ def duration_sales_report(request):
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET"])
 def sales_this_month(request) -> Response:
 
@@ -128,7 +128,7 @@ def sales_this_month(request) -> Response:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET"])
 def sales_this_week(request) -> Response:
     sales = Sale.objects.filter(
@@ -147,7 +147,7 @@ def sales_this_week(request) -> Response:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET"])
 def best_selling_product(request) -> Response:
     sales = Sale.objects.filter(
@@ -185,7 +185,7 @@ def best_selling_product(request) -> Response:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET"])
 def get_best_selling_category(request) -> Response:
 

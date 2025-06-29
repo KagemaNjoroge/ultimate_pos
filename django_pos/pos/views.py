@@ -18,7 +18,7 @@ from sales.models import Sale
 from sales.models import SaleItem
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def index(request: HttpRequest) -> HttpResponse:
     today = date.today()
 
@@ -129,7 +129,7 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "pos/index.html", context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def pos(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         products = Product.objects.all()

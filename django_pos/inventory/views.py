@@ -15,14 +15,14 @@ class InventoryViewSet(ModelViewSet):
     serializer_class = InventorySerializer
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def index(request):
     inventory = Inventory.objects.all()
     context = {"inventory": inventory}
     return render(request, "inventory/inventory.html", context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def add_inventory(request: HttpRequest) -> HttpResponse:
 
@@ -35,7 +35,7 @@ def add_inventory(request: HttpRequest) -> HttpResponse:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def update_inventory(request: HttpRequest, inventory_id: int) -> HttpResponse:
     inventory = get_object_or_404(Inventory, id=inventory_id)

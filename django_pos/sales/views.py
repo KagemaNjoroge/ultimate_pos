@@ -25,14 +25,14 @@ def is_ajax(request: HttpRequest) -> bool:
     return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def sales_list_view(request: HttpRequest) -> HttpResponse:
     sales = Sale.objects.all().order_by("-date_added")
     context = {"sales": sales}
     return render(request, "sales/sales.html", context=context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET", "POST"])
 def sales_add_view(request: HttpRequest) -> HttpResponse:
     context = {
@@ -115,7 +115,7 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
         return render(request, "sales/sales_add.html", context=context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     sale = get_object_or_404(Sale, id=sale_id)
     # Get the sale details
@@ -128,7 +128,7 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
     return render(request, "sales/sales_details.html", context=context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
     sale = get_object_or_404(Sale, id=sale_id)

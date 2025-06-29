@@ -22,7 +22,7 @@ class CustomerApiViewSet(ModelViewSet):
     serializer_class = CustomerSerializer
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET"])
 @renderer_classes([TemplateHTMLRenderer])
 def customers_list_view(request: HttpRequest) -> HttpResponse:
@@ -35,7 +35,7 @@ def customers_list_view(request: HttpRequest) -> HttpResponse:
     return render(request, "customers/customers.html", context=context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET"])
 @renderer_classes([TemplateHTMLRenderer])
 def customers_add_view(request) -> Response:
@@ -52,7 +52,7 @@ def customers_add_view(request) -> Response:
         )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET"])
 def customers_update_view(request: HttpRequest, customer_id: str) -> HttpResponse:
     customer = get_object_or_404(Customer, id=customer_id)
@@ -65,7 +65,7 @@ def customers_update_view(request: HttpRequest, customer_id: str) -> HttpRespons
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
     customer = get_object_or_404(Customer, id=id)
 
@@ -134,6 +134,6 @@ def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def import_customers(request: HttpRequest) -> HttpResponse:
     return render(request, template_name="customers/import_customers.html")

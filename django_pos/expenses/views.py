@@ -20,7 +20,7 @@ class ExpenseViewSet(ModelViewSet):
     serializer_class = ExpenseSerializer
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def expenses(request: HttpRequest) -> HttpResponse:
 
@@ -64,7 +64,7 @@ def expenses(request: HttpRequest) -> HttpResponse:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def add_expense(request: HttpRequest) -> HttpResponse:
     categories = ExpenseCategory.objects.all()
@@ -75,14 +75,14 @@ def add_expense(request: HttpRequest) -> HttpResponse:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def add_expense_category(request: HttpRequest) -> HttpResponse:
 
     return render(request, "expenses/new_category.html")
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def expense_categories(request: HttpRequest) -> HttpResponse:
     expense_categs = ExpenseCategory.objects.all()
@@ -93,7 +93,7 @@ def expense_categories(request: HttpRequest) -> HttpResponse:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def edit_expense(request: HttpRequest, id: int) -> HttpResponse:
     expense = get_object_or_404(Expense, pk=id)
@@ -105,7 +105,7 @@ def edit_expense(request: HttpRequest, id: int) -> HttpResponse:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def edit_category(request: HttpRequest, id: int) -> HttpResponse:
     category = get_object_or_404(ExpenseCategory, pk=id)

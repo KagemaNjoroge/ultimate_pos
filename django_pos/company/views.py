@@ -15,7 +15,7 @@ from .serializers import CompanySerializer
 
 
 @require_http_methods(["GET", "POST"])
-@login_required(login_url="/users/login/")
+@login_required()
 def select_current_branch(request: HttpRequest) -> HttpResponse:
     """
     View to select the current branch for the user.
@@ -160,7 +160,7 @@ class CompanyView(APIView):
         return Response(serializer.errors, status=400)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def index(request: HttpRequest) -> HttpResponse:
     company = Company.objects.first()
@@ -175,14 +175,14 @@ def index(request: HttpRequest) -> HttpResponse:
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def branches(request: HttpRequest) -> HttpResponse:
     all_branches = Branch.objects.all()
     return render(request, "company/branches.html", {"branches": all_branches})
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def add_branch(request):
     company = Company.objects.first()
@@ -194,7 +194,7 @@ def add_branch(request):
     )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["POST"])
 def switch_branch(request: HttpRequest) -> HttpResponse:
     """

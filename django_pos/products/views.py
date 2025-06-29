@@ -28,7 +28,7 @@ class ProductApiViewSet(ModelViewSet):
     serializer_class = ProductSerializer
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def categories_list_view(request: HttpRequest) -> HttpResponse:
     context = {
@@ -37,7 +37,7 @@ def categories_list_view(request: HttpRequest) -> HttpResponse:
     return render(request, "products/categories.html", context=context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def categories_add_view(request: Request) -> Response:
 
@@ -48,7 +48,7 @@ def categories_add_view(request: Request) -> Response:
     return render(request, "products/categories_add.html", context=context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def categories_update_view(request: HttpRequest, category_id: int) -> HttpResponse:
 
@@ -62,7 +62,7 @@ def categories_update_view(request: HttpRequest, category_id: int) -> HttpRespon
     return render(request, "products/categories_update.html", context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def categories_detail_view(request: HttpRequest, category_id: int) -> HttpResponse:
     category = get_object_or_404(Category, id=category_id)
@@ -96,7 +96,7 @@ def categories_detail_view(request: HttpRequest, category_id: int) -> HttpRespon
     return render(request, "products/category_details.html", context=context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def products_list_view(request: HttpRequest) -> HttpResponse:
     products = Product.objects.all()
@@ -122,7 +122,7 @@ def products_list_view(request: HttpRequest) -> HttpResponse:
     return render(request, "products/products.html", context=context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def products_add_view(request: HttpRequest) -> HttpResponse:
 
@@ -134,7 +134,7 @@ def products_add_view(request: HttpRequest) -> HttpResponse:
     return render(request, "products/products_add.html", context=context)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def products_update_view(request, product_id: str):
     product = get_object_or_404(Product, id=product_id)
@@ -153,7 +153,7 @@ def is_ajax(request: HttpRequest) -> bool:
     return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @api_view(["GET"])
 def get_products_ajax_view(request: Request) -> Response:
     query = request.query_params.dict().get("term", "")
@@ -162,7 +162,7 @@ def get_products_ajax_view(request: Request) -> Response:
     return Response(data=serializer.data, status=200)
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def upload_excel_view(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
 
@@ -241,7 +241,7 @@ def upload_excel_view(request: HttpRequest) -> HttpResponse:
             )
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 def download_template(request: HttpRequest):
     file_path = "static/upload_products.xltx"
     with open(file_path, "rb") as file:
@@ -250,7 +250,7 @@ def download_template(request: HttpRequest):
         return response
 
 
-@login_required(login_url="/users/login/")
+@login_required()
 @require_http_methods(["GET"])
 def product_detail_view(request: HttpRequest, product_id: str) -> HttpResponse:
     product = get_object_or_404(Product, id=product_id)
