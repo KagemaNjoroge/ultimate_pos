@@ -5,11 +5,11 @@ from .models import Expense, ExpenseCategory
 
 
 class ExpenseAdmin(admin.ModelAdmin):
-    list_display = ("expense_name", "category", "amount", "date_added", "date_modified")
+    list_display = ("expense_name", "category", "amount", "created_at", "updated_at")
     search_fields = ("expense_name", "category__category_name", "amount")
-    list_filter = ("category", "date_added", "date_modified")
-    date_hierarchy = "date_added"
-    ordering = ("-date_added",)
+    list_filter = ("category", "created_at", "updated_at")
+    date_hierarchy = "created_at"
+    ordering = ("-created_at",)
     list_per_page = 10
 
 
