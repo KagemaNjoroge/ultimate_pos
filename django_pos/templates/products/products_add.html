@@ -769,15 +769,8 @@
       // Get the form data
       var formData = new FormData(this);
 
-      // Debug: Log form data contents
-      console.log('FormData contents:');
-      for (let [key, value] of formData.entries()) {
-        if (value instanceof File) {
-          console.log(`${key}:`, value.name, value.size, value.type);
-        } else {
-          console.log(`${key}:`, value);
-        }
-      }
+
+
 
       // Add selected photos individually
       var selectedPhotos = [];
