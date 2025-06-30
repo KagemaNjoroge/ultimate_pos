@@ -214,9 +214,9 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
             "balance_due": float(sale.grand_total - sale.amount_payed),
         },
         "payment_status": payment_status,
-        "notes": "Thank you for your purchase. We appreciate your business.",
-        "payment_instructions": "For questions regarding this invoice, please contact our customer service.",
-        "qr_data": f"https://pay.ultimatepos.com/inv-{sale_id}",
+        # "notes": "Thank you for your purchase. We appreciate your business.",
+        # "payment_instructions": "For questions regarding this invoice, please contact our customer service.",
+        # "qr_data": f"https://pay.ultimatepos.com/inv-{sale_id}",
     }
 
     # Generate the PDF invoice using the create_invoice_pdf function
