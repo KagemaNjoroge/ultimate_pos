@@ -1,5 +1,4 @@
 from django.db import models
-from company.models import Branch
 
 
 class Supplier(models.Model):
@@ -14,9 +13,7 @@ class Supplier(models.Model):
         blank=True,
         null=True,
     )
-    branch = models.ForeignKey(
-        Branch, on_delete=models.CASCADE, blank=False, null=False, default=1
-    )
+
     additional_notes = models.CharField(max_length=300, null=True, blank=True)
 
     def __str__(self):
@@ -31,7 +28,7 @@ class Supplier(models.Model):
             "kra_pin": self.kra_pin,
             "website": self.website,
             "logo": self.logo.url if self.logo else "",
-            "branch": self.branch.branch_name,
+           
         }
 
     class Meta:

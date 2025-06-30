@@ -10,7 +10,7 @@ class SupplierAdmin(admin.ModelAdmin):
         "email",
         "kra_pin",
         "website",
-        "branch",
+     
     ]
     search_fields = [
         "name",
@@ -18,7 +18,7 @@ class SupplierAdmin(admin.ModelAdmin):
         "email",
         "kra_pin",
         "website",
-        "branch",
+    
     ]
     list_filter = [
         "name",
@@ -26,6 +26,6 @@ class SupplierAdmin(admin.ModelAdmin):
         "email",
         "kra_pin",
         "website",
-        "branch",
+    
     ]
     list_per_page = 10
