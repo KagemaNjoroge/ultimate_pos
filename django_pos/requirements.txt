@@ -12,3 +12,4 @@ psycopg2-binary
 drf-yasg
 django-countries
 reportlab
+django-debug-toolbar
