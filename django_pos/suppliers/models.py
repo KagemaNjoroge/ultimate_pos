@@ -6,7 +6,7 @@ class Supplier(models.Model):
     address = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    kra_pin = models.CharField(max_length=11, blank=True, null=True)
+    tax_id = models.CharField(max_length=11, blank=True, null=True)
     website = models.URLField(blank=True, null=True)
     logo = models.ImageField(
         upload_to="suppliers/",
@@ -25,10 +25,9 @@ class Supplier(models.Model):
             "address": self.address,
             "phone": self.phone,
             "email": self.email,
-            "kra_pin": self.kra_pin,
+            "tax_id": self.tax_id,
             "website": self.website,
             "logo": self.logo.url if self.logo else "",
-           
         }
 
     class Meta:

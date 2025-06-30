@@ -8,24 +8,21 @@ class SupplierAdmin(admin.ModelAdmin):
         "name",
         "phone",
         "email",
-        "kra_pin",
+        "tax_id",
         "website",
-     
     ]
     search_fields = [
         "name",
         "phone",
         "email",
-        "kra_pin",
+        "tax_id",
         "website",
-    
     ]
     list_filter = [
         "name",
         "phone",
         "email",
-        "kra_pin",
+        "tax_id",
         "website",
-    
     ]
     list_per_page = 10
