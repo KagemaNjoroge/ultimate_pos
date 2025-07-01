@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from .models import Supplier
-from company.models import Branch
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 
@@ -12,10 +11,9 @@ def index(request):
 
 
 @login_required()
-def add_supllier_template(request):
-    branches = Branch.objects.all()
+def add_supllier_template(request):    
     return render(
-        request, "suppliers/add_supplier.html", context={"branches": branches}
+        request, "suppliers/add_supplier.html"
     )
 
 
