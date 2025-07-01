@@ -335,4 +335,3 @@
           : (window.toastr = t(window.jQuery));
       }
 );
-//# sourceMappingURL=toastr.js.map
