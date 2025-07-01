@@ -42,18 +42,11 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group col-6">
-                            <label for="kra_pin">KRA PIN</label>
-                            <input id="kra_pin" type="kra_pin" name="kra_pin" class="form-control"
+                            <label for="tax_id">Tax ID</label>
+                            <input id="tax_id" type="tax_id" name="tax_id" class="form-control"
                                 placeholder="P012345678M">
                         </div>
-                        <div class="form-group col-6">
-                            <label for="branch">Branch</label>
-                            <select name="branch" id="branch" class="form-control">
-                                {%for branch in branches%}
-                                <option value="{{branch.id}}">{{branch.branch_name}}</option>
-                                {%endfor%}
-                            </select>
-                        </div>
+
                     </div>
                     <div class="form-row">
                         <div class="form-group col-6">
@@ -84,21 +77,7 @@
         </form>
     </div>
 </div>
-<div class="error_toast mt-3" style="display: none;">
-    <div class="toast-container position-fixed bottom-0 start-50 translate-middle end-0 p-3 ">
-        <div id="liveToast" class="toast" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <i class="ti ti-exclamation-mark"></i>
-                <strong class="me-auto">Ultimate POS</strong>
-                <small>Now</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body" id="toast_body">
-                Hello, world! This is a toast message.
-            </div>
-        </div>
-    </div>
-</div>
+
 <script>
     $(document).ready(function () {
         $('#supplier_form').submit(function (e) {
@@ -112,7 +91,7 @@
                 name: $('#name').val(),
                 email: $('#email').val(),
                 phone: $('#phone').val(),
-                kra_pin: $('#kra_pin').val(),
+                tax_id: $('#tax_id').val(),
                 branch: $('#branch').val(),
                 address: $('#address').val(),
                 website: $('#website').val(),
@@ -130,26 +109,20 @@
                 success: function (reponse) {
                     $('#submit').html('Save');
                     $('#supplier_form').trigger('reset');
-                    $('.error_toast').css('display', 'block')
-                    // change toast body
-                    $('#toast_body').html("Supplier added successfully.");
-                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-                        autohide: true,
-                        delay: 5000,
+                    toastr.success('Supplier added successfully', {
+                        positionClass: 'toast-top-right',
+                        progressBar: true
                     });
-                    toast.show();
+
+                    // Redirect to the suppliers list page
+                    window.location.href = "{% url 'suppliers:index' %}";
                 },
                 error: function (response) {
                     $('#submit').html('Save');
-                    $('.error_toast').css('display', 'block')
-
-                    // change toast body
-                    $('#toast_body').html(response.responseJSON.detail);
-                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-                        autohide: true,
-                        delay: 5000,
+                    toastr.error('An error occurred while adding the supplier', {
+                        positionClass: 'toast-top-right',
+                        progressBar: true
                     });
-                    toast.show();
                 }
 
             })
