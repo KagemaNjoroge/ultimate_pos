@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv(
 )
 
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
@@ -36,8 +36,6 @@ DJANGO_APPS = [
 
 
 THIRD_PARTY_APPS = ["rest_framework", "drf_yasg", "django_countries", "debug_toolbar"]
-
-
 
 
 LOCAL_APPS = [
@@ -162,3 +160,40 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+STORAGES = {
+    # ...
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "LOCATION": MEDIA_ROOT,
+    },
+}
+
+
+# LOGGING
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
+    "root": {"level": "INFO", "handlers": ["console"]},
+}

@@ -14,3 +14,4 @@ django-countries
 reportlab
 django-debug-toolbar
 gunicorn
+whitenoise
