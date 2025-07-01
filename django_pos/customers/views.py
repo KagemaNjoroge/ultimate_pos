@@ -2,13 +2,11 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
-
+from django.views.decorators.http import require_http_methods
 from sales.models import Sale
 from .models import Customer
-from rest_framework.decorators import api_view, renderer_classes
-from rest_framework.response import Response
+
 from .serializers import CustomerSerializer
-from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.viewsets import ModelViewSet
 
 
@@ -23,8 +21,7 @@ class CustomerApiViewSet(ModelViewSet):
 
 
 @login_required()
-@api_view(["GET"])
-@renderer_classes([TemplateHTMLRenderer])
+@require_http_methods(["GET"])
 def customers_list_view(request: HttpRequest) -> HttpResponse:
     # new customers - last 30 days -  to cache
     new_customers = Customer.objects.filter(
@@ -36,36 +33,27 @@ def customers_list_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required()
-@api_view(["GET"])
-@renderer_classes([TemplateHTMLRenderer])
-def customers_add_view(request) -> Response:
-    if request.accepted_renderer.format == "html":
-        return render(
-            request,
-            template_name="customers/customers_add.html",
-            status=200,
-        )
-    else:
-        return Response(
-            {"message": "This endpoint only supports HTML rendering."},
-            status=400,
-        )
+@require_http_methods(["GET"])
+def customers_add_view(request) -> HttpResponse:
+    return render(
+        request,
+        template_name="customers/customers_add.html",
+    )
 
 
 @login_required()
-@api_view(["GET"])
+@require_http_methods(["GET"])
 def customers_update_view(request: HttpRequest, customer_id: str) -> HttpResponse:
     customer = get_object_or_404(Customer, id=customer_id)
 
     context = {
         "customer": customer,
     }
-    return render(
-        request, "customers/customers_update.html", context=context, status=200
-    )
+    return render(request, "customers/customers_update.html", context=context)
 
 
 @login_required()
+@require_http_methods(["GET"])
 def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
     customer = get_object_or_404(Customer, id=id)
 
@@ -129,11 +117,10 @@ def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
         "customer_since": customer_since,
         "recent_transactions_count": recent_transactions_count,
     }
-    return render(
-        request, "customers/customer_profile.html", context=context, status=200
-    )
+    return render(request, "customers/customer_profile.html", context=context)
 
 
 @login_required()
+@require_http_methods(["GET"])
 def import_customers(request: HttpRequest) -> HttpResponse:
     return render(request, template_name="customers/import_customers.html")
