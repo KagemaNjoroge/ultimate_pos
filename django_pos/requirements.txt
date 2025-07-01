@@ -13,3 +13,4 @@ drf-yasg
 django-countries
 reportlab
 django-debug-toolbar
+gunicorn
