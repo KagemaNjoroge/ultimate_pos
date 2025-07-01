@@ -1,120 +1,543 @@
 {% extends "pos/base.html" %}
 {% load static %}
 
-{% block title %}Update customer{% endblock title %}
+{% block title %}Update Customer{% endblock title %}
 
+{% block heading %}
+<i class="ti ti-user-edit"></i> Update Customer
+{% endblock heading %}
 
-<!-- Page Heading -->
-{% block heading %}Update customer{% endblock heading %}
-
-<!-- Page content  -->
 {% block content %}
-<!--Go back-->
-<div class="ml-2 mb-3">
-    <a href="{% url 'customers:customers_list' %}">
-        <button type="button" class="btn btn-primary font-weight-bold">
-            <i class="ti ti-arrow-left"></i>
-            Go back
-        </button>
-    </a>
-</div>
+<style>
+    .customer-form-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
+    .photo-preview {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #e9ecef;
+        transition: all 0.3s ease;
+        margin: 0 auto;
+        display: block;
+    }
 
+    .photo-preview:hover {
+        border-color: #007bff;
+        transform: scale(1.05);
+    }
 
-<div class="card col-md-11 ml-2">
-    <div class="card-body">
+    .photo-upload-container {
+        text-align: center;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        border: 1px solid #e9ecef;
+    }
 
-        <!--Form as multipart-->
-        <form action="/customers/api/{{customer.id}}/" method="post" id="form" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="tax_number">TAX Number</label>
-                    <input type="text" class="form-control" name="tax_number" value="{{customer.tax_number}}"
-                        id="tax_number">
-                </div>
-                <!--Image with an initial customer photo-->
-                <div class="form-group com-md-6">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
+    .file-upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: #fff;
+        margin-top: 15px;
+    }
 
-                            {% if customer.photo %}
-                            <img src="{{customer.photo.url}}" alt="Customer photo" class="img-thumbnail"
-                                id="customer_photo" width="100" height="100">
-                            {% else %}
-                            <img src="{% static 'img/undraw_profile.svg' %}" alt="Customer photo" class="img-thumbnail"
-                                id="customer_photo" width="100" height="100">
-                            {% endif %}
+    .file-upload-area:hover {
+        border-color: #007bff;
+        background: #e3f2fd;
+    }
 
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="photo" class="for">Update photo</label>
-                            <input type="file" name="photo" class="form-control-file" id="photo">
-                        </div>
+    .file-upload-area.drag-over {
+        border-color: #28a745;
+        background: #d4edda;
+    }
+
+    .form-section {
+        background: #fff;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e9ecef;
+    }
+
+    .section-title {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #e9ecef;
+        font-size: 1.1rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        height: auto;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .input-group-text {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        color: #6c757d;
+    }
+
+    .row .col-md-6 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .mb-3 {
+        margin-bottom: 20px !important;
+    }
+
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 20px 0;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .btn-submit {
+        padding: 12px 30px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        min-width: 160px;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    .current-photo-container {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .photo-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .current-photo-container:hover .photo-overlay {
+        opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+        .customer-form-container {
+            padding: 10px;
+        }
+
+        .form-section {
+            padding: 20px;
+        }
+
+        .photo-preview {
+            width: 150px;
+            height: 150px;
+        }
+
+        .header-actions {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .action-buttons {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="customer-form-container">
+    <div class="header-actions">
+        <h4 class="mb-0 text-dark">Update Customer Information</h4>
+        <div class="action-buttons">
+            <a href="{% url 'customers:customers_list' %}" class="btn btn-outline-primary">
+                <i class="ti ti-arrow-left"></i>
+                Back to List
+            </a>
+        </div>
+    </div>
+
+    <form action="/customers/api/{{customer.id}}/" method="post" id="form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Customer Photo Section -->
+        <div class="form-section">
+            <h5 class="section-title">
+                <i class="ti ti-camera"></i> Customer Photo
+            </h5>
+            <div class="photo-upload-container">
+                <div class="current-photo-container">
+                    {% if customer.photo %}
+                    <img src="{{customer.photo.url}}" alt="Customer photo" class="photo-preview" id="customer_photo">
+                    {% else %}
+                    <img src="{% static 'img/undraw_profile.svg' %}" alt="Customer photo" class="photo-preview"
+                        id="customer_photo">
+                    {% endif %}
+                    <div class="photo-overlay" id="photo_overlay">
+                        <i class="ti ti-camera fs-2"></i>
                     </div>
                 </div>
-
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="first_name">First Name</label>
-                    <input type="text" class="form-control" name="first_name" value="{{customer.first_name}}" required
-                        id="first_name">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="last_name">Last Name</label>
-                    <input type="text" class="form-control" name="last_name" value="{{customer.last_name}}" required
-                        id="last_name">
+                <div class="file-upload-area" id="upload_area">
+                    <i class="ti ti-camera fs-2 text-muted mb-2"></i>
+                    <p class="mb-1 text-muted fw-bold">Click to update photo</p>
+                    <small class="text-muted">JPG, PNG, GIF (Max 5MB)</small>
+                    <input type="file" class="d-none" id="photo" name="photo" accept="image/*">
                 </div>
             </div>
+        </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" class="form-control" value="{{customer.email}}" required
-                        id="email">
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="phone">Phone number</label>
-                    <input type="text" name="phone" class="form-control" value="{{customer.phone}}" required id="phone">
+        <!-- Business Information Section -->
+        <div class="form-section">
+            <h5 class="section-title">
+                <i class="ti ti-file-text"></i> Business Information
+            </h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="tax_number" class="form-label">TAX Number</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ti ti-file-digit"></i>
+                        </span>
+                        <input type="text" class="form-control" name="tax_number" value="{{customer.tax_number}}"
+                            id="tax_number" placeholder="Enter tax number">
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="address">Address</label>
-                    <textarea name="address" class="form-control" rows="2" required
-                        id="address">{{customer.address}}</textarea>
+        <!-- Personal Information Section -->
+        <div class="form-section">
+            <h5 class="section-title">
+                <i class="ti ti-user"></i> Personal Information
+            </h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="first_name" class="form-label">First Name <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ti ti-user"></i>
+                        </span>
+                        <input type="text" class="form-control" name="first_name" value="{{customer.first_name}}"
+                            required id="first_name" placeholder="Enter first name">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="last_name" class="form-label">Last Name <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ti ti-user"></i>
+                        </span>
+                        <input type="text" class="form-control" name="last_name" value="{{customer.last_name}}" required
+                            id="last_name" placeholder="Enter last name">
+                    </div>
                 </div>
             </div>
+        </div>
 
+        <!-- Contact Information Section -->
+        <div class="form-section">
+            <h5 class="section-title">
+                <i class="ti ti-phone"></i> Contact Information
+            </h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ti ti-mail"></i>
+                        </span>
+                        <input type="email" name="email" class="form-control" value="{{customer.email}}" required
+                            id="email" placeholder="Enter email address">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ti ti-phone"></i>
+                        </span>
+                        <input type="tel" name="phone" class="form-control" value="{{customer.phone}}" required
+                            id="phone" placeholder="Enter phone number">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="ti ti-map-pin"></i>
+                        </span>
+                        <textarea name="address" class="form-control" rows="3" required id="address"
+                            placeholder="Enter complete address">{{customer.address}}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <button type="submit" class="btn btn-success font-weight-bold" id="update_btn">Update customer</button>
-
-        </form>
-    </div>
+        <!-- Action Buttons -->
+        <div class="form-section">
+            <div class="d-flex justify-content-end gap-3">
+                <a href="{% url 'customers:customers_list' %}" class="btn btn-outline-secondary">
+                    <i class="ti ti-x"></i>
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-success btn-submit" id="update_btn">
+                    <i class="ti ti-device-floppy"></i>
+                    Update Customer
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
 
 <script>
     $(document).ready(function () {
-        $('#photo').change(function () {
-            var i = $(this).prev('label').clone();
-            var file = $('#photo')[0].files[0].name;
-            $(this).prev('label').text(file);
-            // set customer photo with a width of 100 and height of 100
-            $('#customer_photo').attr('src', URL.createObjectURL(this.files[0]));
-
-
+        // File upload area click handlers
+        $('#upload_area, #photo_overlay').on('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('#photo').trigger('click');
         });
 
-        // send customer data via ajax
+        // Prevent click events on the hidden file input from bubbling
+        $('#photo').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Drag and drop functionality
+        $('#upload_area').on('dragenter dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).addClass('drag-over');
+        });
+
+        $('#upload_area').on('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Only remove class if we're actually leaving the upload area
+            if (!$(this).is(e.target) && !$(this).has(e.target).length) {
+                $(this).removeClass('drag-over');
+            }
+        });
+
+        $('#upload_area').on('drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $(this).removeClass('drag-over');
+
+            var files = e.originalEvent.dataTransfer.files;
+            if (files.length > 0) {
+                // Create a new FileList using DataTransfer
+                var dt = new DataTransfer();
+                dt.items.add(files[0]);
+                $('#photo')[0].files = dt.files;
+                handleFileSelect(files[0]);
+            }
+        }); function handleFileSelect(file) {
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                toastr.error('Please select a valid image file.', 'Invalid File Type');
+                return;
+            }
+
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                toastr.error('File size must be less than 5MB.', 'File Too Large');
+                return;
+            }
+
+            // Store the selected file for later use
+            window.selectedFile = file;
+
+            // Preview image
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#customer_photo').attr('src', e.target.result);
+
+                // Update upload area content and create new file input
+                $('#upload_area').html(`
+                    <i class="ti ti-check fs-2 text-success mb-2"></i>
+                    <p class="mb-1 text-success fw-bold">Photo updated</p>
+                    <small class="text-muted">Click to change</small>
+                    <input type="file" class="d-none" id="photo" name="photo" accept="image/*">
+                `);
+
+                // Create a new FileList containing our selected file
+                var dt = new DataTransfer();
+                dt.items.add(file);
+                $('#photo')[0].files = dt.files;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // File input change handler
+        $(document).on('change', '#photo', function (e) {
+            e.stopPropagation();
+            if (this.files && this.files[0]) {
+
+                handleFileSelect(this.files[0]);
+            }
+        });
+
+        // Form validation
+        function validateForm() {
+            var isValid = true;
+            var firstError = null;
+
+            // Clear previous error states
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+
+            // Required fields validation
+            $('#first_name, #last_name, #email, #phone, #address').each(function () {
+                if (!$(this).val().trim()) {
+                    $(this).addClass('is-invalid');
+                    $(this).after('<div class="invalid-feedback">This field is required.</div>');
+                    if (!firstError) firstError = $(this);
+                    isValid = false;
+                }
+            });
+
+            // Email validation
+            var email = $('#email').val().trim();
+            if (email && !isValidEmail(email)) {
+                $('#email').addClass('is-invalid');
+                $('#email').next('.invalid-feedback').remove();
+                $('#email').after('<div class="invalid-feedback">Please enter a valid email address.</div>');
+                if (!firstError) firstError = $('#email');
+                isValid = false;
+            }
+
+            // Phone validation
+            var phone = $('#phone').val().trim();
+            if (phone && !isValidPhone(phone)) {
+                $('#phone').addClass('is-invalid');
+                $('#phone').next('.invalid-feedback').remove();
+                $('#phone').after('<div class="invalid-feedback">Please enter a valid phone number.</div>');
+                if (!firstError) firstError = $('#phone');
+                isValid = false;
+            }
+
+            // Focus on first error
+            if (firstError) {
+                firstError.focus();
+                // Scroll to error field
+                $('html, body').animate({
+                    scrollTop: firstError.offset().top - 100
+                }, 500);
+            }
+
+            return isValid;
+        }
+
+        function isValidEmail(email) {
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function isValidPhone(phone) {
+            var phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+            var cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+            return phoneRegex.test(cleanPhone);
+        }
+
+        // Form submission with enhanced validation
         $('#form').submit(function (e) {
             e.preventDefault();
+
+            if (!validateForm()) {
+                toastr.warning('Please correct the errors and try again.', 'Validation Failed');
+                return;
+            }
+
             var form = $(this);
             var url = form.attr('action');
             var formData = new FormData(this);
-            // add bootstrap spinner
-            $('#update_btn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...').prop('disabled', true);
+
+
+
+            // Check if we have a file selected
+            var photoInput = $('#photo')[0];
+            if (window.selectedFile) {
+
+                // Manually append the file if the input doesn't have it
+                formData.set('photo', window.selectedFile);
+            }
+
+            // Update button state
+            var originalText = $('#update_btn').html();
+            $('#update_btn').prop('disabled', true).html(`
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Updating Customer...
+            `);
 
             $.ajax({
                 type: 'PATCH',
@@ -127,33 +550,79 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-
                     toastr.success('Customer updated successfully!', 'Success', {
                         timeOut: 5000,
                         closeButton: true,
                         progressBar: true
                     });
-                    // reload current page
+
+                    // Reload current page after delay
                     setTimeout(function () {
                         window.location.reload();
                     }, 2000);
-
                 },
-                error: function (error) {
-                    // show error toast
-                    toastr.error('Error updating customer: ' + error.responseJSON.detail, 'Error', {
-                        timeOut: 5000,
+                error: function (xhr) {
+                    var errorMessage = 'An error occurred while updating the customer.';
+
+                    if (xhr.responseJSON && xhr.responseJSON.detail) {
+                        errorMessage = xhr.responseJSON.detail;
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.status === 400) {
+                        errorMessage = 'Invalid data provided. Please check your inputs.';
+                    } else if (xhr.status === 404) {
+                        errorMessage = 'Customer not found.';
+                    } else if (xhr.status === 500) {
+                        errorMessage = 'Server error. Please try again later.';
+                    }
+
+                    toastr.error(errorMessage, 'Error', {
+                        timeOut: 7000,
                         closeButton: true,
                         progressBar: true
                     });
+
+                },
+                complete: function () {
+                    // Restore button state
+                    $('#update_btn').html(originalText).prop('disabled', false);
                 }
-            }).done(function () {
-                // remove bootstrap spinner
-                $('#update_btn').html('Update customer').prop('disabled', false);
-            })
+            });
         });
 
-    });
+        // Real-time validation
+        $('.form-control').on('blur', function () {
+            var field = $(this);
+            field.removeClass('is-invalid');
+            field.next('.invalid-feedback').remove();
 
+            if (field.attr('required') && !field.val().trim()) {
+                field.addClass('is-invalid');
+                field.after('<div class="invalid-feedback">This field is required.</div>');
+            } else if (field.attr('type') === 'email' && field.val().trim() && !isValidEmail(field.val().trim())) {
+                field.addClass('is-invalid');
+                field.after('<div class="invalid-feedback">Please enter a valid email address.</div>');
+            } else if (field.attr('type') === 'tel' && field.val().trim() && !isValidPhone(field.val().trim())) {
+                field.addClass('is-invalid');
+                field.after('<div class="invalid-feedback">Please enter a valid phone number.</div>');
+            }
+        });
+
+        // Clear validation on input
+        $('.form-control').on('input', function () {
+            if ($(this).hasClass('is-invalid')) {
+                $(this).removeClass('is-invalid');
+                $(this).next('.invalid-feedback').remove();
+            }
+        });
+
+        // Initialize tooltips if needed
+        if (typeof bootstrap !== 'undefined') {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        }
+    });
 </script>
 {% endblock content %}
