@@ -12,7 +12,30 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
 from django.utils.http import url_has_allowed_host_and_scheme
 
+
+from django.contrib.auth.decorators import user_passes_test
+
+
+def is_admin_user(user):
+    return user.is_superuser  # or user.is_superuser
+
+
 User = get_user_model()
+
+
+@require_http_methods(["GET"])
+@login_required()
+def no_permission_view(request: HttpRequest) -> HttpResponse:
+    user_permissions = request.user.permissions.all()
+
+    return render(
+        request=request,
+        template_name="accounts/no_permission.html",
+        status=403,
+        context={
+            "permissions": user_permissions,
+        },
+    )
 
 
 def logout_view(request: HttpRequest) -> HttpResponse:
@@ -112,26 +135,31 @@ def login_view(request: HttpRequest) -> HttpResponse:
                 )
 
 
+@require_http_methods(["GET", "POST"])
+@user_passes_test(is_admin_user)
+@login_required()
 def register_user(request: HttpRequest) -> HttpResponse:
-    msg = None
-    success = False
 
     if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get("username")
-            raw_password = form.cleaned_data.get("password")
-            authenticate(username=username, password=raw_password)
-            return redirect("/login/")
-        # TODO: Return error message as json response
+            return JsonResponse(
+                {"message": "User registered successfully", "status": "success"},
+                status=201,
+            )
+        else:
+            return JsonResponse(
+                {
+                    "message": "Error registering user",
+                    "status": "error",
+                    "errors": form.errors,
+                },
+                status=400,
+            )
 
     elif request.method == "GET":
         return render(
             request,
             "accounts/register.html",
-            {"msg": msg, "success": success},
         )
-    else:
-        # not allowed
-        return JsonResponse({"message": "Invalid request method"}, status=405)
