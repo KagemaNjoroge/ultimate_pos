@@ -25,4 +25,7 @@ def mpesa_daraja_callback(request):
             status=201,
         )
     except Exception as e:
-        return Response({"status": "error", "message": str(e)}, status=500)
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error("An error occurred while processing the M-Pesa Daraja callback.", exc_info=True)
+        return Response({"status": "error", "message": "An internal error occurred. Please try again later."}, status=500)
