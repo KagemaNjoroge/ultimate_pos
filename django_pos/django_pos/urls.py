@@ -52,6 +52,8 @@ urlpatterns = [
     path("api-auth/", include("rest_framework.urls")),
     # Utils
     path("utils/", include("utils.urls")),
+    # Payments
+    path("payments/", include("payments.urls")),
 ]
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += debug_toolbar_urls()
