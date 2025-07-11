@@ -52,14 +52,20 @@ def select_current_branch(request: HttpRequest) -> HttpResponse:
             except Branch.DoesNotExist:
                 messages.error(request, "Selected branch does not exist.")
                 return render(
-                    request, "company/select_branch.html", {"branches": branches}
+                    request,
+                    "company/branches/select_branch.html",
+                    {"branches": branches},
                 )
         else:
             messages.error(request, "Please select a branch to continue.")
-            return render(request, "company/select_branch.html", {"branches": branches})
+            return render(
+                request, "company/branches/select_branch.html", {"branches": branches}
+            )
 
     # GET request - show branch selection page
-    return render(request, "company/select_branch.html", {"branches": branches})
+    return render(
+        request, "company/branches/select_branch.html", {"branches": branches}
+    )
 
 
 @require_http_methods(["GET", "POST"])
@@ -185,7 +191,7 @@ def index(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["GET"])
 def branches(request: HttpRequest) -> HttpResponse:
     all_branches = Branch.objects.all()
-    return render(request, "company/branches.html", {"branches": all_branches})
+    return render(request, "company/branches/branches.html", {"branches": all_branches})
 
 
 @login_required()
@@ -203,7 +209,7 @@ def add_branch(request):
 
     return render(
         request,
-        "company/add_branch.html",
+        "company/branches/add_branch.html",
         context=context,
     )
 
