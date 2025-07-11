@@ -6,12 +6,18 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 from company.utils.branch_utils import ensure_default_branch, set_current_branch
-from .models import Branch, Company
-from .serializers import CompanySerializer
+
+from .serializers import CompanySerializer, BranchSerializer, Branch, Company
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import CompanySerializer
+
+from rest_framework.viewsets import ModelViewSet
+
+
+class BranchesViewSet(ModelViewSet):
+    queryset = Branch.objects.all()
+    serializer_class = BranchSerializer
 
 
 @require_http_methods(["GET", "POST"])
@@ -186,11 +192,19 @@ def branches(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["GET"])
 def add_branch(request):
     company = Company.objects.first()
+    # check if there is branch that is headquarter
+    branches = Branch.objects.filter(is_headquarter=True)
+    context = {
+        "company": company,
+    }
+    if branches.exists():
+        context["headquarter_branch"] = branches.first()
+        context["headquarter_exists"] = True
 
     return render(
         request,
         "company/add_branch.html",
-        context={"company": company},
+        context=context,
     )
 
 
