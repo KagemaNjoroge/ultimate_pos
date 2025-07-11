@@ -1,11 +1,7 @@
 {%load static%}
 <div class="navbar-collapse justify-content-end px-0" id="navbarNav" data-bs-theme="auto">
     <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-        <a class="nav-link btn" data-bs-toggle="modal" data-bs-target="#aiAssistantModal">
-            <img src="{%static 'img/logos/ai_sparkles.svg'%}" alt="Ask AI"
-                style="width: 20px; height: 20px; margin-top: -5px;">
 
-        </a>
         <li class="nav-item dropdown">
             <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                 aria-expanded="false">
@@ -13,17 +9,38 @@
             </a>
             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                 <div class="message-body">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <img src="{%static 'img/profile/user-1.jpg'%}" alt="" width="50" height="50"
+                            class="rounded-circle">
+                        <div>
+                            <h6 class="mb-0">{{ request.user.username }}</h6>
+                            <p class="mb-0 fs-3">{{ request.user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="{%url 'pos:index'%}" class="d-flex align-items-center
+                        gap-2 dropdown-item">
+                        <i class="ti ti-home fs-6"></i>
+                        <p class="mb-0 fs-3">Dashboard</p>
+                    </a>
+                    <!--if admin show link to admin-->
+                    {% if request.user.is_superuser %}
+                    <a href="/admin/" class="d-flex align-items-center gap-2 dropdown-item">
+                        <i class="ti ti-settings fs-6"></i>
+                        <p class="mb-0 fs-3">Admin</p>
+                    </a>
+                    {% endif %}
                     <a href="{%url 'authentication:profile'%}" class="d-flex align-items-center gap-2 dropdown-item">
                         <i class="ti ti-user fs-6"></i>
                         <p class="mb-0 fs-3">My Profile</p>
                     </a>
 
                     <a href="{%url 'authentication:logout'%}" class="d-flex align-items-center gap-2 dropdown-item">
-                        
+
                         <i class="ti ti-power-off fs-6"></i>
                         <p class="mb-0 fs-3">Logout</p>
                     </a>
-                    <a href="" class="btn btn-outline-primary mx-3 mt-2 d-block">Logout</a>
+
                 </div>
             </div>
         </li>

@@ -6,12 +6,18 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 from company.utils.branch_utils import ensure_default_branch, set_current_branch
-from .models import Branch, Company
-from .serializers import CompanySerializer
+
+from .serializers import CompanySerializer, BranchSerializer, Branch, Company
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import CompanySerializer
+
+from rest_framework.viewsets import ModelViewSet
+
+
+class BranchesViewSet(ModelViewSet):
+    queryset = Branch.objects.all()
+    serializer_class = BranchSerializer
 
 
 @require_http_methods(["GET", "POST"])
@@ -46,14 +52,20 @@ def select_current_branch(request: HttpRequest) -> HttpResponse:
             except Branch.DoesNotExist:
                 messages.error(request, "Selected branch does not exist.")
                 return render(
-                    request, "company/select_branch.html", {"branches": branches}
+                    request,
+                    "company/branches/select_branch.html",
+                    {"branches": branches},
                 )
         else:
             messages.error(request, "Please select a branch to continue.")
-            return render(request, "company/select_branch.html", {"branches": branches})
+            return render(
+                request, "company/branches/select_branch.html", {"branches": branches}
+            )
 
     # GET request - show branch selection page
-    return render(request, "company/select_branch.html", {"branches": branches})
+    return render(
+        request, "company/branches/select_branch.html", {"branches": branches}
+    )
 
 
 @require_http_methods(["GET", "POST"])
@@ -179,18 +191,26 @@ def index(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["GET"])
 def branches(request: HttpRequest) -> HttpResponse:
     all_branches = Branch.objects.all()
-    return render(request, "company/branches.html", {"branches": all_branches})
+    return render(request, "company/branches/branches.html", {"branches": all_branches})
 
 
 @login_required()
 @require_http_methods(["GET"])
 def add_branch(request):
     company = Company.objects.first()
+    # check if there is branch that is headquarter
+    branches = Branch.objects.filter(is_headquarter=True)
+    context = {
+        "company": company,
+    }
+    if branches.exists():
+        context["headquarter_branch"] = branches.first()
+        context["headquarter_exists"] = True
 
     return render(
         request,
-        "company/add_branch.html",
-        context={"company": company},
+        "company/branches/add_branch.html",
+        context=context,
     )
 
 

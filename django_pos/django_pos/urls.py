@@ -36,8 +36,6 @@ urlpatterns = [
     path("company/", include("company.urls")),
     # suppliers
     path("suppliers/", include("suppliers.urls")),
-    # accounting
-    path("accounting/", include("accounting.urls")),
     # expenses
     path("expenses/", include("expenses.urls")),
     # purchases

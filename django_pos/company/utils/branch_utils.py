@@ -64,23 +64,3 @@ def ensure_default_branch():
         )
         return True
     return False
-
-
-def get_branch_statistics(branch):
-    """
-    Get basic statistics for a branch.
-    This can be extended to include sales, inventory, etc.
-    """
-    stats = {
-        "branch_name": branch.branch_name,
-        "is_headquarter": branch.is_headquarter,
-        "has_phone": bool(branch.phone_number),
-        "has_email": bool(branch.email),
-        "has_address": bool(branch.address),
-    }
-
-    # Add more statistics here as needed
-    # stats['total_sales'] = Sale.objects.filter(branch=branch).count()
-    # stats['total_products'] = Product.objects.filter(branch=branch).count()
-
-    return stats

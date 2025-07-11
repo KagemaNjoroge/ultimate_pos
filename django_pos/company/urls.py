@@ -1,7 +1,12 @@
+from django.db import router
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
+
+app_name = "company"
 from .views import (
     CompanyView,
+    BranchesViewSet,
     index,
     branches,
     add_branch,
@@ -10,7 +15,10 @@ from .views import (
     switch_branch,
 )
 
-app_name = "company"
+router = DefaultRouter()
+router.register(r"branch/api", BranchesViewSet, basename="branch")
+
+
 urlpatterns = [
     path("<int:id>/", CompanyView.as_view(), name="company_id"),
     path("settings/", view=index, name="settings"),
@@ -20,3 +28,4 @@ urlpatterns = [
     path("select-current-branch/", select_current_branch, name="select_current_branch"),
     path("switch-branch/", switch_branch, name="switch_branch"),
 ]
+urlpatterns += router.urls
