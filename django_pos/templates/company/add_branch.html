@@ -1,77 +1,499 @@
 {%extends 'pos/base.html'%}
 {% load static %}
-{% block title %}Add Branch{% endblock %}
+{% block title %}Add New Branch{% endblock %}
 {%block heading%}
-Add Branch
+<div class="d-flex align-items-center">
+    <i class="ti ti-building-store me-2 text-primary"></i>
+    <span>Add New Branch</span>
+</div>
 {%endblock heading%}
 {%block content%}
-<div class="ml-2 mb-3">
-    <a class="btn btn-primary" href="{%url 'company:branches'%}">
-        <i class="ti ti-arrow-left"></i>
-        Back
-    </a>
-</div>
-<div class="card ml-2">
-    <div class="card-body">
-        <form action="/api/branch/" method="post" id="branch_form">
-            <input type="hidden" name="company" value="{{company.id}}" id="company">
-            <input type="hidden" name="is_headquarter" value="false" id="is_headquarter">
 
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="branch_name">Branch Name</label>
-                    <input type="text" name="branch_name" id="branch_name" required class="form-control">
+<!-- Header Section with Navigation -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm bg-gradient-primary text-white">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title text-white mb-1">
+                            <i class="ti ti-building-store me-2"></i>
+                            New Branch Registration
+                        </h4>
+                        <p class="card-text text-white-50 mb-0">Create a new branch location for your business</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <a href="{%url 'company:branches'%}" class="btn btn-light btn-lg shadow-sm">
+                            <i class="ti ti-arrow-left me-1"></i>
+                            Back to Branches
+                        </a>
+                    </div>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="phone_number">Phone Number</label>
-                    <input type="tel" name="phone_number" id="phone_number" class="form-control">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-12">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" class="form-control">
-
-                </div>
-
-            </div>
-            <div class="form-row">
-                <div class="col-md-12 form-group">
-                    <label for="address">Where is the branch located?</label>
-                    <textarea name="address" id="address" class="form-control"></textarea>
-                </div>
-            </div>
-
-
-            <button type="submit" class="btn btn-success" id="save">
-                Save Branch
-            </button>
-        </form>
-    </div>
-</div>
-<div class="error_toast mt-3" style="display: none;">
-    <div class="toast-container position-fixed bottom-0 start-50 translate-middle end-0 p-3 ">
-        <div id="liveToast" class="toast" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-                <i class="ti ti-exclamation-mark"></i>
-                <strong class="me-auto">Ultimate POS</strong>
-                <small>Now</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body" id="toast_body">
-                Hello, world! This is a toast message.
             </div>
         </div>
     </div>
 </div>
+
+<!-- Main Form Section -->
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 48px; height: 48px;">
+                            <i class="ti ti-building fs-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="card-title mb-0">Branch Information</h5>
+                        <p class="text-muted mb-0">Enter the details for your new branch location</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                {% if headquarter_exists %}
+                <div class="alert alert-info mb-4">
+                    <div class="d-flex">
+                        <i class="ti ti-info-circle me-2 fs-5"></i>
+                        <div>
+                            <h6 class="mb-1">Headquarters Already Set</h6>
+                            <p class="mb-0">Your company headquarters is already set to
+                                <strong>{{ headquarter_branch.branch_name }}</strong>. This new branch will be
+                                registered as a standard branch location.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <form action="/company/branch/api/" method="post" id="branch_form" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="company" value="{{company.id}}" id="company">
+
+                    <!-- Basic Information Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-info-circle me-2"></i>
+                            Basic Information
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="branch_name" class="form-label fw-semibold">
+                                    <i class="ti ti-building-store me-1 text-primary"></i>
+                                    Branch Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" name="branch_name" id="branch_name" required
+                                    class="form-control form-control-lg"
+                                    placeholder="e.g., Downtown Branch, Main Street Location">
+                                <div class="invalid-feedback">
+                                    Please provide a branch name.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">
+                                    <i class="ti ti-building me-1 text-secondary"></i>
+                                    Company
+                                </label>
+                                <input type="text" class="form-control" value="{{company.company_name}}" disabled>
+                                <small class="text-muted">This branch will be associated with your company
+                                    automatically</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-address-book me-2"></i>
+                            Contact Information
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone_number" class="form-label fw-semibold">
+                                    <i class="ti ti-phone me-1 text-success"></i>
+                                    Phone Number
+                                </label>
+                                <input type="tel" name="phone_number" id="phone_number" class="form-control"
+                                    placeholder="+254 712 345 678">
+                                <div class="invalid-feedback">
+                                    Please provide a valid phone number.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label fw-semibold">
+                                    <i class="ti ti-mail me-1 text-info"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" name="email" id="email" class="form-control"
+                                    placeholder="branch@company.com">
+                                <div class="invalid-feedback">
+                                    Please provide a valid email address.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Information Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-map-pin me-2"></i>
+                            Location Details
+                        </h6>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="address" class="form-label fw-semibold">
+                                    <i class="ti ti-location me-1 text-danger"></i>
+                                    Physical Address <span class="text-danger">*</span>
+                                </label>
+                                <textarea name="address" id="address" class="form-control" rows="3"
+                                    placeholder="Enter complete address with street, building, city"></textarea>
+                                <div class="invalid-feedback">
+                                    Please provide the branch location address.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Branch Settings Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-settings me-2"></i>
+                            Branch Settings
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check form-switch ps-0">
+                                    <div class="d-flex align-items-center">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input me-2" type="checkbox" id="is_headquarter"
+                                                name="is_headquarter" {% if headquarter_exists %}disabled{% endif %}>
+                                            <label class="form-check-label fw-semibold" for="is_headquarter">
+                                                <i class="ti ti-building-bank me-1 text-primary"></i>
+                                                Set as Headquarters
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            {% if headquarter_exists %}
+                                            Your company already has a headquarters branch.
+                                            {% else %}
+                                            Designate this branch as your company's main headquarters.
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check form-switch ps-0">
+                                    <div class="d-flex align-items-center">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input me-2" type="checkbox" id="is_active"
+                                                name="is_active" checked>
+                                            <label class="form-check-label fw-semibold" for="is_active">
+                                                <i class="ti ti-toggle-right me-1 text-success"></i>
+                                                Branch Active Status
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">Enable this branch for operations immediately</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-notes me-2"></i>
+                            Additional Information
+                        </h6>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="notes" class="form-label fw-semibold">
+                                    <i class="ti ti-message me-1 text-secondary"></i>
+                                    Notes & Comments
+                                </label>
+                                <textarea name="notes" id="notes" class="form-control" rows="3"
+                                    placeholder="Enter any additional information about this branch (operating hours, special instructions, etc.)"></textarea>
+                                <small class="form-text text-muted">Optional: Add any relevant information about this
+                                    branch</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <div>
+                            <small class="text-muted">
+                                <i class="ti ti-info-circle me-1"></i>
+                                Fields marked with <span class="text-danger">*</span> are required
+                            </small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'company:branches' %}" class="btn btn-outline-secondary">
+                                <i class="ti ti-x me-1"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg px-4" id="save">
+                                <i class="ti ti-device-floppy me-1"></i>
+                                Save Branch
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+    }
+
+    .form-control {
+        border-radius: 0.5rem;
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #5e72e4;
+        box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.25);
+    }
+
+    .form-control-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1.1rem;
+    }
+
+    .form-label {
+        margin-bottom: 0.5rem;
+        color: #374151;
+    }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-check-input {
+        width: 2rem;
+        height: 1rem;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: #5e72e4;
+        border-color: #5e72e4;
+    }
+
+    .invalid-feedback {
+        display: none;
+    }
+
+    .form-control.is-invalid {
+        border-color: #dc3545;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+
+    .form-control.is-valid {
+        border-color: #198754;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='m2.3 6.73.8-.77-.76-.76-.76.76zm1.5-4.47h1.33L3.75 3.61v.77z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loading-spinner {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+    }
+</style>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 mb-0">Creating branch...</p>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
+        // Form validation patterns
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phonePattern = /^[\+]?[1-9][\d]{0,15}$/;
+
+        // Real-time validation
+        function validateField(field, pattern = null, required = false) {
+            const value = field.val().trim();
+
+            // Remove existing validation classes
+            field.removeClass('is-valid is-invalid');
+
+            if (required && !value) {
+                field.addClass('is-invalid');
+                return false;
+            } else if (value && pattern && !pattern.test(value)) {
+                field.addClass('is-invalid');
+                return false;
+            } else if (value) {
+                field.addClass('is-valid');
+                return true;
+            }
+
+            return !required;
+        }
+
+        // Add real-time validation to fields
+        $('#branch_name').on('blur keyup', function () {
+            validateField($(this), null, true);
+        });
+
+        $('#email').on('blur keyup', function () {
+            const value = $(this).val().trim();
+            if (value) {
+                validateField($(this), emailPattern, false);
+            } else {
+                $(this).removeClass('is-valid is-invalid');
+            }
+        });
+
+        $('#phone_number').on('blur keyup', function () {
+            const value = $(this).val().trim();
+            if (value) {
+                validateField($(this), phonePattern, false);
+            } else {
+                $(this).removeClass('is-valid is-invalid');
+            }
+        });
+
+        $('#address').on('blur keyup', function () {
+            validateField($(this), null, true);
+        });
+
+        // Auto-format phone number
+        $('#phone_number').on('input', function () {
+            let value = $(this).val().replace(/\D/g, '');
+            if (value.startsWith('254')) {
+                value = '+' + value;
+            } else if (value.startsWith('0')) {
+                value = '+254' + value.substring(1);
+            }
+            $(this).val(value);
+        });
+
+        // Character counter for notes
+        $('#notes').on('input', function () {
+            const maxLength = 500;
+            const currentLength = $(this).val().length;
+            const remaining = maxLength - currentLength;
+
+            let counterElement = $(this).siblings('.char-counter');
+            if (counterElement.length === 0) {
+                counterElement = $('<small class="char-counter form-text text-muted"></small>');
+                $(this).after(counterElement);
+            }
+
+            if (remaining < 50) {
+                counterElement.removeClass('text-muted').addClass('text-warning');
+            } else {
+                counterElement.removeClass('text-warning').addClass('text-muted');
+            }
+
+            counterElement.text(`${remaining} characters remaining`);
+
+            if (currentLength > maxLength) {
+                $(this).val($(this).val().substring(0, maxLength));
+            }
+        });
+
+        // Form submission with enhanced validation
         $("#branch_form").submit(function (e) {
             e.preventDefault();
+
+            // Validate required fields
+            const branchNameValid = validateField($('#branch_name'), null, true);
+            const addressValid = validateField($('#address'), null, true);
+            const emailValid = $('#email').val().trim() ? validateField($('#email'), emailPattern, false) : true;
+            const phoneValid = $('#phone_number').val().trim() ? validateField($('#phone_number'), phonePattern, false) : true;
+
+            // Check if form is valid
+            if (!branchNameValid || !addressValid || !emailValid || !phoneValid) {
+                toastr.error('Please correct the errors in the form before submitting.', 'Validation Error', {
+                    positionClass: 'toast-top-right',
+                    progressBar: true,
+                    timeOut: 5000
+                });
+
+                // Focus on first invalid field
+                $('.is-invalid').first().focus();
+                return;
+            }
+
+            // Show loading state
+            const saveBtn = $('#save');
+            const originalText = saveBtn.html();
+            saveBtn.prop('disabled', true).html(`
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Creating...
+            `);
+
+            // Show loading overlay
+            $('#loadingOverlay').css('display', 'flex');
+
             var form = $(this);
             var url = form.attr('action');
 
-            $('#save').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Creating...')
+            // Build request payload
+            const payload = {
+                branch_name: $("#branch_name").val().trim(),
+                company: $("#company").val(),
+                email: $("#email").val().trim() || null,
+                address: $("#address").val().trim(),
+                phone_number: $("#phone_number").val().trim() || null,
+                is_headquarter: $("#is_headquarter").is(":checked"),
+                is_active: $("#is_active").is(":checked"),
+
+                notes: $("#notes").val().trim() || null
+            };
 
             $.ajax({
                 method: 'POST',
@@ -80,42 +502,93 @@ Add Branch
                     "Content-Type": "application/json",
                 },
                 processData: false,
-                data: JSON.stringify({
-                    branch_name: $("#branch_name").val(),
-                    company: $("#company").val(),
-                    email: $("#email").val(),
-                    address: $("#address").val(),
-                    phone_number: $("#phone_number").val(),
-
-                }),
+                data: JSON.stringify(payload),
                 url: url,
+                timeout: 30000, // 30 second timeout
                 success: function (response) {
-                    $('#branch_form').trigger('reset');
-                    $('.error_toast').css('display', 'block')
-                    // change toast body
-                    $('#toast_body').html("Branch added successfully.");
-                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-                        autohide: true,
-                        delay: 5000,
+                    // Hide loading
+                    $('#loadingOverlay').hide();
+                    saveBtn.prop('disabled', false).html(originalText);
+
+                    // Show success message with redirect
+                    toastr.success('Branch has been successfully created!', 'Success', {
+                        positionClass: 'toast-top-right',
+                        progressBar: true,
+                        timeOut: 3000,
+                        onHidden: function () {
+                            // Redirect to branches list
+                            window.location.href = "{% url 'company:branches' %}";
+                        }
                     });
-                    toast.show();
-                    $('#save').html('Save')
                 },
-                error: function (response) {
-                    $('.error_toast').css('display', 'block')
-                    // change toast body
-                    $('#toast_body').html(response.responseJSON.detail);
-                    var toast = new bootstrap.Toast(document.getElementById('liveToast'), {
-                        autohide: true,
-                        delay: 5000,
+                error: function (xhr, status, error) {
+                    // Hide loading
+                    $('#loadingOverlay').hide();
+                    saveBtn.prop('disabled', false).html(originalText);
+
+                    let errorMessage = 'An error occurred while creating the branch.';
+
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.status === 400) {
+                        errorMessage = 'Please check your input data and try again.';
+                    } else if (xhr.status === 409) {
+                        errorMessage = 'A branch with this name already exists.';
+                    } else if (xhr.status === 500) {
+                        errorMessage = 'Server error occurred. Please try again later.';
+                    } else if (status === 'timeout') {
+                        errorMessage = 'Request timed out. Please check your connection and try again.';
+                    }
+
+                    toastr.error(errorMessage, 'Error', {
+                        positionClass: 'toast-top-right',
+                        progressBar: true,
+                        timeOut: 5000
                     });
-                    toast.show();
-                    $('#save').html('Save')
 
+                    console.error('Error:', error);
+                    console.error('Response:', xhr.responseJSON || xhr.responseText);
+                    console.error('Status:', status);
                 }
-            })
+            });
+        });
 
-        })
-    })
+        // Add smooth animations
+        $('.card').addClass('animate__animated animate__fadeInUp');
+
+        // Focus first field on load
+        setTimeout(() => {
+            $('#branch_name').focus();
+        }, 500);
+
+        // Prevent form submission on Enter key except for submit button
+        $(document).on('keypress', 'input:not([type="submit"])', function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                const inputs = $('input:visible, textarea:visible, select:visible').not('[disabled], [readonly]');
+                const nextIndex = inputs.index(this) + 1;
+                if (nextIndex < inputs.length) {
+                    inputs.eq(nextIndex).focus();
+                } else {
+                    $('#save').focus();
+                }
+            }
+        });
+
+        // Toggle warning when trying to set as headquarters when one already exists
+        {% if headquarter_exists %}
+        $('#is_headquarter').on('click', function (e) {
+            if ($(this).is(':checked')) {
+                e.preventDefault();
+                toastr.warning('Your company already has a headquarters set to "{{ headquarter_branch.branch_name }}". To change headquarters, please update your branch settings.', 'Headquarters Already Set', {
+                    positionClass: 'toast-top-right',
+                    progressBar: true,
+                    timeOut: 5000
+                });
+                return false;
+            }
+        });
+        {% endif %}
+    });
 </script>
 {%endblock content%}
