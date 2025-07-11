@@ -46,6 +46,8 @@ def logout_view(request: HttpRequest) -> HttpResponse:
 
 
 @login_required()
+@require_http_methods(["GET"])
+@user_passes_test(is_admin_user)
 def index(request: HttpRequest) -> HttpResponse:
     # for users management
     users = User.objects.all()
