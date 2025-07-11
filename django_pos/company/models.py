@@ -65,3 +65,12 @@ class Branch(models.Model):
         verbose_name_plural = "Branches"
         verbose_name = "Branch"
         db_table = "Branch"
+        unique_together = ("company", "branch_name")
+        # only one branch can be headquarter
+        constraints = [
+            models.UniqueConstraint(
+                fields=["company", "is_headquarter"],
+                condition=models.Q(is_headquarter=True),
+                name="unique_headquarter",
+            )
+        ]
