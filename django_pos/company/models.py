@@ -40,7 +40,7 @@ class Branch(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     branch_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
-    email = models.EmailField(blank=True)
+    email = models.EmailField(blank=True, null=True)
     address = models.CharField(max_length=100, blank=True, null=True)
     is_headquarter = models.BooleanField(default=False)
 
