@@ -47,7 +47,6 @@ LOCAL_APPS = [
     "inventory",
     "reports",
     "suppliers",
-    "accounting",
     "expenses",
     "purchases",
     "authentication",
