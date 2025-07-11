@@ -38,12 +38,11 @@ def no_permission_view(request: HttpRequest) -> HttpResponse:
     )
 
 
+@require_http_methods(["GET", "POST"])
+@login_required()
 def logout_view(request: HttpRequest) -> HttpResponse:
-    if request.user.is_authenticated:
-        logout(request)
-        return redirect("/login/")
-    else:
-        return redirect("/login/")
+    logout(request)
+    return redirect("authentication:login")
 
 
 @login_required()
@@ -51,16 +50,6 @@ def index(request: HttpRequest) -> HttpResponse:
     # for users management
     users = User.objects.all()
     return render(request, "accounts/index.html", {"users": users})
-
-
-@login_required()
-@api_view(["GET", "POST"])
-def logout_view(request) -> Response:
-    if request.user.is_authenticated:
-        logout(request)
-        return redirect("/login/")
-    else:
-        return redirect("/login/")
 
 
 @login_required()
