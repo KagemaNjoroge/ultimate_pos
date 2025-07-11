@@ -466,9 +466,7 @@
                                     <th scope="col" class="border-0 fw-semibold">
                                         <i class="ti ti-receipt-tax me-1"></i>Tax
                                     </th>
-                                    <th scope="col" class="border-0 fw-semibold">
-                                        <i class="ti ti-printer me-1"></i>Status
-                                    </th>
+
                                     <th scope="col" class="border-0 fw-semibold text-center">Actions</th>
                                 </tr>
                             </thead>
@@ -487,17 +485,7 @@
                                     <td>
                                         <span class="text-muted">${{s.tax_amount|floatformat:2}}</span>
                                     </td>
-                                    <td>
-                                        {% if s.receipt_is_printed %}
-                                        <span class="badge badge-status bg-success text-white">
-                                            <i class="ti ti-check me-1"></i>Printed
-                                        </span>
-                                        {% else %}
-                                        <span class="badge badge-status bg-warning text-dark">
-                                            <i class="ti ti-clock me-1"></i>Pending
-                                        </span>
-                                        {% endif %}
-                                    </td>
+
                                     <td class="text-center">
                                         <a href="{% url 'sales:sales_details' s.id %}"
                                             class="btn btn-outline-primary btn-sm rounded-pill" title="View Details">
@@ -540,7 +528,7 @@
             "searching": false, // Disable search functionality
             "lengthChange": false, // Disable show entries dropdown
             "columnDefs": [
-                { "orderable": false, "targets": 4 } // Disable ordering on actions column
+                { "orderable": false, "targets": 3 } // Disable ordering on actions column
             ],
             "language": {
                 "info": "Showing _START_ to _END_ of _TOTAL_ transactions",
