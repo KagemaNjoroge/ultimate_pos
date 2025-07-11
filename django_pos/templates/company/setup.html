@@ -210,22 +210,23 @@ Company Setup
             method: 'POST',
             body: formData,
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': '{{ csrf_token }}'
             }
         })
-        .then(response => {
-            if (response.ok) {
-                // Optionally redirect or reload
-                window.location.reload();
-            } else {
-                return response.text().then(text => { throw new Error(text); });
-            }
-        })
-        .catch(error => {
-            toastr.error('An error occurred while submitting the form.');
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        });
+            .then(response => {
+                if (response.ok) {
+                    // Optionally redirect or reload
+                    window.location.reload();
+                } else {
+                    return response.text().then(text => { throw new Error(text); });
+                }
+            })
+            .catch(error => {
+                toastr.error('An error occurred while submitting the form.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
     });
 
     // Email validation function
