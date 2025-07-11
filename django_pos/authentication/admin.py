@@ -14,7 +14,12 @@ class PermissionAdmin(admin.ModelAdmin):
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
 
-    list_display = ("username", "role", "email", "phone_number", "date_of_birth")
+    list_display = (
+        "username",
+        "role",
+        "email",
+        "phone_number",
+    )
     list_filter = ("role",)
     search_fields = ("username", "email", "role")
     list_per_page = 10
@@ -31,7 +36,6 @@ class CustomUserAdmin(admin.ModelAdmin):
                     "email",
                     "phone_number",
                     "address",
-                    "date_of_birth",
                     "id_number",
                 )
             },
