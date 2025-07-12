@@ -15,7 +15,7 @@
     <script src="{% static 'js/branch-manager.js' %}"></script>
     <link href="{% static 'css/pagination_buttons.css' %}" rel="stylesheet">
     <link rel="shortcut icon" type="image/png" href="{%static 'img/logos/favicon.png'%}" />
-    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+
     <link rel="stylesheet" href="{%static 'libs/simplebar/dist/simplebar.css'%}">
     <link rel="stylesheet" href="{%static 'css/icons/tabler-icons/tabler-icons.css'%}">
     <link rel="manifest" href="{%static 'manifest.json'%}">
@@ -26,7 +26,7 @@
 <body>
 
 
-    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-sidebartype="full"
         data-sidebar-position="fixed" data-header-position="fixed">
 
         <aside class="left-sidebar">
@@ -89,17 +89,6 @@
         </div>
     </div>
 
-    <footer>
-        <div class="text-center">
-            <p class="text-sm">Brought to you by the good folks at
-                <a href="https://tomorrow.co.ke" target="_blank">
-                    TomorrowAI
-                </a>
-                <sup>&reg;</sup>
-            </p>
-        </div>
-
-    </footer>
     {% block javascripts %}
 
     <script src="{%static 'js/sidebarmenu.js'%}"></script>
