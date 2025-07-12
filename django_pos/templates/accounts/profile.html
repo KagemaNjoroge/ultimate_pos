@@ -27,7 +27,11 @@ My Profile | {{request.user.username}}
                     <div class="d-flex align-items-center">
                         <div class="badge bg-light text-primary px-3 py-2 rounded-pill">
                             <i class="ti ti-shield-check me-1"></i>
+                            {% if request.user.profile.role %}
+                            {{ request.user.profile.role.name }}
+                            {% else %}
                             Staff Account
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -60,8 +64,8 @@ My Profile | {{request.user.username}}
                         <i class="ti ti-mail me-1"></i>
                         {{request.user.email}}
                     </p>
-                    <div class="d-flex justify-content-center">
-                        <span class="badge bg-primary-subtle text-primary me-2 px-3 py-2">
+                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                        <span class="badge bg-primary-subtle text-primary px-3 py-2">
                             <i class="ti ti-user-check me-1"></i>
                             {{request.user.username}}
                         </span>
@@ -69,6 +73,12 @@ My Profile | {{request.user.username}}
                             <i class="ti ti-clock me-1"></i>
                             Active
                         </span>
+                        {% if request.user.profile.role %}
+                        <span class="badge bg-warning-subtle text-warning px-3 py-2">
+                            <i class="ti ti-shield me-1"></i>
+                            {{ request.user.profile.role.name }}
+                        </span>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="border-top p-4">
@@ -101,7 +111,7 @@ My Profile | {{request.user.username}}
                     <div class="me-3">
                         <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
                             style="width: 48px; height: 48px;">
-                            <i class="ti ti-user-edit fs-5"></i>
+                            <i class="ti ti-user fs-5"></i>
                         </div>
                     </div>
                     <div>
@@ -182,11 +192,47 @@ My Profile | {{request.user.username}}
                             <div class="col-md-6 mb-3">
                                 <label for="position" class="form-label fw-semibold">
                                     <i class="ti ti-briefcase me-1 text-warning"></i>
-                                    Position/Role
+                                    Position/Title
                                 </label>
                                 <input type="text" class="form-control" placeholder="e.g., Store Manager" id="position"
                                     value="{{request.user.profile.position|default:''}}" name="position">
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Role Management Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-shield me-2"></i>
+                            Role & Permissions
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="user_role" class="form-label fw-semibold">
+                                    <i class="ti ti-key me-1 text-danger"></i>
+                                    System Role
+                                </label>
+                                <select class="form-select" id="user_role" name="user_role"
+                                    {% if not request.user.is_superuser %}disabled{% endif %}>
+                                    {% for role_value, role_name in roles %}
+                                    <option value="{{ role_value }}"
+                                        {% if request.user.role == role_value %}selected{% endif %}
+                                        {% if role_name == "Admin" and not request.user.is_superuser %}disabled{% endif %}>
+                                        {{ role_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">
+                                    {% if request.user.is_superuser %}
+                                    As an administrator, you can change user roles
+                                    {% else %}
+                                    <span class="text-warning"><i class="ti ti-lock me-1"></i>Only administrators can
+                                        change user roles</span>
+                                    {% endif %}
+                                </small>
+                            </div>
+
+
                         </div>
                     </div>
 
@@ -479,7 +525,8 @@ My Profile | {{request.user.username}}
                     email: $('#email').val().trim(),
                     phone: $('#phone').val().trim(),
                     position: $('#position').val().trim(),
-                    email_notifications: $('#email_notifications').is(':checked')
+                    email_notifications: $('#email_notifications').is(':checked'),
+                    user_role: $('#user_role').val()
                 },
                 success: function (data) {
                     // Hide loading
@@ -548,6 +595,28 @@ My Profile | {{request.user.username}}
         tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
+
+
+
+        // Handle role selection change
+        $('#user_role').on('change', function () {
+            const roleId = $(this).val();
+            const roleName = $('#user_role option:selected').text().trim();
+
+
+            // Show role change notification
+            toastr.success(
+                `Role changed to ${roleName}. Remember to save your changes!`,
+                'Role Changed',
+                {
+                    positionClass: 'toast-top-right',
+                    progressBar: true,
+                    timeOut: 4000
+                }
+            );
+        });
+
+
     });
 </script>
 {%endblock content%}

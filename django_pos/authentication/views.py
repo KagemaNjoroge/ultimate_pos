@@ -60,7 +60,9 @@ def index(request: HttpRequest) -> HttpResponse:
 def profile(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         if request.accepted_renderer.format == "html":
-            return render(request, "accounts/profile.html")
+            # available roles
+            roles = User.role.field.choices
+            return render(request, "accounts/profile.html", {"roles": roles})
         else:
             user = User.objects.get(pk=request.user.id)
             serializer = CustomUserSerializer(user)
