@@ -132,6 +132,9 @@ def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
 @require_http_methods(["GET"])
 def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
     sale = get_object_or_404(Sale, id=sale_id)
+    # mark receipt as printed
+    sale.receipt_is_printed = True
+    sale.save()
     customer = sale.customer
     # Get the company details
     company = Company.objects.first()

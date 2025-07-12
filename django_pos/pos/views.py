@@ -1,14 +1,14 @@
 import json
 from datetime import date
-
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, FloatField, F
 from django.db.models.functions import Coalesce
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from company.utils.branch_utils import get_current_branch
+from .serializers import NotificationsSerializer
 from company.models import Company
 from customers.models import Customer
 from inventory.models import Inventory
@@ -16,6 +16,8 @@ from pos.models import Notifications
 from products.models import Product, Category
 from sales.models import Sale
 from sales.models import SaleItem
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 
 @login_required()
@@ -135,10 +137,16 @@ def pos(request: HttpRequest) -> HttpResponse:
         products = Product.objects.all()
         categories = Category.objects.all()
         customers = Customer.objects.all()
+        current_branch = get_current_branch(request)
         return render(
             request,
             "pos/pos.html",
-            {"products": products, "categories": categories, "customers": customers},
+            {
+                "products": products,
+                "categories": categories,
+                "customers": customers,
+                "current_branch": current_branch,
+            },
         )
     elif request.method == "POST":
         try:
@@ -228,34 +236,41 @@ def pos(request: HttpRequest) -> HttpResponse:
     return HttpResponse("Invalid request", status=400)
 
 
-@api_view(["GET"])
-def get_notifications(request, id: int = None) -> Response:
-    if id is None:
-        notifications = Notifications.objects.filter(
-            read=False, user=request.user
-        ).order_by("date")
-        return Response(
-            [
-                {
-                    "id": notification.id,
-                    "title": notification.title,
-                    "message": notification.message,
-                    "date": notification.date.strftime("%Y-%m-%d %H:%M:%S"),
-                }
-                for notification in notifications
-            ],
-            status=200,
-        )
+class NotificationsView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    else:
-        notification = get_object_or_404(Notifications, id=id)
-        notification.read = True
-        notification.save()
-        return Response(
-            {
-                "id": notification.id,
-                "title": notification.title,
-                "message": notification.message,
-                "date": notification.date.strftime("%Y-%m-%d %H:%M:%S"),
-            }
+    def get_object(self, id):
+        return get_object_or_404(Notifications, id=id)
+
+    def get(self, request, id=None):
+        if id:
+            notification = self.get_object(id)
+            notification.read = True
+            notification.save()
+            return Response(
+                NotificationsSerializer(notification).data,
+            )
+        else:
+            notifications = Notifications.objects.filter(
+                read=False, user=request.user
+            ).order_by("date")
+            return Response(
+                NotificationsSerializer(notifications, many=True).data,
+            )
+
+    def post(self, request):
+        serializer = NotificationsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def put(self, request, id):
+        notification = self.get_object(id)
+        serializer = NotificationsSerializer(
+            notification, data=request.data, partial=True
         )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)

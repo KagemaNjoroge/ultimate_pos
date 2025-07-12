@@ -6,9 +6,12 @@ app_name = "pos"
 urlpatterns = [
     path("", views.index, name="index"),
     path("pos/", views.pos, name="pos"),
-    path("notifications/", views.get_notifications, name="notifications"),
-    path("notifications/<int:id>/", views.get_notifications, name="notifications"),
-
-    
-
+    path(
+        "notifications/", views.NotificationsView.as_view(), name="notifications_list"
+    ),
+    path(
+        "notifications/<int:id>/",
+        views.NotificationsView.as_view(),
+        name="notifications_detail",
+    ),
 ]

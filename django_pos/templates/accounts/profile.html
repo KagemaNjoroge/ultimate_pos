@@ -1,105 +1,622 @@
 {%extends 'pos/base.html'%}
 {%load static%}
 {%block title%}
-{{request.user.username}}
+My Profile | {{request.user.username}}
 {%endblock title%}
 {%block heading%}
-Profile
+<div class="d-flex align-items-center">
+    <i class="ti ti-user-circle me-2 text-primary"></i>
+    <span>My Profile</span>
+</div>
 {%endblock heading%}
 {%block content%}
 
-<div class="card ml-2">
-    <div class="card-body">
-        <div class="container rounded bg-white mt-5 mb-5">
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img
-                            class="rounded-circle mt-5" width="150px" src="{{request.user.profile_pic.url}}"
-                            alt="{{request.user.username}}"><span
-                            class="font-weight-bold">{{request.user.username}}</span><span class="text-black-50">
-                        </span><small>
-                            {{request.user.email}}
-                        </small>
+<!-- Header Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm bg-gradient-primary text-white">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title text-white mb-1">
+                            <i class="ti ti-user me-2"></i>
+                            Account Settings
+                        </h4>
+                        <p class="card-text text-white-50 mb-0">Manage your personal information and preferences</p>
                     </div>
-                </div>
-
-
-                <div class="col-md-7">
-                    <div class="messages"></div>
-
-
-                    <div class="p-3 py-5">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right text-gray-800">Profile Settings</h4>
+                    <div class="d-flex align-items-center">
+                        <div class="badge bg-light text-primary px-3 py-2 rounded-pill">
+                            <i class="ti ti-shield-check me-1"></i>
+                            {% if request.user.profile.role %}
+                            {{ request.user.profile.role.name }}
+                            {% else %}
+                            Staff Account
+                            {% endif %}
                         </div>
-                        <form method="post" id="update_profile">
-                            {%csrf_token%}
-                            <div class="row mt-2">
-                                <div class="col-md-6"><label class="labels">First Name</label><input type="text"
-                                        class="form-control" placeholder="{{request.user.first_name}}" id="first_name"
-                                        value="{{request.user.first_name}}" name="first_name"></div>
-                                <div class="col-md-6"><label class="labels">Last Name</label><input type="text"
-                                        class="form-control" name="last_name" id="last_name"
-                                        placeholder="{{request.user.last_name}}" value="{{request.user.last_name}}">
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-
-                                <div class="col-md-12"><label class="labels">Email</label><input type="text"
-                                        class="form-control" placeholder="{{request.user.email}}" id="email"
-                                        value="{{request.user.email}}" name="email">
-                                </div>
-
-                            </div>
-
-                            <div class="mt-5 text-right">
-                                <button class="btn btn-success profile-button" type="submit" id="save">
-
-                                    Save Profile
-                                </button>
-                            </div>
-                        </form>
                     </div>
                 </div>
-
             </div>
         </div>
+    </div>
+</div>
 
+<!-- Profile Content -->
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <!-- Profile Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="bg-light rounded-top p-4 text-center position-relative">
+                    <div class="position-relative mx-auto profile-image-container">
+                        <img class="rounded-circle profile-image shadow" src="{{request.user.profile_pic.url}}"
+                            alt="{{request.user.username}}" width="120" height="120">
+                        <div class="profile-image-edit-button">
+                            <button type="button" class="btn btn-sm btn-primary rounded-circle"
+                                title="Change Profile Picture">
+                                <i class="ti ti-camera"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 text-center">
+                    <h5 class="mb-1 fw-bold">{{request.user.get_full_name|default:request.user.username}}</h5>
+                    <p class="text-muted mb-3">
+                        <i class="ti ti-mail me-1"></i>
+                        {{request.user.email}}
+                    </p>
+                    <div class="d-flex justify-content-center flex-wrap gap-2">
+                        <span class="badge bg-primary-subtle text-primary px-3 py-2">
+                            <i class="ti ti-user-check me-1"></i>
+                            {{request.user.username}}
+                        </span>
+                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                            <i class="ti ti-clock me-1"></i>
+                            Active
+                        </span>
+                        {% if request.user.profile.role %}
+                        <span class="badge bg-warning-subtle text-warning px-3 py-2">
+                            <i class="ti ti-shield me-1"></i>
+                            {{ request.user.profile.role.name }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="border-top p-4">
+                    <h6 class="text-primary mb-3">
+                        <i class="ti ti-shield-lock me-2"></i>
+                        Account Security
+                    </h6>
+                    <div class="d-grid gap-2">
+                        <button
+                            class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-between">
+                            <span><i class="ti ti-lock me-2"></i> Change Password</span>
+                            <i class="ti ti-chevron-right"></i>
+                        </button>
+                        <button
+                            class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-between">
+                            <span><i class="ti ti-device-mobile me-2"></i> Two-Factor Authentication</span>
+                            <i class="ti ti-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <!-- Profile Form Card -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 py-3">
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                        <div class="bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 48px; height: 48px;">
+                            <i class="ti ti-user fs-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="card-title mb-0">Personal Information</h5>
+                        <p class="text-muted mb-0">Update your personal details and contact information</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" id="update_profile" novalidate>
+                    {%csrf_token%}
+
+                    <!-- Personal Information Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-id me-2"></i>
+                            Basic Details
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label fw-semibold">
+                                    <i class="ti ti-user me-1 text-primary"></i>
+                                    First Name
+                                </label>
+                                <input type="text" class="form-control form-control-lg"
+                                    placeholder="Enter your first name" id="first_name"
+                                    value="{{request.user.first_name}}" name="first_name">
+                                <div class="invalid-feedback">
+                                    Please provide a valid first name.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label fw-semibold">
+                                    <i class="ti ti-user me-1 text-primary"></i>
+                                    Last Name
+                                </label>
+                                <input type="text" class="form-control form-control-lg" name="last_name" id="last_name"
+                                    placeholder="Enter your last name" value="{{request.user.last_name}}">
+                                <div class="invalid-feedback">
+                                    Please provide a valid last name.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-address-book me-2"></i>
+                            Contact Information
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="email" class="form-label fw-semibold">
+                                    <i class="ti ti-mail me-1 text-info"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" class="form-control" placeholder="Enter your email address"
+                                    id="email" value="{{request.user.email}}" name="email">
+                                <div class="invalid-feedback">
+                                    Please provide a valid email address.
+                                </div>
+                                <small class="form-text text-muted">
+                                    This email will be used for account notifications and password recovery
+                                </small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label fw-semibold">
+                                    <i class="ti ti-phone me-1 text-success"></i>
+                                    Phone Number
+                                </label>
+                                <input type="tel" class="form-control" placeholder="+254 712 345 678" id="phone"
+                                    value="{{request.user.profile.phone|default:''}}" name="phone">
+                                <div class="invalid-feedback">
+                                    Please provide a valid phone number.
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="position" class="form-label fw-semibold">
+                                    <i class="ti ti-briefcase me-1 text-warning"></i>
+                                    Position/Title
+                                </label>
+                                <input type="text" class="form-control" placeholder="e.g., Store Manager" id="position"
+                                    value="{{request.user.profile.position|default:''}}" name="position">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Role Management Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-shield me-2"></i>
+                            Role & Permissions
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="user_role" class="form-label fw-semibold">
+                                    <i class="ti ti-key me-1 text-danger"></i>
+                                    System Role
+                                </label>
+                                <select class="form-select" id="user_role" name="user_role"
+                                    {% if not request.user.is_superuser %}disabled{% endif %}>
+                                    {% for role_value, role_name in roles %}
+                                    <option value="{{ role_value }}"
+                                        {% if request.user.role == role_value %}selected{% endif %}
+                                        {% if role_name == "Admin" and not request.user.is_superuser %}disabled{% endif %}>
+                                        {{ role_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">
+                                    {% if request.user.is_superuser %}
+                                    As an administrator, you can change user roles
+                                    {% else %}
+                                    <span class="text-warning"><i class="ti ti-lock me-1"></i>Only administrators can
+                                        change user roles</span>
+                                    {% endif %}
+                                </small>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- Preferences Section -->
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="ti ti-settings me-2"></i>
+                            Preferences
+                        </h6>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="email_notifications" checked>
+                                    <label class="form-check-label" for="email_notifications">
+                                        <i class="ti ti-bell me-1 text-primary"></i>
+                                        Receive email notifications
+                                    </label>
+                                    <div class="form-text text-muted ms-4">Get important updates and alerts via email
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="dark_mode">
+                                    <label class="form-check-label" for="dark_mode">
+                                        <i class="ti ti-moon me-1 text-dark"></i>
+                                        Enable dark mode
+                                    </label>
+                                    <div class="form-text text-muted ms-4">Switch between light and dark theme</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-end align-items-center pt-3 border-top">
+                        <button type="button" class="btn btn-outline-secondary me-2">
+                            <i class="ti ti-refresh me-1"></i>
+                            Reset
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg px-4" id="save">
+                            <i class="ti ti-device-floppy me-1"></i>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+    }
+
+    .form-control {
+        border-radius: 0.5rem;
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #5e72e4;
+        box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.25);
+    }
+
+    .form-control-lg {
+        padding: 0.75rem 1rem;
+        font-size: 1.1rem;
+    }
+
+    .form-label {
+        margin-bottom: 0.5rem;
+        color: #374151;
+    }
+
+    .card {
+        transition: all 0.3s ease;
+        border-radius: 0.75rem;
+    }
+
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-image {
+        object-fit: cover;
+        border: 4px solid #fff;
+    }
+
+    .profile-image-container {
+        width: 128px;
+        height: 128px;
+        margin-top: -64px;
+    }
+
+    .profile-image-edit-button {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+
+    .form-check-input {
+        width: 2rem;
+        height: 1rem;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: #5e72e4;
+        border-color: #5e72e4;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loading-spinner {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+    }
+</style>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 mb-0">Updating profile...</p>
     </div>
 </div>
 
 <script>
     $(document).ready(function () {
+        // Form validation patterns
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phonePattern = /^[\+]?[1-9][\d]{0,15}$/;
+
+        // Real-time validation
+        function validateField(field, pattern = null, required = false) {
+            const value = field.val().trim();
+
+            // Remove existing validation classes
+            field.removeClass('is-valid is-invalid');
+
+            if (required && !value) {
+                field.addClass('is-invalid');
+                return false;
+            } else if (value && pattern && !pattern.test(value)) {
+                field.addClass('is-invalid');
+                return false;
+            } else if (value) {
+                field.addClass('is-valid');
+                return true;
+            }
+
+            return !required;
+        }
+
+        // Add real-time validation to fields
+        $('#first_name, #last_name').on('blur keyup', function () {
+            validateField($(this), null, false);
+        });
+
+        $('#email').on('blur keyup', function () {
+            validateField($(this), emailPattern, true);
+        });
+
+        $('#phone').on('blur keyup', function () {
+            const value = $(this).val().trim();
+            if (value) {
+                validateField($(this), phonePattern, false);
+            } else {
+                $(this).removeClass('is-valid is-invalid');
+            }
+        });
+
+        // Auto-format phone number
+        $('#phone').on('input', function () {
+            let value = $(this).val().replace(/\D/g, '');
+            if (value.startsWith('254')) {
+                value = '+' + value;
+            } else if (value.startsWith('0')) {
+                value = '+254' + value.substring(1);
+            }
+            $(this).val(value);
+        });
+
+        // Dark mode toggle
+        $('#dark_mode').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('html').attr('data-bs-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                $('html').attr('data-bs-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Check stored theme preference
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme === 'dark') {
+            $('#dark_mode').prop('checked', true);
+            $('html').attr('data-bs-theme', 'dark');
+        }
+
+        // Profile picture change
+        $('.profile-image-edit-button button').on('click', function () {
+            toastr.info('Profile picture change feature will be available soon!', 'Coming Soon', {
+                positionClass: 'toast-top-right',
+                progressBar: true,
+                timeOut: 3000
+            });
+        });
+
+        // Reset form button
+        $('button[type="button"].btn-outline-secondary').on('click', function () {
+            $('#update_profile')[0].reset();
+            $('.form-control').removeClass('is-valid is-invalid');
+            toastr.info('Form has been reset', 'Reset', {
+                positionClass: 'toast-top-right',
+                progressBar: true,
+                timeOut: 2000
+            });
+        });
+
+        // Form submission
         $('#update_profile').submit(function (e) {
             e.preventDefault();
-            // save btn loading
-            $('#save').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...').attr('disabled', true);
+
+            // Validate required fields
+            const emailValid = validateField($('#email'), emailPattern, true);
+            const phoneValid = $('#phone').val().trim() ? validateField($('#phone'), phonePattern, false) : true;
+
+            // Check if form is valid
+            if (!emailValid || !phoneValid) {
+                toastr.error('Please correct the errors in the form before submitting.', 'Validation Error', {
+                    positionClass: 'toast-top-right',
+                    progressBar: true,
+                    timeOut: 5000
+                });
+
+                // Focus on first invalid field
+                $('.is-invalid').first().focus();
+                return;
+            }
+
+            // Show loading state
+            const saveBtn = $('#save');
+            const originalText = saveBtn.html();
+            saveBtn.prop('disabled', true).html(`
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Saving...
+            `);
+
+            // Show loading overlay
+            $('#loadingOverlay').css('display', 'flex');
+
             $.ajax({
                 headers: {
-                    "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val()
+                    "X-CSRFToken": '{{ csrf_token }}'
                 },
-
                 type: 'POST',
                 url: $(this).attr('action'),
                 data: {
-                    first_name: $('#first_name').val(),
-                    last_name: $('#last_name').val(),
-                    email: $('#email').val(),
-
+                    first_name: $('#first_name').val().trim(),
+                    last_name: $('#last_name').val().trim(),
+                    email: $('#email').val().trim(),
+                    phone: $('#phone').val().trim(),
+                    position: $('#position').val().trim(),
+                    email_notifications: $('#email_notifications').is(':checked'),
+                    user_role: $('#user_role').val()
                 },
                 success: function (data) {
+                    // Hide loading
+                    $('#loadingOverlay').hide();
 
-                    $('.messages').append('<div class="alert alert-success d-flex align-items-center" role="alert">' + "Profile updated!" + '</div>');
+                    // Update profile display
+                    updateProfileDisplay();
 
+                    // Show success message
+                    toastr.success('Your profile has been updated successfully!', 'Success', {
+                        positionClass: 'toast-top-right',
+                        progressBar: true,
+                        timeOut: 3000
+                    });
                 },
-                error: function (data) {
-                    $('.messages').append('<div class="alert alert-danger d-flex align-items-center" role="alert">' + "An error occurred" + '</div>');
+                error: function (xhr, status, error) {
+                    // Hide loading
+                    $('#loadingOverlay').hide();
+
+                    let errorMessage = 'An error occurred while updating your profile.';
+
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.status === 400) {
+                        errorMessage = 'Please check your input data and try again.';
+                    } else if (xhr.status === 500) {
+                        errorMessage = 'Server error occurred. Please try again later.';
+                    }
+
+                    toastr.error(errorMessage, 'Error', {
+                        positionClass: 'toast-top-right',
+                        progressBar: true,
+                        timeOut: 5000
+                    });
+
+                    console.error('Error:', error);
+                },
+                complete: function () {
+                    // Reset button state
+                    saveBtn.html(originalText).prop('disabled', false);
                 }
-            }).done(function () {
-                // save btn reset
-                $('#save').html('Save Profile').attr('disabled', false);
             });
         });
+
+        // Update profile display with current values
+        function updateProfileDisplay() {
+            const firstName = $('#first_name').val().trim();
+            const lastName = $('#last_name').val().trim();
+            const fullName = (firstName || lastName) ? `${firstName} ${lastName}`.trim() : '{{request.user.username}}';
+
+            // Update the display name at the top of the profile card
+            $('h5.mb-1.fw-bold').text(fullName);
+
+            // Update email display if changed
+            const email = $('#email').val().trim();
+            if (email) {
+                $('.text-muted.mb-3').html(`<i class="ti ti-mail me-1"></i> ${email}`);
+            }
+        }
+
+        // Add smooth animations
+        $('.card').addClass('animate__animated animate__fadeInUp');
+
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+
+
+        // Handle role selection change
+        $('#user_role').on('change', function () {
+            const roleId = $(this).val();
+            const roleName = $('#user_role option:selected').text().trim();
+
+
+            // Show role change notification
+            toastr.success(
+                `Role changed to ${roleName}. Remember to save your changes!`,
+                'Role Changed',
+                {
+                    positionClass: 'toast-top-right',
+                    progressBar: true,
+                    timeOut: 4000
+                }
+            );
+        });
+
+
     });
 </script>
 {%endblock content%}

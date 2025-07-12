@@ -9,8 +9,7 @@
 
   <!-- CSS Dependencies -->
   <link rel="shortcut icon" type="image/png" href="{% static 'img/logos/favicon.png' %}" />
-  <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'libs/simplebar/dist/simplebar.css' %}">
+
   <link rel="stylesheet" href="{% static 'css/icons/tabler-icons/tabler-icons.css' %}">
   <link rel="manifest" href="{% static 'manifest.json' %}">
   <link rel="stylesheet" href="{% static 'css/styles.min.css' %}" />
@@ -25,26 +24,33 @@
 
   <div class="container-fluid p-0">
 
-    <!-- Minimal Navigation Bar -->
-    <nav class="navbar navbar-expand-lg"
-      style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);">
+    <!-- Enhanced Navigation Bar -->
+    <nav class="navbar navbar-expand-lg sticky-top"
+      style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); box-shadow: 0 4px 20px rgba(15, 23, 42, 0.3);">
       <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="{% url 'pos:index' %}">
           <img src="{% static 'img/logos/new_logo.svg' %}" width="140" alt="UltimatePOS" class="me-2" />
-          <span class="text-white fw-bold d-none d-md-inline">Terminal</span>
+          <div class="d-flex flex-column">
+            <span class="text-white fw-bold d-none d-md-inline fs-5">Terminal</span>
+            <span class="text-white-50 d-none d-md-inline" style="font-size: 0.7rem;">Point of Sale</span>
+          </div>
         </a>
 
-        <div class="navbar-nav ms-auto d-flex align-items-center">
-          <a class="nav-link text-light me-3 btn btn-outline-light btn-sm" href="{% url 'pos:index' %}"
+        <div class="navbar-nav ms-auto d-flex align-items-center gap-2">
+          <span class="text-white-50 d-none d-md-inline me-2">
+            <i class="ti ti-calendar-event me-1"></i>{{ current_branch.branch_name }}
+          </span>
+          <a class="nav-link btn btn-outline-light btn-sm rounded-pill px-3 me-1" href="{% url 'pos:index' %}"
             title="Go Back to Dashboard">
-            <i class="ti ti-home me-1"></i>Dashboard
+            <i class="ti ti-home me-1"></i>
+            <span class="d-none d-sm-inline">Dashboard</span>
           </a>
-          <button type="button" id="view_suspended_sales" class="btn btn-warning btn-sm me-2"
+          <button type="button" id="view_suspended_sales" class="btn btn-warning btn-sm rounded-pill px-3 me-1"
             title="View Suspended Sales">
             <i class="ti ti-player-pause me-1"></i>
             <span class="d-none d-sm-inline">Suspended</span>
           </button>
-          <button class="btn btn-success btn-sm" id="sound_btn">
+          <button class="btn btn-info btn-sm rounded-pill px-3" id="sound_btn">
             <i class="ti ti-volume me-1"></i>
             <span class="d-none d-sm-inline">Sound</span>
           </button>
@@ -52,83 +58,107 @@
       </div>
     </nav>
     <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+        --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        --danger-gradient: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+        --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --warning-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
       body {
         padding-bottom: 100px;
         /* Space for floating action buttons */
+        background-color: #f8fafc;
       }
 
       .pos-card {
         background: #fff;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
         border: none;
         overflow: hidden;
         height: fit-content;
+        transition: var(--transition-smooth);
+      }
+
+      .pos-card:hover {
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
       }
 
       .pos-card-header {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: var(--accent-gradient);
         color: white;
-        padding: 15px 20px;
+        padding: 16px 20px;
         border: none;
+        font-weight: 600;
+        letter-spacing: 0.3px;
       }
 
       .products-card {
         background: #fff;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 16px;
+        box-shadow: var(--card-shadow);
         border: none;
         overflow: hidden;
-        height: calc(100vh - 180px);
+        height: calc(100vh - 190px);
         /* Full height minus navbar and padding */
+        transition: var(--transition-smooth);
       }
 
       .products-card-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--primary-gradient);
         color: white;
-        padding: 15px 20px;
+        padding: 16px 20px;
         border: none;
         position: sticky;
         top: 0;
         z-index: 10;
+        font-weight: 600;
+        letter-spacing: 0.3px;
       }
 
       .product-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 20px;
-        padding: 25px;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+        padding: 20px;
         max-height: calc(100vh - 300px);
         overflow-y: auto;
         scrollbar-width: thin;
-        scrollbar-color: #667eea #f1f1f1;
+        scrollbar-color: #0ea5e9 #f1f5f9;
       }
 
       .product-grid::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
       }
 
       .product-grid::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: #f1f5f9;
         border-radius: 10px;
       }
 
       .product-grid::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--primary-gradient);
         border-radius: 10px;
       }
 
       .product-card {
         background: white;
-        border-radius: 15px;
-        padding: 20px;
+        border-radius: 12px;
+        padding: 16px;
         text-align: center;
         cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid #f8f9fa;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        transition: var(--transition-smooth);
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         position: relative;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
       .product-card::before {
@@ -138,8 +168,9 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-        transition: left 0.5s;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.6s ease-out;
+        z-index: 1;
       }
 
       .product-card:hover::before {
@@ -147,61 +178,73 @@
       }
 
       .product-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
-        border-color: #667eea;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(14, 165, 233, 0.15);
+        border-color: #0ea5e9;
       }
 
       .product-card:active {
-        transform: translateY(-4px) scale(0.98);
+        transform: translateY(-2px) scale(0.98);
       }
 
       .product-image {
-        width: 100px;
-        height: 100px;
-        border-radius: 12px;
+        width: 90px;
+        height: 90px;
+        border-radius: 10px;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        margin: 0 auto 15px;
-        border: 3px solid #e9ecef;
-        transition: all 0.3s ease;
+        margin: 0 auto 12px;
+        border: 2px solid #e2e8f0;
+        transition: var(--transition-smooth);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
       }
 
       .product-card:hover .product-image {
-        border-color: #667eea;
+        border-color: #0ea5e9;
         transform: scale(1.05);
       }
 
       .product-info {
         position: relative;
         z-index: 2;
+        width: 100%;
       }
 
       .product-name {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 8px;
+        color: #334155;
+        margin-bottom: 6px;
         line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
 
       .product-price {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 700;
-        color: #667eea;
+        color: #0ea5e9;
+        background: #f0f9ff;
+        padding: 3px 10px;
+        border-radius: 20px;
+        display: inline-block;
       }
 
       .cart-table {
         background: white;
         border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         font-size: 0.9rem;
+        margin-bottom: 0;
       }
 
       .cart-table thead {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--primary-gradient);
         color: white;
       }
 
@@ -209,48 +252,57 @@
         border: none;
         padding: 12px 10px;
         font-weight: 600;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       .cart-table td {
-        padding: 10px;
+        padding: 12px 10px;
         vertical-align: middle;
-        border-top: 1px solid #e9ecef;
+        border-top: 1px solid #e2e8f0;
       }
 
       .floating-actions {
         position: fixed;
-        bottom: 20px;
+        bottom: 25px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.85);
-        padding: 12px 24px;
-        border-radius: 50px;
-        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+        background: rgba(15, 23, 42, 0.9);
+        padding: 14px 28px;
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
         z-index: 1000;
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         max-width: 90vw;
         width: auto;
+        transition: var(--transition-smooth);
+      }
+
+      .floating-actions:hover {
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+        transform: translateX(-50%) translateY(-3px);
       }
 
       .btn-pos {
-        padding: 10px 16px;
-        border-radius: 20px;
+        padding: 10px 18px;
+        border-radius: 16px;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.3px;
-        margin: 0 4px;
+        letter-spacing: 0.5px;
+        margin: 0 5px;
         border: none;
-        transition: all 0.3s ease;
-        font-size: 0.8rem;
+        transition: var(--transition-smooth);
+        font-size: 0.75rem;
         position: relative;
         overflow: hidden;
         color: white;
-        min-width: 44px;
+        min-width: 46px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
 
       .btn-pos::before {
@@ -260,119 +312,146 @@
         left: 50%;
         width: 0;
         height: 0;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.15);
         border-radius: 50%;
         transform: translate(-50%, -50%);
-        transition: all 0.3s ease;
+        transition: all 0.4s ease-out;
       }
 
       .btn-pos:hover::before {
-        width: 200px;
-        height: 200px;
+        width: 250px;
+        height: 250px;
       }
 
       .btn-pos:hover {
-        transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
       }
 
       .btn-suspend {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        background: var(--warning-gradient);
         color: white;
       }
 
       .btn-card {
-        background: linear-gradient(135deg, #a55eea 0%, #26de81 100%);
+        background: var(--accent-gradient);
         color: white;
       }
 
       .btn-multiple {
-        background: linear-gradient(135deg, #3742fa 0%, #2f3542 100%);
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
         color: white;
       }
 
       .btn-cash {
-        background: linear-gradient(135deg, #26de81 0%, #20bf6b 100%);
+        background: var(--success-gradient);
         color: white;
       }
 
       .btn-cancel {
-        background: linear-gradient(135deg, #ff3838 0%, #ff4757 100%);
+        background: var(--danger-gradient);
         color: white;
       }
 
       .btn-recent {
-        background: linear-gradient(135deg, #3742fa 0%, #5352ed 100%);
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
         color: white;
       }
 
       .total-display {
-        background: linear-gradient(135deg, #26de81 0%, #20bf6b 100%);
+        background: var(--success-gradient);
         color: white;
-        padding: 12px 20px;
-        border-radius: 15px;
+        padding: 14px 20px;
+        border-radius: 16px;
         text-align: center;
-        font-size: 1.3rem;
+        font-size: 1.25rem;
         font-weight: bold;
         margin-top: 15px;
-        box-shadow: 0 5px 15px rgba(38, 222, 129, 0.3);
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
+        transition: var(--transition-smooth);
+      }
+
+      .total-display:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
       }
 
       .form-control-pos {
-        border-radius: 12px;
-        border: 2px solid #e9ecef;
-        padding: 10px 15px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        padding: 12px 16px;
         font-size: 0.9rem;
-        transition: all 0.3s ease;
+        transition: var(--transition-smooth);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
       }
 
       .form-control-pos:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        transform: translateY(-2px);
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+        transform: translateY(-1px);
+      }
+
+      .input-group .btn {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
       }
 
       .customer-select {
-        border-radius: 12px;
-        border: 2px solid #e9ecef;
-        padding: 10px 15px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        padding: 12px 16px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        transition: var(--transition-smooth);
+      }
+
+      .customer-select:focus {
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
       }
 
       .category-filter {
-        background: #f8f9fa;
+        background: #f8fafc;
         border-radius: 12px;
         padding: 15px;
         margin-bottom: 20px;
-        border: 2px solid #e9ecef;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
       }
 
       .cart-summary {
-        background: #f8f9fa;
+        background: #f1f5f9;
         border-radius: 12px;
-        padding: 15px;
+        padding: 16px;
         margin-top: 15px;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
       }
 
-      /* Responsive Design */
+      /* Responsive Design - Enhanced */
       @media (max-width: 1200px) {
         .product-grid {
-          grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-          gap: 15px;
-          padding: 20px;
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+          gap: 14px;
+          padding: 18px;
+        }
+
+        .product-image {
+          width: 80px;
+          height: 80px;
         }
       }
 
       @media (max-width: 992px) {
         .floating-actions {
           bottom: 15px;
-          padding: 10px 20px;
+          padding: 12px 20px;
+          border-radius: 20px;
         }
 
         .btn-pos {
-          padding: 8px 12px;
-          font-size: 0.75rem;
+          padding: 8px 14px;
+          font-size: 0.7rem;
           margin: 0 3px;
-          min-width: 40px;
+          min-width: 38px;
         }
 
         .products-card {
@@ -380,10 +459,15 @@
         }
 
         .product-grid {
-          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
           gap: 12px;
           padding: 15px;
           max-height: calc(100vh - 320px);
+        }
+
+        .pos-card-header,
+        .products-card-header {
+          padding: 14px 16px;
         }
       }
 
@@ -392,10 +476,16 @@
           padding-bottom: 80px;
         }
 
+        .container-fluid.py-4 {
+          padding-top: 0.75rem !important;
+          padding-bottom: 0.75rem !important;
+        }
+
         .floating-actions {
-          bottom: 10px;
-          padding: 8px 16px;
-          border-radius: 40px;
+          bottom: 15px;
+          padding: 10px 16px;
+          border-radius: 18px;
+          max-width: 95vw;
         }
 
         .btn-pos {
@@ -403,6 +493,7 @@
           font-size: 0.7rem;
           margin: 0 2px;
           min-width: 36px;
+          border-radius: 12px;
         }
 
         .btn-pos .d-none {
@@ -416,39 +507,53 @@
         }
 
         .product-card {
-          padding: 15px;
+          padding: 12px 10px;
         }
 
         .product-image {
-          width: 80px;
-          height: 80px;
+          width: 75px;
+          height: 75px;
+          margin-bottom: 10px;
         }
 
         .products-card {
           height: calc(100vh - 140px);
+          margin-bottom: 15px;
+          border-radius: 14px;
         }
 
         .pos-card {
           margin-bottom: 15px;
+          border-radius: 14px;
+        }
+
+        .cart-table th {
+          font-size: 0.7rem;
+        }
+
+        .cart-table td {
+          padding: 8px 6px;
         }
       }
 
       @media (max-width: 576px) {
         body {
           padding-bottom: 70px;
+          background-color: #f1f5f9;
         }
 
         .floating-actions {
-          bottom: 8px;
-          padding: 6px 12px;
-          border-radius: 30px;
+          bottom: 10px;
+          padding: 8px 12px;
+          border-radius: 16px;
         }
 
         .btn-pos {
-          padding: 6px 8px;
+          padding: 7px 8px;
           font-size: 0.65rem;
           margin: 0 1px;
           min-width: 32px;
+          border-radius: 10px;
         }
 
         .product-grid {
@@ -458,46 +563,64 @@
         }
 
         .product-card {
-          padding: 12px;
+          padding: 10px 8px;
+          border-radius: 10px;
         }
 
         .product-image {
-          width: 70px;
-          height: 70px;
+          width: 65px;
+          height: 65px;
+          border-radius: 8px;
         }
 
         .product-name {
-          font-size: 0.8rem;
+          font-size: 0.75rem;
+          margin-bottom: 4px;
         }
 
         .product-price {
-          font-size: 1rem;
+          font-size: 0.9rem;
+          padding: 2px 8px;
+        }
+
+        .form-label {
+          font-size: 0.85rem;
+        }
+
+        .form-control-pos,
+        .customer-select {
+          padding: 10px 12px;
+          font-size: 0.85rem;
         }
       }
 
-      /* Animation for adding items */
+      /* Animation for adding items - Enhanced */
       .border-success {
-        border-color: #28a745 !important;
-        animation: pulse 0.3s ease-in-out;
+        border-color: #10b981 !important;
+        animation: pulse 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.2);
       }
 
       @keyframes pulse {
         0% {
           transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
         }
 
         50% {
           transform: scale(1.05);
+          box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.2);
         }
 
         100% {
           transform: scale(1);
+          box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.1);
         }
       }
 
-      /* Loading animation */
+      /* Loading animation - Enhanced */
       .ti-spin {
-        animation: spin 1s linear infinite;
+        animation: spin 1s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
       }
 
       @keyframes spin {
@@ -509,6 +632,64 @@
           transform: rotate(360deg);
         }
       }
+
+      /* Fade in animation for items */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .product-card {
+        animation: fadeInUp 0.4s ease-out;
+        animation-fill-mode: both;
+      }
+
+      .product-card:nth-child(10n+1) {
+        animation-delay: 0.05s;
+      }
+
+      .product-card:nth-child(10n+2) {
+        animation-delay: 0.1s;
+      }
+
+      .product-card:nth-child(10n+3) {
+        animation-delay: 0.15s;
+      }
+
+      .product-card:nth-child(10n+4) {
+        animation-delay: 0.2s;
+      }
+
+      .product-card:nth-child(10n+5) {
+        animation-delay: 0.25s;
+      }
+
+      .product-card:nth-child(10n+6) {
+        animation-delay: 0.3s;
+      }
+
+      .product-card:nth-child(10n+7) {
+        animation-delay: 0.35s;
+      }
+
+      .product-card:nth-child(10n+8) {
+        animation-delay: 0.4s;
+      }
+
+      .product-card:nth-child(10n+9) {
+        animation-delay: 0.45s;
+      }
+
+      .product-card:nth-child(10n+10) {
+        animation-delay: 0.5s;
+      }
     </style>
 
     <!-- Hidden fields for functionality -->
@@ -517,100 +698,30 @@
     <!-- Main POS Content -->
     <div class="container-fluid py-4">
       <div class="row">
-        <!-- Cart Section - Smaller on left -->
-        <div class="col-lg-5 col-xl-4">
-          <div class="pos-card">
-            <div class="pos-card-header">
-              <h5 class="mb-0">
-                <i class="ti ti-shopping-cart me-2"></i>
-                Shopping Cart
-              </h5>
-            </div>
-            <div class="p-3">
-              <!-- Customer Selection -->
-              <div class="mb-3">
-                <label class="form-label">Customer</label>
-                <div class="input-group">
-                  <select id="customer_selected" class="form-select customer-select">
-                    {% for customer in customers %}
-                    <option value="{{ customer.id }}">{{ customer.get_full_name }}</option>
-                    {% endfor %}
-                  </select>
-                  <button type="button" class="btn btn-outline-primary"
-                    onclick="window.location=`{% url 'customers:customers_add' %}`" title="Add New Customer">
-                    <i class="ti ti-plus"></i>
-                  </button>
-                </div>
-              </div>
 
-              <!-- Product Search -->
-              <div class="mb-3">
-                <label class="form-label">Search Products</label>
-                <div class="input-group">
-                  <input class="form-control form-control-pos" id="search_product" placeholder="Search products..."
-                    autofocus name="search_product" type="text" autocomplete="off" />
-                  <a href="{% url 'products:products_add' %}" class="btn btn-outline-primary" title="Add New Product">
-                    <i class="ti ti-plus"></i>
-                  </a>
-                </div>
-                <div id="searched_products"></div>
-              </div>
-
-              <!-- Cart Table -->
-              <div class="table-responsive">
-                <table class="table cart-table" id="pos_table">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th class="text-center">Qty</th>
-                      <th class="text-center">Price</th>
-                      <th class="text-center">Total</th>
-                      <th class="text-center">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody class="show-cart">
-                    <!-- Cart items will be populated here -->
-                  </tbody>
-                </table>
-              </div>
-
-              <!-- Cart Summary -->
-              <div class="cart-summary">
-                <div class="row align-items-center">
-                  <div class="col-6">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <strong>Total Items:</strong>
-                      <span class="total-count badge bg-primary fs-6">0</span>
-                    </div>
-                  </div>
-                  <div class="col-6">
-                    <div class="total-display">
-                      $<span class="total-cart">0.00</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Products Section - Dominant on right -->
         <div class="col-lg-7 col-xl-8">
           <div class="products-card">
             <div class="products-card-header">
               <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                  <i class="ti ti-package me-2"></i>
-                  Products Catalog
-                </h5>
                 <div class="d-flex align-items-center">
-                  <i class="ti ti-category me-2"></i>
-                  <select class="form-select form-select-sm" id="selected_category" style="min-width: 150px;">
-                    <option value="Product">All Categories</option>
-                    {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
-                    {% endfor %}
-                  </select>
+                  <div
+                    class="d-flex align-items-center justify-content-center bg-white bg-opacity-25 rounded-circle me-2"
+                    style="width: 32px; height: 32px;">
+                    <i class="ti ti-package"></i>
+                  </div>
+                  <h5 class="mb-0">Products Catalog</h5>
+                </div>
+                <div class="d-flex align-items-center">
+                  <div class="d-flex align-items-center bg-white bg-opacity-10 rounded-pill px-3 py-1">
+                    <i class="ti ti-category me-2 text-white-50"></i>
+                    <select class="form-select form-select-sm border-0 bg-transparent text-white" id="selected_category"
+                      style="min-width: 150px; font-weight: 500;">
+                      <option value="Product">All Categories</option>
+                      {% for category in categories %}
+                      <option value="{{ category.id }}">{{ category.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -634,6 +745,119 @@
             </div>
           </div>
         </div>
+        <!-- Cart Section - Smaller on left -->
+        <div class="col-lg-5 col-xl-4">
+          <div class="pos-card">
+            <div class="pos-card-header">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <div
+                    class="d-flex align-items-center justify-content-center bg-white bg-opacity-25 rounded-circle me-2"
+                    style="width: 32px; height: 32px;">
+                    <i class="ti ti-shopping-cart"></i>
+                  </div>
+                  <h5 class="mb-0">Shopping Cart</h5>
+                </div>
+                <span class="badge bg-white bg-opacity-25 px-3 py-2 rounded-pill">
+                  <i class="ti ti-receipt me-1"></i>
+                  Order #<span id="order_number">{{ current_order_number|default:"New" }}</span>
+                </span>
+              </div>
+            </div>
+            <div class="p-3">
+              <!-- Customer Selection -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="ti ti-user-circle me-1 text-primary"></i>
+                  Customer
+                </label>
+                <div class="input-group">
+                  <select id="customer_selected" class="form-select customer-select">
+                    <option value="" disabled>Select a customer</option>
+                    {% for customer in customers %}
+                    <option value="{{ customer.id }}">{{ customer.get_full_name }}</option>
+                    {% endfor %}
+                  </select>
+                  <button type="button" class="btn btn-primary"
+                    onclick="window.location=`{% url 'customers:customers_add' %}`" title="Add New Customer">
+                    <i class="ti ti-plus"></i>
+                  </button>
+                </div>
+                <div class="form-text text-muted small">
+                  <i class="ti ti-info-circle me-1"></i>
+                  Customer information will appear on invoice
+                </div>
+              </div>
+
+              <!-- Product Search -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="ti ti-search me-1 text-primary"></i>
+                  Search Products
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="ti ti-search text-muted"></i>
+                  </span>
+                  <input class="form-control form-control-pos border-start-0" id="search_product"
+                    placeholder="Scan barcode or type product name..." autofocus name="search_product" type="text"
+                    autocomplete="off" />
+                  <a href="{% url 'products:products_add' %}" class="btn btn-primary" title="Add New Product">
+                    <i class="ti ti-plus"></i>
+                  </a>
+                </div>
+                <div id="searched_products" class="position-relative mt-1" style="z-index: 100;"></div>
+              </div>
+
+              <!-- Cart Table -->
+              <div class="table-responsive border rounded-3 mb-3 bg-white">
+                <table class="table cart-table mb-0" id="pos_table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th class="text-center" width="80">Qty</th>
+                      <th class="text-center" width="80">Price</th>
+                      <th class="text-center" width="80">Total</th>
+                      <th class="text-center" width="60">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody class="show-cart">
+                    <!-- Cart items will be populated here -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Cart Summary -->
+              <div class="cart-summary rounded-4 p-3">
+                <div class="row g-3">
+                  <div class="col-lg-6">
+                    <div class="d-flex flex-column">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-semibold text-muted">Items:</span>
+                        <span class="total-count badge bg-primary fs-6 rounded-pill px-3">0</span>
+                      </div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold text-muted">Discount:</span>
+                        <span class="badge bg-danger-subtle text-danger fs-6 rounded-pill px-3">$0.00</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="total-display d-flex align-items-center justify-content-center">
+                      <div>
+                        <small class="d-block mb-1 text-white-50">TOTAL</small>
+                        <span class="fs-4 fw-bold">$<span class="total-cart">0.00</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
       </div>
     </div>
 
@@ -680,21 +904,36 @@
 
     <!-- Clear Cart Confirmation Modal -->
     <div class="modal fade" id="clearCartModal" tabindex="-1" aria-labelledby="clearCartModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header" style="background: var(--danger-gradient); color: white;">
             <h5 class="modal-title" id="clearCartModalLabel">
-              <i class="ti ti-alert-triangle me-2 text-warning"></i>
-              Clear Cart?
+              <div class="d-flex align-items-center">
+                <span
+                  class="bg-white bg-opacity-20 d-flex align-items-center justify-content-center rounded-circle p-2 me-2">
+                  <i class="ti ti-alert-triangle"></i>
+                </span>
+                Clear Cart?
+              </div>
             </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            <p class="mb-0">This will remove all items from the cart. Are you sure you want to continue?</p>
+          <div class="modal-body p-4">
+            <div class="text-center mb-3">
+              <div
+                class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle mb-3"
+                style="width: 80px; height: 80px; font-size: 2.5rem;">
+                <i class="ti ti-shopping-cart-off"></i>
+              </div>
+              <p class="fs-5 mb-0">This will remove all items from the cart. Are you sure you want to continue?</p>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-danger" id="confirmClearCart">
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+              <i class="ti ti-x me-1"></i>
+              Cancel
+            </button>
+            <button type="button" class="btn btn-danger rounded-pill px-4" id="confirmClearCart">
               <i class="ti ti-trash me-1"></i>
               Clear Cart
             </button>
@@ -706,33 +945,47 @@
     <!-- Suspended Sales Modal -->
     <div class="modal fade" id="suspendedSalesModal" tabindex="-1" aria-labelledby="suspendedSalesModalLabel"
       aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header" style="background: var(--warning-gradient); color: white;">
             <h5 class="modal-title" id="suspendedSalesModalLabel">
-              <i class="ti ti-player-pause me-2 text-warning"></i>
-              Suspended Sales
+              <div class="d-flex align-items-center">
+                <span
+                  class="bg-white bg-opacity-20 d-flex align-items-center justify-content-center rounded-circle p-2 me-2">
+                  <i class="ti ti-arrows-vertical"></i>
+                </span>
+                Suspended Sales
+              </div>
             </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body p-4">
             <div class="table-responsive">
-              <table class="table table-striped">
-                <thead>
+              <table class="table table-hover border">
+                <thead class="table-light">
                   <tr>
-                    <th>Sale ID</th>
-                    <th>Total</th>
-                    <th>Action</th>
+                    <th class="fw-semibold">Sale ID</th>
+                    <th class="fw-semibold">Total</th>
+                    <th class="fw-semibold text-end">Action</th>
                   </tr>
                 </thead>
-                <tbody id="suspendedSalesTableBody">
+                <tbody id="suspendedSalesTableBody" class="align-middle">
                   <!-- Dynamic content will be inserted here -->
                 </tbody>
               </table>
             </div>
+            <div id="no-suspended-sales" class="text-center py-4 d-none">
+              <div class="mb-3 text-warning" style="font-size: 2rem;">
+                <i class="ti ti-receipt-off"></i>
+              </div>
+              <p class="text-muted">No suspended sales found</p>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+              <i class="ti ti-x me-1"></i>
+              Close
+            </button>
           </div>
         </div>
       </div>
@@ -740,55 +993,114 @@
 
     <!-- Payment Modal -->
     <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header" style="background: var(--success-gradient); color: white;">
             <h5 class="modal-title" id="paymentModalLabel">
-              <i class="ti ti-cash me-2 text-success"></i>
-              Complete Payment
+              <div class="d-flex align-items-center">
+                <span
+                  class="bg-white bg-opacity-20 d-flex align-items-center justify-content-center rounded-circle p-2 me-2">
+                  <i class="ti ti-cash"></i>
+                </span>
+                Complete Payment
+              </div>
             </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            <!-- Order Summary -->
-            <div class="table-responsive mb-3">
-              <table class="table table-sm">
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Qty</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                  </tr>
-                </thead>
-                <tbody id="paymentItemsTable">
-                  <!-- Dynamic content will be inserted here -->
-                </tbody>
-              </table>
-            </div>
+          <div class="modal-body p-4">
+            <div class="row g-4">
+              <div class="col-lg-8">
+                <!-- Order Summary -->
+                <div class="card border-0 shadow-sm mb-3">
+                  <div class="card-header bg-light py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <h6 class="mb-0 fw-semibold">
+                        <i class="ti ti-clipboard-text me-2 text-primary"></i>
+                        Order Summary
+                      </h6>
+                      <span class="badge bg-primary rounded-pill px-3 py-2">
+                        <i class="ti ti-shopping-cart me-1"></i>
+                        <span class="total-count">0</span> items
+                      </span>
+                    </div>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Product</th>
+                            <th class="text-center">Qty</th>
+                            <th class="text-end">Price</th>
+                            <th class="text-end">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody id="paymentItemsTable" class="small">
+                          <!-- Dynamic content will be inserted here -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <!-- Payment Summary -->
-            <div class="row mb-3">
-              <div class="col-6"><strong>Total:</strong></div>
-              <div class="col-6 text-end" id="paymentTotal">$0.00</div>
-            </div>
+              <div class="col-lg-4">
+                <!-- Payment Information -->
+                <div class="card shadow-sm border-0">
+                  <div class="card-header bg-light py-3">
+                    <h6 class="mb-0 fw-semibold">
+                      <i class="ti ti-receipt me-2 text-primary"></i>
+                      Payment Details
+                    </h6>
+                  </div>
+                  <div class="card-body">
+                    <!-- Payment Summary -->
+                    <div class="mb-4">
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Subtotal:</span>
+                        <span class="fw-semibold" id="paymentSubtotal">$0.00</span>
+                      </div>
 
-            <div class="row mb-3">
-              <div class="col-6"><strong>Change:</strong></div>
-              <div class="col-6 text-end" id="change">$0.00</div>
-            </div>
+                      <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Tax (8%):</span>
+                        <span class="fw-semibold" id="paymentTax">$0.00</span>
+                      </div>
 
-            <!-- Cash Input -->
-            <div class="row">
-              <div class="col-12">
-                <label class="form-label"><strong>Cash Received:</strong></label>
-                <input class="form-control text-center" value="0.00" type="number" id="amount_paid" step="0.01" min="0">
+                      <div class="d-flex justify-content-between align-items-center py-2 border-top border-bottom">
+                        <span class="fw-bold">Total:</span>
+                        <span class="fw-bold text-primary fs-5" id="paymentTotal">$0.00</span>
+                      </div>
+                    </div>
+
+                    <!-- Cash Input -->
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold">
+                        <i class="ti ti-wallet me-1 text-success"></i>
+                        Cash Received:
+                      </label>
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input class="form-control form-control-lg text-end fw-bold" value="0.00" type="number"
+                          id="amount_paid" step="0.01" min="0">
+                      </div>
+                    </div>
+
+                    <div
+                      class="d-flex justify-content-between align-items-center p-3 bg-success-subtle text-success rounded-3">
+                      <span class="fw-semibold">Change:</span>
+                      <span class="fw-bold fs-5" id="change">$0.00</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-success" id="processPayment">
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">
+              <i class="ti ti-x me-1"></i>
+              Cancel
+            </button>
+            <button type="button" class="btn btn-success rounded-pill px-4" id="processPayment">
               <i class="ti ti-check me-1"></i>
               Complete Sale
             </button>
@@ -799,27 +1111,42 @@
 
     <!-- Success Modal -->
     <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+          <div class="modal-header border-0" style="background: var(--success-gradient); color: white;">
             <h5 class="modal-title" id="successModalLabel">
-              <i class="ti ti-check-circle me-2 text-success"></i>
-              Sale Completed Successfully!
+              <div class="d-flex align-items-center">
+                <span
+                  class="bg-white bg-opacity-20 d-flex align-items-center justify-content-center rounded-circle p-2 me-2">
+                  <i class="ti ti-check"></i>
+                </span>
+                Sale Completed!
+              </div>
             </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body text-center">
-            <div class="mb-3">
-              <i class="ti ti-check-circle text-success" style="font-size: 4rem;"></i>
+          <div class="modal-body text-center p-5">
+            <div class="d-flex align-items-center justify-content-center mb-4">
+              <div
+                class="d-inline-flex align-items-center justify-content-center bg-success-subtle text-success rounded-circle"
+                style="width: 110px; height: 110px;">
+                <i class="ti ti-confetti" style="font-size: 4rem;"></i>
+              </div>
             </div>
-            <p class="mb-2">Sale ID: <strong id="saleId"></strong></p>
-            <p class="text-muted">Your sale has been processed successfully.</p>
+            <h4 class="mb-3">Transaction Successful!</h4>
+            <div class="bg-light rounded-4 py-3 px-4 mb-4 d-inline-block">
+              <div class="text-muted small">SALE ID</div>
+              <div class="fs-5 fw-bold" id="saleId"></div>
+            </div>
+            <p class="text-muted mb-0">Your sale has been processed successfully. Would you like to print a receipt?</p>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="printReceipt">
-              <i class="ti ti-printer me-1"></i>
+          <div class="modal-footer flex-column border-0 pt-0">
+            <button type="button" class="btn btn-primary rounded-pill px-5 py-2 w-100" id="printReceipt">
+              <i class="ti ti-printer me-2"></i>
               Print Receipt
+            </button>
+            <button type="button" class="btn btn-outline-secondary rounded-pill px-4 mt-2" data-bs-dismiss="modal">
+              Close
             </button>
           </div>
         </div>
@@ -830,6 +1157,17 @@
 
   <script>
     $(document).ready(function () {
+      // Set page title with current date
+      const now = new Date();
+      const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedDate = now.toLocaleDateString('en-US', dateOptions);
+      document.title = `POS Terminal - ${formattedDate}`;
+
+      // Show today's date in navbar
+      const navbarDate = $('<span class="badge bg-white text-dark d-none d-md-inline mx-2"></span>')
+        .html(`<i class="ti ti-calendar me-1"></i>${formattedDate}`)
+        .insertAfter($('.navbar-brand'));
+
       if (typeof shoppingCart === 'undefined' || !shoppingCart.suspendSale) {
         // Define suspendSale function locally
         shoppingCart.suspendSale = function () {
@@ -900,23 +1238,65 @@
         }
       });
 
-      // View suspended sales
+      // View suspended sales with enhanced UI
       $('#view_suspended_sales').on('click', function () {
         let html = '';
+        let hasSuspendedSales = false;
+
         for (let i = 0; i < sessionStorage.length; i++) {
           let key = sessionStorage.key(i);
           if (key.includes('suspended_sale')) {
+            hasSuspendedSales = true;
             let cart = JSON.parse(sessionStorage.getItem(key));
             let total = 0;
+            let itemCount = 0;
+
             for (let j = 0; j < cart.length; j++) {
               total += cart[j]['price'] * cart[j]['count'];
+              itemCount += parseInt(cart[j]['count']);
             }
-            html += `<tr><td>${key}</td><td>$${total.toFixed(2)}</td><td><button class="btn btn-primary btn-sm" onclick="resumeSale('${key}')">Resume</button></td></tr>`;
+
+            // Format timestamp for display
+            const timestamp = key.replace('suspended_sale_', '').replace('_', ' ');
+            const date = new Date(
+              timestamp.substring(0, 4) + '-' +
+              timestamp.substring(4, 6) + '-' +
+              timestamp.substring(6, 8) + 'T' +
+              timestamp.substring(9, 11) + ':' +
+              timestamp.substring(11, 13) + ':' +
+              timestamp.substring(13, 15)
+            );
+
+            const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            html += `
+              <tr class="animate__animated animate__fadeIn">
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="bg-warning-subtle text-warning rounded-circle p-2 me-3">
+                      <i class="ti ti-clock"></i>
+                    </div>
+                    <div>
+                      <div class="fw-semibold">${key.substring(key.length - 8)}</div>
+                      <small class="text-muted">${formattedTime} • ${itemCount} items</small>
+                    </div>
+                  </div>
+                </td>
+                <td class="fw-bold text-primary">$${total.toFixed(2)}</td>
+                <td class="text-end">
+                  <button class="btn btn-primary btn-sm rounded-pill px-3" onclick="resumeSale('${key}')">
+                    <i class="ti ti-player-play me-1"></i>
+                    Resume Sale
+                  </button>
+                </td>
+              </tr>`;
           }
         }
 
-        if (html === '') {
-          html = '<tr><td colspan="3" class="text-center">No suspended sales found</td></tr>';
+        if (!hasSuspendedSales) {
+          $('#no-suspended-sales').removeClass('d-none');
+        } else {
+          $('#no-suspended-sales').addClass('d-none');
         }
 
         $('#suspendedSalesTableBody').html(html);
@@ -937,9 +1317,6 @@
         setTimeout(() => {
           $(this).removeClass('border-success');
         }, 300);
-
-        // Show success notification
-        toastr.success(`${name} added to cart`, 'Item Added');
       });
 
       // Clear cart
@@ -955,49 +1332,59 @@
         toastr.success('Your cart has been cleared.', 'Cart Cleared');
       });
 
-      // Display cart function
+      // Enhanced display cart function
       function displayCart() {
         let cartArray = shoppingCart.listCart();
 
         // Enable/disable complete payment button
         $('#complete_payment').prop('disabled', cartArray.length === 0);
 
+        // Update order number
+        const orderNum = Math.floor(Math.random() * 9000) + 1000;
+        $('#order_number').text(cartArray.length > 0 ? orderNum : "New");
+
         let output = "";
         for (let i in cartArray) {
           output += `
-        <tr>
+        <tr class="animate__animated animate__fadeIn" style="--animate-duration: 0.3s;">
           <td>
-            <div class="d-flex align-items-center">
-              <strong>${cartArray[i].name}</strong>
+            <div class="d-flex flex-column">
+              <strong class="text-truncate" style="max-width: 150px;" title="${cartArray[i].name}">${cartArray[i].name}</strong>
+              <small class="text-muted">SKU: ${cartArray[i].id}</small>
             </div>
           </td>
           <td class="text-center">
-            <div class="input-group input-group-sm" style="width: 120px; margin: 0 auto;">
-              <button class="btn btn-outline-secondary minus-item" type="button" data-name="${cartArray[i].name}">
+            <div class="input-group input-group-sm" style="width: 100px; margin: 0 auto;">
+              <button class="btn btn-outline-primary minus-item" type="button" data-name="${cartArray[i].name}">
                 <i class="ti ti-minus"></i>
               </button>
               <input type="number" class="form-control text-center item-count" 
                      data-name="${cartArray[i].name}" value="${cartArray[i].count}" min="1">
-              <button class="btn btn-outline-secondary plus-item" type="button" data-name="${cartArray[i].name}">
+              <button class="btn btn-outline-primary plus-item" type="button" data-name="${cartArray[i].name}">
                 <i class="ti ti-plus"></i>
               </button>
             </div>
           </td>
-          <td class="text-center">$${cartArray[i].price}</td>
-          <td class="text-center"><strong>$${cartArray[i].total}</strong></td>
+          <td class="text-center">$${parseFloat(cartArray[i].price).toFixed(2)}</td>
+          <td class="text-center fw-semibold text-primary">$${cartArray[i].total}</td>
           <td class="text-center">
-            <button class="btn btn-danger btn-sm delete-item" data-name="${cartArray[i].name}">
-              <i class="ti ti-trash"></i>
+            <button class="btn btn-outline-danger btn-sm rounded-circle delete-item" data-name="${cartArray[i].name}">
+              <i class="ti ti-x"></i>
             </button>
           </td>
         </tr>`;
         }
 
         if (cartArray.length === 0) {
-          output = `<tr><td colspan="5" class="text-center text-muted py-4">
-        <i class="ti ti-shopping-cart fs-1 d-block mb-2 opacity-50"></i>
-        Your cart is empty
-      </td></tr>`;
+          output = `<tr><td colspan="5" class="text-center text-muted py-5">
+            <div class="mb-3">
+              <div class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle p-4">
+                <i class="ti ti-shopping-cart fs-1 text-muted"></i>
+              </div>
+            </div>
+            <p class="mb-0">Your cart is empty</p>
+            <small class="text-muted d-block mt-2">Add products by clicking on the items or using the search</small>
+          </td></tr>`;
         }
 
         $(".show-cart").html(output);
@@ -1005,63 +1392,174 @@
         $(".total-count").html(shoppingCart.totalCount());
       }
 
-      // Cart item event handlers
+      // Enhanced Cart item event handlers with animations and feedback
       $(document).on("click", ".delete-item", function (event) {
+        event.preventDefault();
         let name = $(this).data("name");
-        shoppingCart.removeItemFromCartAll(name);
-        displayCart();
+        let $row = $(this).closest('tr');
+
+        // Animate row removal
+        $row.addClass('animate__animated animate__fadeOutRight')
+          .on('animationend', function () {
+            // Remove from cart after animation completes
+            shoppingCart.removeItemFromCartAll(name);
+            displayCart();
+
+            // Show feedback toast
+            toastr.info(`"${name}" removed from cart`, 'Item Removed', {
+              timeOut: 2000,
+              progressBar: true
+            });
+          });
       });
 
       $(document).on("click", ".minus-item", function (event) {
+        event.preventDefault();
         let name = $(this).data("name");
+        let $countInput = $(this).siblings('.item-count');
+        let currentCount = Number($countInput.val());
+
+        // Animate the count change
+        $countInput.addClass('animate__animated animate__headShake');
+        setTimeout(() => {
+          $countInput.removeClass('animate__animated animate__headShake');
+        }, 500);
+
+        // Update cart
         shoppingCart.removeItemFromCart(name);
         displayCart();
+
+        // If we're decreasing to a small number, provide visual feedback
+        if (currentCount <= 2) {
+          toastr.info(`Quantity decreased for "${name}"`, 'Quantity Updated', {
+            timeOut: 1500,
+            progressBar: true
+          });
+        }
       });
 
       $(document).on("click", ".plus-item", function (event) {
+        event.preventDefault();
         let name = $(this).data("name");
+        let $countInput = $(this).siblings('.item-count');
+
+        // Animate the count change
+        $countInput.addClass('animate__animated animate__heartBeat');
+        setTimeout(() => {
+          $countInput.removeClass('animate__animated animate__heartBeat');
+        }, 500);
+
+        // Update cart
         shoppingCart.addItemToCart(name);
         displayCart();
+
+        // If quantity gets high, provide feedback
+        let newCount = Number($countInput.val()) + 1;
+        if (newCount >= 10) {
+          toastr.info(`High quantity (${newCount}) of "${name}"`, 'Bulk Purchase', {
+            timeOut: 2000,
+            progressBar: true
+          });
+        }
       });
 
       $(document).on("change", ".item-count", function (event) {
         let name = $(this).data("name");
         let count = Number($(this).val());
+        let previousCount = Number($(this).attr('data-previous-value') || 1);
+
+        // Validate minimum quantity
         if (count < 1) count = 1;
         $(this).val(count);
+
+        // Store previous value for next comparison
+        $(this).attr('data-previous-value', count);
+
+        // Update cart
         shoppingCart.setCountForItem(name, count);
         displayCart();
+
+        // Provide feedback for significant changes
+        if (count >= previousCount * 2) {
+          // Quantity at least doubled
+          toastr.info(`Quantity increased significantly for "${name}"`, 'Bulk Update', {
+            timeOut: 2000,
+            progressBar: true
+          });
+        } else if (count <= previousCount / 2) {
+          // Quantity at least halved
+          toastr.info(`Quantity decreased significantly for "${name}"`, 'Quantity Reduced', {
+            timeOut: 2000,
+            progressBar: true
+          });
+        }
       });
 
-      // Product search functionality
+      // Product search functionality with enhanced UI
       $('#search_product').on('keyup', function () {
         let query = $(this).val();
-        if (query.length > 2) {
+        if (query.length > 1) {
+          // Show loading indicator
+          $('#searched_products').html(
+            '<div class="list-group shadow-sm position-absolute w-100">' +
+            '<div class="list-group-item d-flex align-items-center py-3">' +
+            '<div class="spinner-border spinner-border-sm text-primary me-3" role="status"></div>' +
+            '<span>Searching products...</span>' +
+            '</div></div>'
+          );
+
           $.ajax({
             url: "{% url 'products:get_products' %}" + "?term=" + query,
             type: "GET",
             success: function (data) {
               let html = '';
               if (data.results && data.results.length > 0) {
-                html = '<div class="list-group mt-2">';
-                data.results.forEach(function (product) {
-                  html += `<a href="#" class="list-group-item list-group-item-action add-to-cart" 
+                html = '<div class="list-group shadow-sm position-absolute w-100 animate__animated animate__fadeIn">';
+                data.results.forEach(function (product, index) {
+                  html += `<a href="#" class="list-group-item list-group-item-action add-to-cart py-3" 
                          data-name="${product.name}" data-price="${product.price}" data-id="${product.id}">
-                         <div class="d-flex w-100 justify-content-between">
-                           <h6 class="mb-1">${product.name}</h6>
-                           <small class="text-primary">$${product.price}</small>
+                         <div class="d-flex w-100 justify-content-between align-items-center">
+                           <div class="d-flex align-items-center">
+                             <div class="bg-light rounded-circle p-2 me-3">
+                               <i class="ti ti-package text-primary"></i>
+                             </div>
+                             <div>
+                               <h6 class="mb-0">${product.name}</h6>
+                               <small class="text-muted">SKU: ${product.id}</small>
+                             </div>
+                           </div>
+                           <span class="badge bg-primary rounded-pill px-3 py-2">$${product.price}</span>
                          </div>
                        </a>`;
                 });
                 html += '</div>';
+              } else {
+                html = '<div class="list-group shadow-sm position-absolute w-100">' +
+                  '<div class="list-group-item text-center py-3">' +
+                  '<i class="ti ti-mood-sad text-muted fs-2 mb-2"></i>' +
+                  '<p class="mb-0">No products found matching "<strong>' + query + '</strong>"</p>' +
+                  '</div></div>';
               }
               $('#searched_products').html(html);
             },
             error: function () {
-              $('#searched_products').html('');
+              $('#searched_products').html(
+                '<div class="list-group shadow-sm position-absolute w-100">' +
+                '<div class="list-group-item text-center text-danger py-3">' +
+                '<i class="ti ti-alert-circle fs-2 mb-2"></i>' +
+                '<p class="mb-0">Error searching products. Please try again.</p>' +
+                '</div></div>'
+              );
             }
           });
         } else {
+          $('#searched_products').html('');
+        }
+      });
+
+      // Hide search results when clicking outside
+      $(document).on('click', function (e) {
+        if (!$(e.target).closest('#search_product, #searched_products').length) {
           $('#searched_products').html('');
         }
       });
@@ -1077,7 +1575,7 @@
         }
       });
 
-      // Complete payment functionality
+      // Complete payment functionality with enhanced UI
       $('#complete_payment').on('click', async function (event) {
         let customer = $('#customer_selected').val();
         let items = JSON.parse(sessionStorage.getItem("shoppingCart"));
@@ -1088,23 +1586,40 @@
         }
 
         let html = '';
-        for (let i = 0; i < items.length; i++) {
-          html += `<tr class="text-center">
-        <td>${items[i]['name']}</td>
-        <td>${items[i]['count']}</td>
-        <td>$${items[i]['price']}</td>
-        <td>$${(items[i]['price'] * items[i]['count']).toFixed(2)}</td>
-      </tr>`;
-        }
-
         const total = shoppingCart.totalCart();
+        const subtotal = total / 1.08; // Assuming 8% tax
+        const tax = total - subtotal;
+
+        for (let i = 0; i < items.length; i++) {
+          html += `
+          <tr class="animate__animated animate__fadeIn" style="--animate-duration: 0.3s; animation-delay: ${i * 0.05}s">
+            <td>
+              <div class="d-flex align-items-center">
+                <span class="bg-light rounded-circle p-1 me-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
+                  <i class="ti ti-box text-primary small"></i>
+                </span>
+                <span>${items[i]['name']}</span>
+              </div>
+            </td>
+            <td class="text-center">${items[i]['count']}</td>
+            <td class="text-end">$${parseFloat(items[i]['price']).toFixed(2)}</td>
+            <td class="text-end fw-semibold">$${(items[i]['price'] * items[i]['count']).toFixed(2)}</td>
+          </tr>`;
+        }
 
         // Populate payment modal
         $('#paymentItemsTable').html(html);
+        $('#paymentSubtotal').text('$' + subtotal.toFixed(2));
+        $('#paymentTax').text('$' + tax.toFixed(2));
         $('#paymentTotal').text('$' + total.toFixed(2));
         $('#amount_paid').val(total.toFixed(2));
         $('#change').text('$0.00');
+
+        // Focus on amount field for easy editing
         $('#paymentModal').modal('show');
+        setTimeout(() => {
+          $('#amount_paid').select();
+        }, 500);
       });
 
       // Update change calculation
@@ -1115,7 +1630,7 @@
         $('#change').text('$' + change.toFixed(2));
       });
 
-      // Process payment
+      // Process payment with enhanced UX
       $('#processPayment').on('click', async function () {
         const customer = $('#customer_selected').val();
         const items = JSON.parse(sessionStorage.getItem("shoppingCart"));
@@ -1123,18 +1638,43 @@
         const amountPaid = parseFloat($('#amount_paid').val());
 
         if (amountPaid < total) {
-          toastr.error('Amount paid cannot be less than total', 'Payment Error');
+          // Enhanced error message
+          toastr.error(
+            `Amount paid ($${amountPaid.toFixed(2)}) is less than the total amount ($${total.toFixed(2)})`,
+            'Payment Error',
+            {
+              timeOut: 5000,
+              progressBar: true,
+              closeButton: true
+            }
+          );
+
+          // Highlight the field
+          $('#amount_paid').addClass('is-invalid border-danger').focus();
+          setTimeout(() => {
+            $('#amount_paid').removeClass('is-invalid border-danger');
+          }, 3000);
           return;
         }
 
         // Show loading state
         $(this).prop('disabled', true).html('<i class="ti ti-loader ti-spin me-1"></i>Processing...');
 
+        // Overlay loading effect on modal
+        $('#paymentModal .modal-content').append(
+          '<div class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" ' +
+          'style="background: rgba(255,255,255,0.8); z-index: 10; backdrop-filter: blur(4px);">' +
+          '<div class="text-center">' +
+          '<div class="spinner-border text-primary mb-3" role="status"></div>' +
+          '<h5>Processing Payment...</h5>' +
+          '</div></div>'
+        );
+
         try {
           let response = await fetch('{% url "pos:pos" %}', {
             method: 'POST',
             headers: {
-              "X-CSRFToken": getCookie('csrftoken'),
+              "X-CSRFToken": '{{ csrf_token }}',
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -1148,7 +1688,7 @@
           let result = await response.json();
 
           if (result.status === "success") {
-            // Play sound if enabled
+            // Play success sound if enabled
             let settings = sessionStorage.getItem('AppSettings');
             let soundEnabled = settings ? JSON.parse(settings).play_sound : true;
             if (soundEnabled) {
@@ -1160,27 +1700,78 @@
             displayCart();
             $('#paymentModal').modal('hide');
 
-            // Show success modal
-            $('#saleId').text(result.sale_id);
-            $('#successModal').modal('show');
+            // Show success modal with a short delay for smooth transition
+            setTimeout(() => {
+              $('#saleId').text(result.sale_id);
+              $('#successModal').modal('show');
+            }, 300);
 
-            toastr.success('Sale completed successfully!', 'Success');
+            toastr.success(
+              `Sale #${result.sale_id} completed successfully!`,
+              'Transaction Complete',
+              {
+                progressBar: true,
+                timeOut: 5000
+              }
+            );
           } else {
             throw new Error(result.error_message || 'Unknown error occurred');
           }
         } catch (error) {
-          toastr.error(`Error: ${error.message}`, 'Payment Error');
+          toastr.error(
+            `${error.message}. Please try again or contact support.`,
+            'Payment Processing Error',
+            {
+              progressBar: true,
+              timeOut: 0,
+              closeButton: true,
+              extendedTimeOut: 0
+            }
+          );
         } finally {
+          // Remove overlay
+          $('#paymentModal .modal-content > .position-absolute').remove();
+
           // Reset button
           $(this).prop('disabled', false).html('<i class="ti ti-check me-1"></i>Complete Sale');
         }
       });
 
-      // Print receipt
+      // Print receipt with enhanced experience
       $('#printReceipt').on('click', function () {
         const saleId = $('#saleId').text();
-        window.open("/sales/pdf/" + saleId, '_blank');
-        $('#successModal').modal('hide');
+
+        // Show loading state on button
+        const $btn = $(this);
+        $btn.prop('disabled', true)
+          .html('<i class="ti ti-loader ti-spin me-2"></i>Preparing receipt...');
+
+        // Show a toast notification
+        toastr.info('Preparing receipt for printing...', 'Please Wait', {
+          progressBar: true,
+          timeOut: 3000
+        });
+
+        // Set a timeout to simulate processing
+        setTimeout(() => {
+          // Open receipt in new window
+          window.open("/sales/pdf/" + saleId, '_blank');
+
+          // Reset button and show success
+          $btn.prop('disabled', false)
+            .html('<i class="ti ti-printer me-2"></i>Print Receipt');
+
+          // Show confirmation toast
+          toastr.success('Receipt opened in new tab', 'Ready to Print', {
+            progressBar: true,
+            timeOut: 4000
+          });
+
+          // Close modal after delay
+          setTimeout(() => {
+            $('#successModal').modal('hide');
+          }, 1000);
+        }, 1500);
       });
 
       // CSRF token helper
