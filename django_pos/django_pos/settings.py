@@ -57,7 +57,6 @@ LOCAL_APPS = [
     "reports",
     "suppliers",
     "expenses",
-    "purchases",
     "authentication",
     "utils",
     "payments",
