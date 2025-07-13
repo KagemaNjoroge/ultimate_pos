@@ -4,14 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from company.models import Company
-from rest_framework.decorators import api_view
 from inventory.models import Inventory
 from .models import Category, Product
 from rest_framework.response import Response
 from .serializers import CategorySerializer, ProductSerializer
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.decorators import api_view
 from rest_framework.viewsets import ModelViewSet
 from django.views.decorators.http import require_http_methods
 from utils.models import Photo
@@ -149,12 +147,8 @@ def products_update_view(request, product_id: str):
     return render(request, "products/products_update.html", context)
 
 
-def is_ajax(request: HttpRequest) -> bool:
-    return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
-
-
 @login_required()
-@api_view(["GET"])
+@require_http_methods(["GET"])
 def get_products_ajax_view(request: Request) -> Response:
     query = request.query_params.dict().get("term", "")
     products = Product.objects.filter(name__icontains=query)

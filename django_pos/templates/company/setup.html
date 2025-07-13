@@ -177,56 +177,47 @@ Company Setup
         }
     }
 
-    // Form validation and AJAX submission
-    document.getElementById('companySetupForm').addEventListener('submit', function (e) {
+    $('#companySetupForm').on('submit', function (e) {
         e.preventDefault();
-        const companyName = document.getElementById('company_name').value.trim();
-        const email = document.getElementById('email').value.trim();
 
-        if (!companyName) {
+        if (!$('#company_name').val().trim()) {
             toastr.error('Company name is required');
-            document.getElementById('company_name').focus();
+            $('#company_name').focus();
             return false;
         }
-
-        // Validate email format if provided
-        if (email && !validateEmail(email)) {
+        if ($('#email').val().trim() && !validateEmail($('#email').val().trim())) {
             toastr.error('Please enter a valid email address');
-            document.getElementById('email').focus();
+            $('#email').focus();
             return false;
         }
-
         // Show loading state
-        const submitBtn = this.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="ti ti-loader-2 ti-spin"></i> Setting up...';
-        submitBtn.disabled = true;
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.html('<i class="ti ti-loader-2 ti-spin"></i> Setting up...');
+        submitBtn.prop('disabled', true);
+        var formData = new FormData(this);
 
-        // Prepare form data
-        const formData = new FormData(this);
-
-        // AJAX request
-        fetch(this.action || window.location.href, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        })
-            .then(response => {
-                if (response.ok) {
-                    // Optionally redirect or reload
-                    window.location.reload();
-                } else {
-                    return response.text().then(text => { throw new Error(text); });
-                }
-            })
-            .catch(error => {
-                toastr.error('An error occurred while submitting the form.');
+        $.ajax({
+            url: "{% url 'company:company'  %}",
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                toastr.success('Company setup completed successfully!');
+                // At this point no branches exist, redirect to add branch page
+                window.location.href = "{% url 'company:add_branch' %}";
+            },
+            error: function (xhr, status, error) {
+                toastr.error('An error occurred while setting up the company. Please try again.');
+                console.error(xhr.responseText);
+            },
+            complete: function () {
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
-            });
+            }
+        });
+
     });
 
     // Email validation function

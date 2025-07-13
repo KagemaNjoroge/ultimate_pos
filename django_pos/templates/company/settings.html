@@ -452,7 +452,8 @@ Settings
                     'X-CSRFToken': '{{csrf_token}}'
                 },
                 method: 'PUT',
-                url: `/company/${id}/`,
+
+                url: "{% url 'company:company_id' id=company.id %}",
                 data: formData,
                 processData: false,
                 contentType: false,

@@ -171,6 +171,17 @@ class CompanyView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
+    def post(self, request):
+        # since only one company can be created
+        if Company.objects.exists():
+            return Response({"error": "Company already exists."}, status=400)
+        else:
+            serializer = CompanySerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=201)
+            return Response(serializer.errors, status=400)
+
 
 @login_required()
 @require_http_methods(["GET"])

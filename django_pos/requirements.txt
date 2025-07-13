@@ -15,3 +15,5 @@ reportlab
 django-debug-toolbar
 gunicorn
 whitenoise
+django-filter
+djangorestframework-simplejwt

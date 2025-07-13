@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
 from django.contrib import messages
+from company.models import Branch, Company
 
 
 class BranchSelectionMiddleware:
@@ -11,13 +12,19 @@ class BranchSelectionMiddleware:
         self.get_response = get_response
         # URLs that don't require branch selection
         self.exempt_urls = [
-            "/users/",  # Authentication URLs
+            "/accounts/",  # Authentication URLs
             "/company/setup/",  # Company setup
             "/company/select-current-branch/",  # Branch selection
             "/admin/",  # Django admin
             "/static/",  # Static files
             "/media/",  # Media files
             "/api/",  # API endpoints
+            "/company/branches/add/",  # Add branch
+            "notifications/",  # Notifications
+            "/docs/",  # Documentation
+            "/company/api/",  # Company API endpoints
+            "/company/branches/",  # Branches List endpoints
+            "/company/branch/api/",  # Branch API endpoints
         ]
 
     def __call__(self, request):
@@ -30,24 +37,37 @@ class BranchSelectionMiddleware:
 
                 if not current_branch_id:
                     # Check if there are any branches available
-                    from company.models import Branch
+                    company = Company.objects.first()
+
+                    if not company:
+                        messages.error(
+                            request=request,
+                            message="No company setup found. Please set up your company first.",
+                            extra_tags="danger",
+                        )
+                        return redirect("company:setup")
 
                     if Branch.objects.exists():
                         messages.info(request, "Please select a branch to continue.")
                         return redirect("company:select_current_branch")
                     else:
-                        # No branches exist, redirect to setup if user has permission
+                        # No branches exist, redirect to branches setup if user has permission
                         if request.user.is_staff or request.user.is_superuser:
+                            # clear other messages
+                            messages.get_messages(request).used = True
+
                             messages.warning(
-                                request,
-                                "No branches found. Please set up your company first.",
+                                request=request,
+                                message="No branches found. Please add a branch to continue.",
+                                extra_tags="warning",
                             )
-                            return redirect("company:setup")
+                            return redirect("company:add_branch")
                         else:
                             messages.error(
                                 request,
                                 "No branches available. Please contact your administrator.",
                             )
+                            # TODO redirect to 'contact admin' page or similar
                             return redirect("authentication:login")
 
         response = self.get_response(request)
