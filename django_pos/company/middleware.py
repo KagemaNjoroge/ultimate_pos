@@ -1,5 +1,6 @@
 from django.shortcuts import redirect
 from django.contrib import messages
+from company.models import Branch, Company
 
 
 class BranchSelectionMiddleware:
@@ -11,7 +12,7 @@ class BranchSelectionMiddleware:
         self.get_response = get_response
         # URLs that don't require branch selection
         self.exempt_urls = [
-            "/users/",  # Authentication URLs
+            "/accounts/",  # Authentication URLs
             "/company/setup/",  # Company setup
             "/company/select-current-branch/",  # Branch selection
             "/admin/",  # Django admin
@@ -20,6 +21,10 @@ class BranchSelectionMiddleware:
             "/api/",  # API endpoints
             "/company/branches/add/",  # Add branch
             "notifications/",  # Notifications
+            "/docs/",  # Documentation
+            "/company/api/",  # Company API endpoints
+            "/company/branches/",  # Branches List endpoints
+            "/company/branch/api/",  # Branch API endpoints
         ]
 
     def __call__(self, request):
@@ -32,7 +37,15 @@ class BranchSelectionMiddleware:
 
                 if not current_branch_id:
                     # Check if there are any branches available
-                    from company.models import Branch
+                    company = Company.objects.first()
+
+                    if not company:
+                        messages.error(
+                            request=request,
+                            message="No company setup found. Please set up your company first.",
+                            extra_tags="danger",
+                        )
+                        return redirect("company:setup")
 
                     if Branch.objects.exists():
                         messages.info(request, "Please select a branch to continue.")
