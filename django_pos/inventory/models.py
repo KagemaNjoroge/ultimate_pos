@@ -10,7 +10,7 @@ class Inventory(TimestampedModel):
     alert_quantity = models.FloatField(default=1.0)
     branch = models.ForeignKey(
         to=Branch,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         verbose_name="branch",
         blank=True,
         null=True,
