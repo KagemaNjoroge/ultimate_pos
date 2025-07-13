@@ -19,6 +19,7 @@ class BranchSelectionMiddleware:
             "/media/",  # Media files
             "/api/",  # API endpoints
             "/company/branches/add/",  # Add branch
+            "notifications/",  # Notifications
         ]
 
     def __call__(self, request):
@@ -39,9 +40,13 @@ class BranchSelectionMiddleware:
                     else:
                         # No branches exist, redirect to branches setup if user has permission
                         if request.user.is_staff or request.user.is_superuser:
+                            # clear other messages
+                            messages.get_messages(request).used = True
+
                             messages.warning(
-                                request,
-                                "No branches found. Please set up your company first.",
+                                request=request,
+                                message="No branches found. Please add a branch to continue.",
+                                extra_tags="warning",
                             )
                             return redirect("company:add_branch")
                         else:
@@ -49,6 +54,7 @@ class BranchSelectionMiddleware:
                                 request,
                                 "No branches available. Please contact your administrator.",
                             )
+                            # TODO redirect to 'contact admin' page or similar
                             return redirect("authentication:login")
 
         response = self.get_response(request)
