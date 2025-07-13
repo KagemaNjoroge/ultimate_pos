@@ -18,6 +18,7 @@ class BranchSelectionMiddleware:
             "/static/",  # Static files
             "/media/",  # Media files
             "/api/",  # API endpoints
+            "/company/branches/add/",  # Add branch
         ]
 
     def __call__(self, request):
@@ -36,13 +37,13 @@ class BranchSelectionMiddleware:
                         messages.info(request, "Please select a branch to continue.")
                         return redirect("company:select_current_branch")
                     else:
-                        # No branches exist, redirect to setup if user has permission
+                        # No branches exist, redirect to branches setup if user has permission
                         if request.user.is_staff or request.user.is_superuser:
                             messages.warning(
                                 request,
                                 "No branches found. Please set up your company first.",
                             )
-                            return redirect("company:setup")
+                            return redirect("company:add_branch")
                         else:
                             messages.error(
                                 request,
