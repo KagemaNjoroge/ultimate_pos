@@ -37,7 +37,7 @@ urlpatterns = [
         "update/<str:product_id>/", views.products_update_view, name="products_update"
     ),
     # Get products AJAX
-    path("get/", views.get_products_ajax_view, name="get_products"),
+    path("get/", views.search_products_ajax_view, name="get_products"),
     # upload excel
     path("upload-excel/", views.upload_excel_view, name="upload_excel"),
     # download excel

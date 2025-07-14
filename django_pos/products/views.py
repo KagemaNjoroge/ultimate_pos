@@ -149,11 +149,14 @@ def products_update_view(request, product_id: str):
 
 @login_required()
 @require_http_methods(["GET"])
-def get_products_ajax_view(request: Request) -> Response:
-    query = request.query_params.dict().get("term", "")
-    products = Product.objects.filter(name__icontains=query)
-    serializer = ProductSerializer(products, many=True)
-    return Response(data=serializer.data, status=200)
+def search_products_ajax_view(request: HttpRequest) -> HttpResponse:
+    query = request.GET.get("term")
+    if query:
+        products = Product.objects.filter(name__icontains=query)
+        serializer = ProductSerializer(products, many=True)
+        return JsonResponse(data=serializer.data, safe=False)
+    else:
+        return JsonResponse(data=[])
 
 
 @login_required()
