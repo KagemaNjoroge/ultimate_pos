@@ -8,6 +8,8 @@ from sales.models import Sale
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from inventory.models import Inventory
+from django.db import models
 
 
 @login_required()
@@ -63,6 +65,11 @@ def index(request: HttpRequest) -> HttpResponse:
         created_at__date__range=[start_date, end_date]
     ).order_by("-created_at")
 
+    # Get low stock items
+    low_stock_items = Inventory.objects.filter(
+        available_quantity__lte=models.F("alert_quantity")
+    ).count()
+
     return render(
         request,
         "reports/index.html",
@@ -77,6 +84,7 @@ def index(request: HttpRequest) -> HttpResponse:
             "total_expenses": sum(expense.amount for expense in expenses),
             "total_profit": sum(sale.grand_total for sale in sales)
             - sum(expense.amount for expense in expenses),
+            "low_stock_items": low_stock_items,
         },
     )
 
