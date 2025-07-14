@@ -133,6 +133,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 @login_required()
 def pos(request: HttpRequest) -> HttpResponse:
+    current_branch = get_current_branch(request)
     if request.method == "GET":
         products = Product.objects.all()
         categories = Category.objects.all()
@@ -149,6 +150,7 @@ def pos(request: HttpRequest) -> HttpResponse:
             },
         )
     elif request.method == "POST":
+
         try:
             sale_data = json.loads(request.body)
             items = sale_data["items"]
@@ -192,7 +194,9 @@ def pos(request: HttpRequest) -> HttpResponse:
                 # update inventory
                 if product.track_inventory:
                     # check if it exists in inventory
-                    inventory = Inventory.objects.filter(product=product)
+                    inventory = Inventory.objects.filter(
+                        product=product, branch=current_branch
+                    )
                     if inventory.exists():
                         inventory = inventory.first()
                         try:
