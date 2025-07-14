@@ -173,8 +173,6 @@ def pos(request: HttpRequest) -> HttpResponse:
             sale = Sale.objects.create(
                 customer=customer,
                 grand_total=grand_total,
-                amount_payed=amount_paid,
-                amount_change=change,
                 tax_percentage=tax_percentage,
                 tax_amount=tax_amount,
                 sub_total=grand_total - tax_amount,
@@ -233,6 +231,7 @@ def pos(request: HttpRequest) -> HttpResponse:
 
             return JsonResponse({"status": "success", "sale_id": sale.id})
         except Exception as e:
+            print(e)
 
             return JsonResponse(
                 {"status": "error", "error_message": "An error occurred"}

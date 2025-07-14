@@ -11,7 +11,7 @@ import qrcode
 import tempfile
 
 
-def create_invoice_pdf(invoice_data, output_path=None):
+def create_invoice_pdf(invoice_data, output_path=None) -> str | bytes:
     """
     Generate a PDF invoice based on the provided data
 
@@ -47,37 +47,6 @@ def create_invoice_pdf(invoice_data, output_path=None):
 
     # Start at the top of the page
     y_position = height - 1 * cm
-
-    # Draw payment status watermark if provided
-    payment_status = invoice_data.get("payment_status", "").upper()
-    if payment_status:
-        # Save canvas state
-        c.saveState()
-
-        # Set transparency and rotation for the watermark
-        c.setFillColorRGB(0.95, 0.95, 0.95, alpha=0.7)  # Light gray with transparency
-        c.translate(width / 2, height / 2)
-        c.rotate(45)
-
-        # Choose color based on status
-        if payment_status == "PAID":
-            c.setFillColorRGB(0, 0.6, 0, alpha=0.3)  # Green with transparency
-        elif payment_status == "UNPAID":
-            c.setFillColorRGB(0.8, 0, 0, alpha=0.3)  # Red with transparency
-        elif payment_status == "PARTIAL":
-            c.setFillColorRGB(0.9, 0.6, 0, alpha=0.3)  # Orange with transparency
-        elif payment_status == "OVERDUE":
-            c.setFillColorRGB(0.8, 0, 0, alpha=0.4)  # Darker red with transparency
-        elif payment_status == "CANCELLED":
-            c.setFillColorRGB(0.1, 0.1, 0.1, alpha=0.4)  # Dark gray with transparency
-
-        # Draw the watermark
-        c.setFont("Helvetica-Bold", 80)
-        text_width = c.stringWidth(payment_status, "Helvetica-Bold", 80)
-        c.drawString(-text_width / 2, 0, payment_status)
-
-        # Restore canvas state
-        c.restoreState()
 
     # Company Logo (if available)
     if "logo_path" in invoice_data.get("company_info", {}):

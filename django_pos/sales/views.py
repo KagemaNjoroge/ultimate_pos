@@ -61,8 +61,6 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
                 tax_percentage=tax_percentage,
                 tax_amount=tax_amount,
                 grand_total=grand_total,
-                amount_payed=amount_payed,
-                amount_change=amount_change,
             )
             sale.save()
 
@@ -171,9 +169,10 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
         )
 
     # Determine payment status
-    if sale.amount_payed >= sale.grand_total:
+    print(sale.amount_payed(), sale.grand_total)
+    if sale.amount_payed() >= sale.grand_total:
         payment_status = "Paid"
-    elif sale.amount_payed > 0:
+    elif sale.amount_payed() > 0:
         payment_status = "Partial"
     else:
         payment_status = "Unpaid"
@@ -213,8 +212,8 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
             "tax": float(sale.tax_amount),
             "discount": float(sale.discount) if sale.discount else 0,
             "total": float(sale.grand_total),
-            "paid_amount": float(sale.amount_payed),
-            "balance_due": float(sale.grand_total - sale.amount_payed),
+            "paid_amount": float(sale.amount_payed()),
+            "balance_due": float(sale.grand_total - sale.amount_payed()),
         },
         "payment_status": payment_status,
         # "notes": "Thank you for your purchase. We appreciate your business.",
