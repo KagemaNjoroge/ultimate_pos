@@ -202,8 +202,8 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
         },
         "invoice_info": {
             "invoice_number": f"INV-{datetime.now().strftime('%Y')}-{sale_id.zfill(4)}",
-            "date": f"{sale.date_added.strftime('%Y-%m-%d')}",
-            "due_date": f"{(sale.date_added + timedelta(days=30)).strftime('%Y-%m-%d')}",
+            "date": f"{sale.created_at.strftime('%Y-%m-%d')}",
+            "due_date": f"{(sale.created_at + timedelta(days=30)).strftime('%Y-%m-%d')}",
             "reference": f"SALE-{sale_id}",
             "payment_method": "Cash/Card",
         },
@@ -226,4 +226,4 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
     pdf_content = create_invoice_pdf(invoice_data)
 
     # Return the PDF as an HTTP response
-    return HttpResponse(pdf_content, content_type="application/pdf")
+    return HttpResponse(pdf_content, content_type="application/pdf", )
