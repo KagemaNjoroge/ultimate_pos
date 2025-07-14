@@ -34,8 +34,8 @@ def index(request: HttpRequest) -> HttpResponse:
 
     # Get sales within the date range
     sales = Sale.objects.filter(
-        date_added__date__range=[start_date, end_date]
-    ).order_by("-date_added")
+        created_at__date__range=[start_date, end_date]
+    ).order_by("-created_at")
 
     # Group sales by date for daily summary
     daily_sales = defaultdict(
@@ -49,7 +49,7 @@ def index(request: HttpRequest) -> HttpResponse:
     )
 
     for sale in sales:
-        date_key = sale.date_added.date()
+        date_key = sale.created_at.date()
         daily_sales[date_key]["transactions"] += 1
         daily_sales[date_key]["gross_sales"] += sale.sub_total
         daily_sales[date_key]["discounts"] += sale.discount
@@ -97,11 +97,11 @@ def duration_sales_report(request):
     end_date = request.GET.get("end_date", None)
 
     if start_date and end_date:
-        sales = Sale.objects.filter(date_added__range=[start_date, end_date])
+        sales = Sale.objects.filter(created_at__range=[start_date, end_date])
     else:
         # return for the past month
         sales = Sale.objects.filter(
-            date_added__range=[
+            created_at__range=[
                 datetime.now().replace(day=1),
                 datetime.now().replace(day=31),
             ]
@@ -118,7 +118,7 @@ def duration_sales_report(request):
 def sales_this_month(request) -> Response:
 
     sales = Sale.objects.filter(
-        date_added__range=[
+        created_at__range=[
             datetime.now() - timedelta(days=28),
             datetime.now(),
         ]
@@ -140,7 +140,7 @@ def sales_this_month(request) -> Response:
 @api_view(["GET"])
 def sales_this_week(request) -> Response:
     sales = Sale.objects.filter(
-        date_added__range=[datetime.now() - timedelta(days=7), datetime.now()]
+        created_at__range=[datetime.now() - timedelta(days=7), datetime.now()]
     )
 
     total = sum([sale.grand_total for sale in sales])
@@ -159,7 +159,7 @@ def sales_this_week(request) -> Response:
 @api_view(["GET"])
 def best_selling_product(request) -> Response:
     sales = Sale.objects.filter(
-        date_added__range=[
+        created_at__range=[
             datetime.now() - timedelta(days=28),
             datetime.now(),
         ]
@@ -198,7 +198,7 @@ def best_selling_product(request) -> Response:
 def get_best_selling_category(request) -> Response:
 
     sales = Sale.objects.filter(
-        date_added__range=[
+        created_at__range=[
             datetime.now().replace(day=1),
             datetime.now().replace(day=30),
         ]
