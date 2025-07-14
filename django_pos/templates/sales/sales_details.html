@@ -18,7 +18,7 @@
                             <h4 class="mb-1 fw-bold">Sale #{{sale.id}}</h4>
                             <p class="text-muted mb-0">
                                 <i class="ti ti-calendar me-1"></i>
-                                {{sale.date_added|date:"F d, Y g:i A"}}
+                                {{sale.created_at|date:"F d, Y g:i A"}}
                             </p>
                         </div>
                     </div>
@@ -325,7 +325,7 @@
                                 style="width: 60px; height: 60px;">
                                 <i class="ti ti-calendar fs-4 text-warning"></i>
                             </div>
-                            <h6 class="fw-bold mb-1">{{sale.date_added|date:"M d"}}</h6>
+                            <h6 class="fw-bold mb-1">{{sale.created_at|date:"M d"}}</h6>
                             <small class="text-muted">Sale Date</small>
                         </div>
                     </div>
