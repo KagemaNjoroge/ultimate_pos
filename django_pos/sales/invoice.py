@@ -485,7 +485,20 @@ def create_invoice_pdf(invoice_data, output_path=None):
 
     # Add page number at the bottom
     c.setFont("Helvetica", 8)
+
     c.drawRightString(width - 1 * cm, 1 * cm, "Page 1 of 1")
+
+    # Set PDF metadata properties
+    invoice_number = invoice_data.get("invoice_info", {}).get("invoice_number", "")
+    customer_name = invoice_data.get("customer_info", {}).get("name", "")
+
+    # Set the document title that will show in the browser tab
+    title = f"Receipt #{invoice_number} - {customer_name}"
+    c.setTitle(title)
+
+    # You can also set other metadata properties
+    c.setSubject(f"Invoice {invoice_number}")
+    c.setAuthor(invoice_data.get("company_info", {}).get("name", "UltimatePOS"))
 
     # Save the PDF
     c.save()
