@@ -30,7 +30,7 @@ def index(request: HttpRequest) -> HttpResponse:
     # Calculate earnings per month
     for month in range(1, 13):
         earning = (
-            Sale.objects.filter(date_added__year=year, date_added__month=month)
+            Sale.objects.filter(created_at__year=year, created_at__month=month)
             .aggregate(
                 total_variable=Coalesce(
                     Sum(F("grand_total")), 0.0, output_field=FloatField()
@@ -42,7 +42,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
     # Calculate annual earnings
     annual_earnings = (
-        Sale.objects.filter(date_added__year=year)
+        Sale.objects.filter(created_at__year=year)
         .aggregate(
             total_variable=Coalesce(
                 Sum(F("grand_total")), 0.0, output_field=FloatField()
@@ -57,7 +57,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
     # Get today's sales
     today_sales = (
-        Sale.objects.filter(date_added__date=today)
+        Sale.objects.filter(created_at__date=today)
         .aggregate(
             total_variable=Coalesce(
                 Sum(F("grand_total")), 0.0, output_field=FloatField()
@@ -68,7 +68,7 @@ def index(request: HttpRequest) -> HttpResponse:
     today_sales = format(today_sales, ".2f")
 
     # Get recent sales count
-    recent_sales_count = Sale.objects.filter(date_added__date=today).count()
+    recent_sales_count = Sale.objects.filter(created_at__date=today).count()
 
     # Get low stock items
     low_stock_items = Inventory.objects.filter(
