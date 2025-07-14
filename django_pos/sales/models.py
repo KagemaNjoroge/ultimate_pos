@@ -2,6 +2,7 @@ from django.db import models
 
 from customers.models import Customer
 from products.models import Product
+from payments.models import Payment
 
 
 class Sale(models.Model):
@@ -18,6 +19,16 @@ class Sale(models.Model):
     # if printed add a watermark to the receipt
     receipt_is_printed = models.BooleanField(default=False)
     discount = models.FloatField(default=0)
+
+    # payments
+    payment = models.ManyToManyField(
+        Payment,
+        related_name="sales",
+        blank=True,
+        db_table="SalePayments",
+        db_constraint=False,
+        verbose_name="Payments",
+    )
 
     class Meta:
         db_table = "Sales"
