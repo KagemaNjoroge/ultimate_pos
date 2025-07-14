@@ -27,7 +27,7 @@ def is_ajax(request: HttpRequest) -> bool:
 
 @login_required()
 def sales_list_view(request: HttpRequest) -> HttpResponse:
-    sales = Sale.objects.all().order_by("-date_added")
+    sales = Sale.objects.all().order_by("-created_at")
     context = {"sales": sales}
     return render(request, "sales/sales.html", context=context)
 
@@ -226,4 +226,9 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
     pdf_content = create_invoice_pdf(invoice_data)
 
     # Return the PDF as an HTTP response
-    return HttpResponse(pdf_content, content_type="application/pdf", )
+    response = HttpResponse(
+        pdf_content,
+        content_type="application/pdf",
+    )
+    response["Content-Disposition"] = f'filename="{sale.id}_receipt.pdf"; inline'
+    return response
