@@ -3,10 +3,11 @@ from django.db import models
 from customers.models import Customer
 from products.models import Product
 from payments.models import Payment
+from utils.models import TimestampedModel
 
 
-class Sale(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+class Sale(TimestampedModel):
+
     customer = models.ForeignKey(
         Customer, models.SET_NULL, db_column="customer", blank=True, null=True
     )
