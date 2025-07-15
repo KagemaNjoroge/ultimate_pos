@@ -21,10 +21,6 @@ class SaleViewSet(ModelViewSet):
     serializer_class = SaleSerializer
 
 
-def is_ajax(request: HttpRequest) -> bool:
-    return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
-
-
 @login_required()
 def sales_list_view(request: HttpRequest) -> HttpResponse:
     sales = Sale.objects.all().order_by("-created_at")
@@ -40,75 +36,74 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
     }
 
     if request.method == "POST":
-        if is_ajax(request=request):
 
-            data = json.load(request)
+        data = json.load(request)
 
-            customer_id = int(data["customer"])
-            customer = Customer.objects.get(id=customer_id)
-            sub_total = float(data["sub_total"])
-            tax_percentage = float(data["tax_percentage"])
-            tax_amount = float(data["tax_amount"])
-            grand_total = float(data["grand_total"])
-            amount_payed = float(data["amount_payed"])
-            amount_change = float(data["amount_change"])
+        customer_id = int(data["customer"])
+        customer = Customer.objects.get(id=customer_id)
+        sub_total = float(data["sub_total"])
+        tax_percentage = float(data["tax_percentage"])
+        tax_amount = float(data["tax_amount"])
+        grand_total = float(data["grand_total"])
+        amount_payed = float(data["amount_payed"])
+        amount_change = float(data["amount_change"])
 
-            prods = data["products"]
-            # Create the sale
-            sale = Sale(
-                customer=customer,
-                sub_total=sub_total,
-                tax_percentage=tax_percentage,
-                tax_amount=tax_amount,
-                grand_total=grand_total,
+        prods = data["products"]
+        # Create the sale
+        sale = Sale(
+            customer=customer,
+            sub_total=sub_total,
+            tax_percentage=tax_percentage,
+            tax_amount=tax_amount,
+            grand_total=grand_total,
+        )
+        sale.save()
+
+        products = []
+        for prod in prods:
+            product = Product.objects.get(id=prod["id"])
+            products.append(product)
+            # Update the inventory
+            if product.track_inventory:
+                inv = Inventory.objects.filter(product=product)
+                if inv.exists():
+                    inv = inv.first()
+                    # # for each product check of inventory quantity > 0
+                    if inv.quantity > 0:
+                        inv.quantity -= prod["count"]
+                        inv.save()
+                    else:
+                        # not enough stocks, add notification
+                        Notifications.objects.create(
+                            title="Inventory Update Failed",
+                            message=f"Inventory update failed for {inv.product.name}. Items left: {inv.quantity}.",
+                            user=request.user,
+                        )
+
+                        return JsonResponse(
+                            {
+                                "status": "error",
+                                "message": f"Not enough inventory quantity for {inv.product.name}. Please adjust the inventory before proceeding.",
+                            }
+                        )
+        # Create the sale items
+
+        for prod in prods:
+            product = Product.objects.get(id=prod["id"])
+            sale_item = SaleItem(
+                product=product,
+                quantity=prod["count"],
+                sale=sale,
             )
-            sale.save()
+            sale_item.save()
 
-            products = []
-            for prod in prods:
-                product = Product.objects.get(id=prod["id"])
-                products.append(product)
-                # Update the inventory
-                if product.track_inventory:
-                    inv = Inventory.objects.filter(product=product)
-                    if inv.exists():
-                        inv = inv.first()
-                        # # for each product check of inventory quantity > 0
-                        if inv.quantity > 0:
-                            inv.quantity -= prod["count"]
-                            inv.save()
-                        else:
-                            # not enough stocks, add notification
-                            Notifications.objects.create(
-                                title="Inventory Update Failed",
-                                message=f"Inventory update failed for {inv.product.name}. Items left: {inv.quantity}.",
-                                user=request.user,
-                            )
-
-                            return JsonResponse(
-                                {
-                                    "status": "error",
-                                    "message": f"Not enough inventory quantity for {inv.product.name}. Please adjust the inventory before proceeding.",
-                                }
-                            )
-            # Create the sale items
-
-            for prod in prods:
-                product = Product.objects.get(id=prod["id"])
-                sale_item = SaleItem(
-                    product=product,
-                    quantity=prod["count"],
-                    sale=sale,
-                )
-                sale_item.save()
-
-            return JsonResponse(
-                {
-                    "status": "success",
-                    "message": "Sale created successfully!",
-                    "sale_id": sale.id,
-                }
-            )
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Sale created successfully!",
+                "sale_id": sale.id,
+            }
+        )
     elif request.method == "GET":
         return render(request, "sales/sales_add.html", context=context)
 
@@ -213,7 +208,7 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
             "discount": float(sale.discount) if sale.discount else 0,
             "total": float(sale.grand_total),
             "paid_amount": float(sale.amount_payed()),
-            "balance_due": float(sale.grand_total - sale.amount_payed()),
+            "balance_due": float(sale.grand_total - float(sale.amount_payed())),
         },
         "payment_status": payment_status,
         # "notes": "Thank you for your purchase. We appreciate your business.",
