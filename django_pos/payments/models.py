@@ -1,13 +1,25 @@
+from utils.models import TimestampedModel
 from django.db import models
 
 
-class ResponseData(models.Model):
+class Payment(TimestampedModel):
     """
-    Model to store response data from the payment gateway.
+    Represents a payment made by a customer.
     """
 
-    response_data = models.JSONField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=3)
+    payment_method = models.CharField(max_length=50)
+    reference = models.CharField(max_length=100, unique=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pending"),
+            ("completed", "Completed"),
+            ("failed", "Failed"),
+            ("refunded", "Refunded"),
+        ],
+    )
 
     def __str__(self):
-        return f"ResponseData {self.id} - {self.created_at}"
+        return f"{self.amount} {self.currency} - {self.status}"

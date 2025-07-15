@@ -5,8 +5,8 @@ from .models import Sale, SaleItem
 
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):
-    list_display = ("id", "date_added", "grand_total", "customer")
-    list_filter = ("date_added", "customer")
+    list_display = ("id", "created_at", "grand_total", "customer")
+    list_filter = ("created_at", "customer")
     search_fields = ("customer__first_name", "customer__last_name")
 
 

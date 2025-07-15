@@ -21,13 +21,9 @@ class SaleViewSet(ModelViewSet):
     serializer_class = SaleSerializer
 
 
-def is_ajax(request: HttpRequest) -> bool:
-    return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
-
-
 @login_required()
 def sales_list_view(request: HttpRequest) -> HttpResponse:
-    sales = Sale.objects.all().order_by("-date_added")
+    sales = Sale.objects.all().order_by("-created_at")
     context = {"sales": sales}
     return render(request, "sales/sales.html", context=context)
 
@@ -40,77 +36,72 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
     }
 
     if request.method == "POST":
-        if is_ajax(request=request):
 
-            data = json.load(request)
+        data = json.load(request)
 
-            customer_id = int(data["customer"])
-            customer = Customer.objects.get(id=customer_id)
-            sub_total = float(data["sub_total"])
-            tax_percentage = float(data["tax_percentage"])
-            tax_amount = float(data["tax_amount"])
-            grand_total = float(data["grand_total"])
-            amount_payed = float(data["amount_payed"])
-            amount_change = float(data["amount_change"])
+        customer_id = int(data["customer"])
+        customer = Customer.objects.get(id=customer_id)
+        sub_total = float(data["sub_total"])
+        tax_percentage = float(data["tax_percentage"])
+        tax_amount = float(data["tax_amount"])
+        grand_total = float(data["grand_total"])
 
-            prods = data["products"]
-            # Create the sale
-            sale = Sale(
-                customer=customer,
-                sub_total=sub_total,
-                tax_percentage=tax_percentage,
-                tax_amount=tax_amount,
-                grand_total=grand_total,
-                amount_payed=amount_payed,
-                amount_change=amount_change,
+        prods = data["products"]
+        # Create the sale
+        sale = Sale(
+            customer=customer,
+            sub_total=sub_total,
+            tax_percentage=tax_percentage,
+            tax_amount=tax_amount,
+            grand_total=grand_total,
+        )
+        sale.save()
+
+        products = []
+        for prod in prods:
+            product = Product.objects.get(id=prod["id"])
+            products.append(product)
+            # Update the inventory
+            if product.track_inventory:
+                inv = Inventory.objects.filter(product=product)
+                if inv.exists():
+                    inv = inv.first()
+                    # # for each product check of inventory quantity > 0
+                    if inv.quantity > 0:
+                        inv.quantity -= prod["count"]
+                        inv.save()
+                    else:
+                        # not enough stocks, add notification
+                        Notifications.objects.create(
+                            title="Inventory Update Failed",
+                            message=f"Inventory update failed for {inv.product.name}. Items left: {inv.quantity}.",
+                            user=request.user,
+                        )
+
+                        return JsonResponse(
+                            {
+                                "status": "error",
+                                "message": f"Not enough inventory quantity for {inv.product.name}. Please adjust the inventory before proceeding.",
+                            }
+                        )
+        # Create the sale items
+
+        for prod in prods:
+            product = Product.objects.get(id=prod["id"])
+            sale_item = SaleItem(
+                product=product,
+                quantity=prod["count"],
+                sale=sale,
             )
-            sale.save()
+            sale_item.save()
 
-            products = []
-            for prod in prods:
-                product = Product.objects.get(id=prod["id"])
-                products.append(product)
-                # Update the inventory
-                if product.track_inventory:
-                    inv = Inventory.objects.filter(product=product)
-                    if inv.exists():
-                        inv = inv.first()
-                        # # for each product check of inventory quantity > 0
-                        if inv.quantity > 0:
-                            inv.quantity -= prod["count"]
-                            inv.save()
-                        else:
-                            # not enough stocks, add notification
-                            Notifications.objects.create(
-                                title="Inventory Update Failed",
-                                message=f"Inventory update failed for {inv.product.name}. Items left: {inv.quantity}.",
-                                user=request.user,
-                            )
-
-                            return JsonResponse(
-                                {
-                                    "status": "error",
-                                    "message": f"Not enough inventory quantity for {inv.product.name}. Please adjust the inventory before proceeding.",
-                                }
-                            )
-            # Create the sale items
-
-            for prod in prods:
-                product = Product.objects.get(id=prod["id"])
-                sale_item = SaleItem(
-                    product=product,
-                    quantity=prod["count"],
-                    sale=sale,
-                )
-                sale_item.save()
-
-            return JsonResponse(
-                {
-                    "status": "success",
-                    "message": "Sale created successfully!",
-                    "sale_id": sale.id,
-                }
-            )
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": "Sale created successfully!",
+                "sale_id": sale.id,
+            }
+        )
     elif request.method == "GET":
         return render(request, "sales/sales_add.html", context=context)
 
@@ -171,9 +162,10 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
         )
 
     # Determine payment status
-    if sale.amount_payed >= sale.grand_total:
+    print(sale.amount_payed(), sale.grand_total)
+    if sale.amount_payed() >= sale.grand_total:
         payment_status = "Paid"
-    elif sale.amount_payed > 0:
+    elif sale.amount_payed() > 0:
         payment_status = "Partial"
     else:
         payment_status = "Unpaid"
@@ -202,8 +194,8 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
         },
         "invoice_info": {
             "invoice_number": f"INV-{datetime.now().strftime('%Y')}-{sale_id.zfill(4)}",
-            "date": f"{sale.date_added.strftime('%Y-%m-%d')}",
-            "due_date": f"{(sale.date_added + timedelta(days=30)).strftime('%Y-%m-%d')}",
+            "date": f"{sale.created_at.strftime('%Y-%m-%d')}",
+            "due_date": f"{(sale.created_at + timedelta(days=30)).strftime('%Y-%m-%d')}",
             "reference": f"SALE-{sale_id}",
             "payment_method": "Cash/Card",
         },
@@ -213,8 +205,8 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
             "tax": float(sale.tax_amount),
             "discount": float(sale.discount) if sale.discount else 0,
             "total": float(sale.grand_total),
-            "paid_amount": float(sale.amount_payed),
-            "balance_due": float(sale.grand_total - sale.amount_payed),
+            "paid_amount": float(sale.amount_payed()),
+            "balance_due": float(sale.grand_total - float(sale.amount_payed())),
         },
         "payment_status": payment_status,
         # "notes": "Thank you for your purchase. We appreciate your business.",
@@ -226,4 +218,9 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
     pdf_content = create_invoice_pdf(invoice_data)
 
     # Return the PDF as an HTTP response
-    return HttpResponse(pdf_content, content_type="application/pdf")
+    response = HttpResponse(
+        pdf_content,
+        content_type="application/pdf",
+    )
+    response["Content-Disposition"] = f'filename="{sale.id}_receipt.pdf"; inline'
+    return response

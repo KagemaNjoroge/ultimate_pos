@@ -7,89 +7,52 @@ A simple, powerful and easy to use Point of Sale (POS) system.
 ## Features
 
 - Dashboard Page with statistics and graphs
-- DataTables with print, copy, to CSV, and to PDF buttons
-- Categories and Products Management
-- Clients Management
+- Products, Product categories Management
+- Customers Management
+- Suppliers Management
 - Sales Management
 - Stripe, PayPal, Cash and M-Pesa payment methods
+- Support for multiple branches
+- Role Based Access Control (RBAC)
 
 ## Installation
 
-1. Clone or download the repository:
+The Ultimate POS application can be installed using Docker or manually.
 
-```bash
-git clone https://github.com/kagemanjoroge/ultimate_pos.git
-```
+### Docker Installation
 
-2. Go to the project directory
+For Docker installation, follow the [Docker Setup Guide](./DOCKER_SETUP.md).
 
-```bash
-cd ultimate_pos/django_pos
-```
+### Manual Installation
 
-3. Create a virtual environment :
-
-```bash
-python3 -m venv venv && source venv/bin/activate
-```
-
-4. Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Run it locally
-
-1.  Go to the project directory: `cd ultimate_pos`
-
-2.  Activate the virtual enviroment
-
-    ```bash
-    source venv/bin/activate
-    ```
-
-3.  Go to the django_pos folder:
-
-    ```bash
-    cd ultimate_pos/django_pos
-    ```
-
-4.  Copy the .env.example file to .env:
-    Replace the values with your own values
-
-    ```bash
-    cp .env.example .env
-    ```
-
-5.  Make database migrations:
-
-    ```bash
-    python manage.py makemigrations && python manage.py migrate
-    ```
-
-6.  Create superuser to access the admin panel:
-
-    ```bash
-    python manage.py createsuperuser
-    ```
-
-    Follow the prompts to create a superuser account.
-
-7.  Run the server:
-
-    ```bash
-    python manage.py runserver
-    ```
-
-8.  Open a browser and navigate : `http://127.0.0.1:8000/`
-
-9.  Log In with your superuser credentials.
-
-## Contributing
-
-Contributions are always welcome!
-
-## License
-
-This project is under [MIT License.](https://choosealicense.com/licenses/mit/)
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/kagemanjoroge/ultimate_pos.git && cd ultimate_pos/django_pos
+   ```
+2. Create a virtual environment, activate it, and install the requirements:
+   ```bash
+   python3 -m venv venv; source venv/bin/activate; pip install -r requirements.txt
+   ```
+3. Create a `.env` file based on the `.example.env` template:
+   ```bash
+   cp .example.env .env
+   ```
+4. Update the `.env` file with your database credentials and other settings.
+5. Run the migrations:
+   ```bash
+   python manage.py migrate
+   ```
+6. Create a superuser account:
+   ```bash
+   python manage.py createsuperuser
+   ```
+7. Collect static files:
+   ```bash
+   python manage.py collectstatic --no-input
+   ```
+8. Start the development server:
+   ```bash
+   python manage.py runserver
+   ```
+9. Access the application at http://localhost:8000
+10. Rock and roll!

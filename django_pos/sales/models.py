@@ -2,10 +2,12 @@ from django.db import models
 
 from customers.models import Customer
 from products.models import Product
+from payments.models import Payment
+from utils.models import TimestampedModel
 
 
-class Sale(models.Model):
-    date_added = models.DateTimeField(auto_now_add=True)
+class Sale(TimestampedModel):
+
     customer = models.ForeignKey(
         Customer, models.SET_NULL, db_column="customer", blank=True, null=True
     )
@@ -13,11 +15,43 @@ class Sale(models.Model):
     grand_total = models.FloatField(default=0)
     tax_amount = models.FloatField(default=0)
     tax_percentage = models.FloatField(default=0)
-    amount_payed = models.FloatField(default=0)
-    amount_change = models.FloatField(default=0)
+
     # if printed add a watermark to the receipt
     receipt_is_printed = models.BooleanField(default=False)
     discount = models.FloatField(default=0)
+
+    @property
+    def amount_payed(self):
+        return self.get_amount_paid
+
+    @property
+    def amount_change(self):
+        return self.get_amount_change()
+
+    # the following methods and properties are for maintaining backward compatibility
+    def get_amount_change(self):
+        total_paid = self.get_amount_paid()
+        return max(0, float(total_paid) - float(self.grand_total))
+
+    def get_amount_paid(self):
+        """Calculate total amount paid from all completed payments."""
+        return sum(
+            payment.amount for payment in self.payment.filter(status="completed")
+        )
+
+    def get_amount_due(self):
+        """Calculate the amount due based on grand total and amount paid."""
+        return max(0, self.grand_total - self.get_amount_paid())
+
+    # payments
+    payment = models.ManyToManyField(
+        Payment,
+        related_name="sales",
+        blank=True,
+        db_table="SalePayments",
+        db_constraint=False,
+        verbose_name="Payments",
+    )
 
     class Meta:
         db_table = "Sales"
@@ -29,20 +63,6 @@ class Sale(models.Model):
 
     def get_total(self) -> float:
         return self.sub_total + self.tax_amount - self.discount
-
-    def to_json(self) -> dict:
-        return {
-            "id": self.id,
-            "date_added": self.date_added,
-            "customer": self.customer.get_full_name(),
-            "sub_total": self.sub_total,
-            "grand_total": self.grand_total,
-            "tax_amount": self.tax_amount,
-            "tax_percentage": self.tax_percentage,
-            "amount_paid": self.amount_payed,
-            "amount_change": self.amount_change,
-            "receipt_is_printed": self.receipt_is_printed,
-        }
 
 
 class SaleItem(models.Model):

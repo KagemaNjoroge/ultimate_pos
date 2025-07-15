@@ -30,7 +30,7 @@ def index(request: HttpRequest) -> HttpResponse:
     # Calculate earnings per month
     for month in range(1, 13):
         earning = (
-            Sale.objects.filter(date_added__year=year, date_added__month=month)
+            Sale.objects.filter(created_at__year=year, created_at__month=month)
             .aggregate(
                 total_variable=Coalesce(
                     Sum(F("grand_total")), 0.0, output_field=FloatField()
@@ -42,7 +42,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
     # Calculate annual earnings
     annual_earnings = (
-        Sale.objects.filter(date_added__year=year)
+        Sale.objects.filter(created_at__year=year)
         .aggregate(
             total_variable=Coalesce(
                 Sum(F("grand_total")), 0.0, output_field=FloatField()
@@ -57,7 +57,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
     # Get today's sales
     today_sales = (
-        Sale.objects.filter(date_added__date=today)
+        Sale.objects.filter(created_at__date=today)
         .aggregate(
             total_variable=Coalesce(
                 Sum(F("grand_total")), 0.0, output_field=FloatField()
@@ -68,7 +68,7 @@ def index(request: HttpRequest) -> HttpResponse:
     today_sales = format(today_sales, ".2f")
 
     # Get recent sales count
-    recent_sales_count = Sale.objects.filter(date_added__date=today).count()
+    recent_sales_count = Sale.objects.filter(created_at__date=today).count()
 
     # Get low stock items
     low_stock_items = Inventory.objects.filter(
@@ -133,6 +133,7 @@ def index(request: HttpRequest) -> HttpResponse:
 
 @login_required()
 def pos(request: HttpRequest) -> HttpResponse:
+    current_branch = get_current_branch(request)
     if request.method == "GET":
         products = Product.objects.all()
         categories = Category.objects.all()
@@ -149,6 +150,7 @@ def pos(request: HttpRequest) -> HttpResponse:
             },
         )
     elif request.method == "POST":
+
         try:
             sale_data = json.loads(request.body)
             items = sale_data["items"]
@@ -171,8 +173,6 @@ def pos(request: HttpRequest) -> HttpResponse:
             sale = Sale.objects.create(
                 customer=customer,
                 grand_total=grand_total,
-                amount_payed=amount_paid,
-                amount_change=change,
                 tax_percentage=tax_percentage,
                 tax_amount=tax_amount,
                 sub_total=grand_total - tax_amount,
@@ -192,7 +192,9 @@ def pos(request: HttpRequest) -> HttpResponse:
                 # update inventory
                 if product.track_inventory:
                     # check if it exists in inventory
-                    inventory = Inventory.objects.filter(product=product)
+                    inventory = Inventory.objects.filter(
+                        product=product, branch=current_branch
+                    )
                     if inventory.exists():
                         inventory = inventory.first()
                         try:
@@ -229,6 +231,7 @@ def pos(request: HttpRequest) -> HttpResponse:
 
             return JsonResponse({"status": "success", "sale_id": sale.id})
         except Exception as e:
+            print(e)
 
             return JsonResponse(
                 {"status": "error", "error_message": "An error occurred"}

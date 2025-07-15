@@ -63,18 +63,18 @@ def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
     current_year = now.year
 
     # 10 recent purchase histories
-    sales = Sale.objects.filter(customer=customer).order_by("-date_added")[:10]
+    sales = Sale.objects.filter(customer=customer).order_by("-created_at")[:10]
 
     # Monthly statistics
     purchases_this_month = Sale.objects.filter(
         customer=customer,
-        date_added__month=current_month,
-        date_added__year=current_year,
+        created_at__month=current_month,
+        created_at__year=current_year,
     )
 
     # Yearly statistics
     purchases_this_year = Sale.objects.filter(
-        customer=customer, date_added__year=current_year
+        customer=customer, created_at__year=current_year
     )
 
     # Calculate amounts
@@ -94,9 +94,9 @@ def customer_profile(request: HttpRequest, id: str) -> HttpResponse:
 
     # Last purchase date
     last_purchase = (
-        Sale.objects.filter(customer=customer).order_by("-date_added").first()
+        Sale.objects.filter(customer=customer).order_by("-created_at").first()
     )
-    last_purchase_date = last_purchase.date_added if last_purchase else None
+    last_purchase_date = last_purchase.created_at if last_purchase else None
 
     # Customer lifetime value and engagement metrics
     customer_since = customer.created_at if hasattr(customer, "created_at") else None
