@@ -1,0 +1,70 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16..9
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - django-network
+
+  # Django Web Application
+  web:
+    build: .
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    command: >
+      sh -c "chmod +x wait-for-postgres.sh &&
+             ./wait-for-postgres.sh db &&
+             python manage.py migrate &&
+             python manage.py collectstatic --no-input &&
+             gunicorn django_pos.wsgi:application --bind 0.0.0.0:8000 --workers 4"
+    networks:
+      - django-network
+
+  # Nginx for serving static files and as reverse proxy
+  nginx:
+    image: nginx:1.25
+    ports:
+      - "80:80"
+      - "443:443" # For HTTPS
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/var/www/html/static
+      - media_volume:/var/www/html/media
+      # Uncomment for SSL
+      # - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - web
+    restart: always
+    networks:
+      - django-network
+
+networks:
+  django-network:
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
