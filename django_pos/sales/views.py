@@ -45,8 +45,6 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
         tax_percentage = float(data["tax_percentage"])
         tax_amount = float(data["tax_amount"])
         grand_total = float(data["grand_total"])
-        amount_payed = float(data["amount_payed"])
-        amount_change = float(data["amount_change"])
 
         prods = data["products"]
         # Create the sale
