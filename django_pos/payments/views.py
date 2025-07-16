@@ -1,20 +1,19 @@
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .models import Payment
+from .serializers import PaymentSerializer, Payment
+from rest_framework.viewsets import ModelViewSet
 
 
-@api_view(["POST"])
-def check_payment_status(request, id):
-    payment = get_object_or_404(Payment, id=id)
+class PaymentViewSet(ModelViewSet):
+    """
+    A viewset for viewing and editing payment instances.
+    """
 
-    return Response(
-        {
-            "id": payment.id,
-            "amount": str(payment.amount),
-            "currency": payment.currency,
-            "payment_method": payment.payment_method,
-            "reference": payment.reference,
-            "status": payment.status,
-        }
-    )
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    filterset_fields = ("sale", "payment_method", "status", "reference")
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        sale_id = self.request.query_params.get("sale_id", None)
+        if sale_id is not None:
+            queryset = queryset.filter(sale__id=sale_id)
+        return queryset
