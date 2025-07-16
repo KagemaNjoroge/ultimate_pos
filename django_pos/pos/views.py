@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework.response import Response
 
 from company.utils.branch_utils import get_current_branch
+from sales.serializers import SaleSerializer
 from .serializers import NotificationsSerializer
 from company.models import Company
 from customers.models import Customer
@@ -229,9 +230,18 @@ def pos(request: HttpRequest) -> HttpResponse:
                 sale_item.save()
                 sale_items.append(sale_item)
 
-            return JsonResponse({"status": "success", "sale_id": sale.id})
+            # parse sale with the serializer
+            sale_serializer = SaleSerializer(sale)
+
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "sale_id": sale.id,
+                    "sale": sale_serializer.data,
+                    "change": change,
+                }
+            )
         except Exception as e:
-            print(e)
 
             return JsonResponse(
                 {"status": "error", "error_message": "An error occurred"}
