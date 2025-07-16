@@ -17,13 +17,7 @@ class ExpenseCategory(TimestampedModel):
         verbose_name_plural = "Expense Categories"
         verbose_name = "Expense Category"
 
-    def to_json(self) -> dict:
-        return {
-            "category_name": self.category_name,
-            "category_description": self.category_description,
-            "is_recurring": self.is_recurring,
-            "id": self.id,
-        }
+
 
 
 class Expense(TimestampedModel):
@@ -37,16 +31,7 @@ class Expense(TimestampedModel):
     def __str__(self) -> str:
         return self.expense_name
 
-    def to_json(self) -> dict:
-        return {
-            "expense_name": self.expense_name,
-            "expense_description": self.expense_description,
-            "category": self.category.category_name,
-            "amount": self.amount,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
-            "id": self.id,
-        }
+
 
     class Meta:
         db_table = "Expenses"
