@@ -2,7 +2,6 @@ from django.db import models
 
 from customers.models import Customer
 from products.models import Product
-from payments.models import Payment
 from utils.models import TimestampedModel
 
 
@@ -22,7 +21,7 @@ class Sale(TimestampedModel):
 
     @property
     def amount_payed(self):
-        return self.get_amount_paid
+        return self.get_amount_paid()
 
     @property
     def amount_change(self):
@@ -36,22 +35,12 @@ class Sale(TimestampedModel):
     def get_amount_paid(self):
         """Calculate total amount paid from all completed payments."""
         return sum(
-            payment.amount for payment in self.payment.filter(status="completed")
+            payment.amount for payment in self.payments.filter(status="completed")
         )
 
     def get_amount_due(self):
         """Calculate the amount due based on grand total and amount paid."""
         return max(0, self.grand_total - self.get_amount_paid())
-
-    # payments
-    payment = models.ManyToManyField(
-        Payment,
-        related_name="sales",
-        blank=True,
-        db_table="SalePayments",
-        db_constraint=False,
-        verbose_name="Payments",
-    )
 
     class Meta:
         db_table = "Sales"
