@@ -44,8 +44,25 @@ THIRD_PARTY_APPS = [
     "django_countries",
     "debug_toolbar",
     "django_filters",
+    "corsheaders",
 ]
 
+
+# CORS
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrftoken",
+]
+CORS_ALLOW_ALL_ORIGINS = True  # Enable all origins, not recommended in production
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "OPTIONS",
+    "DELETE",
+    "PUT",
+    "PATCH",
+]
 
 LOCAL_APPS = [
     "customers",
@@ -65,6 +82,7 @@ LOCAL_APPS = [
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
