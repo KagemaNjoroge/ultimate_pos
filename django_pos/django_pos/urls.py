@@ -5,6 +5,7 @@ from drf_yasg.views import get_schema_view
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -52,6 +53,9 @@ urlpatterns = [
     path("utils/", include("utils.urls")),
     # Payments
     path("payments/", include("payments.urls")),
+    # JWT Token Authentication
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += debug_toolbar_urls()
