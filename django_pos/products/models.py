@@ -1,6 +1,6 @@
 from django.db import models
 from suppliers.models import Supplier
-from utils.models import Photo
+from utils.models import Photo, TimestampedModel
 
 
 class Category(models.Model):
@@ -30,6 +30,20 @@ class Category(models.Model):
             "description": self.description,
             "id": self.id,
         }
+
+
+class TaxGroup(TimestampedModel):
+    name = models.CharField(max_length=100, unique=True, blank=False, null=False)
+    description = models.TextField(blank=True, null=True)
+    tax_rate = models.FloatField(default=0.0)
+
+    class Meta:
+        db_table = "TaxGroup"
+        verbose_name_plural = "Tax Groups"
+        verbose_name = "Tax Group"
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
@@ -77,6 +91,14 @@ class Product(models.Model):
         db_column="category",
     )
     price = models.FloatField(default=0)
+    # tax group
+    tax_group = models.ForeignKey(
+        TaxGroup,
+        related_name="tax_group",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         db_table = "Product"
