@@ -3,7 +3,7 @@ from suppliers.models import Supplier
 from utils.models import Photo, TimestampedModel
 
 
-class Category(models.Model):
+class Category(TimestampedModel):
     STATUS_CHOICES = (("ACTIVE", "Active"), ("INACTIVE", "Inactive"))  # new
 
     name = models.CharField(max_length=256)
