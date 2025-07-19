@@ -19,6 +19,110 @@ from sales.models import Sale
 from sales.models import SaleItem
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def dashboard(request: HttpRequest) -> JsonResponse:
+    """
+    Dashboard view to get various statistics.
+    """
+    today = date.today()
+
+    year = today.year
+    monthly_earnings = []
+
+    # Calculate earnings per month
+    for month in range(1, 13):
+        earning = (
+            Sale.objects.filter(created_at__year=year, created_at__month=month)
+            .aggregate(
+                total_variable=Coalesce(
+                    Sum(F("grand_total")), 0.0, output_field=FloatField()
+                )
+            )
+            .get("total_variable")
+        )
+        monthly_earnings.append(earning)
+
+    # Calculate annual earnings
+    annual_earnings = (
+        Sale.objects.filter(created_at__year=year)
+        .aggregate(
+            total_variable=Coalesce(
+                Sum(F("grand_total")), 0.0, output_field=FloatField()
+            )
+        )
+        .get("total_variable")
+    )
+    annual_earnings = format(annual_earnings, ".2f")
+
+    # AVG per month
+    avg_month = format(sum(monthly_earnings) / 12, ".2f")
+
+    # Get today's sales
+    today_sales = (
+        Sale.objects.filter(created_at__date=today)
+        .aggregate(
+            total_variable=Coalesce(
+                Sum(F("grand_total")), 0.0, output_field=FloatField()
+            )
+        )
+        .get("total_variable")
+    )
+    today_sales = format(today_sales, ".2f")
+
+    # Get low stock items
+    low_stock_items = Inventory.objects.filter(
+        quantity__lte=F("alert_quantity")
+    ).count()
+
+    # Get total customers
+    total_customers = Customer.objects.count()
+
+    f = SaleItem.objects.all()
+
+    # Get top products
+    products = Product.objects.all()
+    top = [{product.id: 0 for product in products}]
+
+    for saleitem in f:
+        item = saleitem
+        for x in top:
+            if item.product.id in x:
+                x[item.product.id] += item.quantity
+            else:
+                x[item.product.id] = item.quantity
+    x = []
+    for i in top:
+        for v, j in i.items():
+            if j > 0:
+                x.append({"id": v, "quantity": j})
+
+    x = sorted(x, key=lambda t: t["quantity"], reverse=True)
+    top_products = x[:3]
+
+    top_prods = {}
+
+    for product in top_products:
+        top_prods[product["id"]] = {
+            "name": Product.objects.get(id=product["id"]).name,
+            "quantity": product["quantity"],
+        }
+
+    context = {
+        "products": Product.objects.all().count(),
+        "categories": Category.objects.all().count(),
+        "annual_earnings": annual_earnings,
+        "monthly_earnings": json.dumps(monthly_earnings),
+        "avg_month": avg_month,
+        "today_sales": today_sales,
+        "low_stock_items": low_stock_items,
+        "total_customers": total_customers,
+        "top_products": top_prods,
+    }
+    return JsonResponse(context)
 
 
 @login_required()
