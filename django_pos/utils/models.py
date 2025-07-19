@@ -14,7 +14,7 @@ class TimestampedModel(models.Model):
 
 class Photo(TimestampedModel):
 
-    image = models.ImageField(upload_to="photos", blank=True, null=True)
+    image = models.ImageField(upload_to="photos", blank=False, null=False)
 
     class Meta:
 
