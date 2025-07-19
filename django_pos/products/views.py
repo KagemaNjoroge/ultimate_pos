@@ -20,10 +20,19 @@ class CategoryApiViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+    filterset_fields = ("name", "status")
+
 
 class ProductApiViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filterset_fields = (
+        "name",
+        "track_inventory",
+        "status",
+        "category__name",
+        "supplier",
+    )
 
 
 @login_required()
