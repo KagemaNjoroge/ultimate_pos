@@ -30,7 +30,6 @@ class ProductApiViewSet(ModelViewSet):
         "name",
         "track_inventory",
         "status",
-        "category__name",
         "supplier",
     )
 
