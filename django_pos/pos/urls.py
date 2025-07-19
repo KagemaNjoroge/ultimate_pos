@@ -5,6 +5,7 @@ from . import views
 app_name = "pos"
 urlpatterns = [
     path("", views.index, name="index"),
+    path("dashboard/", views.dashboard, name="dashboard"),
     path("pos/", views.pos, name="pos"),
     path(
         "notifications/", views.NotificationsView.as_view(), name="notifications_list"
