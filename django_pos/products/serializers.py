@@ -1,7 +1,13 @@
 from rest_framework import serializers
-from .models import Product, Category
+from .models import Product, Category, TaxGroup
 from utils.models import Photo
 
+
+
+class TaxGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaxGroup
+        fields = "__all__"
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:

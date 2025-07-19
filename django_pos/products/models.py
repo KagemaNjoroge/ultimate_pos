@@ -29,6 +29,14 @@ class TaxGroup(TimestampedModel):
     description = models.TextField(blank=True, null=True)
     tax_rate = models.FloatField(default=0.0)
 
+    statuses = (("ACTIVE", "Active"), ("INACTIVE", "Inactive"))
+    status = models.CharField(
+        choices=statuses,
+        max_length=100,
+        verbose_name="Status of the tax group",
+        default="ACTIVE",
+    )
+
     class Meta:
         db_table = "TaxGroup"
         verbose_name_plural = "Tax Groups"

@@ -1,5 +1,24 @@
 from django.contrib import admin
-from .models import Category, Product
+from .models import Category, Product, TaxGroup
+
+
+@admin.register(TaxGroup)
+class TaxGroupAdmin(admin.ModelAdmin):
+    list_display = ("name", "description", "tax_rate")
+    search_fields = ("name", "description")
+    list_per_page = 10
+    ordering = ("name",)
+    actions = ["activate", "deactivate"]
+
+    @admin.action(description="Activate selected tax groups")
+    def activate(self, request, queryset):
+        queryset.update(status="ACTIVE")
+        self.message_user(request, "Activated successfully")
+
+    @admin.action(description="Deactivate selected tax groups")
+    def deactivate(self, request, queryset):
+        queryset.update(status="INACTIVE")
+        self.message_user(request, "Deactivated successfully")
 
 
 @admin.register(Category)
