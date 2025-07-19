@@ -46,7 +46,7 @@ class TaxGroup(TimestampedModel):
         return self.name
 
 
-class Product(models.Model):
+class Product(TimestampedModel):
     STATUS_CHOICES = (("ACTIVE", "Active"), ("INACTIVE", "Inactive"))  # new
     PRODUCT_TYPES = (
         ("1", "Raw Material"),
