@@ -1,4 +1,7 @@
 {% extends "pos/base.html" %}
+{% load static %}
+
+
 {% block title %}Add Product{% endblock title %}
 {% block heading %}Add New Product{% endblock heading %}
 {% block content %}
@@ -225,7 +228,11 @@
                       {% for photo in photos %}
                       <div class="photo-card" data-photo-id="{{ photo.id }}">
                         <div class="photo-image">
+                          {% if photo.image %}
                           <img src="{{ photo.image.url }}" alt="Photo {{ photo.id }}" class="photo-thumbnail">
+                          {% else %}
+                          <img src="{% static 'images/no-image.png' %}" alt="No Image" class="photo-thumbnail">
+                          {% endif %}
                           <div class="photo-overlay">
                             <i class="ti ti-check photo-check-icon"></i>
                           </div>
