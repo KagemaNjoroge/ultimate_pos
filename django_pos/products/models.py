@@ -23,14 +23,6 @@ class Category(TimestampedModel):
     def __str__(self) -> str:
         return self.name
 
-    def to_json(self) -> dict:
-        return {
-            "name": self.name,
-            "status": self.status,
-            "description": self.description,
-            "id": self.id,
-        }
-
 
 class TaxGroup(TimestampedModel):
     name = models.CharField(max_length=100, unique=True, blank=False, null=False)
@@ -111,15 +103,3 @@ class Product(TimestampedModel):
     @property
     def get_sku(self):
         return f"{self.category.name[:3].upper()}-{self.id:05d}"
-
-    def to_json(self):
-        return {
-            "name": self.name,
-            "description": self.description,
-            "track_inventory": self.track_inventory,
-            "display_image": self.display_image.url if self.display_image else None,
-            "status": self.status,
-            "category": self.category.name,
-            "price": self.price,
-            "id": self.id,
-        }
