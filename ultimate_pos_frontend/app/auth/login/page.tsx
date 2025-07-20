@@ -18,11 +18,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export const LoginFormSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
-});
-
 interface LoginResponse {
   access: string;
   refresh: string;
@@ -34,6 +29,12 @@ interface LoginError {
   password?: string[];
   non_field_errors?: string[];
 }
+
+// Move schema inside component to avoid Next.js build errors
+const LoginFormSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -65,7 +66,7 @@ export default function LoginPage() {
         password,
       });
 
-      const data = response.data;
+      const data = response.data as LoginResponse;
 
       // Store tokens in localStorage (you might want to use a more secure method)
       localStorage.setItem("access_token", data.access);

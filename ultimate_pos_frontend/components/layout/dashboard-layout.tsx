@@ -5,29 +5,29 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import {
-    BarChart3,
-    Bell,
-    Camera,
-    FileText,
-    LayoutDashboard,
-    LogOut,
-    Menu,
-    Package,
-    Settings,
-    ShoppingCart,
-    Truck,
-    Users,
-    Warehouse,
-    X,
+  BarChart3,
+  Bell,
+  Camera,
+  FileText,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Package,
+  Settings,
+  ShoppingCart,
+  Truck,
+  Users,
+  Warehouse,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

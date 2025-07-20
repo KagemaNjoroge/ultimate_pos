@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useSales } from "@/lib/hooks";
 import {
-  Calendar,
+  ArrowUpDown,
   DollarSign,
   Eye,
   Filter,
@@ -23,72 +23,20 @@ import {
   ShoppingCart,
   TrendingUp,
 } from "lucide-react";
+import { useState } from "react";
 
-// Sales type definition (adjust based on your API structure)
+// Sales type definition based on API structure
 interface Sale {
-  id: string | number;
-  date: string;
-  time?: string;
-  customer?: string;
-  items?: number;
-  total: number;
-  status: string;
-  paymentMethod?: string;
+  id: number;
+  created_at: string;
+  customer: number;
+  sub_total: number;
+  grand_total: number;
+  tax_amount: number;
+  tax_percentage: number;
+  receipt_is_printed: boolean;
+  discount: number;
 }
-
-// Mock data for fallback
-const mockSalesData: Sale[] = [
-  {
-    id: "SALE-001",
-    date: "2025-01-17",
-    time: "14:30",
-    customer: "John Doe",
-    items: 3,
-    total: 125.5,
-    status: "Completed",
-    paymentMethod: "Credit Card",
-  },
-  {
-    id: "SALE-002",
-    date: "2025-01-17",
-    time: "13:45",
-    customer: "Jane Smith",
-    items: 2,
-    total: 89.99,
-    status: "Completed",
-    paymentMethod: "Cash",
-  },
-  {
-    id: "SALE-003",
-    date: "2025-01-17",
-    time: "12:20",
-    customer: "Bob Johnson",
-    items: 5,
-    total: 234.75,
-    status: "Pending",
-    paymentMethod: "Debit Card",
-  },
-  {
-    id: "SALE-004",
-    date: "2025-01-16",
-    time: "16:15",
-    customer: "Alice Brown",
-    items: 1,
-    total: 67.25,
-    status: "Completed",
-    paymentMethod: "Cash",
-  },
-  {
-    id: "SALE-005",
-    date: "2025-01-16",
-    time: "15:30",
-    customer: "Mike Wilson",
-    items: 4,
-    total: 189.0,
-    status: "Refunded",
-    paymentMethod: "Credit Card",
-  },
-];
 
 const getStatusBadgeVariant = (status: string) => {
   switch (status) {
@@ -111,17 +59,187 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return {
+    date: date.toLocaleDateString("en-KE"),
+    time: date.toLocaleTimeString("en-KE", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    fullDate: date.toLocaleDateString("en-KE", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }),
+  };
+};
+
+const getStatusFromReceipt = (receipt_is_printed: boolean) => {
+  return receipt_is_printed ? "Completed" : "Pending";
+};
+
 export default function SalesPage() {
-  // Use the API hook to fetch sales
-  const { data: apiSales, loading, error, refetch } = useSales();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "amount" | "customer">("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  // Use API data if available, otherwise use mock data
-  const salesData: Sale[] = apiSales || mockSalesData;
+  // Use the API hook to fetch sales with pagination
+  const {
+    data: sales,
+    loading,
+    error,
+    paginationInfo,
+    refetch,
+    loadMore,
+  } = useSales();
 
-  const todaysSales = salesData.filter((sale) => sale.date === "2025-01-17");
-  const totalRevenue = todaysSales.reduce((sum, sale) => sum + sale.total, 0);
+  // Use API data if available, otherwise use empty array
+  const salesData: Sale[] = sales || [];
+
+  // Filter and sort sales data
+  const filteredAndSortedSales = salesData
+    .filter((sale) => {
+      const searchLower = searchTerm.toLowerCase();
+      const saleId = `SALE-${sale.id}`.toLowerCase();
+      const customerId = `Customer #${sale.customer}`.toLowerCase();
+      const amount = sale.grand_total.toString();
+
+      return (
+        saleId.includes(searchLower) ||
+        customerId.includes(searchLower) ||
+        amount.includes(searchLower)
+      );
+    })
+    .sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortBy) {
+        case "date":
+          comparison =
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+          break;
+        case "amount":
+          comparison = a.grand_total - b.grand_total;
+          break;
+        case "customer":
+          comparison = a.customer - b.customer;
+          break;
+        default:
+          comparison = 0;
+      }
+
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+
+  // Calculate today's sales based on created_at date
+  const today = new Date().toISOString().split("T")[0];
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split("T")[0];
+
+  const todaysSales = salesData.filter((sale) => {
+    const saleDate = new Date(sale.created_at).toISOString().split("T")[0];
+    return saleDate === today;
+  });
+
+  const yesterdaysSales = salesData.filter((sale) => {
+    const saleDate = new Date(sale.created_at).toISOString().split("T")[0];
+    return saleDate === yesterday;
+  });
+
+  const totalRevenue = todaysSales.reduce(
+    (sum, sale) => sum + sale.grand_total,
+    0
+  );
+
+  const yesterdayRevenue = yesterdaysSales.reduce(
+    (sum, sale) => sum + sale.grand_total,
+    0
+  );
+
   const averageOrderValue =
     todaysSales.length > 0 ? totalRevenue / todaysSales.length : 0;
+
+  const yesterdayAvgOrderValue =
+    yesterdaysSales.length > 0 ? yesterdayRevenue / yesterdaysSales.length : 0;
+
+  const pendingSales = salesData.filter(
+    (sale) => !sale.receipt_is_printed
+  ).length;
+
+  const completedSales = salesData.filter(
+    (sale) => sale.receipt_is_printed
+  ).length;
+
+  // Additional statistics
+  const totalAllTimeRevenue = salesData.reduce(
+    (sum, sale) => sum + sale.grand_total,
+    0
+  );
+  const totalTaxCollected = salesData.reduce(
+    (sum, sale) => sum + sale.tax_amount,
+    0
+  );
+  const todaysTaxCollected = todaysSales.reduce(
+    (sum, sale) => sum + sale.tax_amount,
+    0
+  );
+  const avgTaxRate =
+    salesData.length > 0
+      ? salesData.reduce((sum, sale) => sum + sale.tax_percentage, 0) /
+        salesData.length
+      : 0;
+
+  // Top performing days (by revenue)
+  const salesByDate = salesData.reduce((acc: Record<string, number>, sale) => {
+    const date = new Date(sale.created_at).toISOString().split("T")[0];
+    acc[date] = (acc[date] || 0) + sale.grand_total;
+    return acc;
+  }, {});
+
+  const highestRevenueDay = Object.entries(salesByDate).reduce(
+    (max, [date, revenue]) => (revenue > max.revenue ? { date, revenue } : max),
+    { date: "", revenue: 0 }
+  );
+
+  // Calculate percentage changes
+  const salesChangePercent =
+    yesterdaysSales.length > 0
+      ? ((todaysSales.length - yesterdaysSales.length) /
+          yesterdaysSales.length) *
+        100
+      : todaysSales.length > 0
+      ? 100
+      : 0;
+
+  const revenueChangePercent =
+    yesterdayRevenue > 0
+      ? ((totalRevenue - yesterdayRevenue) / yesterdayRevenue) * 100
+      : totalRevenue > 0
+      ? 100
+      : 0;
+
+  const avgOrderChangePercent =
+    yesterdayAvgOrderValue > 0
+      ? ((averageOrderValue - yesterdayAvgOrderValue) /
+          yesterdayAvgOrderValue) *
+        100
+      : averageOrderValue > 0
+      ? 100
+      : 0;
+
+  // Helper function to format percentage change
+  const formatPercentChange = (percent: number) => {
+    const sign = percent >= 0 ? "+" : "";
+    return `${sign}${percent.toFixed(1)}%`;
+  };
+
+  const getChangeColor = (percent: number) => {
+    if (percent > 0) return "text-green-600";
+    if (percent < 0) return "text-red-600";
+    return "text-muted-foreground";
+  };
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -139,76 +257,92 @@ export default function SalesPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Today's Sales
-              </CardTitle>
-              <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{todaysSales.length}</div>
-              <p className="text-xs text-muted-foreground">
-                +12% from yesterday
-              </p>
-            </CardContent>
-          </Card>
+        {loading ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <div className="h-4 w-20 bg-muted animate-pulse rounded"></div>
+                  <div className="h-4 w-4 bg-muted animate-pulse rounded"></div>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-8 w-16 bg-muted animate-pulse rounded mb-2"></div>
+                  <div className="h-3 w-24 bg-muted animate-pulse rounded"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Today's Sales
+                </CardTitle>
+                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{todaysSales.length}</div>
+                <p className={`text-xs ${getChangeColor(salesChangePercent)}`}>
+                  {formatPercentChange(salesChangePercent)} from yesterday
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Today's Revenue
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {formatCurrency(totalRevenue)}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                +8.2% from yesterday
-              </p>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Today's Revenue
+                </CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatCurrency(totalRevenue)}
+                </div>
+                <p
+                  className={`text-xs ${getChangeColor(revenueChangePercent)}`}
+                >
+                  {formatPercentChange(revenueChangePercent)} from yesterday
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Avg. Order Value
-              </CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {formatCurrency(averageOrderValue)}
-              </div>
-              <div className="text-2xl font-bold">
-                ${averageOrderValue.toFixed(2)}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                +5.1% from yesterday
-              </p>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Avg. Order Value
+                </CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {formatCurrency(averageOrderValue)}
+                </div>
+                <p
+                  className={`text-xs ${getChangeColor(avgOrderChangePercent)}`}
+                >
+                  {formatPercentChange(avgOrderChangePercent)} from yesterday
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Pending Orders
-              </CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {salesData.filter((s) => s.status === "Pending").length}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Awaiting completion
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">
+                  Total Sales
+                </CardTitle>
+                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{paginationInfo.count}</div>
+                <p className="text-xs text-muted-foreground">
+                  All time transactions
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Sales Table */}
         <Card>
@@ -223,8 +357,23 @@ export default function SalesPage() {
               <div className="flex items-center space-x-2">
                 <div className="relative">
                   <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search sales..." className="pl-8 w-64" />
+                  <Input
+                    placeholder="Search sales..."
+                    className="pl-8 w-64"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    const newOrder = sortOrder === "asc" ? "desc" : "asc";
+                    setSortOrder(newOrder);
+                  }}
+                >
+                  <ArrowUpDown className="h-4 w-4" />
+                </Button>
                 <Button variant="outline" size="icon">
                   <Filter className="h-4 w-4" />
                 </Button>
@@ -245,53 +394,115 @@ export default function SalesPage() {
                   Retry
                 </Button>
               </div>
-            ) : salesData.length === 0 ? (
+            ) : filteredAndSortedSales.length === 0 ? (
               <div className="flex items-center justify-center py-8 text-muted-foreground">
-                <p>No sales found. Make your first sale to get started.</p>
+                <p>
+                  {searchTerm
+                    ? `No sales found matching "${searchTerm}"`
+                    : "No sales found. Make your first sale to get started."}
+                </p>
               </div>
             ) : (
               <div className="space-y-4">
-                {salesData.map((sale: Sale) => (
-                  <div
-                    key={sale.id}
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className="h-12 w-12 bg-muted rounded-lg flex items-center justify-center">
-                        <ShoppingCart className="h-6 w-6 text-muted-foreground" />
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium">{sale.id}</h4>
-                        <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                          <span>{sale.customer}</span>
-                          <span>•</span>
-                          <span>
-                            {sale.date} at {sale.time}
-                          </span>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground">
+                    Showing {filteredAndSortedSales.length} of{" "}
+                    {paginationInfo.count} sales
+                    {searchTerm && (
+                      <span className="ml-2 text-primary">
+                        • Filtered by "{searchTerm}"
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Total:{" "}
+                    {formatCurrency(
+                      filteredAndSortedSales.reduce(
+                        (sum, sale) => sum + sale.grand_total,
+                        0
+                      )
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  {filteredAndSortedSales.map((sale: Sale) => {
+                    const { date, time, fullDate } = formatDate(
+                      sale.created_at
+                    );
+                    const status = getStatusFromReceipt(
+                      sale.receipt_is_printed
+                    );
+
+                    return (
+                      <div
+                        key={sale.id}
+                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div className="h-12 w-12 bg-muted rounded-lg flex items-center justify-center">
+                            <ShoppingCart className="h-6 w-6 text-muted-foreground" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium">
+                              SALE-{sale.id}
+                            </h4>
+                            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                              <span>Customer #{sale.customer}</span>
+                              <span>•</span>
+                              <span>
+                                {fullDate} at {time}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-4">
+                          <div className="text-right">
+                            <div className="text-sm font-medium">
+                              {formatCurrency(sale.grand_total)}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              Tax: {formatCurrency(sale.tax_amount)} (
+                              {sale.tax_percentage}%)
+                              {sale.discount > 0 &&
+                                ` • Discount: ${formatCurrency(sale.discount)}`}
+                            </div>
+                          </div>
+
+                          <Badge variant={getStatusBadgeVariant(status)}>
+                            {status}
+                          </Badge>
+
+                          <Button variant="ghost" size="icon">
+                            <Eye className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                    </div>
+                    );
+                  })}
 
-                    <div className="flex items-center space-x-4">
-                      <div className="text-right">
-                        <div className="text-sm font-medium">
-                          {formatCurrency(sale.total)}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {sale.items} items • {sale.paymentMethod}
-                        </div>
-                      </div>
-
-                      <Badge variant={getStatusBadgeVariant(sale.status)}>
-                        {sale.status}
-                      </Badge>
-
-                      <Button variant="ghost" size="icon">
-                        <Eye className="h-4 w-4" />
+                  {/* Load More Button */}
+                  {paginationInfo.hasNext && (
+                    <div className="flex justify-center pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={loadMore}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Loading...
+                          </>
+                        ) : (
+                          `Load More (${
+                            paginationInfo.count - salesData.length
+                          } remaining)`
+                        )}
                       </Button>
                     </div>
-                  </div>
-                ))}
+                  )}
+                </div>
               </div>
             )}
           </CardContent>
