@@ -21,7 +21,7 @@ class Permission(TimestampedModel):
 
 
 class CustomUser(AbstractUser):
-    """ "
+    """
     Roles:
       - Cashier: Can handle transactions and sales.
       - Branch Manager: Can manage the branch operations.
@@ -52,13 +52,8 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=50, choices=ROLES, default="Cashier")
     phone_number = models.CharField(max_length=15, null=True, blank=True)
     address = models.TextField(null=True, blank=True)
-    id_number = models.CharField(max_length=15, null=True, blank=True)
-    profile_pic = models.ImageField(
-        upload_to="profile_pics/",
-        null=True,
-        blank=True,
-        default="static/img/profile/user-1.jpg",
-    )
+
+    profile_pic = models.ImageField(upload_to="profile_pics/", null=True, blank=True)
 
     def __str__(self):
         return self.username
