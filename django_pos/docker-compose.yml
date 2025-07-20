@@ -5,15 +5,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - .env
+      - .docker.env
     environment:
-      - POSTGRES_DB=${DATABASE_NAME}
-      - POSTGRES_USER=${DATABASE_USER}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,7 +26,7 @@ services:
       db:
         condition: service_healthy
     env_file:
-      - .env
+      - .docker.env
     environment:
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
@@ -35,7 +35,8 @@ services:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
     command: >
-      bash -c "python manage.py migrate &&
+      bash -c "python manage.py migrate &&  
+              python manage.py createsuperuser --noinput &&             
                python manage.py collectstatic --no-input &&
                gunicorn django_pos.wsgi:application --bind 0.0.0.0:8000"
 
