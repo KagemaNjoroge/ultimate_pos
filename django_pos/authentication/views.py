@@ -45,6 +45,15 @@ def logout_view(request: HttpRequest) -> HttpResponse:
     return redirect("authentication:login")
 
 
+@api_view(["GET"])
+def logout_api_view(request: HttpRequest) -> HttpResponse:
+    """
+    API endpoint to log out a user.
+    """
+    logout(request)
+    return Response({"message": "Logged out successfully"}, status=200)
+
+
 @login_required()
 @require_http_methods(["GET"])
 @user_passes_test(is_admin_user)
@@ -54,7 +63,6 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "accounts/index.html", {"users": users})
 
 
-@login_required()
 @api_view(["GET", "POST"])
 @renderer_classes([TemplateHTMLRenderer, JSONRenderer])
 def profile(request: HttpRequest) -> HttpResponse:
