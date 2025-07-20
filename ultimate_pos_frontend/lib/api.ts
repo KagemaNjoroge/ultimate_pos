@@ -207,6 +207,11 @@ export const apiService = {
   dashboard: {
     getAll: (params = {}) => api.get("dashboard/", { params }),
   },
+  // Profile API
+  profile: {
+    get: (params = {}) => api.get("/accounts/profile/", { params }),
+    update: (data: any) => api.put("/accounts/profile/", data),
+  },
 
   // Authentication API (doesn't need token)
   auth: {
@@ -225,7 +230,7 @@ export const apiService = {
       axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/token/refresh/`, {
         refresh: refreshToken,
       }),
-    logout: () => api.post("/api/logout/"),
+    logout: () => api.get("/accounts/logout-api/"),
   },
 };
 

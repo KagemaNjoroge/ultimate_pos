@@ -12,11 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { apiService } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import {
   BarChart3,
   Bell,
-  Camera,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -33,6 +33,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const navigationItems = [
   {
@@ -80,11 +81,6 @@ const navigationItems = [
     href: "/settings",
     icon: Settings,
   },
-  {
-    title: "Photo Example",
-    href: "/photo-example",
-    icon: Camera,
-  },
 ];
 
 // Mock notifications data
@@ -121,13 +117,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleLogout = () => {
-    // TODO: call a logout API if needed - to clear server-side sessions
-    // Clear tokens from localStorage
-    localStorage.removeItem("access_token");
+  const handleLogout = async () => {
+    try {
+      // Call the logout API to clear server-side sessions
+      await apiService.auth.logout();
+    } catch (error) {
+      // Even if the API call fails, we should still clear local tokens
+      console.error("Error during logout:", error);
+      toast.error("Logout completed, but there was an issue with the server.");
+    } finally {
+      // Always clear tokens from localStorage and redirect
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
 
-    // Redirect to login page
-    router.push("/auth/login");
+      // Redirect to login page
+      router.push("/auth/login");
+    }
   };
 
   const unreadNotifications = notifications.filter((n) => !n.read).length;
@@ -154,13 +159,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center justify-between p-4 border-b h-[73px]">
             <div className="flex items-center space-x-2">
               <Image
-                src="/next.svg"
+                src="/new_logo.svg"
                 alt="UltimatePOS"
-                width={32}
-                height={32}
-                className="dark:invert"
+                width={172}
+                height={128}
+                className="dark"
               />
-              <span className="text-lg font-bold">UltimatePOS</span>
             </div>
             <Button
               variant="ghost"

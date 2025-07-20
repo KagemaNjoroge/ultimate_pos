@@ -17,12 +17,14 @@ import { useMutation, useProducts } from "@/lib/hooks";
 import {
   Edit,
   Filter,
+  FolderOpen,
   Loader2,
   Package,
   Plus,
   Search,
   Trash2,
 } from "lucide-react";
+import Link from "next/link";
 
 // Product type definition based on your API response
 interface Product {
@@ -61,7 +63,6 @@ export interface TaxGroup {
   tax_rate: number;
   status: string | null; // Can be "ACTIVE", "INACTIVE", or null
 }
-
 
 const getStatusBadgeVariant = (status: string | null) => {
   if (!status) return "secondary";
@@ -143,10 +144,18 @@ export default function ProductsPage() {
               Manage your product inventory and pricing
             </p>
           </div>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Product
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link href="/categories">
+              <Button variant="outline">
+                <FolderOpen className="mr-2 h-4 w-4" />
+                Manage Categories
+              </Button>
+            </Link>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Product
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
