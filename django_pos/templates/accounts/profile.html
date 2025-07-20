@@ -48,8 +48,13 @@ My Profile | {{request.user.username}}
             <div class="card-body p-0">
                 <div class="bg-light rounded-top p-4 text-center position-relative">
                     <div class="position-relative mx-auto profile-image-container">
+                        {% if request.user.profile.profile_pic %}
                         <img class="rounded-circle profile-image shadow" src="{{request.user.profile_pic.url}}"
                             alt="{{request.user.username}}" width="120" height="120">
+                        {% else %}
+                        <img class="rounded-circle profile-image shadow" src="{% static 'img/undraw_profile.svg' %}"
+                            alt="{{request.user.username}}" width="120" height="120">
+                        {% endif %}
                         <div class="profile-image-edit-button">
                             <button type="button" class="btn btn-sm btn-primary rounded-circle"
                                 title="Change Profile Picture">
