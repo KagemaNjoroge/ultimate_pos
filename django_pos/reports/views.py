@@ -11,8 +11,7 @@ from rest_framework.response import Response
 from inventory.models import Inventory
 from sales.serializers import SaleSerializer
 from django.db import models
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 
 
 @login_required()
@@ -92,7 +91,6 @@ def index(request: HttpRequest) -> HttpResponse:
     )
 
 
-@permission_classes([IsAuthenticated])
 @api_view(["GET"])
 def duration_sales_report(request):
     # get duration span
@@ -117,7 +115,6 @@ def duration_sales_report(request):
     )
 
 
-@permission_classes([IsAuthenticated])
 @api_view(["GET"])
 def sales_this_month(request) -> Response:
 
@@ -141,7 +138,6 @@ def sales_this_month(request) -> Response:
     )
 
 
-@permission_classes([IsAuthenticated])
 @api_view(["GET"])
 def sales_this_week(request) -> Response:
     sales = Sale.objects.filter(
@@ -162,7 +158,6 @@ def sales_this_week(request) -> Response:
     )
 
 
-@permission_classes([IsAuthenticated])
 @api_view(["GET"])
 def best_selling_product(request) -> Response:
     sales = Sale.objects.filter(

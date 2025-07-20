@@ -19,11 +19,10 @@ from sales.models import Sale
 from sales.models import SaleItem
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
 def dashboard(request: HttpRequest) -> JsonResponse:
     """
     Dashboard view to get various statistics.
