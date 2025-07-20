@@ -26,7 +26,7 @@ class CategoryApiViewSet(ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-    filterset_fields = ("name", "status")
+    filterset_fields = ("name", "status", "id")
 
 
 class ProductApiViewSet(ModelViewSet):
@@ -37,6 +37,9 @@ class ProductApiViewSet(ModelViewSet):
         "track_inventory",
         "status",
         "supplier",
+        "id",
+        "tax_group",
+        "category",
     )
 
 
