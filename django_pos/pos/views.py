@@ -356,7 +356,7 @@ class NotificationsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get_object(self, id):
-        return get_object_or_404(Notifications, id=id)
+        return get_object_or_404(Notifications, id=id, user=self.request.user)
 
     def get(self, request, id=None):
         if id:
