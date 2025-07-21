@@ -26,6 +26,28 @@ function isCacheValid(cacheEntry: CacheEntry<any>): boolean {
   return Date.now() - cacheEntry.timestamp < CACHE_DURATION;
 }
 
+// User interface for profile data
+export interface User {
+  id: number;
+  last_login: string;
+  is_superuser: boolean;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  is_staff: boolean;
+  is_active: boolean;
+  date_joined: string;
+  role: string;
+  phone_number: string | null;
+  address: string;
+  profile_pic: string;
+  branch: any | null;
+  groups: any[];
+  user_permissions: any[];
+  permissions: any[];
+}
+
 // Pagination interface for API responses
 export interface PaginatedResponse<T> {
   count: number;
