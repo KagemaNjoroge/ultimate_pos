@@ -36,7 +36,6 @@ class CustomUserAdmin(admin.ModelAdmin):
                     "email",
                     "phone_number",
                     "address",
-                   
                 )
             },
         ),
