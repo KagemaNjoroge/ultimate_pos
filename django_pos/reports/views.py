@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from inventory.models import Inventory
 from sales.serializers import SaleSerializer
 from django.db import models
-from rest_framework.decorators import api_view
 
 
 @login_required()
