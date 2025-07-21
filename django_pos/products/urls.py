@@ -3,10 +3,11 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 # api endpoints
-from .views import CategoryApiViewSet, ProductApiViewSet
+from .views import CategoryApiViewSet, ProductApiViewSet, TaxGroupApiViewSet
 
 router.register(r"categories/api", CategoryApiViewSet, basename="category")
 router.register(r"products/api", ProductApiViewSet, basename="product")
+router.register(r"tax-groups/api", TaxGroupApiViewSet, basename="tax-group")
 
 from . import views
 

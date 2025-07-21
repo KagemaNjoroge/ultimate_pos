@@ -1,134 +1,84 @@
+"use client";
+
+import { CreateSupplierForm } from "@/components/forms/create-supplier-form";
 import DashboardLayout from "@/components/layout/dashboard-layout";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useSuppliers } from "@/lib/hooks";
 import {
-    DollarSign,
-    Edit,
-    Filter,
-    Mail,
-    Package,
-    Phone,
-    Plus,
-    Search,
-    Truck,
+  Edit,
+  Filter,
+  Globe,
+  Loader2,
+  Mail,
+  Phone,
+  Plus,
+  Search,
+  Truck,
 } from "lucide-react";
+import { useState } from "react";
 
-// Mock data for suppliers
-const suppliers = [
-  {
-    id: "SUP-001",
-    name: "TechCorp Solutions",
-    email: "orders@techcorp.com",
-    phone: "+1 (555) 100-2000",
-    address: "123 Technology Blvd, Tech City, TC 12345",
-    contactPerson: "John Smith",
-    productsSupplied: 15,
-    totalOrders: 24,
-    totalValue: 12450.0,
-    lastOrder: "2025-01-15",
-    status: "Active",
-    rating: 4.8,
-    paymentTerms: "30 days",
-  },
-  {
-    id: "SUP-002",
-    name: "KitchenPlus Wholesale",
-    email: "supply@kitchenplus.com",
-    phone: "+1 (555) 200-3000",
-    address: "456 Kitchen Ave, Food City, FC 23456",
-    contactPerson: "Sarah Johnson",
-    productsSupplied: 8,
-    totalOrders: 18,
-    totalValue: 5680.5,
-    lastOrder: "2025-01-12",
-    status: "Active",
-    rating: 4.5,
-    paymentTerms: "15 days",
-  },
-  {
-    id: "SUP-003",
-    name: "OfficeMax Distributors",
-    email: "wholesale@officemax.com",
-    phone: "+1 (555) 300-4000",
-    address: "789 Office Park, Business City, BC 34567",
-    contactPerson: "Mike Wilson",
-    productsSupplied: 12,
-    totalOrders: 6,
-    totalValue: 3240.25,
-    lastOrder: "2025-01-08",
-    status: "Active",
-    rating: 4.2,
-    paymentTerms: "45 days",
-  },
-  {
-    id: "SUP-004",
-    name: "SportGear International",
-    email: "orders@sportgear.com",
-    phone: "+1 (555) 400-5000",
-    address: "321 Sports Complex, Athletic City, AC 45678",
-    contactPerson: "Lisa Brown",
-    productsSupplied: 20,
-    totalOrders: 32,
-    totalValue: 18950.75,
-    lastOrder: "2025-01-17",
-    status: "Active",
-    rating: 4.9,
-    paymentTerms: "30 days",
-  },
-  {
-    id: "SUP-005",
-    name: "LightHouse Fixtures",
-    email: "sales@lighthouse.com",
-    phone: "+1 (555) 500-6000",
-    address: "654 Lamp Street, Bright City, BR 56789",
-    contactPerson: "David Lee",
-    productsSupplied: 6,
-    totalOrders: 3,
-    totalValue: 890.0,
-    lastOrder: "2024-12-20",
-    status: "Inactive",
-    rating: 3.8,
-    paymentTerms: "60 days",
-  },
-];
+// Supplier type definition based on API structure
+interface Supplier {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  tax_id: string;
+  website: string;
+  logo: string | null;
+  additional_notes: string;
+}
 
-const activeSuppliers = suppliers.filter((s) => s.status === "Active");
-const totalValue = suppliers.reduce(
-  (sum, supplier) => sum + supplier.totalValue,
-  0
-);
-const totalProducts = suppliers.reduce(
-  (sum, supplier) => sum + supplier.productsSupplied,
-  0
-);
-
-const getStatusBadgeVariant = (status: string) => {
-  switch (status) {
-    case "Active":
-      return "default";
-    case "Inactive":
-      return "outline";
-    default:
-      return "default";
-  }
-};
-
-const getRatingColor = (rating: number) => {
-  if (rating >= 4.5) return "text-green-600";
-  if (rating >= 4.0) return "text-yellow-600";
-  if (rating >= 3.5) return "text-orange-600";
-  return "text-red-600";
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-KE", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 };
 
 export default function SuppliersPage() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showCreateForm, setShowCreateForm] = useState(false);
+
+  // Use the API hook to fetch suppliers with pagination
+  const {
+    data: suppliers,
+    loading,
+    error,
+    paginationInfo,
+    refetch,
+    loadMore,
+  } = useSuppliers();
+
+  // Use API data if available, otherwise use empty array
+  const suppliersData: Supplier[] = suppliers || [];
+
+  // Filter suppliers based on search term
+  const filteredSuppliers = suppliersData.filter((supplier) => {
+    const searchLower = searchTerm.toLowerCase();
+    const name = (supplier.name || "").toLowerCase();
+    const email = (supplier.email || "").toLowerCase();
+    const phone = (supplier.phone || "").toLowerCase();
+    const address = (supplier.address || "").toLowerCase();
+
+    return (
+      name.includes(searchLower) ||
+      email.includes(searchLower) ||
+      phone.includes(searchLower) ||
+      address.includes(searchLower)
+    );
+  });
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -139,73 +89,10 @@ export default function SuppliersPage() {
               Manage your supplier relationships and procurement
             </p>
           </div>
-          <Button>
+          <Button onClick={() => setShowCreateForm(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Supplier
           </Button>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Suppliers
-              </CardTitle>
-              <Truck className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{suppliers.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Registered suppliers
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Active Suppliers
-              </CardTitle>
-              <Package className="h-4 w-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{activeSuppliers.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Currently active partnerships
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Procurement
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">${totalValue.toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground">
-                Total purchase value
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Products Sourced
-              </CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{totalProducts}</div>
-              <p className="text-xs text-muted-foreground">
-                Unique products supplied
-              </p>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Suppliers Table */}
@@ -224,6 +111,8 @@ export default function SuppliersPage() {
                   <Input
                     placeholder="Search suppliers..."
                     className="pl-8 w-64"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
                 <Button variant="outline" size="icon">
@@ -233,73 +122,152 @@ export default function SuppliersPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {suppliers.map((supplier) => (
-                <div
-                  key={supplier.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="h-12 w-12 bg-muted rounded-lg flex items-center justify-center">
-                      <Truck className="h-6 w-6 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium">{supplier.name}</h4>
-                      <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                        <span>Contact: {supplier.contactPerson}</span>
-                        <span>•</span>
-                        <span>{supplier.paymentTerms} payment terms</span>
-                      </div>
-                      <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                        <Mail className="h-3 w-3" />
-                        <span>{supplier.email}</span>
-                        <span>•</span>
-                        <Phone className="h-3 w-3" />
-                        <span>{supplier.phone}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <div className="text-sm font-medium">
-                        ${supplier.totalValue.toFixed(2)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {supplier.totalOrders} orders •{" "}
-                        {supplier.productsSupplied} products
-                      </div>
-                      <div
-                        className={`text-xs font-medium ${getRatingColor(
-                          supplier.rating
-                        )}`}
-                      >
-                        ★ {supplier.rating} rating
-                      </div>
-                    </div>
-
-                    <div className="text-right">
-                      <div className="text-xs text-muted-foreground">
-                        Last Order
-                      </div>
-                      <div className="text-sm font-medium">
-                        {supplier.lastOrder}
-                      </div>
-                    </div>
-
-                    <Badge variant={getStatusBadgeVariant(supplier.status)}>
-                      {supplier.status}
-                    </Badge>
-
-                    <Button variant="ghost" size="icon">
-                      <Edit className="h-4 w-4" />
-                    </Button>
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin" />
+                <span className="ml-2">Loading suppliers...</span>
+              </div>
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+                <p className="mb-4">Failed to load suppliers from API</p>
+                <p className="text-sm text-red-500 mb-4">{error}</p>
+                <Button variant="outline" size="sm" onClick={refetch}>
+                  Retry
+                </Button>
+              </div>
+            ) : filteredSuppliers.length === 0 ? (
+              <div className="flex items-center justify-center py-8 text-muted-foreground">
+                <p>
+                  {searchTerm
+                    ? `No suppliers found matching "${searchTerm}"`
+                    : "No suppliers found. Add your first supplier to get started."}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-muted-foreground">
+                    Showing {filteredSuppliers.length} of {paginationInfo.count}{" "}
+                    suppliers
+                    {searchTerm && (
+                      <span className="ml-2 text-primary">
+                        • Filtered by "{searchTerm}"
+                      </span>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
+                <div className="space-y-4">
+                  {filteredSuppliers.map((supplier: Supplier) => (
+                    <div
+                      key={supplier.id}
+                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div className="h-12 w-12 bg-muted rounded-lg flex items-center justify-center">
+                          {supplier.logo ? (
+                            <img
+                              src={supplier.logo}
+                              alt={supplier.name}
+                              className="h-full w-full object-cover rounded-lg"
+                            />
+                          ) : (
+                            <Truck className="h-6 w-6 text-muted-foreground" />
+                          )}
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-medium">
+                            {supplier.name}
+                          </h4>
+                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                            <span>Tax ID: {supplier.tax_id}</span>
+                            {supplier.website && (
+                              <>
+                                <span>•</span>
+                                <Globe className="h-3 w-3" />
+                                <a
+                                  href={supplier.website}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:underline"
+                                >
+                                  Website
+                                </a>
+                              </>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                            <Mail className="h-3 w-3" />
+                            <span>{supplier.email}</span>
+                            <span>•</span>
+                            <Phone className="h-3 w-3" />
+                            <span>{supplier.phone}</span>
+                          </div>
+                          {supplier.address && (
+                            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                              <span>📍</span>
+                              <span className="truncate max-w-[300px]">
+                                {supplier.address}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-4">
+                        <div className="text-right">
+                          <div className="text-sm font-medium">
+                            ID: {supplier.id}
+                          </div>
+                          {supplier.additional_notes && (
+                            <div className="text-xs text-muted-foreground max-w-[200px] truncate">
+                              Notes: {supplier.additional_notes}
+                            </div>
+                          )}
+                          <div className="text-xs text-muted-foreground">
+                            {supplier.logo ? "Has Logo" : "No Logo"}
+                          </div>
+                        </div>
+
+                        <Button variant="ghost" size="icon">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Load More Button */}
+                  {paginationInfo.hasNext && (
+                    <div className="flex justify-center pt-4">
+                      <Button
+                        variant="outline"
+                        onClick={loadMore}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Loading...
+                          </>
+                        ) : (
+                          `Load More (${
+                            paginationInfo.count - suppliersData.length
+                          } remaining)`
+                        )}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
+
+        {/* Create Supplier Modal */}
+        <CreateSupplierForm
+          open={showCreateForm}
+          onOpenChange={setShowCreateForm}
+          onSuccess={refetch}
+        />
       </div>
     </DashboardLayout>
   );

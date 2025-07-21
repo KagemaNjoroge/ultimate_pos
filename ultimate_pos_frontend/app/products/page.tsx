@@ -17,12 +17,14 @@ import { useMutation, useProducts } from "@/lib/hooks";
 import {
   Edit,
   Filter,
+  FolderOpen,
   Loader2,
   Package,
   Plus,
   Search,
   Trash2,
 } from "lucide-react";
+import Link from "next/link";
 
 // Product type definition based on your API response
 interface Product {
@@ -36,6 +38,30 @@ interface Product {
   supplier: number | null;
   category: number;
   photos: number[];
+  tax_group: number | null;
+}
+
+/*
+  {
+      "id": 1,
+      "created_at": "2025-07-19T12:26:28.753603+03:00",
+      "updated_at": "2025-07-19T12:27:18.697066+03:00",
+      "name": "Value Added Tax (VAT)",
+      "description": "VAT is an indirect tax that is paid by the person who consumes taxable goods and taxable services supplied in Kenya and/or imported into Kenya.",
+      "tax_rate": 16,
+      "status": "ACTIVE"
+    }
+*/
+
+// Tax group type definition
+export interface TaxGroup {
+  id: number;
+  created_at: string;
+  updated_at: string;
+  name: string;
+  description: string;
+  tax_rate: number;
+  status: string | null; // Can be "ACTIVE", "INACTIVE", or null
 }
 
 const getStatusBadgeVariant = (status: string | null) => {
@@ -65,12 +91,19 @@ const formatPrice = (price: number) => {
 };
 
 export default function ProductsPage() {
-  // Use the API hook to fetch products
-  const { data: apiProducts, loading, error, refetch } = useProducts();
+  // Use the API hook to fetch products with pagination
+  const {
+    data: products,
+    loading,
+    error,
+    paginationInfo,
+    refetch,
+    loadMore,
+  } = useProducts();
   const { mutate: deleteProduct, loading: deleting } = useMutation();
 
   // Type the products array properly
-  const products: Product[] = apiProducts || [];
+  const productsList: Product[] = products || [];
 
   const handleDeleteProduct = async (productId: number) => {
     if (!confirm("Are you sure you want to delete this product?")) {
@@ -90,12 +123,16 @@ export default function ProductsPage() {
   };
 
   // Calculate stats
-  const totalProducts = products.length;
-  const activeProducts = products.filter((p) => p.status === "ACTIVE").length;
-  const inactiveProducts = products.filter(
+  const totalProducts = paginationInfo.count; // Use total count from pagination
+  const activeProducts = productsList.filter(
+    (p) => p.status === "ACTIVE"
+  ).length;
+  const inactiveProducts = productsList.filter(
     (p) => p.status === "INACTIVE" || !p.status
   ).length;
-  const trackingInventory = products.filter((p) => p.track_inventory).length;
+  const trackingInventory = productsList.filter(
+    (p) => p.track_inventory
+  ).length;
 
   return (
     <DashboardLayout>
@@ -107,10 +144,18 @@ export default function ProductsPage() {
               Manage your product inventory and pricing
             </p>
           </div>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Product
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link href="/categories">
+              <Button variant="outline">
+                <FolderOpen className="mr-2 h-4 w-4" />
+                Manage Categories
+              </Button>
+            </Link>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Product
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -220,7 +265,7 @@ export default function ProductsPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {products.map((product: Product) => (
+                {productsList.map((product: Product) => (
                   <div
                     key={product.id}
                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors"
@@ -290,6 +335,28 @@ export default function ProductsPage() {
                     </div>
                   </div>
                 ))}
+
+                {/* Load More Button */}
+                {paginationInfo.hasNext && (
+                  <div className="flex justify-center pt-4">
+                    <Button
+                      variant="outline"
+                      onClick={loadMore}
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Loading...
+                        </>
+                      ) : (
+                        `Load More (${
+                          paginationInfo.count - productsList.length
+                        } remaining)`
+                      )}
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>

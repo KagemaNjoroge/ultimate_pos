@@ -9,7 +9,9 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from inventory.models import Inventory
+from sales.serializers import SaleSerializer
 from django.db import models
+from rest_framework.decorators import api_view
 
 
 @login_required()
@@ -89,7 +91,6 @@ def index(request: HttpRequest) -> HttpResponse:
     )
 
 
-@login_required()
 @api_view(["GET"])
 def duration_sales_report(request):
     # get duration span
@@ -106,14 +107,14 @@ def duration_sales_report(request):
                 datetime.now().replace(day=31),
             ]
         )
+    serializer = SaleSerializer(sales, many=True)
 
     return Response(
-        data=[sale.to_json() for sale in sales],
+        data=serializer.data,
         status=200,
     )
 
 
-@login_required()
 @api_view(["GET"])
 def sales_this_month(request) -> Response:
 
@@ -125,37 +126,38 @@ def sales_this_month(request) -> Response:
     )
 
     total = sum([sale.grand_total for sale in sales])
+    serializer = SaleSerializer(sales, many=True)
 
     return Response(
         data={
             "total": total,
-            "sales": [sale.to_json() for sale in sales],
+            "sales": serializer.data,
             "count": sales.count(),
         },
         status=200,
     )
 
 
-@login_required()
 @api_view(["GET"])
 def sales_this_week(request) -> Response:
     sales = Sale.objects.filter(
         created_at__range=[datetime.now() - timedelta(days=7), datetime.now()]
     )
 
+    serializer = SaleSerializer(sales, many=True)
+
     total = sum([sale.grand_total for sale in sales])
 
     return Response(
         data={
             "total": total,
-            "sales": [sale.to_json() for sale in sales],
+            "sales": serializer.data,
             "count": sales.count(),
         },
         status=200,
     )
 
 
-@login_required()
 @api_view(["GET"])
 def best_selling_product(request) -> Response:
     sales = Sale.objects.filter(
@@ -193,7 +195,6 @@ def best_selling_product(request) -> Response:
     )
 
 
-@login_required()
 @api_view(["GET"])
 def get_best_selling_category(request) -> Response:
 
@@ -219,8 +220,17 @@ def get_best_selling_category(request) -> Response:
                 tops[item.product.category.name] += item.quantity
             else:
                 tops[item.product.category.name] = item.quantity
+
         tops = sorted(tops.items(), key=lambda x: x[1], reverse=True)[0]
+
         return Response(
-            data={"top_selling": tops},
+            data={
+                "category": tops[0],
+                "quantity": tops[1],
+                "sales": SaleSerializer(sales, many=True).data,
+                "count": sales.count(),
+                "total_sales": sum(sale.grand_total for sale in sales),
+                "total_transactions": sales.count(),
+            },
             status=200,
         )

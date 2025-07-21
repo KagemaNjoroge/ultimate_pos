@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
+from company.utils.branch_utils import get_current_branch
 from django_pos.wsgi import *
 from customers.models import Customer
 from pos.models import Notifications
@@ -19,6 +20,7 @@ from django.views.decorators.http import require_http_methods
 class SaleViewSet(ModelViewSet):
     queryset = Sale.objects.all()
     serializer_class = SaleSerializer
+    filterset_fields = ["customer", "created_at"]
 
 
 @login_required()
@@ -63,7 +65,9 @@ def sales_add_view(request: HttpRequest) -> HttpResponse:
             products.append(product)
             # Update the inventory
             if product.track_inventory:
-                inv = Inventory.objects.filter(product=product)
+                inv = Inventory.objects.filter(
+                    product=product, branch=get_current_branch(request)
+                )
                 if inv.exists():
                     inv = inv.first()
                     # # for each product check of inventory quantity > 0

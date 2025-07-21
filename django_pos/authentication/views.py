@@ -11,7 +11,8 @@ from .serializers import CustomUserSerializer
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
 from django.utils.http import url_has_allowed_host_and_scheme
-
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
 
 from django.contrib.auth.decorators import user_passes_test
 
@@ -45,6 +46,16 @@ def logout_view(request: HttpRequest) -> HttpResponse:
     return redirect("authentication:login")
 
 
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def logout_api_view(request: HttpRequest) -> HttpResponse:
+    """
+    API endpoint to log out a user.
+    """
+    logout(request)
+    return Response({"message": "Logged out successfully"}, status=200)
+
+
 @login_required()
 @require_http_methods(["GET"])
 @user_passes_test(is_admin_user)
@@ -54,7 +65,6 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "accounts/index.html", {"users": users})
 
 
-@login_required()
 @api_view(["GET", "POST"])
 @renderer_classes([TemplateHTMLRenderer, JSONRenderer])
 def profile(request: HttpRequest) -> HttpResponse:

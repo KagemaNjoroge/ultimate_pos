@@ -1,9 +1,9 @@
 from django.db import models
 from suppliers.models import Supplier
-from utils.models import Photo
+from utils.models import Photo, TimestampedModel
 
 
-class Category(models.Model):
+class Category(TimestampedModel):
     STATUS_CHOICES = (("ACTIVE", "Active"), ("INACTIVE", "Inactive"))  # new
 
     name = models.CharField(max_length=256)
@@ -23,16 +23,30 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    def to_json(self) -> dict:
-        return {
-            "name": self.name,
-            "status": self.status,
-            "description": self.description,
-            "id": self.id,
-        }
+
+class TaxGroup(TimestampedModel):
+    name = models.CharField(max_length=100, unique=True, blank=False, null=False)
+    description = models.TextField(blank=True, null=True)
+    tax_rate = models.FloatField(default=0.0)
+
+    statuses = (("ACTIVE", "Active"), ("INACTIVE", "Inactive"))
+    status = models.CharField(
+        choices=statuses,
+        max_length=100,
+        verbose_name="Status of the tax group",
+        default="ACTIVE",
+    )
+
+    class Meta:
+        db_table = "TaxGroup"
+        verbose_name_plural = "Tax Groups"
+        verbose_name = "Tax Group"
+
+    def __str__(self):
+        return self.name
 
 
-class Product(models.Model):
+class Product(TimestampedModel):
     STATUS_CHOICES = (("ACTIVE", "Active"), ("INACTIVE", "Inactive"))  # new
     PRODUCT_TYPES = (
         ("1", "Raw Material"),
@@ -77,6 +91,14 @@ class Product(models.Model):
         db_column="category",
     )
     price = models.FloatField(default=0)
+    # tax group
+    tax_group = models.ForeignKey(
+        TaxGroup,
+        related_name="tax_group",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         db_table = "Product"
@@ -89,15 +111,3 @@ class Product(models.Model):
     @property
     def get_sku(self):
         return f"{self.category.name[:3].upper()}-{self.id:05d}"
-
-    def to_json(self):
-        return {
-            "name": self.name,
-            "description": self.description,
-            "track_inventory": self.track_inventory,
-            "display_image": self.display_image.url if self.display_image else None,
-            "status": self.status,
-            "category": self.category.name,
-            "price": self.price,
-            "id": self.id,
-        }

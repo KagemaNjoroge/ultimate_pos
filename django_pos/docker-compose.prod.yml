@@ -1,11 +1,28 @@
-services:
-  # PostgreSQL Database
+ # PostgreSQL Database
   db:
-    image: postgres:16..9
+    image: postgres:16.9
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - .env
+      - .docker.env
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - django-networkreSQL Database
+  db:
+    image: postgres:16.9
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .docker.env
     environment:
       - POSTGRES_DB=${DATABASE_NAME}
       - POSTGRES_USER=${DATABASE_USER}
@@ -27,7 +44,7 @@ services:
       db:
         condition: service_healthy
     env_file:
-      - .env
+      - .docker.env
     environment:
       - DATABASE_HOST=db
       - DATABASE_PORT=5432
@@ -38,6 +55,7 @@ services:
       sh -c "chmod +x wait-for-postgres.sh &&
              ./wait-for-postgres.sh db &&
              python manage.py migrate &&
+             python manage.py createsuperuser --noinput &&
              python manage.py collectstatic --no-input &&
              gunicorn django_pos.wsgi:application --bind 0.0.0.0:8000 --workers 4"
     networks:

@@ -5,9 +5,9 @@ from django.http import JsonResponse, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from company.models import Company
 from inventory.models import Inventory
-from .models import Category, Product
+from .models import Category, Product, TaxGroup
 from rest_framework.response import Response
-from .serializers import CategorySerializer, ProductSerializer
+from .serializers import CategorySerializer, ProductSerializer, TaxGroupSerializer
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
@@ -15,15 +15,32 @@ from django.views.decorators.http import require_http_methods
 from utils.models import Photo
 
 
+class TaxGroupApiViewSet(ModelViewSet):
+    queryset = TaxGroup.objects.all()
+    serializer_class = TaxGroupSerializer
+    filterset_fields = ("name", "status", "tax_rate")
+
+
 class CategoryApiViewSet(ModelViewSet):
 
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+    filterset_fields = ("name", "status", "id")
+
 
 class ProductApiViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filterset_fields = (
+        "name",
+        "track_inventory",
+        "status",
+        "supplier",
+        "id",
+        "tax_group",
+        "category",
+    )
 
 
 @login_required()

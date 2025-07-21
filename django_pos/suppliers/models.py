@@ -1,7 +1,8 @@
 from django.db import models
+from utils.models import TimestampedModel
 
 
-class Supplier(models.Model):
+class Supplier(TimestampedModel):
     name = models.CharField(max_length=100, blank=False, null=False)
     address = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
@@ -18,17 +19,6 @@ class Supplier(models.Model):
 
     def __str__(self):
         return self.name
-
-    def to_json(self):
-        return {
-            "name": self.name,
-            "address": self.address,
-            "phone": self.phone,
-            "email": self.email,
-            "tax_id": self.tax_id,
-            "website": self.website,
-            "logo": self.logo.url if self.logo else "",
-        }
 
     class Meta:
         ordering = ["name"]

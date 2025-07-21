@@ -59,8 +59,17 @@ class SaleItem(models.Model):
     product = models.ForeignKey(Product, models.CASCADE, db_column="product")
     quantity = models.IntegerField(default=1)
 
+    def get_tax_percentage(self):
+        if self.product.tax_group:
+            return self.product.tax_group.tax_rate
+        return 0
+
+    def get_tax_amount(self):
+        tax_percentage = self.get_tax_percentage()
+        return (self.product.price * self.quantity * tax_percentage) / 100
+
     def total(self):
-        return self.product.price * self.quantity
+        return self.product.price * self.quantity + self.get_tax_amount()
 
     class Meta:
         db_table = "SaleItems"

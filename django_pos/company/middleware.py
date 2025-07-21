@@ -25,6 +25,9 @@ class BranchSelectionMiddleware:
             "/company/api/",  # Company API endpoints
             "/company/branches/",  # Branches List endpoints
             "/company/branch/api/",  # Branch API endpoints
+            # django debug toolbar URLs
+            "/__debug__/",
+            "/debug_toolbar/",
         ]
 
     def __call__(self, request):
