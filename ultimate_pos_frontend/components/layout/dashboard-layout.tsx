@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { apiService } from "@/lib/api";
+import { useApi, User } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import {
   BarChart3,
@@ -32,7 +33,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const navigationItems = [
@@ -117,6 +118,19 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Fetch user profile information
+  const {
+    data: user,
+    loading: userLoading,
+    error: userError,
+  } = useApi<User>(() => apiService.profile.get(), []);
+
+  // Handle user fetch error silently (log it but don't disrupt UI)
+  useEffect(() => {
+    if (userError) {
+      console.error("Failed to fetch user profile:", userError);
+    }
+  }, [userError]);
   const handleLogout = async () => {
     try {
       // Call the logout API to clear server-side sessions
@@ -143,6 +157,26 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       return pathname === "/dashboard";
     }
     return pathname.startsWith(href);
+  };
+
+  // Function to get current page title
+  const getCurrentPageTitle = () => {
+    const currentNavItem = navigationItems.find((item) =>
+      isRouteActive(item.href)
+    );
+    if (currentNavItem) {
+      return currentNavItem.title;
+    }
+
+    // Handle special cases
+    if (pathname.startsWith("/categories")) {
+      return "Categories";
+    }
+    if (pathname.startsWith("/auth")) {
+      return "Authentication";
+    }
+
+    return "Dashboard";
   };
 
   return (
@@ -220,7 +254,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               <Menu className="h-4 w-4" />
             </Button>
-            <h1 className="text-lg font-semibold">Dashboard</h1>
+            <h1 className="text-lg font-semibold">{getCurrentPageTitle()}</h1>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -285,18 +319,44 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   className="relative h-8 w-8 rounded-full"
                 >
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="/avatars/01.png" alt="User" />
-                    <AvatarFallback>JD</AvatarFallback>
+                    {user?.profile_pic ? (
+                      <AvatarImage
+                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${user.profile_pic}`}
+                        alt={`${user.first_name} ${user.last_name}`}
+                      />
+                    ) : (
+                      <AvatarImage src="/avatars/01.png" alt="User" />
+                    )}
+                    <AvatarFallback>
+                      {userLoading
+                        ? "..."
+                        : user
+                        ? `${user.first_name?.[0] || ""}${
+                            user.last_name?.[0] || ""
+                          }`
+                        : "U"}
+                    </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">John Doe</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      john.doe@example.com
+                    <p className="text-sm font-medium leading-none">
+                      {userLoading
+                        ? "Loading..."
+                        : user
+                        ? `${user.first_name} ${user.last_name}`
+                        : "Unknown User"}
                     </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {userLoading ? "..." : user?.email || "No email"}
+                    </p>
+                    {user?.role && (
+                      <p className="text-xs leading-none text-muted-foreground">
+                        Role: {user.role}
+                      </p>
+                    )}
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
