@@ -15,8 +15,7 @@ from customers.models import Customer
 from inventory.models import Inventory
 from pos.models import Notifications
 from products.models import Product, Category
-from sales.models import Sale
-from sales.models import SaleItem
+from sales.models import SaleItem, Sale
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
@@ -271,15 +270,10 @@ def pos(request: HttpRequest) -> HttpResponse:
                     }
                 )
             customer = get_object_or_404(Customer, id=customer_id)
-            # hard coded tax percentage TODO: make it dynamic as per a particular product
-            tax_percentage = 16
-            tax_amount = grand_total * tax_percentage / 100
+
             sale = Sale.objects.create(
                 customer=customer,
                 grand_total=grand_total,
-                tax_percentage=tax_percentage,
-                tax_amount=tax_amount,
-                sub_total=grand_total - tax_amount,
             )
             sale.save()
             sale_items = []
@@ -335,6 +329,10 @@ def pos(request: HttpRequest) -> HttpResponse:
 
             # parse sale with the serializer
             sale_serializer = SaleSerializer(sale)
+            sale.sub_total = sum(
+                item.product.price * item.quantity for item in sale_items
+            )
+            sale.save()
 
             return JsonResponse(
                 {
@@ -342,9 +340,12 @@ def pos(request: HttpRequest) -> HttpResponse:
                     "sale_id": sale.id,
                     "sale": sale_serializer.data,
                     "change": change,
+                    "tax_amount": sale.total_tax,
                 }
             )
         except Exception as e:
+
+            print(f"Error processing sale: {e}")
 
             return JsonResponse(
                 {"status": "error", "error_message": "An error occurred"}
