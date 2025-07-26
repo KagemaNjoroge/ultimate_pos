@@ -1,16 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpRequest, JsonResponse
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, render
-from company.utils.branch_utils import get_current_branch
 from django_pos.wsgi import *
-from customers.models import Customer
-from pos.models import Notifications
 from datetime import datetime, timedelta
-from products.models import Product
 from .models import Sale, SaleItem
-import json
 from company.models import Company
-from inventory.models import Inventory
 from .invoice import create_invoice_pdf
 from .serializers import SaleSerializer
 from rest_framework.viewsets import ModelViewSet
@@ -26,88 +20,9 @@ class SaleViewSet(ModelViewSet):
 @login_required()
 def sales_list_view(request: HttpRequest) -> HttpResponse:
     sales = Sale.objects.all().order_by("-created_at")
+
     context = {"sales": sales}
     return render(request, "sales/sales.html", context=context)
-
-
-@login_required()
-@require_http_methods(["GET", "POST"])
-def sales_add_view(request: HttpRequest) -> HttpResponse:
-    context = {
-        "customers": [c.to_select2() for c in Customer.objects.all()],
-    }
-
-    if request.method == "POST":
-
-        data = json.load(request)
-
-        customer_id = int(data["customer"])
-        customer = Customer.objects.get(id=customer_id)
-        sub_total = float(data["sub_total"])
-        tax_percentage = float(data["tax_percentage"])
-        tax_amount = float(data["tax_amount"])
-        grand_total = float(data["grand_total"])
-
-        prods = data["products"]
-        # Create the sale
-        sale = Sale(
-            customer=customer,
-            sub_total=sub_total,
-            tax_percentage=tax_percentage,
-            tax_amount=tax_amount,
-            grand_total=grand_total,
-        )
-        sale.save()
-
-        products = []
-        for prod in prods:
-            product = Product.objects.get(id=prod["id"])
-            products.append(product)
-            # Update the inventory
-            if product.track_inventory:
-                inv = Inventory.objects.filter(
-                    product=product, branch=get_current_branch(request)
-                )
-                if inv.exists():
-                    inv = inv.first()
-                    # # for each product check of inventory quantity > 0
-                    if inv.quantity > 0:
-                        inv.quantity -= prod["count"]
-                        inv.save()
-                    else:
-                        # not enough stocks, add notification
-                        Notifications.objects.create(
-                            title="Inventory Update Failed",
-                            message=f"Inventory update failed for {inv.product.name}. Items left: {inv.quantity}.",
-                            user=request.user,
-                        )
-
-                        return JsonResponse(
-                            {
-                                "status": "error",
-                                "message": f"Not enough inventory quantity for {inv.product.name}. Please adjust the inventory before proceeding.",
-                            }
-                        )
-        # Create the sale items
-
-        for prod in prods:
-            product = Product.objects.get(id=prod["id"])
-            sale_item = SaleItem(
-                product=product,
-                quantity=prod["count"],
-                sale=sale,
-            )
-            sale_item.save()
-
-        return JsonResponse(
-            {
-                "status": "success",
-                "message": "Sale created successfully!",
-                "sale_id": sale.id,
-            }
-        )
-    elif request.method == "GET":
-        return render(request, "sales/sales_add.html", context=context)
 
 
 @login_required()
@@ -206,7 +121,7 @@ def receipt_pdf_view(request: HttpRequest, sale_id: int) -> HttpResponse:
         "items": items,
         "totals": {
             "subtotal": float(sale.sub_total),
-            "tax": float(sale.tax_amount),
+            "tax": float(sale.total_tax),
             "discount": float(sale.discount) if sale.discount else 0,
             "total": float(sale.grand_total),
             "paid_amount": float(sale.amount_payed),
