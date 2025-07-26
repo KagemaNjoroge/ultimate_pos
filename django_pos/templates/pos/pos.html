@@ -1779,7 +1779,7 @@
               $('#saleId').text(result.sale.id);
               $('#saleDate').text(formattedDate);
               $('#saleSubtotal').text('$' + result.sale.sub_total.toFixed(2));
-              $('#saleTax').text('$' + result.sale.tax_amount.toFixed(2) + ` (${result.sale.tax_percentage}%)`);
+              $('#saleTax').text('$' + result.tax_amount.toFixed(2));
               $('#saleDiscount').text('$' + result.sale.discount.toFixed(2));
               $('#saleChange').text('$' + result.change.toFixed(2));
               $('#saleGrandTotal').text('$' + result.sale.grand_total.toFixed(2));
