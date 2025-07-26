@@ -12,8 +12,6 @@ class Sale(TimestampedModel):
     )
     sub_total = models.FloatField(default=0)
     grand_total = models.FloatField(default=0)
-    tax_amount = models.FloatField(default=0)
-    tax_percentage = models.FloatField(default=0)
 
     # if printed add a watermark to the receipt
     receipt_is_printed = models.BooleanField(default=False)
@@ -22,6 +20,12 @@ class Sale(TimestampedModel):
     @property
     def amount_payed(self):
         return self.get_amount_paid()
+
+    @property
+    def total_tax(self):
+        # Calculate total tax from all sale items
+
+        return sum(item.get_tax_amount() for item in self.saleitem_set.all())
 
     @property
     def amount_change(self):
@@ -51,7 +55,7 @@ class Sale(TimestampedModel):
         return str(self.id)
 
     def get_total(self) -> float:
-        return self.sub_total + self.tax_amount - self.discount
+        return self.grand_total
 
 
 class SaleItem(models.Model):
