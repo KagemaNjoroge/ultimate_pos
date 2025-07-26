@@ -11,8 +11,6 @@ class SaleSerializer(ModelSerializer):
             "customer",
             "sub_total",
             "grand_total",
-            "tax_amount",
-            "tax_percentage",
             "receipt_is_printed",
             "discount",
         ]
@@ -21,6 +19,5 @@ class SaleSerializer(ModelSerializer):
             "customer": {"required": True},
             "sub_total": {"required": True},
             "grand_total": {"required": True},
-            "tax_amount": {"required": True},
-            "tax_percentage": {"required": True},
+            "discount": {"required": False, "default": 0},
         }
