@@ -6,11 +6,12 @@ from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+
+from .path_validator import validate_next_path
 from .forms import SignUpForm
 from .serializers import CustomUserSerializer
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
-from django.utils.http import url_has_allowed_host_and_scheme
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 
@@ -103,16 +104,9 @@ def profile(request: HttpRequest) -> HttpResponse:
 def login_view(request: HttpRequest) -> HttpResponse:
     next_url = request.GET.get("next", "/")
     # Ensure next_url is safe
-    if (
-        not url_has_allowed_host_and_scheme(
-            next_url,
-            allowed_hosts={request.get_host()},
-            require_https=request.is_secure(),
-        )
-        or next_url.startswith("//")
-        or "\\" in next_url
-    ):
-        # Default to home page if validation fails:
+    next_url = validate_next_path(next_url)
+
+    if next_url == "":
         next_url = "/"
     if request.user.is_authenticated:
         return redirect(next_url)
