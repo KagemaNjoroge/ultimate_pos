@@ -5,7 +5,9 @@ from utils.models import TimestampedModel
 
 
 class Inventory(TimestampedModel):
-    product = models.OneToOneField(Product, on_delete=models.CASCADE)
+    product = models.OneToOneField(
+        Product, on_delete=models.CASCADE, related_name="product"
+    )
     quantity = models.PositiveIntegerField()
     alert_quantity = models.FloatField(default=1.0)
     branch = models.ForeignKey(
