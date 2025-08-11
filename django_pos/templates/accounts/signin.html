@@ -9,12 +9,10 @@
 
   <title>Ultimate POS - Login</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
   <link rel="stylesheet" href="{% static 'css/login.css' %}">
   <link rel="stylesheet" href="{%static 'css/styles.min.css'%}" />
-  <link rel="stylesheet" href="{%static 'libs/toastr/toastr.css'%}" />
+
 
 
 
@@ -23,114 +21,44 @@
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
 
   <main class="form-signin w-100 m-auto">
-    <form action="{%url 'authentication:login' %}" method="post" id="login_form">
+    <form action="" method="post" id="login_form">
       {% csrf_token %}
       <img class="mb-4 text-center" src="{%static 'img/logos/favicon.png'%}" alt="UltimatePOS Logo" width="150"
         height="150">
       <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-      {% if msg %}
-      <div class="mb-3 text-danger text-center"> {{ msg | safe }} </div>
-      {% endif %}
+      {% if form.errors %}
+      <div class="card-body">
 
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          Your username and password didn't match any account. Please try again.
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+      </div>
+      {% endif %}
       <div id="loading" class="text-center"></div>
       <div class="form-floating">
-        <input class="form-control" id="floatingInput" placeholder="your username" name="username" required>
-        <label for="floatingInput">Username</label>
+        <input class="form-control" id="username" placeholder="your username" name="username" required>
+        <label for="username">Username</label>
       </div>
       <div class="form-floating mt-2">
-        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password"
-          required>
-        <label for="floatingPassword">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
+        <label for="password">Password</label>
       </div>
 
-      <div class="form-check text-start my-3">
-        <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
-          Remember me
-        </label>
-      </div>
+      <input type="hidden" name="next" value="{{ next }}">
+
+
       <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
-      <p class="mt-5 mb-3 text-body-secondary">&copy; 2024 <a href="https://tomorrow.co.ke">TomorrowAI</a></p>
+
     </form>
 
   </main>
-  <script src="{%static 'libs/jquery/dist/jquery.min.js'%}"></script>
+
   <script src="{%static 'libs/bootstrap/dist/js/bootstrap.bundle.min.js'%}"></script>
   <script src="{% static 'js/color-modes.js' %}"></script>
-  <script src="{%static 'libs/toastr/toastr.js'%}"></script>
-
-  <script>
-
-    $(document).ready(function () {
-      $('#login_form').submit(function (e) {
-        e.preventDefault();
-        // remove error message
-        var form = $(this);
-
-        $('#loading').html(`<div class="spinner-border" role="status">
-          <span class="visually-hidden">Loading...</span>
-          </div>`);
-
-        var url = form.attr('action');
-        $.ajax({
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
 
 
-          },
-          type: 'POST',
-          url: url,
-          data: JSON.stringify({
-            'username': $('#floatingInput').val(),
-            'password': $('#floatingPassword').val()
-          }),
-          success: function (data) {
-
-
-            toastr.success(data.message, 'Success', {
-              "closeButton": true,
-              "progressBar": true
-            });
-            if (data.next) {
-              window.location.href = data.next;
-            } else {
-              window.location.href = '/';
-            }
-
-          }
-          ,
-          error: function (xhr, status, error) {
-
-            // check if 401 -> wrong credentials
-            if (xhr.status === 401) {
-              toastr.error(xhr.responseJSON.message, 'Error', {
-                "closeButton": true,
-                "progressBar": true
-              });
-            } else {
-              toastr.error('An error occurred. Please try again.', 'Error', {
-                "closeButton": true,
-                "progressBar": true
-              });
-            }
-
-          }
-        }).done(function () {
-          $('#loading').html('');
-
-
-
-        }).fail(function () {
-          $('#loading').html('');
-          toastr.error('An error occurred. Please try again.', 'Error', {
-            "closeButton": true,
-            "progressBar": true
-          });
-        });
-      });
-    });
-  </script>
 
 
 </body>
