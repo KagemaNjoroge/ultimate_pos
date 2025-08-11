@@ -111,3 +111,13 @@ class Product(TimestampedModel):
     @property
     def get_sku(self):
         return f"{self.category.name[:3].upper()}-{self.id:05d}"
+
+    def _get_tax_rate(self):
+        if self.tax_group:
+            return self.tax_group.tax_rate
+        else:
+            return float(0)
+
+    @property
+    def tax_rate(self):
+        return self._get_tax_rate()
