@@ -171,14 +171,14 @@
                                     </div>
                                 </td>
                                 <td class="text-end align-middle">
-                                    <span class="fw-semibold">${{detail.product.price|floatformat:2}}</span>
+                                    <span class="fw-semibold">{{detail.product.price|floatformat:2}}</span>
                                 </td>
                                 <td class="text-center align-middle">
                                     <span
                                         class="badge bg-secondary-subtle text-secondary px-3 py-2">{{detail.quantity}}</span>
                                 </td>
                                 <td class="text-end pe-4 align-middle">
-                                    <span class="fw-bold text-success">${{detail.total|floatformat:2}}</span>
+                                    <span class="fw-bold text-success">{{detail.total|floatformat:2}}</span>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -202,7 +202,7 @@
                 <!-- Subtotal -->
                 <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
                     <span class="text-muted">Subtotal</span>
-                    <span class="fw-semibold fs-6">${{sale.sub_total|floatformat:2}}</span>
+                    <span class="fw-semibold fs-6">{{sale.sub_total|floatformat:2}}</span>
                 </div>
 
                 <!-- Tax -->
@@ -211,7 +211,7 @@
                         Tax
                         <i class="ti ti-info-circle ms-1" data-bs-toggle="tooltip" title="Tax Rate Applied"></i>
                     </span>
-                    <span class="fw-semibold fs-6">${{sale.total_tax|floatformat:2}}</span>
+                    <span class="fw-semibold fs-6">{{sale.total_tax|floatformat:2}}</span>
                 </div>
 
                 <!-- Discount (if applicable) -->
@@ -220,14 +220,14 @@
                     <span class="text-success">
                         <i class="ti ti-discount me-1"></i>Discount
                     </span>
-                    <span class="fw-semibold fs-6 text-success">-${{sale.discount|floatformat:2}}</span>
+                    <span class="fw-semibold fs-6 text-success">{{sale.discount|floatformat:2}}</span>
                 </div>
                 {% endif %}
 
                 <!-- Grand Total -->
                 <div class="d-flex justify-content-between align-items-center py-3 bg-primary-subtle rounded mt-3 px-3">
                     <span class="fw-bold text-primary fs-5">Grand Total</span>
-                    <span class="fw-bold text-primary fs-4">${{sale.grand_total|floatformat:2}}</span>
+                    <span class="fw-bold text-primary fs-4">{{sale.grand_total|floatformat:2}}</span>
                 </div>
 
                 <!-- Payment Information -->
@@ -236,13 +236,13 @@
 
                     <div class="d-flex justify-content-between align-items-center py-2">
                         <span class="text-muted">Amount Paid</span>
-                        <span class="fw-semibold fs-6 text-success">${{sale.amount_payed|floatformat:2}}</span>
+                        <span class="fw-semibold fs-6 text-success">{{sale.amount_payed|floatformat:2}}</span>
                     </div>
 
                     {% if sale.amount_change > 0 %}
                     <div class="d-flex justify-content-between align-items-center py-2">
                         <span class="text-muted">Change Given</span>
-                        <span class="fw-semibold fs-6">${{sale.amount_change|floatformat:2}}</span>
+                        <span class="fw-semibold fs-6">{{sale.amount_change|floatformat:2}}</span>
                     </div>
                     {% endif %}
 
@@ -251,7 +251,7 @@
                     <div class="d-flex justify-content-between align-items-center py-2">
                         <span class="text-danger fw-semibold">Balance Due</span>
                         <span class="fw-bold fs-6 text-danger balance-amount" data-total="{{sale.grand_total}}"
-                            data-paid="{{sale.amount_payed}}">${{sale.grand_total|floatformat:2}}</span>
+                            data-paid="{{sale.amount_payed}}">{{sale.grand_total|floatformat:2}}</span>
                     </div>
                     {% endwith %}
                     {% endif %}
@@ -305,7 +305,7 @@
                                 style="width: 60px; height: 60px;">
                                 <i class="ti ti-coin fs-4 text-success"></i>
                             </div>
-                            <h6 class="fw-bold mb-1">${{sale.grand_total|floatformat:2}}</h6>
+                            <h6 class="fw-bold mb-1">{{sale.grand_total|floatformat:2}}</h6>
                             <small class="text-muted">Total Value</small>
                         </div>
                     </div>
@@ -495,21 +495,7 @@
             }, 3000);
         });
 
-        // Add currency formatting
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD'
-            }).format(amount);
-        }
 
-        // Format all currency displays and calculate balance
-        $('.currency').each(function () {
-            var amount = parseFloat($(this).text().replace('$', ''));
-            if (!isNaN(amount)) {
-                $(this).text(formatCurrency(amount));
-            }
-        });
 
         // Calculate and display balance due
         $('.balance-amount').each(function () {
