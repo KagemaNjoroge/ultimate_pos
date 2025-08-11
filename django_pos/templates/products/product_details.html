@@ -381,7 +381,8 @@ Product Details
                                     <i class="ti ti-category"></i> Category:
                                 </span>
                                 <span class="meta-value">
-                                    <a href="{% url 'products:categories_list' %}" class="text-primary">
+                                    <a href="{% url 'products:categories_details' product.category.id %}"
+                                        class="text-primary">
                                         {{product.category}}
                                     </a>
                                 </span>
