@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.contrib import messages
 from company.models import Branch, Company
@@ -28,9 +29,11 @@ class BranchSelectionMiddleware:
             # django debug toolbar URLs
             "/__debug__/",
             "/debug_toolbar/",
+            # sales pdf
+            "/sales/pdf/",
         ]
 
-    def __call__(self, request):
+    def __call__(self, request: HttpRequest):
         # Check if user is authenticated
         if request.user.is_authenticated:
             # Check if URL requires branch selection
@@ -51,6 +54,7 @@ class BranchSelectionMiddleware:
                         return redirect("company:setup")
 
                     if Branch.objects.exists():
+
                         messages.info(request, "Please select a branch to continue.")
                         return redirect("company:select_current_branch")
                     else:
