@@ -35,8 +35,7 @@ services:
       - static_volume:/app/staticfiles
       - media_volume:/app/media
     command: >
-      bash -c "python manage.py migrate &&  
-              python manage.py createsuperuser --noinput &&             
+      bash -c "python manage.py migrate &&             
                python manage.py collectstatic --no-input &&
                gunicorn django_pos.wsgi:application --bind 0.0.0.0:8000"
 
