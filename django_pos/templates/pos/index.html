@@ -1,5 +1,6 @@
 {% extends "pos/base.html" %}
 {% load static %}
+{% load humanize %}
 {% block title %}Dashboard{% endblock title %}
 {% block heading %}Dashboard{% endblock heading %}
 {% block content %}
@@ -49,7 +50,10 @@
                     <div class="flex-grow-1 ms-3">
                         <div class="text-muted small text-uppercase fw-bold">Today's Sales</div>
                         <div class="h4 fw-bold text-dark mb-0">
-                            <span id="today_sales">{{today_sales}}</span>
+                            <span id="today_sales">
+                                {{today_sales | intcomma}}
+
+                            </span>
                             <small class="text-muted">{{currency_symbol}}</small>
                         </div>
                         <small class="text-success">
@@ -74,7 +78,7 @@
                     <div class="flex-grow-1 ms-3">
                         <div class="text-muted small text-uppercase fw-bold">Monthly Average</div>
                         <div class="h4 fw-bold text-dark mb-0">
-                            <span id="avg_m">{{avg_month}}</span>
+                            <span id="avg_m">{{avg_month | intcomma}}</span>
                             <small class="text-muted">{{currency_symbol}}</small>
                         </div>
                         <small class="text-muted">
@@ -99,7 +103,7 @@
                     <div class="flex-grow-1 ms-3">
                         <div class="text-muted small text-uppercase fw-bold">Annual Earnings</div>
                         <div class="h4 fw-bold text-dark mb-0">
-                            <span id="avg_a">{{annual_earnings}}</span>
+                            <span id="avg_a">{{annual_earnings | intcomma}}</span>
                             <small class="text-muted">{{currency_symbol}}</small>
                         </div>
                         <small class="text-info">
@@ -447,9 +451,7 @@
 <script src="{% static 'js/chart-area.js' %}"></script>
 <script src="{% static 'js/chart-pie.js' %}"></script>
 <script>
-    function formatNumberWithCommas(number) {
-        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
+
 
     $(document).ready(function () {
         // Check if Chart.js is loaded
@@ -459,25 +461,6 @@
             console.log('Chart.js loaded successfully, version:', Chart.version);
         }
 
-        // Format numbers with commas - check if elements exist first
-        var today_sales_elem = document.getElementById('today_sales');
-        var avg_m_elem = document.getElementById('avg_m');
-        var avg_a_elem = document.getElementById('avg_a');
-
-        if (today_sales_elem) {
-            var today_sales = today_sales_elem.innerHTML;
-            today_sales_elem.innerHTML = formatNumberWithCommas(today_sales);
-        }
-
-        if (avg_m_elem) {
-            var avg_m = avg_m_elem.innerHTML;
-            avg_m_elem.innerHTML = formatNumberWithCommas(avg_m);
-        }
-
-        if (avg_a_elem) {
-            var avg_a = avg_a_elem.innerHTML;
-            avg_a_elem.innerHTML = formatNumberWithCommas(avg_a);
-        }
 
         // Add smooth scrolling
         $('a[href*="#"]').on('click', function (e) {
