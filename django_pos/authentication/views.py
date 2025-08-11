@@ -1,5 +1,4 @@
-import json
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
@@ -7,14 +6,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
-from .path_validator import validate_next_path
 from .forms import SignUpForm
 from .serializers import CustomUserSerializer
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
-
 from django.contrib.auth.decorators import user_passes_test
 
 
@@ -98,38 +95,6 @@ def profile(request: HttpRequest) -> HttpResponse:
             status=400,
             template_name="accounts/profile.html",
         )
-
-
-@require_http_methods(["GET", "POST"])
-def login_view(request: HttpRequest) -> HttpResponse:
-    next_url = request.GET.get("next", "/")
-    # Ensure next_url is safe
-    next_url = validate_next_path(next_url)
-
-    if next_url == "":
-        next_url = "/"
-    if request.user.is_authenticated:
-        return redirect(next_url)
-    else:
-
-        if request.method == "GET":
-            return render(request, "accounts/signin.html", {"next": next_url})
-        elif request.method == "POST":
-
-            data = json.loads(request.body)
-            username = data.get("username")
-            password = data.get("password")
-
-            user = authenticate(username=username, password=password)
-
-            if user:
-                login(request, user)
-                return JsonResponse({"message": "success", "next": next_url})
-            else:
-                return JsonResponse(
-                    {"message": "Invalid email or password!", "status": "error"},
-                    status=401,
-                )
 
 
 @require_http_methods(["GET", "POST"])
