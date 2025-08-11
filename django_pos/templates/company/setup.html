@@ -210,7 +210,7 @@ Company Setup
             },
             error: function (xhr, status, error) {
                 toastr.error('An error occurred while setting up the company. Please try again.');
-                console.error(xhr.responseText);
+
             },
             complete: function () {
                 submitBtn.innerHTML = originalText;
