@@ -3,11 +3,11 @@ from .models import Product, Category, TaxGroup
 from utils.models import Photo
 
 
-
 class TaxGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaxGroup
         fields = "__all__"
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,7 +22,21 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = "__all__"
+        fields = (
+            "supplier",
+            "name",
+            "description",
+            "track_inventory",
+            "photos",
+            "display_image",
+            "status",
+            "category",
+            "price",
+            "tax_group",
+            "tax_rate",
+            "get_sku",
+            "selected_photos",
+        )
 
     def update(self, instance, validated_data):
         # Handle photos separately
