@@ -345,8 +345,6 @@ def pos(request: HttpRequest) -> HttpResponse:
             )
         except Exception as e:
 
-            print(f"Error processing sale: {e}")
-
             return JsonResponse(
                 {"status": "error", "error_message": "An error occurred"}
             )
