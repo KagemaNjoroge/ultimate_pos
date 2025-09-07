@@ -28,21 +28,6 @@ def create_demo_branch(company: Company):
 
 
 def setup_tax_groups():
-    """
-
-    There are two (2) tax rates:-
-
-    16% (General rate) - this rate applies to all taxable goods and taxable services other than zero-rated supplies.
-    0% (Zero-rate) - this rate applies to specific supplies listed in the Second Schedule to the VAT Act, 2013.
-
-    Note: 8% (Other rate) - This rate applied to certain supplies (petroleum products) prior to 1st July 2023
-    but was deleted by the Finance Act, 2023.
-
-    Exempt supplies are not taxable supplies and any related input tax is therefore not deductible.
-    Exempt supplies are listed in the First Schedule to the VAT Act 2013. Taxpayers who only make exempt
-    supplies are not required to register for VAT.
-
-    """
     tax_groups = [
         {
             "name": "General Rate",
@@ -86,12 +71,6 @@ def setup_tax_groups():
     return TaxGroup.objects.all()
 
 
-if __name__ == "__main__":
-    company = create_demo_company()
-    branch = create_demo_branch(company)
-    tax_groups = setup_tax_groups()
-
-    tax_groups = [tax_group.name for tax_group in tax_groups]
-    print(
-        f"Demo company '{company.company_name}' and branch '{branch.branch_name}' created with tax groups: {tax_groups}"
-    )
+def execute_tasks():
+    create_demo_branch(create_demo_company())
+    setup_tax_groups()
