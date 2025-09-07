@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { ProductImage } from "@/components/ui/product-image";
 import { Separator } from "@/components/ui/separator";
 import { useCustomers, useProducts } from "@/lib/hooks";
+import { Customer, Product } from "@/lib/interfaces";
 import {
   Calculator,
   CreditCard,
@@ -37,32 +38,6 @@ import {
 import { useState } from "react";
 
 // Product and Customer interfaces
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  track_inventory: boolean;
-  display_image: string | null;
-  status: string | null;
-  price: number;
-  supplier: number | null;
-  category: number;
-  photos: number[];
-}
-
-interface Customer {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  first_name: string;
-  last_name: string;
-  address: string;
-  email: string;
-  phone: string;
-  tax_number: string;
-  is_active: boolean;
-  photo: string;
-}
 
 interface CartItem {
   id: number;

@@ -4,27 +4,19 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { apiService } from "@/lib/api";
 import { useProductCategories } from "@/lib/hooks";
+import { Category } from "@/lib/interfaces/category";
 import { Edit, Eye, FolderOpen, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-}
 
 export default function CategoriesPage() {
   const {

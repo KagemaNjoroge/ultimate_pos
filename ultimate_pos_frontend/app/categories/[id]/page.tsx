@@ -4,37 +4,19 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { apiService } from "@/lib/api";
 import { useApi, useProducts } from "@/lib/hooks";
+import { Product } from "@/lib/interfaces";
+import { Category } from "@/lib/interfaces/category";
 import { ArrowLeft, Edit, Package } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: string;
-
-  category: number;
-
-  sku: string;
-}
-
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-}
 
 export default function CategoryDetailsPage() {
   const params = useParams();
@@ -239,9 +221,9 @@ export default function CategoryDetailsPage() {
                             </p>
                           )}
                           <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                            <span>SKU: {product.sku}</span>
-                            <span>•</span>
-                            <span>${parseFloat(product.price).toFixed(2)}</span>
+                            <span>
+                              ${parseFloat(product.price.toString()).toFixed(2)}
+                            </span>
                           </div>
                         </div>
                       </div>

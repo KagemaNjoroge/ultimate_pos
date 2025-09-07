@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ProductImage } from "@/components/ui/product-image";
 import { useCustomers } from "@/lib/hooks";
+import { Customer } from "@/lib/interfaces";
 import {
   Edit,
   Eye,
@@ -27,21 +28,6 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-// Customer type definition based on API structure
-interface Customer {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  first_name: string;
-  last_name: string;
-  address: string;
-  email: string;
-  phone: string;
-  tax_number: string;
-  is_active: boolean;
-  photo: string;
-}
 
 const getStatusBadgeVariant = (is_active: boolean) => {
   return is_active ? "default" : "outline";

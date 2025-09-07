@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useSales } from "@/lib/hooks";
+import { Sale } from "@/lib/interfaces";
 import {
   ArrowUpDown,
   DollarSign,
@@ -24,19 +25,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
-
-// Sales type definition based on API structure
-interface Sale {
-  id: number;
-  created_at: string;
-  customer: number;
-  sub_total: number;
-  grand_total: number;
-  tax_amount: number;
-  tax_percentage: number;
-  receipt_is_printed: boolean;
-  discount: number;
-}
 
 const getStatusBadgeVariant = (status: string) => {
   switch (status) {

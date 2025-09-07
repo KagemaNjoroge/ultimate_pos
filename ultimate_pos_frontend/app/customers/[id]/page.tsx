@@ -14,6 +14,7 @@ import { ProductImage } from "@/components/ui/product-image";
 import { Separator } from "@/components/ui/separator";
 import { apiService } from "@/lib/api";
 import { useApi } from "@/lib/hooks";
+import { Customer, Sale } from "@/lib/interfaces";
 import {
   ArrowLeft,
   Calendar,
@@ -31,34 +32,6 @@ import {
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-
-// Customer interface
-interface Customer {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  first_name: string;
-  last_name: string;
-  address: string;
-  email: string;
-  phone: string;
-  tax_number: string;
-  is_active: boolean;
-  photo: string;
-}
-
-// Sale interface for customer's purchase history
-interface Sale {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  grand_total: number;
-  tax_amount: number;
-  tax_percentage: number;
-  sub_total: number;
-  receipt_is_printed: boolean;
-  customer: number;
-}
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);

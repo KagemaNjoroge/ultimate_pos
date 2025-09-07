@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { ProductImage } from "@/components/ui/product-image";
 import { apiService } from "@/lib/api";
 import { useMutation, useProducts } from "@/lib/hooks";
+import { Product } from "@/lib/interfaces";
 import {
   Edit,
   Filter,
@@ -25,44 +26,6 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
-
-// Product type definition based on your API response
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  track_inventory: boolean;
-  display_image: string | null;
-  status: string | null;
-  price: number;
-  supplier: number | null;
-  category: number;
-  photos: number[];
-  tax_group: number | null;
-}
-
-/*
-  {
-      "id": 1,
-      "created_at": "2025-07-19T12:26:28.753603+03:00",
-      "updated_at": "2025-07-19T12:27:18.697066+03:00",
-      "name": "Value Added Tax (VAT)",
-      "description": "VAT is an indirect tax that is paid by the person who consumes taxable goods and taxable services supplied in Kenya and/or imported into Kenya.",
-      "tax_rate": 16,
-      "status": "ACTIVE"
-    }
-*/
-
-// Tax group type definition
-export interface TaxGroup {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  name: string;
-  description: string;
-  tax_rate: number;
-  status: string | null; // Can be "ACTIVE", "INACTIVE", or null
-}
 
 const getStatusBadgeVariant = (status: string | null) => {
   if (!status) return "secondary";
@@ -151,10 +114,12 @@ export default function ProductsPage() {
                 Manage Categories
               </Button>
             </Link>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
-            </Button>
+            <Link href="/products/add">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Product
+              </Button>
+            </Link>
           </div>
         </div>
 

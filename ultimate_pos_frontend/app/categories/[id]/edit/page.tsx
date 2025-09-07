@@ -14,20 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { apiService } from "@/lib/api";
 import { useApi } from "@/lib/hooks";
+import { Category } from "@/lib/interfaces/category";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
-interface Category {
-  id: number;
-  name: string;
-  description: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-}
 
 export default function EditCategoryPage() {
   const params = useParams();

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useSuppliers } from "@/lib/hooks";
+import { Supplier } from "@/lib/interfaces";
 import {
   Edit,
   Filter,
@@ -24,19 +25,6 @@ import {
   Truck,
 } from "lucide-react";
 import { useState } from "react";
-
-// Supplier type definition based on API structure
-interface Supplier {
-  id: number;
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-  tax_id: string;
-  website: string;
-  logo: string | null;
-  additional_notes: string;
-}
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
