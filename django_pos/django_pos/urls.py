@@ -6,54 +6,6 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls.static import static
 
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework import serializers, status
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-
-
-class TokenObtainPairResponseSerializer(serializers.Serializer):
-    access = serializers.CharField()
-    refresh = serializers.CharField()
-
-    def create(self, validated_data):
-        raise NotImplementedError()
-
-    def update(self, instance, validated_data):
-        raise NotImplementedError()
-
-
-class DecoratedTokenObtainPairView(TokenObtainPairView):
-    @swagger_auto_schema(
-        responses={
-            status.HTTP_200_OK: TokenObtainPairResponseSerializer,
-        }
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-
-class TokenRefreshResponseSerializer(serializers.Serializer):
-    access = serializers.CharField()
-
-    def create(self, validated_data):
-        raise NotImplementedError()
-
-    def update(self, instance, validated_data):
-        raise NotImplementedError()
-
-
-class DecoratedTokenRefreshView(TokenRefreshView):
-    @swagger_auto_schema(
-        responses={
-            status.HTTP_200_OK: TokenRefreshResponseSerializer,
-        }
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -101,17 +53,6 @@ urlpatterns = [
     path("utils/", include("utils.urls")),
     # Payments
     path("payments/", include("payments.urls")),
-    # JWT Token Authentication
-    path(
-        "api/token/",
-        DecoratedTokenObtainPairView.as_view(),
-        name="token_obtain_pair",
-    ),
-    path(
-        "api/token/refresh/",
-        DecoratedTokenRefreshView.as_view(),
-        name="token_refresh",
-    ),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += debug_toolbar_urls()

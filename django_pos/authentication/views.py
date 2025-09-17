@@ -7,12 +7,44 @@ from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 from .forms import SignUpForm
-from .serializers import CustomUserSerializer
+from .serializers import (
+    CustomUserSerializer,
+    TokenObtainPairResponseSerializer,
+    TokenRefreshResponseSerializer,
+)
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_http_methods
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.decorators import user_passes_test
+
+
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+
+class DecoratedTokenObtainPairView(TokenObtainPairView):
+    @swagger_auto_schema(
+        responses={
+            status.HTTP_200_OK: TokenObtainPairResponseSerializer,
+        }
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class DecoratedTokenRefreshView(TokenRefreshView):
+    @swagger_auto_schema(
+        responses={
+            status.HTTP_200_OK: TokenRefreshResponseSerializer,
+        }
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
 def is_admin_user(user):
