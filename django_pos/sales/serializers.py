@@ -1,23 +1,26 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Sale
+from .models import Sale, SaleItem
+
+
+class SaleItemSerializer(ModelSerializer):
+    class Meta:
+        model = SaleItem
+        fields = ["id", "product", "quantity"]
 
 
 class SaleSerializer(ModelSerializer):
+    items = SaleItemSerializer(many=True, required=False)
+
     class Meta:
         model = Sale
         fields = [
             "id",
             "created_at",
             "customer",
-            "sub_total",
-            "grand_total",
+            "items",
             "receipt_is_printed",
             "discount",
+            "sub_total",
+            "grand_total",
         ]
-        read_only_fields = ["id", "created_at", "receipt_is_printed"]
-        extra_kwargs = {
-            "customer": {"required": True},
-            "sub_total": {"required": True},
-            "grand_total": {"required": True},
-            "discount": {"required": False, "default": 0},
-        }
+        read_only_fields = ["receipt_is_printed"]
