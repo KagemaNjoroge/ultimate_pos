@@ -4,21 +4,26 @@ from rest_framework.viewsets import ModelViewSet
 
 
 class TaxGroupApiViewSet(ModelViewSet):
-    queryset = TaxGroup.objects.all()
+
     serializer_class = TaxGroupSerializer
     filterset_fields = ("name", "status", "tax_rate")
+
+    def get_queryset(self):
+        return TaxGroup.objects.all().order_by("-created_at")
 
 
 class CategoryApiViewSet(ModelViewSet):
 
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
     filterset_fields = ("name", "status", "id")
 
+    def get_queryset(self):
+        return Category.objects.all().order_by("-created_at")
+
 
 class ProductApiViewSet(ModelViewSet):
-    queryset = Product.objects.all()
+
     serializer_class = ProductSerializer
     filterset_fields = (
         "name",
@@ -29,3 +34,6 @@ class ProductApiViewSet(ModelViewSet):
         "tax_group",
         "category",
     )
+
+    def get_queryset(self):
+        return Product.objects.all().order_by("-created_at")
