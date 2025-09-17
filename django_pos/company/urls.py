@@ -10,8 +10,6 @@ from .views import (
     branches,
     add_branch,
     set_up_company,
-    select_current_branch,
-    switch_branch,
 )
 
 router = DefaultRouter()
@@ -25,7 +23,5 @@ urlpatterns = [
     path("branches/", view=branches, name="branches"),
     path("branches/add/", view=add_branch, name="add_branch"),
     path("setup/", set_up_company, name="setup"),
-    path("select-current-branch/", select_current_branch, name="select_current_branch"),
-    path("switch-branch/", switch_branch, name="switch_branch"),
 ]
 urlpatterns += router.urls
