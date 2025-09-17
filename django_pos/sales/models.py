@@ -55,7 +55,7 @@ class Sale(TimestampedModel):
         return sub_total
 
     def _grand_total(self):
-        return self._get_sub_total() - self.discount
+        return self._get_sub_total() - self.discount + self._get_total_tax()
 
     @property
     def sub_total(self):
@@ -64,6 +64,10 @@ class Sale(TimestampedModel):
     @property
     def grand_total(self):
         return self._grand_total()
+
+    @property
+    def total_tax(self):
+        return self._get_total_tax()
 
     # if printed add a watermark to the receipt
     receipt_is_printed = models.BooleanField(default=False)
