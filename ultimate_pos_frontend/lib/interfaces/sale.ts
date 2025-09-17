@@ -6,7 +6,7 @@ export interface Sale {
   sub_total: number;
   grand_total: number;
   tax_amount: number;
-  tax_percentage: number;
+  total_tax: number;
   receipt_is_printed: boolean;
   discount: number;
 }

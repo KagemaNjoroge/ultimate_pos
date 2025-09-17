@@ -175,7 +175,7 @@ export default function SalesPage() {
   );
   const avgTaxRate =
     salesData.length > 0
-      ? salesData.reduce((sum, sale) => sum + sale.tax_percentage, 0) /
+      ? salesData.reduce((sum, sale) => sum + sale.total_tax, 0) /
         salesData.length
       : 0;
 
@@ -451,7 +451,7 @@ export default function SalesPage() {
                             </div>
                             <div className="text-xs text-muted-foreground">
                               Tax: {formatCurrency(sale.tax_amount)} (
-                              {sale.tax_percentage}%)
+                              {sale.total_tax}%)
                               {sale.discount > 0 &&
                                 ` • Discount: ${formatCurrency(sale.discount)}`}
                             </div>
