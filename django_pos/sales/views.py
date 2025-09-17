@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpRequest
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django_pos.wsgi import *
 from datetime import datetime, timedelta
 from .models import Sale, SaleItem
@@ -15,27 +15,6 @@ class SaleViewSet(ModelViewSet):
     queryset = Sale.objects.all()
     serializer_class = SaleSerializer
     filterset_fields = ["customer", "created_at"]
-
-
-@login_required()
-def sales_list_view(request: HttpRequest) -> HttpResponse:
-    sales = Sale.objects.all().order_by("-created_at")
-
-    context = {"sales": sales}
-    return render(request, "sales/sales.html", context=context)
-
-
-@login_required()
-def sales_details_view(request: HttpRequest, sale_id: str) -> HttpResponse:
-    sale = get_object_or_404(Sale, id=sale_id)
-    # Get the sale details
-    items = SaleItem.objects.filter(sale=sale)
-    context = {
-        "sale": sale,
-        "items": items,
-        "items_count": items.count() if items else 0,
-    }
-    return render(request, "sales/sales_details.html", context=context)
 
 
 @login_required()

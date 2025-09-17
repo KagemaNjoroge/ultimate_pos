@@ -103,11 +103,11 @@ INTERNAL_IPS = [
 ]
 
 ROOT_URLCONF = "django_pos.urls"
-LOGIN_URL = "authentication:login"
+# LOGIN_URL = "authentication:login"
 # Route defined in authentication/urls.py
-LOGIN_REDIRECT_URL = "authentication:home"
+# LOGIN_REDIRECT_URL = "authentication:home"
 # Route defined in authentication/urls.py
-LOGOUT_REDIRECT_URL = "authentication:login"
+# LOGOUT_REDIRECT_URL = "authentication:login"
 
 
 TEMPLATES = [
