@@ -21,9 +21,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # Index
-    path("", include("pos.urls")),
-    # Swagger
+    # swagger docs
     path(
         "api/docs/",
         schema_view.with_ui("swagger"),
@@ -34,4 +32,5 @@ urlpatterns = [
     path("api/", include("django_pos.router")),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += debug_toolbar_urls()
+if settings.DEBUG:
+    urlpatterns += debug_toolbar_urls()

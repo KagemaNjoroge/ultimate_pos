@@ -17,6 +17,7 @@ from suppliers.views import SupplierApiViewSet
 from sales.views import SaleViewSet, receipt_pdf_view
 from payments.views import PaymentViewSet
 from utils.views import PhotoApiViewSet
+from pos.views import NotificationsView, dashboard
 
 router = DefaultRouter()
 
@@ -56,6 +57,13 @@ urlpatterns = [
     ),
     # sales pdf receipt
     path("sales/pdf/<str:sale_id>/", receipt_pdf_view, name="sales_receipt_pdf"),
+    path("notifications/", NotificationsView.as_view(), name="notifications_list"),
+    path(
+        "notifications/<int:id>/",
+        NotificationsView.as_view(),
+        name="notifications_detail",
+    ),
+    path("pos/dashboard/", dashboard, name="dashboard"),
 ]
 
 
