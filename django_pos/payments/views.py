@@ -3,10 +3,6 @@ from rest_framework.viewsets import ModelViewSet
 
 
 class PaymentViewSet(ModelViewSet):
-    """
-    A viewset for viewing and editing payment instances.
-    """
-
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     filterset_fields = ("sale", "payment_method", "status", "reference")

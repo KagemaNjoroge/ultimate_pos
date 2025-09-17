@@ -5,61 +5,8 @@ from products.models import Product
 from utils.models import TimestampedModel
 
 
-class Sale(TimestampedModel):
-
-    customer = models.ForeignKey(
-        Customer, models.SET_NULL, db_column="customer", blank=True, null=True
-    )
-    sub_total = models.FloatField(default=0)
-    grand_total = models.FloatField(default=0)
-
-    # if printed add a watermark to the receipt
-    receipt_is_printed = models.BooleanField(default=False)
-    discount = models.FloatField(default=0)
-
-    @property
-    def amount_payed(self):
-        return self.get_amount_paid()
-
-    @property
-    def total_tax(self):
-        # Calculate total tax from all sale items
-
-        return sum(item.get_tax_amount() for item in self.saleitem_set.all())
-
-    @property
-    def amount_change(self):
-        return self.get_amount_change()
-
-    # the following methods and properties are for maintaining backward compatibility
-    def get_amount_change(self):
-        total_paid = self.get_amount_paid()
-        return max(0, float(total_paid) - float(self.grand_total))
-
-    def get_amount_paid(self):
-        """Calculate total amount paid from all completed payments."""
-        return sum(
-            payment.amount for payment in self.payments.filter(status="completed")
-        )
-
-    def get_amount_due(self):
-        """Calculate the amount due based on grand total and amount paid."""
-        return max(0, self.grand_total - self.get_amount_paid())
-
-    class Meta:
-        db_table = "Sales"
-        verbose_name_plural = "Sales"
-        verbose_name = "Sale"
-
-    def __str__(self) -> str:
-        return str(self.id)
-
-    def get_total(self) -> float:
-        return self.grand_total
-
-
 class SaleItem(models.Model):
-    sale = models.ForeignKey("Sale", models.CASCADE, db_column="sale")
+
     product = models.ForeignKey(Product, models.CASCADE, db_column="product")
     quantity = models.IntegerField(default=1)
 
@@ -85,3 +32,50 @@ class SaleItem(models.Model):
 
     def total(self):
         return self.product.price * self.quantity
+
+
+class Sale(TimestampedModel):
+
+    customer = models.ForeignKey(
+        Customer, models.SET_NULL, db_column="customer", blank=True, null=True
+    )
+    items = models.ManyToManyField(SaleItem, blank=True)
+    discount = models.FloatField(default=0)
+
+    def _get_total_tax(self):
+        total_tax = 0
+        for item in self.items.all():
+            total_tax += item.get_tax_amount()
+        return total_tax
+
+    def _get_sub_total(self):
+        sub_total = 0
+        for item in self.items.all():
+            sub_total += item.total()
+        return sub_total
+
+    def _grand_total(self):
+        return self._get_sub_total() - self.discount + self._get_total_tax()
+
+    @property
+    def sub_total(self):
+        return self._get_sub_total()
+
+    @property
+    def grand_total(self):
+        return self._grand_total()
+
+    @property
+    def total_tax(self):
+        return self._get_total_tax()
+
+    # if printed add a watermark to the receipt
+    receipt_is_printed = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = "Sales"
+        verbose_name_plural = "Sales"
+        verbose_name = "Sale"
+
+    def __str__(self) -> str:
+        return str(self.id)

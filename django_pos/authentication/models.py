@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from company.models import Branch
 from utils.models import TimestampedModel
 
@@ -20,15 +20,7 @@ class Permission(TimestampedModel):
         verbose_name_plural = "Permissions"
 
 
-class CustomUser(AbstractUser):
-    """
-    Roles:
-      - Cashier: Can handle transactions and sales.
-      - Branch Manager: Can manage the branch operations.
-      - Admin: Has full access to the system, including user management.
-      - Inventory Manager: Can manage inventory and stock levels.
-    """
-
+class CustomUser(AbstractUser, PermissionsMixin):
     ROLES = (
         (
             "Cashier",

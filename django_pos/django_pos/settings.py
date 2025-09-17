@@ -93,7 +93,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "company.middleware.BranchSelectionMiddleware",
 ]
 
 
@@ -104,11 +103,11 @@ INTERNAL_IPS = [
 ]
 
 ROOT_URLCONF = "django_pos.urls"
-LOGIN_URL = "authentication:login"
+# LOGIN_URL = "authentication:login"
 # Route defined in authentication/urls.py
-LOGIN_REDIRECT_URL = "authentication:home"
+# LOGIN_REDIRECT_URL = "authentication:home"
 # Route defined in authentication/urls.py
-LOGOUT_REDIRECT_URL = "authentication:login"
+# LOGOUT_REDIRECT_URL = "authentication:login"
 
 
 TEMPLATES = [
@@ -122,7 +121,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "company.context_processors.current_branch_context",
             ],
         },
     },
