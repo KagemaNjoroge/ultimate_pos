@@ -92,33 +92,31 @@ export const apiService = {
 
   // Photos API
   photos: {
-    getAll: (params = {}) => api.get("/utils/photos/", { params }),
-    getById: (id: number, params = {}) =>
-      api.get(`/utils/photos/${id}/`, { params }),
+    getAll: (params = {}) => api.get("/photos/", { params }),
+    getById: (id: number, params = {}) => api.get(`/photos/${id}/`, { params }),
     create: (formData: FormData) =>
-      api.post("/utils/photos/", formData, {
+      api.post("/photos/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       }),
     update: (id: number, formData: FormData) =>
-      api.put(`/utils/photos/${id}/`, formData, {
+      api.put(`/photos/${id}/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       }),
-    delete: (id: number) => api.delete(`/utils/photos/${id}/`),
+    delete: (id: number) => api.delete(`/photos/${id}/`),
   },
 
   // Products API
   products: {
-    getAll: (params = {}) => api.get("/products/products/api/", { params }),
+    getAll: (params = {}) => api.get("/api/products/", { params }),
     getById: (id: number, params = {}) =>
-      api.get(`/products/products/api/${id}/`, { params }),
-    create: (data: any) => api.post("/products/products/api/", data),
-    update: (id: number, data: any) =>
-      api.put(`/products/products/api/${id}/`, data),
-    delete: (id: number) => api.delete(`/products/products/api/${id}/`),
+      api.get(`/api/products/${id}/`, { params }),
+    create: (data: any) => api.post("/api/products/", data),
+    update: (id: number, data: any) => api.put(`/api/products/${id}/`, data),
+    delete: (id: number) => api.delete(`/api/products/${id}/`),
   },
   // Tax Groups API
   taxGroups: {
@@ -133,41 +131,41 @@ export const apiService = {
 
   // Product Categories API
   productCategories: {
-    getAll: (params = {}) => api.get("/products/categories/api/", { params }),
+    getAll: (params = {}) => api.get("/api/product-categories/", { params }),
     getById: (id: number, params = {}) =>
-      api.get(`/products/categories/api/${id}/`, { params }),
-    create: (data: any) => api.post("/products/categories/api/", data),
+      api.get(`/api/product-categories/${id}/`, { params }),
+    create: (data: any) => api.post("/api/product-categories/", data),
     update: (id: number, data: any) =>
-      api.put(`/products/categories/api/${id}/`, data),
-    delete: (id: number) => api.delete(`/products/categories/api/${id}/`),
+      api.put(`/product/categories/${id}/`, data),
+    delete: (id: number) => api.delete(`/api/product-categories/${id}/`),
   },
 
   // Sales API
   sales: {
-    getAll: (params = {}) => api.get("sales/api/", { params }),
+    getAll: (params = {}) => api.get("/api/sales/", { params }),
     getById: (id: number, params = {}) =>
-      api.get(`sales/api/${id}/`, { params }),
-    create: (data: any) => api.post("sales/api/", data),
-    update: (id: number, data: any) => api.put(`sales/api/${id}/`, data),
-    delete: (id: number) => api.delete(`sales/api/${id}/`),
+      api.get(`/api/sales/${id}/`, { params }),
+    create: (data: any) => api.post("/api/sales/", data),
+    update: (id: number, data: any) => api.put(`/api/sales/${id}/`, data),
+    delete: (id: number) => api.delete(`/api/sales/${id}/`),
   },
 
   // Customers API
   customers: {
-    getAll: (params = {}) => api.get("/customers/api/", { params }),
+    getAll: (params = {}) => api.get("/api/customers/", { params }),
     getById: (id: number, params = {}) =>
-      api.get(`/customers/api/${id}/`, { params }),
-    create: (data: any) => api.post("/customers/api/", data),
-    update: (id: number, data: any) => api.put(`/customers/api/${id}/`, data),
-    delete: (id: number) => api.delete(`/customers/api/${id}/`),
+      api.get(`/api/customers/${id}/`, { params }),
+    create: (data: any) => api.post("/api/customers/", data),
+    update: (id: number, data: any) => api.put(`/api/customers/${id}/`, data),
+    delete: (id: number) => api.delete(`/api/customers/${id}/`),
   },
 
   // Stock API
   stock: {
-    getAll: (params = {}) => api.get("inventory/api/", { params }),
+    getAll: (params = {}) => api.get("/api/inventory/", { params }),
     getById: (id: number, params = {}) =>
-      api.get(`inventory/api/${id}/`, { params }),
-    update: (id: number, data: any) => api.put(`inventory/api/${id}/`, data),
+      api.get(`/api/inventory/${id}/`, { params }),
+    update: (id: number, data: any) => api.put(`/api/inventory/${id}/`, data),
   },
 
   // Reports API
@@ -183,18 +181,18 @@ export const apiService = {
 
   // Suppliers API
   suppliers: {
-    getAll: (params = {}) => api.get("/suppliers/api/", { params }),
+    getAll: (params = {}) => api.get("/api/suppliers/", { params }),
     getById: (id: number, params = {}) =>
-      api.get(`/suppliers/api/${id}/`, { params }),
-    create: (data: any) => api.post("/suppliers/api/", data),
-    update: (id: number, data: any) => api.put(`/suppliers/api/${id}/`, data),
-    delete: (id: number) => api.delete(`/suppliers/api/${id}/`),
+      api.get(`/api/suppliers/${id}/`, { params }),
+    create: (data: any) => api.post("/api/suppliers/", data),
+    update: (id: number, data: any) => api.put(`/api/suppliers/${id}/`, data),
+    delete: (id: number) => api.delete(`/api/suppliers/${id}/`),
   },
 
   // Settings/Profile API
   settings: {
-    getProfile: (params = {}) => api.get("/api/profile/", { params }),
-    updateProfile: (data: any) => api.put("/api/profile/", data),
+    getProfile: (params = {}) => api.get("/api/auth/profile/", { params }),
+    updateProfile: (data: any) => api.put("/api/auth/profile/", data),
     getBusinessSettings: (params = {}) =>
       api.get("/api/settings/business/", { params }),
     updateBusinessSettings: (data: any) =>
@@ -209,15 +207,15 @@ export const apiService = {
   },
   // Profile API
   profile: {
-    get: (params = {}) => api.get("/accounts/profile/", { params }),
-    update: (data: any) => api.put("/accounts/profile/", data),
+    get: (params = {}) => api.get("/api/auth/profile/", { params }),
+    update: (data: any) => api.put("/api/auth/profile/", data),
   },
 
   // Authentication API (doesn't need token)
   auth: {
     login: (credentials: { username: string; password: string }) =>
       axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/token/`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/token/`,
         credentials,
         {
           headers: {
@@ -227,9 +225,12 @@ export const apiService = {
         }
       ),
     refresh: (refreshToken: string) =>
-      axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/token/refresh/`, {
-        refresh: refreshToken,
-      }),
+      axios.post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/token/refresh/`,
+        {
+          refresh: refreshToken,
+        }
+      ),
     logout: () => api.get("/accounts/logout-api/"),
   },
 };
@@ -237,4 +238,3 @@ export const apiService = {
 // Export the configured axios instance and service
 export default api;
 export { api };
-
