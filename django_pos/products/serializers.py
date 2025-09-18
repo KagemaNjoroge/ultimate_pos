@@ -31,4 +31,5 @@ class ProductSerializer(serializers.ModelSerializer):
             "tax_group",
             "tax_rate",
             "get_sku",
+            "id",
         )
